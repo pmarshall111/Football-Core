@@ -29,8 +29,7 @@ public class PredictTodaysGames {
      * scrape lineups and predict.
      */
     public static void main(String[] args) {
-        System.out.println("Updating yesterdays games...");
-
+        UpdatePlayedGames.main(new String[]{});
 
         System.out.println("Scraping in todays kickoff times and schedulling times to predict these games...\n");
 
