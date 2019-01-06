@@ -1,0 +1,12 @@
+Need to be inside src folder, OR ALTERNATIVELY, have the project folder set as a
+default path.
+
+then we can compile it using javac (using the path), and then call it with java (
+using the package path)
+note that we need to put in the whole package path, with "." rather than "\"
+
+
+
+
+
+TODO: looks like we're unable to use javac on the Main file, most likely because it includes external libraries. Solution may be to export it all into a jar file and run that from taskscheduller.
