@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.beykery:neuroph:2.92" type="repository">
+    <properties maven-id="org.beykery:neuroph:2.92" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/beykery/neuroph/2.92/neuroph-2.92.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

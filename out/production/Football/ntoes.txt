@@ -1,0 +1,35 @@
+TODO:
+
+1. setup task scheduler to scrape in played games and also to predict games to be played today.
+2. Clean up code and think through whether things are working correctly.
+3. Setup tests to ensure things work correctly. (format of scrape sites stays the same, ordering of features is same in training as predicting, calcs in creating data work correctly)
+4. Optimise system.
+
+
+
+
+Operation:
+
+1. Scrape in recently played matches from the day before
+2. Setup timers to decide when to scrape for lineups and get bets to predict
+
+
+
+JUST TEST WE CAN PREDICT OKAY AND RECEIVE EMAILS.
+ENSURE OUR IMPLEMENTATIONS OF DECIDING ON GOOD BETS ARE THE SAME IN BOTH JAVA AND OCTAVE.
+ADD EVERYTHING INTO TASK SCHEDULLER.
+
+
+
+todo: setup task schedullers and then you're done.
+
+
+
+
+Tasks we need to schedule:
+
+- Updating played games. (YEP)
+- Scraping and predicting games to be played today (YEP)
+- Performance updates once a month. (YEP)
+- Reminder to retrain model with updated data... Possibly once every 2 months? (YEP)
+- Reminder to add new season. (YEP)

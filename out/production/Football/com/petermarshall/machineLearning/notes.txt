@@ -1,0 +1,144 @@
+Could use referee redCardsPerGame along with avg number of red cards a team gets? sofascore. not worth it.
+
+Also number of own goals conceeded per game? - unsure if we can get a stat of this, or if we have to go through previous games and calc it. sofascore
+Number of errors? NONE
+
+_______
+
+If conceedes first goal, how good are they at coming back? sofascore
+If scores first goal, how good are they at holding on? sofascore
+
+^^^ I LIKE THIS. EASY TO IMPLEMENT ALSO, JUST HAVE A FIELD SAYING WHO SCORED THE FIRST GOAL.
+
+_______
+
+- goals conceeded from different types of chances vs team they face goals scored from each type of chance. sofascore
+
+NOT ENOUGH DATA. ALL WE HAVE IS PENALTY GOALS OR REGULAR GOAL
+
+_______
+
+- Manager duel. Who gets the better of who? sofascore. CANT USE AS EVEN FOR HISTORIC MATCHES, THE DATA IS CURRENT
+
+_______
+
+- We don't need to have a season or league class because we will have the seasonyear, so we'll know when we need to start looking at new teams
+
+
+- Will calculate results against previous teams by storing each team we make into a season. Could also separate into home and away.
+Unsure whether I wiill actually do this as if it's separated, we'd be looking at results from years prior, which may not bre representative/
+
+
+
+
+
+______
+
+
+NOTEPAD 19/11
+
+Problem with lineup stats in that we go through and add the ratings whenever we first
+encounter a player. this means that if we tried to add the ratings at the end, the
+ratings would reflect what happened in the match.
+
+cant add before either as we wouldn't know what the lineup was without going through
+the ratings.
+
+
+
+
+
+Currently adding functionality to the TrainingTeam class so we can get the points
+and filter between home/away results and also results up to X years ago.
+
+For this, we need a way to get the points of a team (giving the team name)
+We need a way to figure out if the game was at home (giving the team name)
+We need a way to figure out how long ago to game was from current date.
+
+
+
+need to filter through matches in get points of last matchups
+
+
+need to have a think about just how to create the probabilities.
+
+
+
+Once I've created these methods, we should then be able to do the same for the away
+team in create training data and then also add the misc data and run it!
+
+
+We are not allowed to go back through the resultset due to a limitation of sqlite.
+Therefore, we must use the data as we go to build up a lineup list and also save
+their minutes and ratings. Once we've gone through everyone in the match, we must
+add the lineups details to the match.
+
+What about the team details... That would need to be added at the end as well...
+
+Initially, we must get all the data about the team and store it outside of the loop.
+While the loop is running and the match_id is the same, we must create a lineup list
+without adding the data to the team - how to get who started? Just add the 11 who
+played the most minutes. Already sorted in that order from sqlite, so we can just
+add to an arraylist and then pick the first 11 for each team.
+
+When we get to a new match_id, or the end of our data, we must create a new match for
+the previous match, and then add our details to each team. Then start saving the
+details for the next match.
+
+
+Need to get first 11 players from lineups for training data.
+
+Then need to add the players who played stats to the teams.
+
+STILL NEED TO ADD CHECKS FOR IF OUR DATA IS NOT THERE.
+
+
+____
+
+Pretty sure I will use a Neural Network (no idea yet how to choose how many layers) with a softmax function at the output to compute
+the probability of each result.
+
+
+
+____
+
+Code to find our most used values: (JS)
+
+let str = ["0.092146	0.55048	-0.14117	0.49638	-0.087765	0.026577	-0.43825	-0.12515	0.0056045	-0.030217	-0.10257	0.0025905	0.88759	0.18988	-0.30857	0.083082	0.34912	0.072273	-0.2392	0.029757	0.27357	-0.071167	-0.058729	0.12737	0.0025905	-0.14392	0.17282	-0.39459	0.29919	-0.52488	0.46479	-0.15767	-0.064974	0.1068	0.025409	0.028112	0.048801	0.0085464	-0.93093	-0.55452	0.10295	-0.074274	0.21114	-0.067044	-0.33283	0.36284	-0.13734	0.045556	-0.058689	0.14854	0.0085464	0.13409	-0.079608"
+,"0.29744	-0.27767	0.1555	-0.45355	-0.30832	0.25215	0.28591	0.098622	0.067492	0.15496	0.20359	-0.029853	-0.38159	-0.13459	0.22552	-0.1651	-0.1701	-0.056507	0.03348	0.275	-0.16011	0.063216	-0.010245	-0.19418	-0.029853	0.21359	-0.12567	0.12154	-0.19509	-0.24128	0.030418	0.23731	-0.0026512	-0.034459	0.015074	-0.075763	-0.068144	-0.043743	0.35814	0.16745	-0.14377	0.076321	-0.40648	0.023902	0.41464	-0.074173	0.29274	-0.1961	0.10187	-0.015531	-0.043743	-0.40758	0.29035",
+           "-0.43081	-0.39944	0.020393	-0.23022	0.38189	-0.32286	0.25387	0.050684	-0.077795	-0.13202	-0.13673	0.0021248	-0.74916	0.037602	0.10046	0.082574	-0.259	0.052496	0.25618	-0.40461	-0.069659	0.00022992	0.066382	0.043462	0.0021248	-0.062365	0.052447	0.21603	-0.15488	0.69879	-0.53473	-0.029563	0.056371	0.083313	-0.042842	0.038089	-0.027764	0.012633	0.60595	0.56628	0.09324	-0.014756	0.25626	-0.015163	-0.1805	-0.34058	-0.23405	0.14504	-0.03138	-0.13327	0.012633	0.1806	-0.061318"]
+
+let format = str.map(x => x.replace(/\s+/g, " "));
+
+
+let arr = format.map(x => x.split(" "));
+
+arr.forEach(x => x.unshift(0));
+
+
+result = arr.map(y => y.map((x,idx) => {
+  return Math.abs(x)
+}));
+
+
+let total = {};
+
+for (let i = 0; i<result.length; i++) {
+
+  console.log(result[i].length)
+  for (let j = 2; j<result[i].length; j++) {
+      if (!total[j]) total[j] = {val: result[i][j], idx: j};
+      else total[j].val += result[i][j]
+  }
+}
+
+
+let x = Object.values(total).sort((a,b) => a.val - b.val);
+
+console.log(x)
+
+
+
+________
+
+- satisfied with refactoring of createData. Next will be logisticRegression.

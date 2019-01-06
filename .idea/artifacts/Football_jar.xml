@@ -1,0 +1,56 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Football:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Football_jar</output-path>
+    <root id="archive" name="Football.jar">
+      <element id="module-output" name="Football" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/JAR files/json-simple-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-codec-1.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/htmlunit-2.33.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/httpclient-4.5.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/httpmime-4.5.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-all-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-cdense-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-core-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-ddense-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-dsparse-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-fdense-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-simple-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/ejml-zdense-0.37.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files (1)/jsr305-3.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/htmlunit-core-js-2.33.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/htmlunit-cssparser-1.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/neko-htmlunit-2.33.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/JAR files/sqlite-jdbc-3.23.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/websocket-api-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/xercesImpl-2.12.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-logging-1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/jetty-util-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-net-3.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/jetty-client-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/websocket-client-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/simple-java-mail-5.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-api-1.7.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javax.mail-1.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/activation-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/emailaddress-rfc2822-1.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jsr305-3.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-io-2.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/websocket-common-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/jetty-xml-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/beykery/neuroph/2.92/neuroph-2.92.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/jetty-io-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/weka-stable-3.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/jetty-http-9.4.12.v20180830.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/xalan-2.7.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/serializer-2.7.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-lang3-3.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/commons-text-1.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/xml-apis-1.4.01.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/htmlunit-2.33-bin/htmlunit-2.33/lib/httpcore-4.4.10.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

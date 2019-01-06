@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="org.simplejavamail:simple-java-mail:5.1.0" type="repository">
+    <properties maven-id="org.simplejavamail:simple-java-mail:5.1.0" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/simple-java-mail-5.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.21.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.mail-1.6.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/activation-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/emailaddress-rfc2822-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsr305-3.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
