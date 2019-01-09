@@ -29,9 +29,10 @@ public class PredictTodaysGames {
      * scrape lineups and predict.
      */
     public static void main(String[] args) {
-        UpdatePlayedGames.main(new String[]{});
-
         System.out.println("Scraping in todays kickoff times and schedulling times to predict these games...\n");
+
+        decideWhetherToScrapeInPlayedGames();
+
 
         //db dateString format is yyyy-mm-dd hh:mm:ss
         ArrayList<Date> kickOffTimes = SofaScore.updateTodaysKickoffTimes();
@@ -100,24 +101,26 @@ public class PredictTodaysGames {
         }
     }
 
+    /*
+     * Method will get a list of dates that will be good times to scrape for matches. It will filter out any dates that are not taking place today.
+     */
     private static ArrayList<Date> getTimesToScrape(ArrayList<Date> kickOffTimes, int minsAfterLineups, int minsBeforeKickoff) {
         ArrayList<Date> timesToScrape = new ArrayList<>();
 
         Date currentTime = new Date();
-        Date latestTime = DateHelper.setTimeOfDate(new Date(), 23,59,59);
+        Date endOfToday = DateHelper.setTimeOfDate(new Date(), 23,59,59);
 
         ArrayList<Date> todaysKickoffs = new ArrayList<>(kickOffTimes);
         todaysKickoffs.removeIf(new Predicate<Date>() {
             @Override
             public boolean test(Date date) {
-                return date.before(currentTime) || date.after(latestTime);
+                return date.before(currentTime) || date.after(endOfToday);
             }
         });
 
         Collections.sort(todaysKickoffs);
 
         //we want to scrape 15mins after lineups are announced and place bet 5mins before game starts. so we have 40min window for each game.
-
         for (Date kickOffTime: todaysKickoffs) {
             Date earliestCanScrape = DateHelper.addMinsToDate(kickOffTime, -60 + minsAfterLineups);
             Date latestCanScrape = DateHelper.addMinsToDate(kickOffTime, -minsBeforeKickoff);
@@ -133,5 +136,16 @@ public class PredictTodaysGames {
         }
 
         return timesToScrape;
+    }
+
+    private static void decideWhetherToScrapeInPlayedGames() {
+        Calendar rightNow = Calendar.getInstance();
+        int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
+        boolean evenDay = dayOfMonth % 2 == 0;
+
+        //no need to update played games every day as teams play at MOST once every 2 games (usually once every 3 is minimum).
+        if (evenDay || dayOfMonth == 1) { //added if dayOfMonth is 1 because some months will end in 31, with the next day being 1, so we wouldn't scrape for 3 days which might miss a teams last game.
+            UpdatePlayedGames.main(new String[]{});
+        }
     }
 }

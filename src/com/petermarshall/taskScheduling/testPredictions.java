@@ -21,8 +21,8 @@ public class testPredictions {
 //        SofaScore.updateTodaysKickoffTimes();
 
 
-        Date earliestGame = DateHelper.setTimeOfDate(new Date(), 17,20,0);
-        Date latestGame = DateHelper.setTimeOfDate(new Date(), 18,20,0);
+        Date earliestGame = DateHelper.setTimeOfDate(new Date(), 19,20,0);
+        Date latestGame = DateHelper.setTimeOfDate(new Date(), 20,20,0);
 
         DataSource.openConnection();
         ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);

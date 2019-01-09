@@ -235,7 +235,7 @@ public class Understat {
         JSONParser parser = new JSONParser();
         JSONAware json = null;
 
-        System.out.println("result \n" + result.toString());
+//        System.out.println("result \n" + result.toString());
         try {
             json =  (JSONAware) parser.parse(result.toString());
         } catch (ParseException e) {
