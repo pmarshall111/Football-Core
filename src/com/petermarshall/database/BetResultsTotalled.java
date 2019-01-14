@@ -7,10 +7,10 @@ public class BetResultsTotalled {
     public BetResultsTotalled() { //singleton
     }
 
-    void addBet(double moneyOut, double odds, int teamBetOn, int result) {
+    void addBet(double moneyOut, double odds, int resultBetOn, int result) {
         totalMoneyOut += moneyOut;
 
-        if (teamBetOn == result) {
+        if (resultBetOn == result) {
             totalMoneyIn += moneyOut * odds;
         }
     }

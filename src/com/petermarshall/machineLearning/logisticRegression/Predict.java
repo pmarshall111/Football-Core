@@ -239,6 +239,9 @@ public class Predict {
             //adding best results to StringBuilder. TreeSet is already sorted so we can just add the first X records.
             //TODO: remove duplication in here.
             double BASE_STAKE = 5;
+            int HOME_WIN = 0;
+            int AWAY_WIN = 2;
+
             if (homeWin.size()>0) {
                 matchStringBuilder.append("\nHome win: ");
 
@@ -251,7 +254,7 @@ public class Predict {
                         String[] partsOfOdds = oddsDescriptor.split(" ");
                         double odds = Double.parseDouble(partsOfOdds[0]);
 
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, odds, BASE_STAKE);
+                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE);
                     }
 
 
@@ -275,7 +278,7 @@ public class Predict {
                         String[] partsOfOdds = oddsDescriptor.split(" ");
                         double odds = Double.parseDouble(partsOfOdds[0]);
 
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, odds, BASE_STAKE);
+                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), AWAY_WIN, odds, BASE_STAKE);
                     }
 
                     matchStringBuilder.append(oddsDescriptor);

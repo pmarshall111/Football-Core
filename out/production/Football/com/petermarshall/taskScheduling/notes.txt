@@ -10,3 +10,43 @@ note that we need to put in the whole package path, with "." rather than "\"
 
 
 TODO: looks like we're unable to use javac on the Main file, most likely because it includes external libraries. Solution may be to export it all into a jar file and run that from taskscheduller.
+
+
+
+______________________________________
+
+
+TODO:
+- Ensure that prediction logging is working. Should be fixed.
+- Think about how best to implement making predictions that we didn't have the computer on to predict.
+- Rebuild artifacts so Windows Task Scheduller uses most updated version.
+- Once rebuilt check we do not have loads of unnecessary console logs - understat data + duplicates of games printed.
+
+
+
+Need to get the model to store predictions on games even when the computer is not on and was not able to predict at the time.
+
+- My thoughts on this right now is to add it in when we're building up our stats for each team and make a prediction on any game
+(possibly look back 2 weeks or so) that doesn't already have a prediction. However, this could take more time than just adding all
+games in the last 2 weeks to a MatchToPredict array and predicting each. Perhaps we can also keep a record of when we last did this
+so we don't repeat calculations.
+
+
+Process:
+
+- Scrape in results of yesterdays games and schedule predictions as per usual through PredictTodaysGames.java
+- When time for first prediction, check to see if it's time to predict for past games that we may have missed (we can hard code in a time period like 2 weeks) - or do up to the
+time when we last predicted missed games (would probably make more sense).
+- If past the time period, we retrieve from the database a list of games that we need to predict - this will only include games that do not have a currently placed bet.
+So we may end up predicting a game we already predicted earlier and decided not to pursue... unless we add another field to the database saying if we predicted it or not? Could
+be worth thinking about as it will give us stats on uptime as well.
+- Then we take our list of games we need to predict into the GetMatchesFromDb class, and as we're building up the data of each team as they were before each match,
+we need to check each new match we come across to see whether it's in our list of matches to predict. This can be made easier by just looking to see if the match was within our
+hard coded time period of perhaps 2 weeks (so we don't have to loop through maybe 30 unpredicted games for every game we come across).
+- If we find a game that matches one we need to predict, before we add any data at all from the match, we need to store the stats for each team in our MatchToPredict.
+- Then as we're going through the lineups of the game, we need to also add them to the match to predict.
+- Once done for all MatchesToPredict, we need to get the odds of each result from the database... OR perhaps we could do this while we're creating our matches. Not sure. Would save
+us call to database but I don't think we'd have that info anyway. Would be a good chance to practice a bulk read operation from database anyway and keep things separate and slightly
+more simple.
+- Then we should have all we need and can predict our array of MatchesToPredict and add the prediction results into the database.
+- Update the time when we last predicted recently played games so we can repeat the whole process in another 2 weeks.

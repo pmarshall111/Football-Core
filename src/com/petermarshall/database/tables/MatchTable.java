@@ -15,7 +15,7 @@ public class MatchTable {
     private static final String COL_AWAY_SCORE = "away_score";
     private static final String COL_FIRST_SCORER = "first_scorer";
     private static final String COL_SOFASCORE_ID = "sofascore_id";
-    private static final String COL_BET_ON_TEAM = "bet_on_team";
+    private static final String COL_RESULT_BET_ON = "result_bet_on";
     private static final String COL_ODDS_WHEN_BET_PLACED = "odds_when_bet_placed";
     private static final String COL_STAKE_ON_BET = "stake_on_bet";
 
@@ -72,8 +72,8 @@ public class MatchTable {
         return COL_SOFASCORE_ID;
     }
 
-    public static String getColBetOnTeam() {
-        return COL_BET_ON_TEAM;
+    public static String getColResultBetOn() {
+        return COL_RESULT_BET_ON;
     }
 
     public static String getColOddsWhenBetPlaced() {

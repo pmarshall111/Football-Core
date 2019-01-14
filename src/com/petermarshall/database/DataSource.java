@@ -86,7 +86,7 @@ public class DataSource {
                     MatchTable.getColAwayteamId() + " INTEGER, " + MatchTable.getColAwayXg() + " REAL, " +
                     MatchTable.getColAwayScore() + " INTEGER, " + MatchTable.getColAwayWinOdds() + " REAL, " +
                     MatchTable.getColDrawOdds() + " REAL, " + MatchTable.getColFirstScorer() + " INTEGER, " +
-                    MatchTable.getColSofascoreId() + " INTEGER DEFAULT -1, " + MatchTable.getColBetOnTeam() + " INTEGER DEFAULT -1, " +
+                    MatchTable.getColSofascoreId() + " INTEGER DEFAULT -1, " + MatchTable.getColResultBetOn() + " INTEGER DEFAULT -1, " +
                     MatchTable.getColOddsWhenBetPlaced() + " REAL DEFAULT -1.0, " + MatchTable.getColStakeOnBet() + "REAL DEFAULT -1, _id INTEGER PRIMARY KEY )");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingsTable.getTableName() +
@@ -705,7 +705,9 @@ public class DataSource {
         return matches;
     }
 
-
+    /*
+     * homeDrawAway is int and 0 is home win, 1 is draw, 2 is away win.
+     */
     public static void logBetPlaced(String homeTeamName, String awayTeamName, String seasonKey, int homeDrawAway, double oddsAtTimeOfBet, double stake) {
         //we first need to get the ids of home and away teams because sqlite doesn't support joins on updates.
         try (Statement statement = connection.createStatement()) {
@@ -739,7 +741,7 @@ public class DataSource {
                 } else {
 
                     statement.execute("UPDATE " + MatchTable.getTableName() +
-                            " SET " + MatchTable.getColBetOnTeam() + " = " + homeDrawAway + ", " + MatchTable.getColOddsWhenBetPlaced() + " = " + oddsAtTimeOfBet +
+                            " SET " + MatchTable.getColResultBetOn() + " = " + homeDrawAway + ", " + MatchTable.getColOddsWhenBetPlaced() + " = " + oddsAtTimeOfBet +
                             MatchTable.getColStakeOnBet() + " = " + stake +
                             " WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
                             " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId);
@@ -777,14 +779,14 @@ public class DataSource {
 
             ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() +
                     MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "." + MatchTable.getColStakeOnBet() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColOddsWhenBetPlaced() + ", " + MatchTable.getTableName() + "." + MatchTable.getColBetOnTeam() +
+                    MatchTable.getTableName() + "." + MatchTable.getColOddsWhenBetPlaced() + ", " + MatchTable.getTableName() + "." + MatchTable.getColResultBetOn() +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() +
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " WHERE ( " + MatchTable.getTableName() + "." + MatchTable.getColStakeOnBet() + " != -1 " +
                     " OR " + MatchTable.getTableName() + "." + MatchTable.getColOddsWhenBetPlaced() + " != -1 " +
-                    " OR " + MatchTable.getTableName() + "." + MatchTable.getColBetOnTeam() + " != -1 )" +
+                    " OR " + MatchTable.getTableName() + "." + MatchTable.getColResultBetOn() + " != -1 )" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " >= '" + sqlEarliestMatch + "'" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " <= '" + sqlLatestMatch + "'");
 
@@ -795,17 +797,17 @@ public class DataSource {
                 String dateString = resultSet.getString(3);
                 double stakeOnBet = resultSet.getDouble(4);
                 double oddsWhenBetPlaced = resultSet.getDouble(5);
-                int teamBetOn = resultSet.getInt(6);
+                int resultBetOn = resultSet.getInt(6);
                 int homeScore = resultSet.getInt(7);
                 int awayScore = resultSet.getInt(8);
                 int result = calculateResult(homeScore, awayScore);
 
                 java.util.Date date = DateHelper.createDateFromSQL(dateString);
 
-                BetResult betResult = new BetResult(date, homeTeamName, awayTeamName, stakeOnBet, oddsWhenBetPlaced, teamBetOn, result);
+                BetResult betResult = new BetResult(date, homeTeamName, awayTeamName, stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
                 betResults.add(betResult);
 
-                totalledResults.addBet(stakeOnBet, oddsWhenBetPlaced, teamBetOn, result);
+                totalledResults.addBet(stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
             }
 
 
@@ -835,6 +837,7 @@ public class DataSource {
     }
 
     private static int calculateResult (int homeScore, int awayScore) {
+        //TODO: refactor so we return enums instead of just base ints so we have consistency across files.
         if (homeScore > awayScore) return 0;
         else if (homeScore == awayScore) return 1;
         else return 2;
