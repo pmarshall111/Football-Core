@@ -269,12 +269,16 @@ public class Predict {
                 int numbAdded = 0;
 
                 while (it.hasNext() && numbAdded < NUMB_BOOKIES_WE_WANT_IN_EMAIL) {
-                    String odds = it.next();
+                    //TODO: put these 2 methods for home and away logging into single function as I just changed one of them without changing the other leading to differences and a bug.
+                    String oddsDescriptor = it.next();
                     if (loggingEnabled && numbAdded == 0) {
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, Double.parseDouble(odds), BASE_STAKE);
+                        String[] partsOfOdds = oddsDescriptor.split(" ");
+                        double odds = Double.parseDouble(partsOfOdds[0]);
+
+                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, odds, BASE_STAKE);
                     }
 
-                    matchStringBuilder.append(odds);
+                    matchStringBuilder.append(oddsDescriptor);
                     matchStringBuilder.append(", ");
                 }
                 matchStringBuilder.delete(matchStringBuilder.length()-2, matchStringBuilder.length()); //remove comma space
