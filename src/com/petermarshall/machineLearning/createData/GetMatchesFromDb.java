@@ -2,7 +2,7 @@ package com.petermarshall.machineLearning.createData;
 
 import com.petermarshall.*;
 import com.petermarshall.machineLearning.createData.classes.*;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 
 
@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 /*
  * Class will get out data from database as each player rating and will create TrainingMatches that contains a measure of how each team was performing at the time.
- * Also used to create the features for our model.
+ * Also used to create the features for our database.
  */
 public class GetMatchesFromDb {
 

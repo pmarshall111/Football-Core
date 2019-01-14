@@ -1,4 +1,4 @@
-package com.petermarshall.model;
+package com.petermarshall.database;
 
 import java.util.Date;
 

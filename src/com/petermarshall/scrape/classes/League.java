@@ -3,10 +3,9 @@ package com.petermarshall.scrape.classes;
 import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 
 /*

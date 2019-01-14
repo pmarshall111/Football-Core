@@ -13,7 +13,7 @@ public class RetrainPredictor {
 
         UpdatePlayedGames.main(new String[]{}); //placeholder argument to allow main method to be called.
 
-        //First method is to train and test the model. Second is to train the model with all data once we've decided on a suitable model.
+        //First method is to train and test the database. Second is to train the database with all data once we've decided on a suitable database.
 //        createFilesToTrainAndTestOn("octaveWeighted.csv", "octaveWeightedTest.csv", "javaWeightedTest.csv");
         createFileJustToTrainOn("allDataTraining.csv");
 

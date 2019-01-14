@@ -2,19 +2,19 @@ package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.mail.SendEmail;
-import com.petermarshall.model.BetResult;
-import com.petermarshall.model.BetResultsTotalled;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.BetResultsTotalled;
+import com.petermarshall.database.DataSource;
 
 import java.util.Date;
-import java.util.HashSet;
 
 public class EmailModelPerformance {
 
     private static final int MODEL_CHANGED_EVERY_X_MONTHS = 2;
 
     /*
-     *Method will be schedulled on the first day of each month and will send a performance review along with a reminder to update the model if needed.
+     *Method will be schedulled on the first day of each month and will send a performance review along with a reminder to update the database if needed.
+     * Performance review will only be for games the model actively predicted... i.e. the computer has to be on and the program has to be running for a
+     * prediction to be made.
      */
     public static void main(String[] args) {
         System.out.println("Sending email of models performance...\n");
@@ -40,7 +40,7 @@ public class EmailModelPerformance {
 //
         stringBuilder.append("Hello Peter,\n\nIn total, as of ");
         stringBuilder.append(new Date());
-        stringBuilder.append(" our model has spent ");
+        stringBuilder.append(" our database has spent ");
         stringBuilder.append(totalledData.getTotalMoneyOut());
         stringBuilder.append(", making £");
         stringBuilder.append(totalledData.getRealProfit());
@@ -51,16 +51,16 @@ public class EmailModelPerformance {
     }
 
     private static void addReminderToChangeModel(StringBuilder stringBuilder) {
-        stringBuilder.append("\n\n_______________________________\n\nAlert: It has now been " + MODEL_CHANGED_EVERY_X_MONTHS + " months since the model was last changed. " +
+        stringBuilder.append("\n\n_______________________________\n\nAlert: It has now been " + MODEL_CHANGED_EVERY_X_MONTHS + " months since the database was last changed. " +
                 "Please call taskSchedulling.RetrainPredictor, and transfer over the training data to Octave and bring back the retrained Thetas to Java. Thanks.\n\n" +
                 "_______________________________\n\n");
     }
 
     private static void addRecentModelDataToString(StringBuilder stringBuilder, Date lastChangeOfModel, BetResultsTotalled recentData) {
         stringBuilder.append("<b>Recent Model Performance</b>\n");
-        stringBuilder.append("Since the model was last changed on ");
+        stringBuilder.append("Since the database was last changed on ");
         stringBuilder.append(lastChangeOfModel);
-        stringBuilder.append(" our model has spent ");
+        stringBuilder.append(" our database has spent ");
         stringBuilder.append(recentData.getTotalMoneyOut());
         stringBuilder.append(", making £");
         stringBuilder.append(recentData.getRealProfit());
@@ -70,7 +70,7 @@ public class EmailModelPerformance {
     }
 
 
-    //TODO: test working correctly, even when changing how often model is changed.
+    //TODO: test working correctly, even when changing how often database is changed.
     private static Date calculateWhenModelWasLastChanged() {
         //will be changed on the 1st every 3 months starting in january.
         //month%3 should be 1.

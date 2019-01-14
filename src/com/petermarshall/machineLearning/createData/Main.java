@@ -1,7 +1,7 @@
 package com.petermarshall.machineLearning.createData;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 
 import java.util.ArrayList;
 

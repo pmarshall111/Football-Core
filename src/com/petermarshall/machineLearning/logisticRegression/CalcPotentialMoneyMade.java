@@ -32,7 +32,7 @@ public class CalcPotentialMoneyMade {
         SimpleMatrix goodBetsHighestWinningProb = new SimpleMatrix(betProbs.numRows(), betProbs.numCols());
         SimpleMatrix goodBetsBetterThanBetOdds = new SimpleMatrix(betProbs.numRows(), betProbs.numCols());
         SimpleMatrix goodBetsHighestProbBetterThanBetOdds = new SimpleMatrix(betProbs.numRows(), betProbs.numCols());
-        SimpleMatrix goodBetsHighestWinningProbBetterThanBetOdds = new SimpleMatrix(betProbs.numRows(), betProbs.numCols()); //What we use in our prediction model.
+        SimpleMatrix goodBetsHighestWinningProbBetterThanBetOdds = new SimpleMatrix(betProbs.numRows(), betProbs.numCols()); //What we use in our prediction database.
         SimpleMatrix goodBetsRatios = new SimpleMatrix(betProbs.numRows(), betProbs.numCols());
         SimpleMatrix goodBetsRatiosDivByBoth = new SimpleMatrix(betProbs.numRows(), betProbs.numCols());
 

@@ -69,7 +69,7 @@ public class test {
      */
 
     /*
-     * We predict on our testing set using our testing data and trained weka model, and then compare our predictions to theirs via the CSV file
+     * We predict on our testing set using our testing data and trained weka database, and then compare our predictions to theirs via the CSV file
      */
     public static double process(double higherThan, double betterThanBetters) throws Exception {
 
@@ -77,7 +77,7 @@ public class test {
         DMatrixRMaj dMatrix = MatrixIO.loadCSV("C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\wekaTest.csv", 1565, 4);
         SimpleMatrix simpleMatrix = SimpleMatrix.wrap(dMatrix);
 
-        MultiClassClassifier multiClassClassifier = (MultiClassClassifier) SerializationHelper.read(new FileInputStream("mCM.model"));
+        MultiClassClassifier multiClassClassifier = (MultiClassClassifier) SerializationHelper.read(new FileInputStream("mCM.database"));
 
         Iterator iterator = testingDataSet.iterator();
 

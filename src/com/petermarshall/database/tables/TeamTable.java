@@ -1,4 +1,4 @@
-package com.petermarshall.model.tables;
+package com.petermarshall.database.tables;
 
 public class TeamTable {
     private static final String TABLE_NAME = "team";

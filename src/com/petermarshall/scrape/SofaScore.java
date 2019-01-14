@@ -2,8 +2,7 @@ package com.petermarshall.scrape;
 
 import com.petermarshall.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.classes.Player;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

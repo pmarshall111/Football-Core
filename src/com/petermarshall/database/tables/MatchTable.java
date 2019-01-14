@@ -1,4 +1,4 @@
-package com.petermarshall.model.tables;
+package com.petermarshall.database.tables;
 
 public class MatchTable {
 

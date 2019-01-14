@@ -1,8 +1,8 @@
-package com.petermarshall.model;
+package com.petermarshall.database;
 
 import com.petermarshall.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.model.tables.*;
+import com.petermarshall.database.tables.*;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 import com.petermarshall.scrape.classes.Match;
@@ -128,8 +128,8 @@ public class DataSource {
                 MATCH_NEXT_ID = MatchSet.getInt(1);
                 PLAYER_RATING_NEXT_ID = PlayerRatingsSet.getInt(1);
 
-                System.out.println("League: " + LEAGUE_NEXT_ID + "\nSeason: " + SEASON_NEXT_ID + "\nTeam: " + TEAM_NEXT_ID +
-                        "\nMatch: " + MATCH_NEXT_ID + "\nPlayerRatings: " + PLAYER_RATING_NEXT_ID );
+//                System.out.println("League: " + LEAGUE_NEXT_ID + "\nSeason: " + SEASON_NEXT_ID + "\nTeam: " + TEAM_NEXT_ID +
+//                        "\nMatch: " + MATCH_NEXT_ID + "\nPlayerRatings: " + PLAYER_RATING_NEXT_ID );
 
                 return true;
 
@@ -439,8 +439,6 @@ public class DataSource {
 //              AND match.home_score > -1
 //            ORDER BY date DESC
 //            LIMIT 1;
-
-            System.out.println();
 
             ResultSet dateStringRS = statement.executeQuery("SELECT " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
@@ -757,7 +755,7 @@ public class DataSource {
     }
 
     /*
-     * Method will return a set of games our model decided to bet on.
+     * Method will return a set of games our database decided to bet on.
      * It will also total these bets up as it adds these and this result can be obtained by looking at the BetResultsTotalled class.
      */
     public static BetResultsTotalled getResultsOfPredictions(java.util.Date earliestMatchPredicted, java.util.Date latestMatchPredicted) {

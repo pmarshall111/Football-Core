@@ -1,6 +1,6 @@
 package com.petermarshall.scrape;
 
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 

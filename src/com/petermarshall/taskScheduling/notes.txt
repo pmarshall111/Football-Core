@@ -10,3 +10,16 @@ note that we need to put in the whole package path, with "." rather than "\"
 
 
 TODO: looks like we're unable to use javac on the Main file, most likely because it includes external libraries. Solution may be to export it all into a jar file and run that from taskscheduller.
+
+
+
+______________________________________
+
+
+TODO:
+- Check over game prediction logging as we got an error yesterday. Should've fixed but not sure.
+- Think about how best to implement making predictions that we didn't have the computer on to predict.
+
+
+
+Need to get the model to store predictions on games even when the computer is not on and was not able to predict at the time.

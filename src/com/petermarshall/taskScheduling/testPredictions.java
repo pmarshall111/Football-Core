@@ -5,7 +5,7 @@ import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;

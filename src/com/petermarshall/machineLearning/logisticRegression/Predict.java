@@ -1,7 +1,7 @@
 package com.petermarshall.machineLearning.logisticRegression;
 
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.equation.Equation;
@@ -98,7 +98,7 @@ public class Predict {
 
     /*
      * For this function to work, we need a list of all the features for each match so that we can multiply them out with our thetas to get predictions.
-     * Method will fail when we start to change our model, as we've hardcoded in the number of rows and columns in our thetas.
+     * Method will fail when we start to change our database, as we've hardcoded in the number of rows and columns in our thetas.
      *
      * Bias parameter added to match features when the features are created in GetMatchesFromDb.addLegacyFeaturesToMatchesToPredict();
      */
@@ -133,8 +133,8 @@ public class Predict {
      * Calculates logit probabilities and then regualrises them so that the total probability that comes out is 1.
      */
     private static double[] predictForMatch (SimpleMatrix thetas, SimpleMatrix matchFeatures) {
-        System.out.println("thetas size: " + thetas.numRows() + " x " + thetas.numCols());
-        System.out.println("features size: " + matchFeatures.numRows() + " x " + matchFeatures.numCols());
+//        System.out.println("thetas size: " + thetas.numRows() + " x " + thetas.numCols());
+//        System.out.println("features size: " + matchFeatures.numRows() + " x " + matchFeatures.numCols());
 
         SimpleMatrix logits = matchFeatures.mult(thetas.transpose());
         SimpleMatrix results = convertLogitsToProbability(logits);
@@ -246,13 +246,16 @@ public class Predict {
                 int numbAdded = 0;
 
                 while (it.hasNext() && numbAdded < NUMB_BOOKIES_WE_WANT_IN_EMAIL) {
-                    String odds = it.next();
+                    String oddsDescriptor = it.next();
                     if (loggingEnabled && numbAdded == 0) {
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, Double.parseDouble(odds), BASE_STAKE);
+                        String[] partsOfOdds = oddsDescriptor.split(" ");
+                        double odds = Double.parseDouble(partsOfOdds[0]);
+
+                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), 0, odds, BASE_STAKE);
                     }
 
 
-                    matchStringBuilder.append(odds);
+                    matchStringBuilder.append(oddsDescriptor);
                     matchStringBuilder.append(", ");
                     numbAdded++;
                 }

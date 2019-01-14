@@ -5,7 +5,7 @@ import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
-import com.petermarshall.model.DataSource;
+import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
@@ -15,8 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-
-import static com.petermarshall.machineLearning.createData.Main.addFeaturesToMatchesToPredict;
 
 public class PredictTodaysGames {
     //TODO: need to update played games before we do anything. check in db to see if games were played yesterday. if they were, then we need to scrape in played games.
@@ -48,14 +46,14 @@ public class PredictTodaysGames {
 
 
         for (Date scrapeTime: scrapingTimes) {
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    runPredictor(scrapeTime, bookiesWeveSignedUpFor);
-                }
-            };
-
-            timer.schedule(timerTask, scrapeTime);
+//            TimerTask timerTask = new TimerTask() {
+//                @Override
+//                public void run() {
+//                    runPredictor(scrapeTime, bookiesWeveSignedUpFor);
+//                }
+//            };
+//
+//            timer.schedule(timerTask, scrapeTime);
 
 
             TimeUnit timeInMins = TimeUnit.MINUTES;

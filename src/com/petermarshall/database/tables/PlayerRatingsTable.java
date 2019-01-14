@@ -1,4 +1,4 @@
-package com.petermarshall.model.tables;
+package com.petermarshall.database.tables;
 
 public class PlayerRatingsTable {
     private static final String TABLE_NAME = "player_ratings";

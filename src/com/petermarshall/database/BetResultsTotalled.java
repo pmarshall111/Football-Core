@@ -1,4 +1,4 @@
-package com.petermarshall.model;
+package com.petermarshall.database;
 
 public class BetResultsTotalled {
     private static double totalMoneyOut;
