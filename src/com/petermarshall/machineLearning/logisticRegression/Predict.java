@@ -1,5 +1,8 @@
 package com.petermarshall.machineLearning.logisticRegression;
 
+import com.petermarshall.database.ResultBetOn;
+import com.petermarshall.database.WhenGameWasPredicted;
+import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.database.DataSource;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
@@ -144,14 +147,14 @@ public class Predict {
 
 
     /*
+     * IMPORTANT: Only to be called when dealing
      * will add info to email body.
      * default behaviour is to allow all bookies if allowedBookies is null, or empty.
      *
      * CURRENTLY ONLY ADDING GOOD BETS FOR BETTER THAN BOOKIES
      */
-    public static boolean addGoodBetsToEmailBody(ArrayList<MatchToPredict> matches, StringBuilder emailBody, HashSet<String> allowedBookies, boolean loggingEnabled) {
+    public static boolean calcBetsForCurrentGamesAndAddToBuilder(ArrayList<MatchToPredict> matches, StringBuilder emailBody, HashSet<String> allowedBookies) {
 
-        int NUMB_BOOKIES_WE_WANT_IN_EMAIL = 3;
         boolean madeChanges = false;
 
         if (allowedBookies == null || allowedBookies.size() == 0) {
@@ -159,13 +162,13 @@ public class Predict {
         }
 
         for (MatchToPredict match: matches) {
-            TreeSet<String> homeWin = new TreeSet<>(); //IMPORTANT: TreeSet used to automatically sort our bookies odds. pls don't change.
-            TreeSet<String> awayWin = new TreeSet<>();
+            TreeSet<String> homeWinTreeSet = new TreeSet<>(); //IMPORTANT: TreeSet used to automatically sort our bookies odds. pls don't change.
+            TreeSet<String> awayWinTreeSet = new TreeSet<>();
 
             //creating base string for match
             StringBuilder matchStringBuilder = new StringBuilder();
             matchStringBuilder.append("\n\n\n");
-            matchStringBuilder.append(match.getDateString());
+            matchStringBuilder.append(match.getSqlDateString());
             matchStringBuilder.append(" ");
             matchStringBuilder.append(match.getHomeTeamName());
             matchStringBuilder.append(" vs ");
@@ -173,133 +176,175 @@ public class Predict {
             matchStringBuilder.append(":");
 
 
+            calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWinTreeSet, awayWinTreeSet);
 
-            //Calculating our values.
-            double[] ourPredictions = match.getOurPredictions();
-            if (ourPredictions.length != 3) throw new RuntimeException("We haven't calculated our predictions properly.");
-
-            int biggestIndex = -1;
-            double biggestProb = -1;
-            double secondBiggestProb = -1;
-
-            for (int i = 0; i<ourPredictions.length; i++) {
-                if (ourPredictions[i] > biggestProb) {
-                    secondBiggestProb = biggestProb;
-                    biggestProb = ourPredictions[i];
-                    biggestIndex = i;
-                } else if (ourPredictions[i] > secondBiggestProb) {
-                    secondBiggestProb = ourPredictions[i];
-                }
+            //NOTE: we wouldn't have unrecorded bets here even though it looks like the away win bet would overwrite the home win bet here (due to duplicate calls
+            //and only 1 spot for storage in the database). However this will not happen as the model is designed to only predict on the 1 most likely outcome.
+            if (homeWinTreeSet.size()>0) {
+                matchStringBuilder.append("\nHome win: ");
+                logGoodBetsAndAddToBuilder(matchStringBuilder, homeWinTreeSet, match, ResultBetOn.HOME_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
             }
-            if (biggestIndex == -1 || biggestProb == -1 || secondBiggestProb == -1) throw new RuntimeException("Problem with getting the bet orders out of our predictions.");
+            if (awayWinTreeSet.size() > 0) {
+                matchStringBuilder.append("\nAway win: ");
+                logGoodBetsAndAddToBuilder(matchStringBuilder, awayWinTreeSet, match, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
+            }
+            matchStringBuilder.append("\n\n");
 
-            boolean winMostLikely = biggestIndex != 1;
-            boolean isBiggerThanSecondByDelta = biggestProb - secondBiggestProb > delta && winMostLikely;
+            if (homeWinTreeSet.size() > 0 || awayWinTreeSet.size() > 0) {
+                emailBody.append(matchStringBuilder.toString());
+                madeChanges = true;
+            } else {
+                //then we found no good bets
+                MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, -1);
+                DataSource.logBetPlaced(noBetFound);
+
+            }
+        }
+
+        return madeChanges;
+    }
+    public static boolean calcBetsForCurrentGamesAndAddToBuilder(ArrayList<MatchToPredict> matches, StringBuilder emailBody) {
+        return calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, null);
+    }
+
+    public static void calculateIfGoodBetAndAddToTreeSet(MatchToPredict match, HashSet<String> allowedBookies, TreeSet<String> homeWin, TreeSet<String> awayWin) {
+        double[] ourPredictions = match.getOurPredictions();
+        if (ourPredictions.length != 3) throw new RuntimeException("We haven't calculated our predictions properly.");
+
+        int biggestIndex = -1;
+        double biggestProb = -1;
+        double secondBiggestProb = -1;
+
+        for (int i = 0; i<ourPredictions.length; i++) {
+            if (ourPredictions[i] > biggestProb) {
+                secondBiggestProb = biggestProb;
+                biggestProb = ourPredictions[i];
+                biggestIndex = i;
+            } else if (ourPredictions[i] > secondBiggestProb) {
+                secondBiggestProb = ourPredictions[i];
+            }
+        }
+        if (biggestIndex == -1 || biggestProb == -1 || secondBiggestProb == -1) throw new RuntimeException("Problem with getting the bet orders out of our predictions.");
+
+        boolean winMostLikely = biggestIndex != 1;
+        boolean isBiggerThanSecondByDelta = biggestProb - secondBiggestProb > delta && winMostLikely;
 
 //            double ourWinRatio = ourPredictions[0]/ourPredictions[2];
 //            double ourLossRatio = ourPredictions[2]/ourPredictions[0];
 
 
 
-            //comparing our values to bookies
-            HashMap<String, double[]> bookieOdds = match.getBookiesPredictions();
-            if (bookieOdds == null || bookieOdds.size() == 0) throw new RuntimeException("We have no bookie odds to compare our probabilities to!");
+        //comparing our values to bookies
+        HashMap<String, double[]> bookieOdds = match.getBookiesOdds();
+        if (bookieOdds == null || bookieOdds.size() == 0) throw new RuntimeException("We have no bookie odds to compare our probabilities to!");
 
-            for (String bookie: bookieOdds.keySet()) {
-                
-                if (allowedBookies.contains(bookie)) {
-                    double[] bookiesOdds = bookieOdds.get(bookie);
-                    double[] bookiesProbabilities = convertOddsToProbabilities(bookiesOdds);
+        for (String bookie: bookieOdds.keySet()) {
+
+            if (allowedBookies.contains(bookie)) {
+                double[] bookiesOdds = bookieOdds.get(bookie);
+                double[] bookiesProbabilities = convertOddsToProbabilities(bookiesOdds);
 
 //                    double bookieWinRatio = bookiesOdds[0]/bookiesOdds[2];
 //                    double bookieLossRatio = bookiesOdds[2]/bookiesOdds[0];
 //                    boolean betOnWinRatio = ourWinRatio - bookieWinRatio > sigma;
 //                    boolean betOnLossRatio = ourLossRatio - bookieLossRatio > sigma;
 
-                    boolean betOnBetterThanBookies = biggestProb - bookiesProbabilities[biggestIndex] > gamma && isBiggerThanSecondByDelta;
+                boolean betOnBetterThanBookies = biggestProb - bookiesProbabilities[biggestIndex] > gamma && isBiggerThanSecondByDelta;
 
-                    //IMPORTANT: MUST NOT CHANGE FORMAT OF STRINGS TO BE ADDED TO TREESET AS WE'RE SORTING BASED ON THE BOOKIES PREDICTION BEING THE FIRST VALUE.
+                //IMPORTANT: MUST NOT CHANGE FORMAT OF STRINGS TO BE ADDED TO TREESET AS WE'RE SORTING BASED ON THE BOOKIES PREDICTION BEING THE FIRST VALUE.
 //                    if (betOnWinRatio) {
 //                        homeWin.add(bookiesOdds[0] + " " + match.getHomeTeamName() + " " + bookie);
 //                    }
 //                    if (betOnLossRatio) {
 //                        awayWin.add(bookiesOdds[2] + " " + match.getAwayTeamName() + " " + bookie);
 //                    }
-                    if (betOnBetterThanBookies) {
-                        if (biggestIndex == 0) homeWin.add(bookiesOdds[0] + " " + match.getHomeTeamName() + " " + bookie);
-                        else if (biggestIndex == 2) awayWin.add(bookiesOdds[2] + " " + match.getAwayTeamName() + " " + bookie);
-                    }
-
+                if (betOnBetterThanBookies) {
+                    if (biggestIndex == 0) homeWin.add(bookiesOdds[0] + " " + match.getHomeTeamName() + " " + bookie);
+                    else if (biggestIndex == 2) awayWin.add(bookiesOdds[2] + " " + match.getAwayTeamName() + " " + bookie);
                 }
-                else if (!OddsCheckerBookies.getAllBookies().contains(bookie)) throw new RuntimeException("There is a new bookie that has been added to oddschecker. Name is " + bookie);
-                
+
             }
+            else if (!OddsCheckerBookies.getAllBookies().contains(bookie)) throw new RuntimeException("There is a new bookie that has been added to oddschecker. Name is " + bookie);
+
+        }
+    }
 
 
-            //adding best results to StringBuilder. TreeSet is already sorted so we can just add the first X records.
-            //TODO: remove duplication in here.
-            double BASE_STAKE = 5;
-            int HOME_WIN = 0;
-            int AWAY_WIN = 2;
+    private final static double BASE_STAKE = 5;
 
-            if (homeWin.size()>0) {
-                matchStringBuilder.append("\nHome win: ");
-
-                Iterator<String> it = homeWin.descendingIterator();
-                int numbAdded = 0;
-
-                while (it.hasNext() && numbAdded < NUMB_BOOKIES_WE_WANT_IN_EMAIL) {
-                    String oddsDescriptor = it.next();
-                    if (loggingEnabled && numbAdded == 0) {
-                        String[] partsOfOdds = oddsDescriptor.split(" ");
-                        double odds = Double.parseDouble(partsOfOdds[0]);
-
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE);
-                    }
+    private static void logGoodBetsAndAddToBuilder(StringBuilder stringBuilder, TreeSet<String> goodBets, MatchToPredict match,
+                                                   ResultBetOn resultBetOn, WhenGameWasPredicted whenPredicted) {
+        //adding best results to StringBuilder. TreeSet is already sorted so we can just add the first X records.
+        int NUMB_BOOKIES_WE_WANT_IN_EMAIL = 3;
 
 
-                    matchStringBuilder.append(oddsDescriptor);
-                    matchStringBuilder.append(", ");
-                    numbAdded++;
+        if (goodBets.size() > 0) {
+            Iterator<String> it = goodBets.descendingIterator();
+            int numbAdded = 0;
+
+            while (it.hasNext() && numbAdded < NUMB_BOOKIES_WE_WANT_IN_EMAIL) {
+                String oddsDescriptor = it.next();
+
+                if (numbAdded == 0) {
+                    String[] partsOfOdds = oddsDescriptor.split(" ");
+                    double odds = Double.parseDouble(partsOfOdds[0]);
+
+//                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
+
+                    MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, odds, BASE_STAKE);
+                    DataSource.logBetPlaced(matchLog);
                 }
-                matchStringBuilder.delete(matchStringBuilder.length()-2, matchStringBuilder.length()); //remove comma + space
-                matchStringBuilder.append(".");
+
+
+                stringBuilder.append(oddsDescriptor);
+                stringBuilder.append(", ");
+                numbAdded++;
             }
-            if (awayWin.size() > 0) {
-                matchStringBuilder.append("\nAway win: ");
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length()); //remove comma + space
+            stringBuilder.append(".");
+        }
+    }
 
-                Iterator<String> it = awayWin.descendingIterator();
-                int numbAdded = 0;
 
-                while (it.hasNext() && numbAdded < NUMB_BOOKIES_WE_WANT_IN_EMAIL) {
-                    //TODO: put these 2 methods for home and away logging into single function as I just changed one of them without changing the other leading to differences and a bug.
-                    String oddsDescriptor = it.next();
-                    if (loggingEnabled && numbAdded == 0) {
-                        String[] partsOfOdds = oddsDescriptor.split(" ");
-                        double odds = Double.parseDouble(partsOfOdds[0]);
+    public static void predictAndLogMissedGames (ArrayList<MatchToPredict> matches) {
+        HashSet<String> allowedBookies = new HashSet<>();
+        allowedBookies.add(OddsCheckerBookies.BET365.getBookie());
 
-                        DataSource.logBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), AWAY_WIN, odds, BASE_STAKE);
-                    }
+        for (MatchToPredict match: matches) {
+            TreeSet<String> homeWin = new TreeSet<>();
+            TreeSet<String> awayWin = new TreeSet<>();
+            StringBuilder unusedBuilder = new StringBuilder();
 
-                    matchStringBuilder.append(oddsDescriptor);
-                    matchStringBuilder.append(", ");
-                }
-                matchStringBuilder.delete(matchStringBuilder.length()-2, matchStringBuilder.length()); //remove comma space
+            calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWin, awayWin);
+            MatchLog matchLog = getMatchLogForMissedPredictionGame(match, homeWin, awayWin);
 
-            }
-            matchStringBuilder.append("\n\n");
-
-            if (homeWin.size() > 0 || awayWin.size() > 0) {
-                emailBody.append(matchStringBuilder.toString());
-                madeChanges = true;
-            }
+            DataSource.logBetPlaced(matchLog);
         }
 
-        return madeChanges;
     }
-    public static boolean addGoodBetsToEmailBody(ArrayList<MatchToPredict> matches, StringBuilder emailBody, boolean loggingEnabled) {
-        return addGoodBetsToEmailBody(matches, emailBody, null, loggingEnabled);
+
+    private static MatchLog getMatchLogForMissedPredictionGame(MatchToPredict match, TreeSet<String> homeWin, TreeSet<String> awayWin) {
+
+        if (homeWin.size() > 0) {
+            return createMatchLogWhenGoodBetFound(match, homeWin, ResultBetOn.HOME_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
+        } else if(awayWin.size() > 0) {
+            return createMatchLogWhenGoodBetFound(match, awayWin, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
+        } else {
+            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, -1, -1);
+        }
+
     }
+
+    private static MatchLog createMatchLogWhenGoodBetFound(MatchToPredict match, TreeSet<String> betSet, ResultBetOn resultBetOn, WhenGameWasPredicted whenGameWasPredicted) {
+        if (betSet.size() == 0) throw new RuntimeException("Trying to create match log for bet found when we didn't have any good bets");
+
+        String oddsDescriptor = betSet.last(); //using last here as TreeSet is by default in ascending order and we want to store the best possible odds in db
+        String[] descriptorParts = oddsDescriptor.split(" ");
+        double odds = Double.parseDouble(descriptorParts[0]);
+
+        return new MatchLog(match, whenGameWasPredicted, resultBetOn, odds, BASE_STAKE);
+    }
+
 
     private static double[] convertOddsToProbabilities(double[] odds) {
         double[] probabilities = new double[3];

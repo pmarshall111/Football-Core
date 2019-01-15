@@ -18,31 +18,39 @@ public class EmailModelPerformance {
      */
     public static void main(String[] args) {
         System.out.println("Sending email of models performance...\n");
-
         Date lastChangeOfModel = calculateWhenModelWasLastChanged();
 
-        BetResultsTotalled betResults = DataSource.getResultsOfPredictions(null, null);
-        BetResultsTotalled resultsSinceLastModelChange = DataSource.getResultsOfPredictions(lastChangeOfModel, null);
+
+        DataSource.openConnection();
+
+        BetResultsTotalled betResults = DataSource.getResultsOfPredictions(null, null, null);
+        BetResultsTotalled resultsSinceLastModelChange = DataSource.getResultsOfPredictions(lastChangeOfModel, null, null);
+        double uptime = DataSource.getModelOnlinePercentage();
+
+        DataSource.closeConnection();
+
 
         StringBuilder stringBuilder = new StringBuilder();
-
-
-        addTotalledDataToString(stringBuilder, betResults);
-        if (isModelDueToBeChanged()) addReminderToChangeModel(stringBuilder);
-        addRecentModelDataToString(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
+        addTotalledDataToBuilder(stringBuilder, betResults);
+        if (isModelDueToBeChanged()) {
+            addReminderToChangeModel(stringBuilder);
+        }
+        addRecentModelDataToBuilder(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
+        addUptimeDataToBuilder(stringBuilder, uptime);
 
         SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
-
     }
 
-    private static void addTotalledDataToString(StringBuilder stringBuilder, BetResultsTotalled totalledData) {
+    private static void addTotalledDataToBuilder(StringBuilder stringBuilder, BetResultsTotalled totalledData) {
 //        StringBuilder stringBuilders = new StringBuilder();
 //
         stringBuilder.append("Hello Peter,\n\nIn total, as of ");
         stringBuilder.append(new Date());
         stringBuilder.append(" our database has spent ");
         stringBuilder.append(totalledData.getTotalMoneyOut());
-        stringBuilder.append(", making £");
+        stringBuilder.append(" on ");
+        stringBuilder.append(totalledData.getNumbBetsPlaced());
+        stringBuilder.append("bets , making £");
         stringBuilder.append(totalledData.getRealProfit());
         stringBuilder.append(". This equates to a percentage profit of ");
         stringBuilder.append(totalledData.getPercentageProfit());
@@ -53,11 +61,11 @@ public class EmailModelPerformance {
     private static void addReminderToChangeModel(StringBuilder stringBuilder) {
         stringBuilder.append("\n\n_______________________________\n\nAlert: It has now been " + MODEL_CHANGED_EVERY_X_MONTHS + " months since the database was last changed. " +
                 "Please call taskSchedulling.RetrainPredictor, and transfer over the training data to Octave and bring back the retrained Thetas to Java. Thanks.\n\n" +
-                "_______________________________\n\n");
+                "_______________________________");
     }
 
-    private static void addRecentModelDataToString(StringBuilder stringBuilder, Date lastChangeOfModel, BetResultsTotalled recentData) {
-        stringBuilder.append("<b>Recent Model Performance</b>\n");
+    private static void addRecentModelDataToBuilder(StringBuilder stringBuilder, Date lastChangeOfModel, BetResultsTotalled recentData) {
+        stringBuilder.append("\n\n<b>Recent Model Performance</b>\n");
         stringBuilder.append("Since the database was last changed on ");
         stringBuilder.append(lastChangeOfModel);
         stringBuilder.append(" our database has spent ");
@@ -67,6 +75,13 @@ public class EmailModelPerformance {
         stringBuilder.append(". This equates to a percentage profit of ");
         stringBuilder.append(recentData.getPercentageProfit());
         stringBuilder.append(".");
+    }
+
+    private static void addUptimeDataToBuilder(StringBuilder stringBuilder, double uptime) {
+        stringBuilder.append("\n\n");
+        stringBuilder.append("Overall, the program has been able to predict ");
+        stringBuilder.append(uptime);
+        stringBuilder.append("% of games.");
     }
 
 

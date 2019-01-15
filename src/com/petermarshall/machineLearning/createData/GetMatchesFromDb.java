@@ -74,6 +74,9 @@ public class GetMatchesFromDb {
     private static final int LAST_N_GAMES_FORM = 5;
     private static final int IGNORE_FIRST_N_GAMES = 0; //because we start the season with everyone at the same level. might want to ignore for a few games whilst the right teams get the right data.
 
+    private static Date gamesNeedPredictingAfterDate = null;
+    private static ArrayList<MatchToPredict> missedGamesThatNeedPredicting = new ArrayList<>();
+
     private static HashMap<String, HashMap<String, TrainingTeam>> leaguesOfTeams = new HashMap<>();
     private static HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
     private static ArrayList<TrainingMatch> trainingData = new ArrayList<>();
@@ -109,6 +112,9 @@ public class GetMatchesFromDb {
 
     /*
      * Creates the training data and returns an arraylist of all the matches with the data about how the teams were doing before the match was played.
+     * As it's creating the training data it will check to see if there are previous matches in missedGamesThatNeedPredicting and when it finds a game in there
+     * that matches the current game it's looking through, it will add the stats for both teams before they played the game. This will allow us to make predictions
+     * on games in the past so we can see how our model is doing.
      *
      * Method will go through ResultSet of player ratings data, joined with the team, match, season, league. Because
      * Sqlite3 ResultSet can only go forwards, we must store the team and match data outside of the loop while we go through the
@@ -123,18 +129,20 @@ public class GetMatchesFromDb {
             while (playerRatingsRows.next()) {
 
                 if (lastRecordMatchId == -1) { //initialising.
-                    comeAcrossNewMatch(playerRatingsRows);
+                    initialiseForNewMatch(playerRatingsRows);
                 }
 
                 int currMatchId = playerRatingsRows.getInt(16);
-                if (currMatchId != lastRecordMatchId) { //Comes across a new game.
-                    //Check so that we do not add TrainingMatch if we do not have all our vital data.
-                    if (homeScore != -1 && awayScore != -1 && homeXGF != -1 && awayXGF != -1 && homeWinOdds != -1 && drawOdds != -1 && awayWinOdds != -1) {
-                        addTrainingMatch();
+                if (currMatchId != lastRecordMatchId) {
+                    //Comes across a new game.
+
+                    //functionality to add stats at the time of the match for a game that was not previously predicted on (maybe the model was not running at the time).
+                    if (missedGamesThatNeedPredicting.size() > 0 && kickoffTime.after(gamesNeedPredictingAfterDate)) {
+                        tryToAddStatsToOldGame();
                     }
 
-                    addDataToEachTeamsSeason();
-                    comeAcrossNewMatch(playerRatingsRows);
+                    storeDataFromPreviousMatch();
+                    initialiseForNewMatch(playerRatingsRows);
                 }
 
                 //Saving new player ratings data each iteration.
@@ -155,7 +163,10 @@ public class GetMatchesFromDb {
             }
 
             //creating 1 last match for the very last record as we'd normally only create a match when we come across the next game.
-            addTrainingMatch();
+            if (missedGamesThatNeedPredicting.size() > 0 && kickoffTime.after(gamesNeedPredictingAfterDate)) {
+                tryToAddStatsToOldGame();
+            }
+            storeDataFromPreviousMatch();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,32 +174,43 @@ public class GetMatchesFromDb {
         }
     }
 
+    private static void storeDataFromPreviousMatch() throws Exception {
+        TrainingMatch match = addDataToTrainingMatch(homeTeam, awayTeam, homeTeamThisSeason, awayTeamThisSeason, lineups, Integer.parseInt(lastRecordSeasonYear.substring(0,2)));
+        addMatchToTrainingSet(match);
+        addMatchToTeamsOverallHistory(match);
+        addDataToEachTeamsSeason();
+    }
+
+
     /*
      * Creates training match and adds it to both teams. Adds it to matches to train on if both teams have played more than the
      * specified number of games so far in the current season.
      */
-    private static void addTrainingMatch() throws Exception {
-        int seasonYearStart = Integer.parseInt(lastRecordSeasonYear.substring(0,2));
-        TrainingMatch match = addDataToTrainingMatch(homeTeam, awayTeam, homeTeamThisSeason, awayTeamThisSeason, lineups, seasonYearStart);
+    private static void addMatchToTrainingSet(TrainingMatch match) {
+        //to train on the data we need all available data complete, however to predict future games we only need the scores of the previous matchup.
+        if (match.getHomeTeamHomeGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
+                match.getAwayTeamAwayGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
+                homeScore != -1 && awayScore != -1 &&
+                homeXGF != -1 && awayXGF != -1 && homeWinOdds != -1 && drawOdds != -1 && awayWinOdds != -1) {
 
-        if (homeScore != -1 && awayScore != -1) {
-            //to train on the data we need all available data complete, however to predict future games we only need the scores of the previous matchup.
-            if (match.getHomeTeamHomeGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
-                    match.getAwayTeamAwayGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
-                    homeXGF != -1 && awayXGF != -1 && homeWinOdds != -1 && drawOdds != -1 && awayWinOdds != -1) {
+            trainingData.add(match);
 
-                trainingData.add(match);
-
-            }
-            homeTeam.addMatchWithTeam(awayTeamName, match);
-            awayTeam.addMatchWithTeam(homeTeamName, match);
         }
     }
 
-    private static void comeAcrossNewMatch(ResultSet playerRatingsRows) throws SQLException {
+    private static void addMatchToTeamsOverallHistory(TrainingMatch match) {
+
+        if (homeScore != -1 && awayScore != -1) {
+            homeTeam.addMatchWithTeam(awayTeamName, match);
+            awayTeam.addMatchWithTeam(homeTeamName, match);
+        }
+
+    }
+
+    private static void initialiseForNewMatch(ResultSet playerRatingsRows) throws SQLException {
         initLineups();
         loadCurrentTeams(playerRatingsRows);
-        saveMatchData(playerRatingsRows);
+        saveMatchDataToFields(playerRatingsRows);
     }
 
     /*
@@ -229,7 +251,7 @@ public class GetMatchesFromDb {
     /*
      * Method stores data from the match into fields on the class.
      */
-    private static void saveMatchData(ResultSet playerRatingsRows) throws SQLException {
+    private static void saveMatchDataToFields(ResultSet playerRatingsRows) throws SQLException {
         String dateString = playerRatingsRows.getString(5);
         kickoffTime = DateHelper.createDateFromSQL(dateString);
         homeScore = playerRatingsRows.getInt(7);
@@ -243,6 +265,56 @@ public class GetMatchesFromDb {
         lastRecordMatchId = playerRatingsRows.getInt(16);
         lastRecordSeasonYear = playerRatingsRows.getString(17);
     }
+
+
+    private static void tryToAddStatsToOldGame() {
+
+        //need to loop through arraylist of matches to predict and try to find the match we're looking for.
+        //once we find that match, we need to remove it from the arraylist to reduce work.
+
+        for (MatchToPredict match : missedGamesThatNeedPredicting) {
+
+            Date gamePredictKickoffTime = DateHelper.createDateFromSQL(match.getSqlDateString());
+
+            if (match.getHomeTeamName().equals(homeTeamName) && match.getAwayTeamName().equals(awayTeamName)
+                    && gamePredictKickoffTime.equals(kickoffTime)) {
+
+                //do stuff
+                ArrayList<Player> homePlayersWhoPlayed = lineups.get("home");
+                ArrayList<Player> awayPlayersWhoPlayed = lineups.get("away");
+
+                ArrayList<String> homeLineupNames = convertPlayerListToLineupOfNames(homePlayersWhoPlayed);
+                ArrayList<String> awayLineupNames = convertPlayerListToLineupOfNames(awayPlayersWhoPlayed);
+
+
+                //create features
+                ArrayList<Double> features = createFeatures(homeTeam, awayTeam, homeTeamThisSeason, awayTeamThisSeason, homeLineupNames, awayLineupNames, match.getSeasonYearStart());
+                match.setFeatures(features);
+
+                missedGamesThatNeedPredicting.remove(match);
+                break;
+            }
+        }
+    }
+
+
+
+    /*
+     * ArrayList<Player> will come in sorted from the database, so in this method we just take the first 11 players in the list as the
+     * guys who played most and make our prediction from there.
+     */
+    private static ArrayList<String> convertPlayerListToLineupOfNames (ArrayList<Player> playersWhoPlayed) {
+        ArrayList<String> lineup = new ArrayList<>();
+
+        for (Player p: playersWhoPlayed) {
+            lineup.add(p.getPlayerName());
+            if (lineup.size() == 11) break;
+        }
+
+        return lineup;
+    }
+
+
 
     /*
      * To be called once the match has been created with the stats from before the match took place. This then adds the data
@@ -574,15 +646,11 @@ public class GetMatchesFromDb {
     public static void addFeaturesToMatchesToPredict(ArrayList<MatchToPredict> matches) {
         if (leaguesOfTeams.size() == 0) getDataFromDb();
 
-        GamesSelector HOME_GAMES = GamesSelector.ONLY_HOME_GAMES;
-        GamesSelector ALL_GAMES = GamesSelector.ALL_GAMES;
-        GamesSelector AWAY_GAMES = GamesSelector.ONLY_AWAY_GAMES;
-
         for (MatchToPredict match: matches) {
 
-            //get TrainingTeam and TrainingTeam this season for both teams
-            TrainingTeam homeTeam = getTeam(match.getLeagueSeasonName(), match.getHomeTeamName());
-            TrainingTeam awayTeam = getTeam(match.getLeagueSeasonName(), match.getAwayTeamName());
+            //get TrainingTeam and TrainingTeamsSeason for both teams
+            TrainingTeam homeTeam = getTeam(match.getLeagueSeasonIdName(), match.getHomeTeamName());
+            TrainingTeam awayTeam = getTeam(match.getLeagueSeasonIdName(), match.getAwayTeamName());
 
             TrainingTeamsSeason homeSeason = getTeamsCurrentSeason(homeTeam, match.getSeasonKey());
             TrainingTeamsSeason awaySeason = getTeamsCurrentSeason(awayTeam, match.getSeasonKey());
@@ -597,119 +665,138 @@ public class GetMatchesFromDb {
 
 
             //create features
-            ArrayList<Double> features = new ArrayList<>();
-            int seasonYearStart = match.getSeasonYearStart();
-
-            features.add(1d); //adding bias parameter of 1
-
-            //home total stats
-            features.add(homeSeason.getAvgGoalsFor(ALL_GAMES));
-            features.add(homeSeason.getAvgGoalsAgainst(ALL_GAMES));
-            features.add(homeSeason.getAvgXGF(ALL_GAMES));
-            features.add(homeSeason.getAvgXGA(ALL_GAMES));
-            features.add(homeSeason.getWeightedAvgXGF(ALL_GAMES));
-            features.add(homeSeason.getWeightedAvgXGA(ALL_GAMES));
-            features.add(homeSeason.getAvgPoints(ALL_GAMES));
-            features.add(homeSeason.getAvgPointsOverLastXGames(ALL_GAMES, LAST_N_GAMES_FORM));
-            features.add(homeSeason.getAvgPointsWhenScoredFirst(ALL_GAMES));
-            features.add(homeSeason.getAvgPointsWhenConceededFirst(ALL_GAMES));
-            features.add(homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
-            features.add(homeSeason.getMinsWeightedLineupRating(ALL_GAMES, homeLineup));
-            features.add(homeSeason.getLineupStrength(ALL_GAMES, homeLineup));
-
-            //home at home stats
-            features.add(homeSeason.getAvgGoalsFor(HOME_GAMES));
-            features.add(homeSeason.getAvgGoalsAgainst(HOME_GAMES));
-            features.add(homeSeason.getAvgXGF(HOME_GAMES));
-            features.add(homeSeason.getAvgXGA(HOME_GAMES));
-            features.add(homeSeason.getWeightedAvgXGF(HOME_GAMES));
-            features.add(homeSeason.getWeightedAvgXGA(HOME_GAMES));
-            features.add(homeSeason.getAvgPoints(HOME_GAMES));
-            features.add(homeSeason.getAvgPointsOverLastXGames(HOME_GAMES, LAST_N_GAMES_FORM));
-            features.add(homeSeason.getAvgPointsWhenScoredFirst(HOME_GAMES));
-            features.add(homeSeason.getAvgPointsWhenConceededFirst(HOME_GAMES));
-            features.add(homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), HOME_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
-            features.add(homeSeason.getMinsWeightedLineupRating(HOME_GAMES, homeLineup));
-            features.add(homeSeason.getLineupStrength(HOME_GAMES, homeLineup));
-
-            //away total stats
-            features.add(awaySeason.getAvgGoalsFor(ALL_GAMES));
-            features.add(awaySeason.getAvgGoalsAgainst(ALL_GAMES));
-            features.add(awaySeason.getAvgXGF(ALL_GAMES));
-            features.add(awaySeason.getAvgXGA(ALL_GAMES));
-            features.add(awaySeason.getWeightedAvgXGF(ALL_GAMES));
-            features.add(awaySeason.getWeightedAvgXGA(ALL_GAMES));
-            features.add(awaySeason.getAvgPoints(ALL_GAMES));
-            features.add(awaySeason.getAvgPointsOverLastXGames(ALL_GAMES, LAST_N_GAMES_FORM));
-            features.add(awaySeason.getAvgPointsWhenScoredFirst(ALL_GAMES));
-            features.add(awaySeason.getAvgPointsWhenConceededFirst(ALL_GAMES));
-            features.add(awayTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
-            features.add(awaySeason.getMinsWeightedLineupRating(ALL_GAMES, homeLineup));
-            features.add(awaySeason.getLineupStrength(ALL_GAMES, homeLineup));
-
-            //away at away stats
-            features.add(awaySeason.getAvgGoalsFor(AWAY_GAMES));
-            features.add(awaySeason.getAvgGoalsAgainst(AWAY_GAMES));
-            features.add(awaySeason.getAvgXGF(AWAY_GAMES));
-            features.add(awaySeason.getAvgXGA(AWAY_GAMES));
-            features.add(awaySeason.getWeightedAvgXGF(AWAY_GAMES));
-            features.add(awaySeason.getWeightedAvgXGA(AWAY_GAMES));
-            features.add(awaySeason.getAvgPoints(AWAY_GAMES));
-            features.add(awaySeason.getAvgPointsOverLastXGames(AWAY_GAMES, LAST_N_GAMES_FORM));
-            features.add(awaySeason.getAvgPointsWhenScoredFirst(AWAY_GAMES));
-            features.add(awaySeason.getAvgPointsWhenConceededFirst(AWAY_GAMES));
-            features.add(awayTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), AWAY_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
-            features.add(awaySeason.getMinsWeightedLineupRating(AWAY_GAMES, homeLineup));
-            features.add(awaySeason.getLineupStrength(AWAY_GAMES, homeLineup)); //52 normal stats
-
-            
-            //extra home stats
-            features.add(homeSeason.getAvgFormGoalsFor(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormGoalsAgainst(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormWeightedXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormWeightedXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getFormXGFOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
-            features.add(homeSeason.getFormXGAOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
-
-
-            //extra home at home stats
-            features.add(homeSeason.getAvgFormGoalsFor(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormGoalsAgainst(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormXGF(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormXGA(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormWeightedXGF(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getAvgFormWeightedXGA(HOME_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(homeSeason.getFormXGFOverLastNGames(HOME_GAMES, LAST_N_GAMES_FORM));
-            features.add(homeSeason.getFormXGAOverLastNGames(HOME_GAMES, LAST_N_GAMES_FORM));
-
-
-            //extra away stats
-            features.add(awaySeason.getAvgFormGoalsFor(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormGoalsAgainst(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormWeightedXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormWeightedXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getFormXGFOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
-            features.add(awaySeason.getFormXGAOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
-
-            
-            //extra away stats
-            features.add(awaySeason.getAvgFormGoalsFor(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormGoalsAgainst(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormXGF(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormXGA(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormWeightedXGF(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getAvgFormWeightedXGA(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
-            features.add(awaySeason.getFormXGFOverLastNGames(AWAY_GAMES, LAST_N_GAMES_FORM));
-            features.add(awaySeason.getFormXGAOverLastNGames(AWAY_GAMES, LAST_N_GAMES_FORM)); //32 extra stats. total 85 features (inc bias).
-
+            ArrayList<Double> features = createFeatures(homeTeam, awayTeam, homeSeason, awaySeason, homeLineup, awayLineup, match.getSeasonYearStart());
 
             match.setFeatures(features);
         }
 
+    }
+
+
+    private static ArrayList<Double> createFeatures(TrainingTeam homeTeam, TrainingTeam awayTeam, TrainingTeamsSeason homeSeason, TrainingTeamsSeason awaySeason,
+                                       ArrayList<String> homeLineup, ArrayList<String> awayLineup, int seasonYearStart) {
+
+        GamesSelector HOME_GAMES = GamesSelector.ONLY_HOME_GAMES;
+        GamesSelector ALL_GAMES = GamesSelector.ALL_GAMES;
+        GamesSelector AWAY_GAMES = GamesSelector.ONLY_AWAY_GAMES;
+
+
+        if (homeLineup == null || awayLineup == null) throw new RuntimeException("Lineups not set!");
+        if (homeLineup.size() != 11 || awayLineup.size() != 11) throw new RuntimeException("Trying to predict on a played match without proper lineup size. " +
+                homeTeam.getTeamName() + " vs " + awayTeam.getTeamName());
+
+
+        //create features
+        ArrayList<Double> features = new ArrayList<>();
+
+        features.add(1d); //adding bias parameter of 1
+
+        //home total stats
+        features.add(homeSeason.getAvgGoalsFor(ALL_GAMES));
+        features.add(homeSeason.getAvgGoalsAgainst(ALL_GAMES));
+        features.add(homeSeason.getAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getAvgXGA(ALL_GAMES));
+        features.add(homeSeason.getWeightedAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getWeightedAvgXGA(ALL_GAMES));
+        features.add(homeSeason.getAvgPoints(ALL_GAMES));
+        features.add(homeSeason.getAvgPointsOverLastXGames(ALL_GAMES, LAST_N_GAMES_FORM));
+        features.add(homeSeason.getAvgPointsWhenScoredFirst(ALL_GAMES));
+        features.add(homeSeason.getAvgPointsWhenConceededFirst(ALL_GAMES));
+        features.add(homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(homeSeason.getMinsWeightedLineupRating(ALL_GAMES, homeLineup));
+        features.add(homeSeason.getLineupStrength(ALL_GAMES, homeLineup));
+
+        //home at home stats
+        features.add(homeSeason.getAvgGoalsFor(HOME_GAMES));
+        features.add(homeSeason.getAvgGoalsAgainst(HOME_GAMES));
+        features.add(homeSeason.getAvgXGF(HOME_GAMES));
+        features.add(homeSeason.getAvgXGA(HOME_GAMES));
+        features.add(homeSeason.getWeightedAvgXGF(HOME_GAMES));
+        features.add(homeSeason.getWeightedAvgXGA(HOME_GAMES));
+        features.add(homeSeason.getAvgPoints(HOME_GAMES));
+        features.add(homeSeason.getAvgPointsOverLastXGames(HOME_GAMES, LAST_N_GAMES_FORM));
+        features.add(homeSeason.getAvgPointsWhenScoredFirst(HOME_GAMES));
+        features.add(homeSeason.getAvgPointsWhenConceededFirst(HOME_GAMES));
+        features.add(homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), HOME_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(homeSeason.getMinsWeightedLineupRating(HOME_GAMES, homeLineup));
+        features.add(homeSeason.getLineupStrength(HOME_GAMES, homeLineup));
+
+        //away total stats
+        features.add(awaySeason.getAvgGoalsFor(ALL_GAMES));
+        features.add(awaySeason.getAvgGoalsAgainst(ALL_GAMES));
+        features.add(awaySeason.getAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getWeightedAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getWeightedAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getAvgPoints(ALL_GAMES));
+        features.add(awaySeason.getAvgPointsOverLastXGames(ALL_GAMES, LAST_N_GAMES_FORM));
+        features.add(awaySeason.getAvgPointsWhenScoredFirst(ALL_GAMES));
+        features.add(awaySeason.getAvgPointsWhenConceededFirst(ALL_GAMES));
+        features.add(awayTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(awaySeason.getMinsWeightedLineupRating(ALL_GAMES, homeLineup));
+        features.add(awaySeason.getLineupStrength(ALL_GAMES, homeLineup));
+
+        //away at away stats
+        features.add(awaySeason.getAvgGoalsFor(AWAY_GAMES));
+        features.add(awaySeason.getAvgGoalsAgainst(AWAY_GAMES));
+        features.add(awaySeason.getAvgXGF(AWAY_GAMES));
+        features.add(awaySeason.getAvgXGA(AWAY_GAMES));
+        features.add(awaySeason.getWeightedAvgXGF(AWAY_GAMES));
+        features.add(awaySeason.getWeightedAvgXGA(AWAY_GAMES));
+        features.add(awaySeason.getAvgPoints(AWAY_GAMES));
+        features.add(awaySeason.getAvgPointsOverLastXGames(AWAY_GAMES, LAST_N_GAMES_FORM));
+        features.add(awaySeason.getAvgPointsWhenScoredFirst(AWAY_GAMES));
+        features.add(awaySeason.getAvgPointsWhenConceededFirst(AWAY_GAMES));
+        features.add(awayTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), AWAY_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(awaySeason.getMinsWeightedLineupRating(AWAY_GAMES, homeLineup));
+        features.add(awaySeason.getLineupStrength(AWAY_GAMES, homeLineup)); //52 normal stats
+
+
+        //extra home stats
+        features.add(homeSeason.getAvgFormGoalsFor(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormGoalsAgainst(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormWeightedXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormWeightedXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getFormXGFOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
+        features.add(homeSeason.getFormXGAOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
+
+
+        //extra home at home stats
+        features.add(homeSeason.getAvgFormGoalsFor(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormGoalsAgainst(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormXGF(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormXGA(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormWeightedXGF(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getAvgFormWeightedXGA(HOME_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(homeSeason.getFormXGFOverLastNGames(HOME_GAMES, LAST_N_GAMES_FORM));
+        features.add(homeSeason.getFormXGAOverLastNGames(HOME_GAMES, LAST_N_GAMES_FORM));
+
+
+        //extra away stats
+        features.add(awaySeason.getAvgFormGoalsFor(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormGoalsAgainst(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormWeightedXGF(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormWeightedXGA(ALL_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getFormXGFOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
+        features.add(awaySeason.getFormXGAOverLastNGames(ALL_GAMES, LAST_N_GAMES_FORM));
+
+
+        //extra away stats
+        features.add(awaySeason.getAvgFormGoalsFor(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormGoalsAgainst(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormXGF(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormXGA(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormWeightedXGF(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getAvgFormWeightedXGA(AWAY_GAMES, IGNORE_FIRST_N_GAMES));
+        features.add(awaySeason.getFormXGFOverLastNGames(AWAY_GAMES, LAST_N_GAMES_FORM));
+        features.add(awaySeason.getFormXGAOverLastNGames(AWAY_GAMES, LAST_N_GAMES_FORM)); //32 extra stats. total 85 features (inc bias).
+
+
+        return features;
     }
 
     /*
@@ -730,8 +817,8 @@ public class GetMatchesFromDb {
         for (MatchToPredict match: matches) {
 
             //get TrainingTeam and TrainingTeam this season for both teams
-            TrainingTeam homeTeam = getTeam(match.getLeagueSeasonName(), match.getHomeTeamName());
-            TrainingTeam awayTeam = getTeam(match.getLeagueSeasonName(), match.getAwayTeamName());
+            TrainingTeam homeTeam = getTeam(match.getLeagueSeasonIdName(), match.getHomeTeamName());
+            TrainingTeam awayTeam = getTeam(match.getLeagueSeasonIdName(), match.getAwayTeamName());
 
             TrainingTeamsSeason homeSeason = getTeamsCurrentSeason(homeTeam, match.getSeasonKey());
             TrainingTeamsSeason awaySeason = getTeamsCurrentSeason(awayTeam, match.getSeasonKey());
@@ -843,6 +930,19 @@ public class GetMatchesFromDb {
         return season;
     }
 
+
+    public static void setGamesNeedPredictingAfterDate(Date gamesNeedPredictingAfterDate) {
+        GetMatchesFromDb.gamesNeedPredictingAfterDate = gamesNeedPredictingAfterDate;
+    }
+
+    /*
+     * Method creates a copy within the class as we will be removing matches once we've found them when we create our data.
+     * This will help to reduce the number of times we have to loop through the array (we will be looking through the array whenever we come across a new match after the date
+     * in gamesNeedPredictingAfterDate)
+     */
+    public static void setMissedGamesThatNeedPredicting(ArrayList<MatchToPredict> missedGamesThatNeedPredicting) {
+        GetMatchesFromDb.missedGamesThatNeedPredicting = new ArrayList<>(missedGamesThatNeedPredicting);
+    }
 
     public static ArrayList<TrainingMatch> getTrainingData() {
         return trainingData;

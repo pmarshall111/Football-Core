@@ -9,14 +9,14 @@ import java.util.LinkedHashMap;
  * Lineups, features, bookiePredictions and our predictions will be added through setters.
  */
 public class MatchToPredict {
-    private String dateString; //will be stored as an SQL type datestring e.g. 2018-12-21 20:00:00
+    private final String sqlDateString; //will be stored as an SQL type datestring e.g. 2018-12-21 20:00:00
 
-    private String homeTeamName;
-    private String awayTeamName;
+    private final String homeTeamName;
+    private final String awayTeamName;
 
-    private String seasonKey;
-    private String leagueSeasonName;
-    private int sofaScoreId;
+    private final String seasonKey;
+    private final String leagueSeasonIdName;
+    private final int sofaScoreId;
 
     private ArrayList<String> homeTeamPlayers;
     private ArrayList<String> awayTeamPlayers;
@@ -24,15 +24,18 @@ public class MatchToPredict {
     private ArrayList<Double> features; //will be set with bias parameter included as first entry
 
     private double[] ourPredictions;
-    private LinkedHashMap<String, double[]> bookiesPredictions;
+    private LinkedHashMap<String, double[]> bookiesOdds;
 
-    public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueSeasonName, int sofaScoreId, String dateString) {
+    private final int database_id;
+
+    public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueName, int sofaScoreId, String sqlDateString, int database_id) {
         this.homeTeamName = homeTeamName;
         this.awayTeamName = awayTeamName;
         this.seasonKey = seasonKey;
-        this.leagueSeasonName = leagueSeasonName;
+        this.leagueSeasonIdName = leagueName;
         this.sofaScoreId = sofaScoreId;
-        this.dateString = dateString;
+        this.sqlDateString = sqlDateString;
+        this.database_id = database_id;
     }
 
     public void setHomeTeamPlayers(ArrayList<String> homeTeamPlayers) {
@@ -43,8 +46,8 @@ public class MatchToPredict {
         this.awayTeamPlayers = awayTeamPlayers;
     }
 
-    public String getLeagueSeasonName() {
-        return leagueSeasonName;
+    public String getLeagueSeasonIdName() {
+        return leagueSeasonIdName;
     }
 
     public String getHomeTeamName() {
@@ -83,16 +86,16 @@ public class MatchToPredict {
         this.ourPredictions = ourPredictions;
     }
 
-    public HashMap<String, double[]> getBookiesPredictions() {
-        return bookiesPredictions;
+    public HashMap<String, double[]> getBookiesOdds() {
+        return bookiesOdds;
     }
 
-    public void setBookiesPredictions(LinkedHashMap<String, double[]> bookiesPredictions) {
-        this.bookiesPredictions = bookiesPredictions;
+    public void setBookiesOdds(LinkedHashMap<String, double[]> bookiesOdds) {
+        this.bookiesOdds = bookiesOdds;
     }
 
-    public String getDateString() {
-        return dateString;
+    public String getSqlDateString() {
+        return sqlDateString;
     }
 
     public ArrayList<Double> getFeatures() {
@@ -102,4 +105,9 @@ public class MatchToPredict {
     public void setFeatures(ArrayList<Double> features) {
         this.features = features;
     }
+
+    public int getDatabase_id() {
+        return database_id;
+    }
+
 }

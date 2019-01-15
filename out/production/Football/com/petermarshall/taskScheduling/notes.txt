@@ -20,7 +20,7 @@ TODO:
 - Ensure that prediction logging is working. Should be fixed.
 - Think about how best to implement making predictions that we didn't have the computer on to predict.
 - Rebuild artifacts so Windows Task Scheduller uses most updated version.
-- Once rebuilt check we do not have loads of unnecessary console logs - understat data + duplicates of games printed.
+- Once rebuilt check we do not have loads of unnecessary console logs - understat data + duplicates of games printed. UPDATE: still tonnes of unneccesary logging. See TestPredictions.java.
 
 
 
@@ -50,3 +50,18 @@ us call to database but I don't think we'd have that info anyway. Would be a goo
 more simple.
 - Then we should have all we need and can predict our array of MatchesToPredict and add the prediction results into the database.
 - Update the time when we last predicted recently played games so we can repeat the whole process in another 2 weeks.
+
+
+Pieces:
+
+- Need a file just to simply store the date and time of when we last predicted all the games we may have missed.
+
+- In runPredictor method, we will have a check to see if the date is more than 2 weeks before today. If it is, then we need to set that date within the GetmatchesFromDb class.
+Then we need to get the matches we did not predict from the database and set an array of matches to predict within the GetMatchesFromDb class.
+Then within the GetMatchesFromDb class, we can add the stats for the teams in the matches to predict as we're building up our data to predict current games. (add both the stats of each team and also the lineups each team used.). This will
+require refactoring addFeaturesToMatchesToPredict method to bring out the method that adds the array of features to the match to predict.
+- After this, we need to call Predict.addPredictionsToGames on our old matches to predict.
+- Then finally we can go about comparing our results to those from bookies. Probably need to create a new method as we do not want to be emailing bets from 2 weeks ago to my email.
+- Will also need to update database (and initDB method) to include a field in matches that said whether we actually predicted on this game in real time.
+- Finally, update emailling method to tell us how many games we predicted live and what our results for those were as well as our overall performance even if the model was not running at the time.
+

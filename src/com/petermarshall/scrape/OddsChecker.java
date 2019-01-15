@@ -36,7 +36,7 @@ public class OddsChecker {
         ArrayList<MatchToPredict> RUSSIA = new ArrayList<>();
 
         for (MatchToPredict match: matches) {
-            switch(match.getLeagueSeasonName()) {
+            switch(match.getLeagueSeasonIdName()) {
                 case "EPL":
                     PL.add(match);
                     break;
@@ -102,7 +102,7 @@ public class OddsChecker {
 
 
             for (MatchToPredict match: matches) {
-                String kickoffTime = DateHelper.changeSqlDateToOddschecker( match.getDateString() );
+                String kickoffTime = DateHelper.changeSqlDateToOddschecker( match.getSqlDateString() );
 
 
                 //need to also remove a match if it's already been picked.
@@ -168,7 +168,7 @@ public class OddsChecker {
 
             }
 
-            match.setBookiesPredictions(bookiesOdds);
+            match.setBookiesOdds(bookiesOdds);
         }
         catch (Exception e) {
             e.printStackTrace();

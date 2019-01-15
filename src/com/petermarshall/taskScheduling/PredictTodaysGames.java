@@ -1,6 +1,7 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.logging.LastPredicted;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
@@ -21,6 +22,7 @@ public class PredictTodaysGames {
 
     private static int minsAfterLineupsAnnouned = 15;
     private static int minsBeforeKickoff = 5;
+    private static final String trainedThetasPath = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv";
 
     /*
      * Method will update todays times in the database and also store the sofascore ID in the database. Then it gets the times of those games and sets times where we should
@@ -76,21 +78,55 @@ public class PredictTodaysGames {
         Date earliestGame = DateHelper.addMinsToDate(scrapeTime, minsBeforeKickoff);
         Date latestGame = DateHelper.addMinsToDate(scrapeTime, 60 - minsAfterLineupsAnnouned);
 
+        boolean needToPredictGamesWeMissed = LastPredicted.timeToPredictMissedGames();
+        ArrayList<MatchToPredict> matchesWeDidntPredict = new ArrayList<>();
+
         DataSource.openConnection();
-        ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
+        ArrayList<MatchToPredict> matchesHappeningNow = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
+
+        if (needToPredictGamesWeMissed) {
+            //get array of MatchesToPredict from database with odds, TeamNames, league, season
+            //set Date field and also MatchesToPredict field within GetMatchesFromDB class so it knows when to start checking if it's looking at a match it needs to predict
+
+
+            Date checkGamesAfterDate = LastPredicted.getWhenMissedGamesWereLastPredicted();
+            matchesWeDidntPredict = DataSource.getMatchesWithoutPredictions(checkGamesAfterDate);
+
+            if (matchesWeDidntPredict.size() > 0) {
+
+                GetMatchesFromDb.setGamesNeedPredictingAfterDate(checkGamesAfterDate);
+                GetMatchesFromDb.setMissedGamesThatNeedPredicting(matchesWeDidntPredict);
+                //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
+
+            }
+
+            System.out.println("Predicting missed games. We missed " + matchesWeDidntPredict.size() + " games since " + checkGamesAfterDate);
+        }
+
         DataSource.closeConnection();
 
-        SofaScore.addLineupsToGamesAboutToStart(matches);
-        GetMatchesFromDb.addFeaturesToMatchesToPredict(matches);
-        OddsChecker.addBookiesOddsForGames(matches);
-        Predict.addPredictionsToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
+
+
+        SofaScore.addLineupsToGamesAboutToStart(matchesHappeningNow);
+        GetMatchesFromDb.addFeaturesToMatchesToPredict(matchesHappeningNow); //method will check to see whether it needs to add stats to missed prediction games while it creates current stats
+        //for each team from all the games in the database.
+        OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
+        Predict.addPredictionsToGames(matchesHappeningNow, trainedThetasPath);
+
+        if (needToPredictGamesWeMissed) {
+            Predict.addPredictionsToGames(matchesWeDidntPredict, trainedThetasPath);
+            Predict.predictAndLogMissedGames(matchesWeDidntPredict);
+
+            LastPredicted.setAllMissedGamesPredictedUpTo2DaysAgo();
+        }
+
 
         StringBuilder emailBody = new StringBuilder();
         emailBody.append("Dear app user,\n\n We currently suggest placing the following bets: \n\n");
 
 
         //method can be called without last argument, to assume that we've signed up for all bookies.
-        boolean gamesToEmail = Predict.addGoodBetsToEmailBody(matches, emailBody, bookiesWeveSignedUpFor, true);
+        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matchesHappeningNow, emailBody, bookiesWeveSignedUpFor);
         if (gamesToEmail) {
             SendEmail.sendOutEmail("New bet", emailBody.toString());
             System.out.println("We found a good bet!");

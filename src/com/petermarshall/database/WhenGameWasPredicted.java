@@ -1,14 +1,14 @@
 package com.petermarshall.database;
 
-public enum GamePredictedOn {
+public enum WhenGameWasPredicted {
 
     NOT_PREDICTED_ON(-1),
     PREDICTED_ON_IN_REAL_TIME(0),
-    PREDICTED_ON_LATER(1);
+    PREDICTED_LATER_ON(1);
 
     private final int sqlIntCode;
 
-    GamePredictedOn(int sqlIntCode) {
+    WhenGameWasPredicted(int sqlIntCode) {
         this.sqlIntCode = sqlIntCode;
     }
 
@@ -16,14 +16,14 @@ public enum GamePredictedOn {
         return sqlIntCode;
     }
 
-    public static GamePredictedOn getMeaningOfSqlCode(int code) {
+    public static WhenGameWasPredicted getMeaningOfSqlCode(int code) {
         switch(code) {
             case -1:
-                return GamePredictedOn.NOT_PREDICTED_ON;
+                return WhenGameWasPredicted.NOT_PREDICTED_ON;
             case 0:
-                return GamePredictedOn.PREDICTED_ON_IN_REAL_TIME;
+                return WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME;
             case 1:
-                return GamePredictedOn.PREDICTED_ON_LATER;
+                return WhenGameWasPredicted.PREDICTED_LATER_ON;
         }
 
         return null;

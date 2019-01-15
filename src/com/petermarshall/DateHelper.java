@@ -187,6 +187,18 @@ public class DateHelper {
         }
     }
 
+    public static Date addDaysToDate(Date date, int days) {
+        SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
+        String[] partsOfDate = date.toString().split(" ");
+        String[] partsOfTime = partsOfDate[3].split(":");
+
+        try {
+            return fmt.parse(partsOfDate[1] + "-" + (Integer.parseInt(partsOfDate[2]) + days) + "-" + partsOfDate[5] + " " + partsOfTime[0] + ":" + partsOfTime[1] + ":" + partsOfTime[2]);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
     /*
      * Method will change sql dateString to one that is compatible with oddschecker. NOTE: will not add the timezone information.
      */
@@ -269,6 +281,20 @@ public class DateHelper {
         }
     }
 
+    public static Date getDateFromStandardDateString(String dateString) {
+        SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
+
+        String[] partsOfDate = dateString.split(" ");
+        String[] partsOfTime = partsOfDate[3].split(":");
+
+        try {
+            return fmt.parse(partsOfDate[1] + "-" + partsOfDate[2] + "-" + partsOfDate[5] + " " + partsOfTime[0] + ":" + partsOfTime[1] + ":" + partsOfTime[2]);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+
     public static void main(String[] args) {
 //        System.out.println(changeSqlDateToOddschecker("2018-12-21 20:00:00"));
 //        changeDateToOddsChecker(new Date());
@@ -282,6 +308,9 @@ public class DateHelper {
 //        System.out.println(setDate(2019,1,1));
 //        System.out.println(setMonthAndDay(new Date(), 5,5));
 
+//        System.out.println(getDateFromStandardDateString("Tue Jan 01 10:37:32 GMT 2019"));
+
+        System.out.println(addDaysToDate(new Date(), 30));
     }
 
 }

@@ -1,13 +1,18 @@
 package com.petermarshall.database;
 
 public class BetResultsTotalled {
-    private static double totalMoneyOut;
-    private static double totalMoneyIn;
+    private double totalMoneyOut;
+    private double totalMoneyIn;
+    private int numbBetsPlaced;
 
-    public BetResultsTotalled() { //singleton
+    public BetResultsTotalled() {
+        this.numbBetsPlaced = 0;
+        this.totalMoneyOut = 0;
+        this.totalMoneyIn = 0;
     }
 
     void addBet(double moneyOut, double odds, int resultBetOn, int result) {
+        numbBetsPlaced++;
         totalMoneyOut += moneyOut;
 
         if (resultBetOn == result) {
@@ -29,5 +34,9 @@ public class BetResultsTotalled {
 
     public double getPercentageProfit() {
         return getRealProfit()*100 / totalMoneyOut;
+    }
+
+    public int getNumbBetsPlaced() {
+        return numbBetsPlaced;
     }
 }

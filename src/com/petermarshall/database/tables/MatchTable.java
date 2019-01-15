@@ -18,6 +18,7 @@ public class MatchTable {
     private static final String COL_RESULT_BET_ON = "result_bet_on";
     private static final String COL_ODDS_WHEN_BET_PLACED = "odds_when_bet_placed";
     private static final String COL_STAKE_ON_BET = "stake_on_bet";
+    private static final String COL_WHEN_GAME_WAS_PREDICTED = "when_game_was_predicted";
 
 
     public static String getTableName() {
@@ -82,5 +83,9 @@ public class MatchTable {
 
     public static String getColStakeOnBet() {
         return COL_STAKE_ON_BET;
+    }
+
+    public static String getColWhenGameWasPredicted() {
+        return COL_WHEN_GAME_WAS_PREDICTED;
     }
 }
