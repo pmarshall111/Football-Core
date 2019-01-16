@@ -4,6 +4,7 @@ import com.petermarshall.*;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.database.tables.*;
+import com.petermarshall.mail.UptimeData;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.*;
@@ -84,7 +85,7 @@ public class DataSource {
                     MatchTable.getColAwayScore() + " INTEGER, " + MatchTable.getColAwayWinOdds() + " REAL, " +
                     MatchTable.getColDrawOdds() + " REAL, " + MatchTable.getColFirstScorer() + " INTEGER, " +
                     MatchTable.getColSofascoreId() + " INTEGER DEFAULT -1, " + MatchTable.getColResultBetOn() + " INTEGER DEFAULT -1, " +
-                    MatchTable.getColOddsWhenBetPlaced() + " REAL DEFAULT -1.0, " + MatchTable.getColStakeOnBet() + "REAL DEFAULT -1, " +
+                    MatchTable.getColOddsWhenBetPlaced() + " REAL DEFAULT -1.0, " + MatchTable.getColStakeOnBet() + "REAL DEFAULT 0, " +
                     MatchTable.getColWhenGameWasPredicted() + " INTEGER DEFAULT -1, _id INTEGER PRIMARY KEY )");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingsTable.getTableName() +
@@ -768,8 +769,8 @@ public class DataSource {
             statement.execute("UPDATE " + MatchTable.getTableName() +
                     " SET " +
                     MatchTable.getColResultBetOn() + " = " + matchLog.getResultBetOn().getSqlIntCode() + ", " +
-                    MatchTable.getColOddsWhenBetPlaced() + " = " + matchLog.getOddsBetOn() +
-                    MatchTable.getColStakeOnBet() + " = " + matchLog.getStake() +
+                    MatchTable.getColOddsWhenBetPlaced() + " = " + matchLog.getOddsBetOn() + ", " +
+                    MatchTable.getColStakeOnBet() + " = " + matchLog.getStake() + ", " +
                     MatchTable.getColWhenGameWasPredicted() + " = " + matchLog.getWhenGameWasPredicted().getSqlIntCode() +
                     " WHERE _id = " + matchLog.getMatch().getDatabase_id());
 
@@ -803,9 +804,9 @@ public class DataSource {
 
             String filter = getSqlFilterForWhenBetWasPlaced(whenGameWasPredicted);
 
-            ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() +
+            ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "." + MatchTable.getColStakeOnBet() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColOddsWhenBetPlaced() + ", " + MatchTable.getTableName() + "." + MatchTable.getColResultBetOn() +
+                    MatchTable.getTableName() + "." + MatchTable.getColOddsWhenBetPlaced() + ", " + MatchTable.getTableName() + "." + MatchTable.getColResultBetOn() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() +
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
@@ -831,6 +832,7 @@ public class DataSource {
                 BetResult betResult = new BetResult(date, homeTeamName, awayTeamName, stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
                 betResults.add(betResult);
 
+                //double moneyOut, double odds, int resultBetOn, int result
                 totalledResults.addBet(stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
             }
 
@@ -871,7 +873,7 @@ public class DataSource {
         }
 
         if (latestMatchPredicted == null) {
-            dates.put(latestKey, "1970-01-01 00:00:00");
+            dates.put(latestKey, DateHelper.getSqlDate(new java.util.Date()));
         } else {
             dates.put(latestKey, DateHelper.getSqlDate(latestMatchPredicted));
         }
@@ -890,9 +892,9 @@ public class DataSource {
      * Method will calculate the percentage of how many games our program was running for and able to make a prediction in real time on.
      * Starting from the date where we first implemented the option to predict games that we missed (in order to get a better picture of how the model was performing).
      */
-    public static double getModelOnlinePercentage() {
-        java.util.Date earliestDateToLookFrom = DateHelper.setDate(2019, 01, 16);
-        String earliestDateString = DateHelper.getSqlDate(earliestDateToLookFrom).toString();
+    public static UptimeData getModelOnlinePercentage() {
+        java.util.Date WHEN_CHANGED_DATABASE_TO_RECORD_PREDICTIONS = DateHelper.setDate(2019, 01, 17);
+        String earliestDateString = DateHelper.getSqlDate(WHEN_CHANGED_DATABASE_TO_RECORD_PREDICTIONS);
 
         //make 2 calls to the database - one to count the number of games we predicted, and then another to count the number we missed but still predicted
 
@@ -900,23 +902,25 @@ public class DataSource {
              Statement statement2 = connection.createStatement();
 
              ResultSet realTime = statement1.executeQuery("SELECT count(*) FROM " + MatchTable.getTableName() +
-                    " WHERE " + MatchTable.getColWhenGameWasPredicted() + " = " + WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME.getSqlIntCode());
+                    " WHERE " + MatchTable.getColWhenGameWasPredicted() + " = " + WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME.getSqlIntCode() +
+                     " AND " + MatchTable.getColDate() + " >= '" + earliestDateString + "'");
              ResultSet predictedLaterOn = statement2.executeQuery("SELECT count(*) FROM " + MatchTable.getTableName() +
-                     " WHERE " + MatchTable.getColWhenGameWasPredicted() + " = " + WhenGameWasPredicted.PREDICTED_LATER_ON.getSqlIntCode());
+                     " WHERE " + MatchTable.getColWhenGameWasPredicted() + " = " + WhenGameWasPredicted.PREDICTED_LATER_ON.getSqlIntCode() +
+                     " AND " + MatchTable.getColDate() + " >= '" + earliestDateString + "'");
         ) {
 
             realTime.next();
             predictedLaterOn.next();
-            double numbPredictedRealTime = (double) realTime.getInt(1);
-            double numbPredictedLater = (double) predictedLaterOn.getInt(1);
+            int numbPredictedRealTime = realTime.getInt(1);
+            int numbPredictedLater = predictedLaterOn.getInt(1);
 
-            return numbPredictedRealTime / (numbPredictedRealTime + numbPredictedLater);
+            return new UptimeData(numbPredictedRealTime, numbPredictedLater, DateHelper.turnDateToddMMyyyyString(WHEN_CHANGED_DATABASE_TO_RECORD_PREDICTIONS));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return -1;
+        return null;
 
     }
 
@@ -948,11 +952,11 @@ public class DataSource {
             //we need homeTeamName, awayTeamName, seasonKey, leagueID, sofascoreId, dateString
             //also need odds for home draw away.
             //also will add in the _id from the database so it will be easy to update the records later
-            ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() +
+            ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColSofascoreId() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDrawOdds() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColAwayWinOdds() + MatchTable.getTableName() + "._id" +
+                    MatchTable.getTableName() + "." + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getTableName() + "._id" +
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
@@ -991,6 +995,19 @@ public class DataSource {
         }
 
         return matchesWithoutPredictions;
+    }
+
+    public static void main(String[] args) {
+
+        openConnection();
+
+//        java.util.Date date = DateHelper.setDate(2019, 01, 01);
+//        getMatchesWithoutPredictions(date); //should get 49 back
+
+//        BetResultsTotalled brt = getResultsOfPredictions(null, null, null);
+
+        closeConnection();
+
     }
 
 }

@@ -1,9 +1,11 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.BetResult;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.database.BetResultsTotalled;
 import com.petermarshall.database.DataSource;
+import com.petermarshall.mail.UptimeData;
 
 import java.util.Date;
 
@@ -25,36 +27,31 @@ public class EmailModelPerformance {
 
         BetResultsTotalled betResults = DataSource.getResultsOfPredictions(null, null, null);
         BetResultsTotalled resultsSinceLastModelChange = DataSource.getResultsOfPredictions(lastChangeOfModel, null, null);
-        double uptime = DataSource.getModelOnlinePercentage();
+        UptimeData uptimeData = DataSource.getModelOnlinePercentage();
 
         DataSource.closeConnection();
 
 
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Hello Peter,\nhere is a summary of the performance of your betting app: ");
+
         addTotalledDataToBuilder(stringBuilder, betResults);
+        addRecentModelDataToBuilder(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
+        addUptimeDataToBuilder(stringBuilder, uptimeData);
         if (isModelDueToBeChanged()) {
             addReminderToChangeModel(stringBuilder);
         }
-        addRecentModelDataToBuilder(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
-        addUptimeDataToBuilder(stringBuilder, uptime);
+
+//        System.out.println(stringBuilder.toString());
 
         SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
     }
 
     private static void addTotalledDataToBuilder(StringBuilder stringBuilder, BetResultsTotalled totalledData) {
-//        StringBuilder stringBuilders = new StringBuilder();
-//
-        stringBuilder.append("Hello Peter,\n\nIn total, as of ");
-        stringBuilder.append(new Date());
-        stringBuilder.append(" our database has spent ");
-        stringBuilder.append(totalledData.getTotalMoneyOut());
-        stringBuilder.append(" on ");
-        stringBuilder.append(totalledData.getNumbBetsPlaced());
-        stringBuilder.append("bets , making £");
-        stringBuilder.append(totalledData.getRealProfit());
-        stringBuilder.append(". This equates to a percentage profit of ");
-        stringBuilder.append(totalledData.getPercentageProfit());
-        stringBuilder.append(".");
+
+        stringBuilder.append("\n\nTotal Model Performance:\n");
+        stringBuilder.append("In total, as of ");
+        addBaseDataToBuilder(stringBuilder, totalledData, new Date());
 
     }
 
@@ -65,22 +62,39 @@ public class EmailModelPerformance {
     }
 
     private static void addRecentModelDataToBuilder(StringBuilder stringBuilder, Date lastChangeOfModel, BetResultsTotalled recentData) {
-        stringBuilder.append("\n\n<b>Recent Model Performance</b>\n");
+        stringBuilder.append("\n\nRecent Model Performance:\n");
         stringBuilder.append("Since the database was last changed on ");
-        stringBuilder.append(lastChangeOfModel);
-        stringBuilder.append(" our database has spent ");
-        stringBuilder.append(recentData.getTotalMoneyOut());
-        stringBuilder.append(", making £");
-        stringBuilder.append(recentData.getRealProfit());
-        stringBuilder.append(". This equates to a percentage profit of ");
-        stringBuilder.append(recentData.getPercentageProfit());
-        stringBuilder.append(".");
+        addBaseDataToBuilder(stringBuilder, recentData, lastChangeOfModel);
+    }
+    
+    private static void addBaseDataToBuilder(StringBuilder builder, BetResultsTotalled betResultsTotalled, Date date) {
+
+        builder.append(DateHelper.turnDateToddMMyyyyString(date));
+        builder.append(", the database has spent £");
+        builder.append(String.format("%.2f", betResultsTotalled.getTotalMoneyOut()));
+        builder.append(" on ");
+        builder.append(betResultsTotalled.getNumbBetsPlaced());
+        builder.append(" bets, making £");
+        builder.append(String.format("%.2f", betResultsTotalled.getRealProfit()));
+        builder.append(" profit. This equates to a percentage profit of about ");
+        builder.append(String.format("%.0f", betResultsTotalled.getPercentageProfit()));
+        builder.append("%.");
+        
     }
 
-    private static void addUptimeDataToBuilder(StringBuilder stringBuilder, double uptime) {
-        stringBuilder.append("\n\n");
-        stringBuilder.append("Overall, the program has been able to predict ");
-        stringBuilder.append(uptime);
+    private static void addUptimeDataToBuilder(StringBuilder stringBuilder, UptimeData uptime) {
+        //TODO: we want to give data on how many games we were able to predict in real time compared to those predicted later.
+
+        stringBuilder.append("\n\nUptime:\n");
+        stringBuilder.append("Since ");
+        stringBuilder.append(uptime.getWhenStartedRecordingPredictions());
+        stringBuilder.append(" (when the ability to record predictions as well as placed bets was added), the program has been able to make a live prediction for ");
+        stringBuilder.append(uptime.getBetsPredictedInRealTime());
+        stringBuilder.append(" games, out of a total of ");
+        stringBuilder.append(uptime.getTotalNumbBets());
+        stringBuilder.append(" games.");
+        stringBuilder.append("\nThis means that our app has been running for ");
+        stringBuilder.append(String.format("%.2f", uptime.getPercUptime()));
         stringBuilder.append("% of games.");
     }
 

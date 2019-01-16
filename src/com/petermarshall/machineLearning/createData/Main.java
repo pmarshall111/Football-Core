@@ -14,7 +14,7 @@ public class Main {
     public static void createFilesToTrainAndTestOn(String octaveTrainingDataFileName, String octaveTestDataFileName, String javaTestDataFileName) {
         DataSource.openConnection();
 
-        GetMatchesFromDb.getDataFromDb();
+        GetMatchesFromDb.loadInDataFromDb();
         ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
         WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, octaveTrainingDataFileName, octaveTestDataFileName, javaTestDataFileName);
 
@@ -24,7 +24,7 @@ public class Main {
     public static void createFileJustToTrainOn(String octaveTrainingDataFileName) {
         DataSource.openConnection();
 
-        GetMatchesFromDb.getDataFromDb();
+        GetMatchesFromDb.loadInDataFromDb();
         ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
         WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, octaveTrainingDataFileName);
 

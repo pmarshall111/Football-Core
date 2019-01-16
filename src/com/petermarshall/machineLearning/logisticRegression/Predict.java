@@ -105,7 +105,7 @@ public class Predict {
      *
      * Bias parameter added to match features when the features are created in GetMatchesFromDb.addLegacyFeaturesToMatchesToPredict();
      */
-    public static void addPredictionsToGames (ArrayList<MatchToPredict> matches, String thetasFullPath) {
+    public static void addOurProbabilitiesToGames(ArrayList<MatchToPredict> matches, String thetasFullPath) {
 
         try {
 
@@ -195,7 +195,7 @@ public class Predict {
                 madeChanges = true;
             } else {
                 //then we found no good bets
-                MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, -1);
+                MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
                 DataSource.logBetPlaced(noBetFound);
 
             }
@@ -207,7 +207,10 @@ public class Predict {
         return calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, null);
     }
 
-    public static void calculateIfGoodBetAndAddToTreeSet(MatchToPredict match, HashSet<String> allowedBookies, TreeSet<String> homeWin, TreeSet<String> awayWin) {
+    /*
+     * Used to calculate whether we have a good bet for both current games and also missed games, so we only need to change this function for both.
+     */
+    private static void calculateIfGoodBetAndAddToTreeSet(MatchToPredict match, HashSet<String> allowedBookies, TreeSet<String> homeWin, TreeSet<String> awayWin) {
         double[] ourPredictions = match.getOurPredictions();
         if (ourPredictions.length != 3) throw new RuntimeException("We haven't calculated our predictions properly.");
 
@@ -271,6 +274,7 @@ public class Predict {
 
 
     private final static double BASE_STAKE = 5;
+    private final static double ZERO_STAKE = 0;
 
     private static void logGoodBetsAndAddToBuilder(StringBuilder stringBuilder, TreeSet<String> goodBets, MatchToPredict match,
                                                    ResultBetOn resultBetOn, WhenGameWasPredicted whenPredicted) {
@@ -306,14 +310,15 @@ public class Predict {
     }
 
 
-    public static void predictAndLogMissedGames (ArrayList<MatchToPredict> matches) {
+    public static void missedGamesBetDecisionAndLog(ArrayList<MatchToPredict> matches) {
         HashSet<String> allowedBookies = new HashSet<>();
         allowedBookies.add(OddsCheckerBookies.BET365.getBookie());
+
+        DataSource.openConnection();
 
         for (MatchToPredict match: matches) {
             TreeSet<String> homeWin = new TreeSet<>();
             TreeSet<String> awayWin = new TreeSet<>();
-            StringBuilder unusedBuilder = new StringBuilder();
 
             calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWin, awayWin);
             MatchLog matchLog = getMatchLogForMissedPredictionGame(match, homeWin, awayWin);
@@ -321,16 +326,18 @@ public class Predict {
             DataSource.logBetPlaced(matchLog);
         }
 
+        DataSource.closeConnection();
+
     }
 
     private static MatchLog getMatchLogForMissedPredictionGame(MatchToPredict match, TreeSet<String> homeWin, TreeSet<String> awayWin) {
-
+        //note: we will never decide to bet on both a home win and away win because we only try to bet on the single most likely outcome.
         if (homeWin.size() > 0) {
             return createMatchLogWhenGoodBetFound(match, homeWin, ResultBetOn.HOME_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
         } else if(awayWin.size() > 0) {
             return createMatchLogWhenGoodBetFound(match, awayWin, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
         } else {
-            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, -1, -1);
+            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
         }
 
     }

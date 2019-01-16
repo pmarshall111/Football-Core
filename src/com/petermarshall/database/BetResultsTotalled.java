@@ -12,8 +12,10 @@ public class BetResultsTotalled {
     }
 
     void addBet(double moneyOut, double odds, int resultBetOn, int result) {
-        numbBetsPlaced++;
-        totalMoneyOut += moneyOut;
+        if (moneyOut > 0) {
+            numbBetsPlaced++;
+            totalMoneyOut += moneyOut;
+        }
 
         if (resultBetOn == result) {
             totalMoneyIn += moneyOut * odds;

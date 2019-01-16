@@ -22,7 +22,7 @@ public class GetMatchesFromDb {
     public static void main(String[] args) {
         DataSource.openConnection();
 
-        getDataFromDb(); //creates TrainingMatches
+        loadInDataFromDb(); //creates TrainingMatches
 //        WriteTrainingData.writeDataOutToCsvFiles(trainingData, "octavePowered.csv", "octavePoweredTest.csv", "javaPoweredTest.csv");
 
         System.out.println("hello");
@@ -37,7 +37,7 @@ public class GetMatchesFromDb {
      *
      * Will only get data for played games, as we get the data out of the database by Player Ratings. (if the game hasn't been played yet, there will be no player ratings for that game.)
      */
-    public static void getDataFromDb() {
+    public static void loadInDataFromDb() {
         DataSource.openConnection();
 
         try {
@@ -279,13 +279,14 @@ public class GetMatchesFromDb {
             if (match.getHomeTeamName().equals(homeTeamName) && match.getAwayTeamName().equals(awayTeamName)
                     && gamePredictKickoffTime.equals(kickoffTime)) {
 
-                //do stuff
                 ArrayList<Player> homePlayersWhoPlayed = lineups.get("home");
                 ArrayList<Player> awayPlayersWhoPlayed = lineups.get("away");
 
                 ArrayList<String> homeLineupNames = convertPlayerListToLineupOfNames(homePlayersWhoPlayed);
                 ArrayList<String> awayLineupNames = convertPlayerListToLineupOfNames(awayPlayersWhoPlayed);
 
+                match.setHomeTeamPlayers(homeLineupNames);
+                match.setAwayTeamPlayers(awayLineupNames);
 
                 //create features
                 ArrayList<Double> features = createFeatures(homeTeam, awayTeam, homeTeamThisSeason, awayTeamThisSeason, homeLineupNames, awayLineupNames, match.getSeasonYearStart());
@@ -644,7 +645,7 @@ public class GetMatchesFromDb {
 
 
     public static void addFeaturesToMatchesToPredict(ArrayList<MatchToPredict> matches) {
-        if (leaguesOfTeams.size() == 0) getDataFromDb();
+        if (leaguesOfTeams.size() == 0) loadInDataFromDb();
 
         for (MatchToPredict match: matches) {
 
@@ -808,7 +809,7 @@ public class GetMatchesFromDb {
      */
     public static void addLegacyFeaturesToMatchesToPredict(ArrayList<MatchToPredict> matches) {
         
-        if (leaguesOfTeams.size() == 0) getDataFromDb();
+        if (leaguesOfTeams.size() == 0) loadInDataFromDb();
 
         GamesSelector HOME_GAMES = GamesSelector.ONLY_HOME_GAMES;
         GamesSelector ALL_GAMES = GamesSelector.ALL_GAMES;

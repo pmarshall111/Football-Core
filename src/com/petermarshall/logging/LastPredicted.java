@@ -19,6 +19,9 @@ public class LastPredicted {
         Date currentDate = new Date();
         Date whenWeShouldPredictAgain = DateHelper.addDaysToDate(dateWhenLastPredictedMissedGames, NUMB_DAYS_BEFORE_WE_PREDICT_AGAIN);
 
+        System.out.println(currentDate);
+        System.out.println(whenWeShouldPredictAgain);
+
         return currentDate.after(whenWeShouldPredictAgain);
     }
 
@@ -54,6 +57,10 @@ public class LastPredicted {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(timeToPredictMissedGames());
     }
 
 

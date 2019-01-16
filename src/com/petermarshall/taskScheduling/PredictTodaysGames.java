@@ -111,11 +111,11 @@ public class PredictTodaysGames {
         GetMatchesFromDb.addFeaturesToMatchesToPredict(matchesHappeningNow); //method will check to see whether it needs to add stats to missed prediction games while it creates current stats
         //for each team from all the games in the database.
         OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
-        Predict.addPredictionsToGames(matchesHappeningNow, trainedThetasPath);
+        Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);
 
         if (needToPredictGamesWeMissed) {
-            Predict.addPredictionsToGames(matchesWeDidntPredict, trainedThetasPath);
-            Predict.predictAndLogMissedGames(matchesWeDidntPredict);
+            Predict.addOurProbabilitiesToGames(matchesWeDidntPredict, trainedThetasPath);
+            Predict.missedGamesBetDecisionAndLog(matchesWeDidntPredict);
 
             LastPredicted.setAllMissedGamesPredictedUpTo2DaysAgo();
         }

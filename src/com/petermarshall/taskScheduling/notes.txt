@@ -81,7 +81,7 @@ Within comeAcrossNewMatch, we need to check whether the new game we're looking a
 
 Really we should be able to add the lineups and the teams stats at the same time before we save the stats to each teams season and
 
-First need a check to see if 
+First need a check to see if
 
 
 
@@ -89,8 +89,8 @@ First need a check to see if
 
 
 
-
-
+TODO: probably should move the predicting missed games to be the day before we email performance updates?
+TODO: add check to make sure we do not make predictions on games where the teams have fewer than 7 games played.
 
 
 

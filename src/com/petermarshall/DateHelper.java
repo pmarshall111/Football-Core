@@ -22,6 +22,11 @@ public class DateHelper {
 
         return partsOfDate[5] + "-" + turnMonthStringToNumb(partsOfDate[1]) + "-" + partsOfDate[2];
     }
+    public static String turnDateToddMMyyyyString(Date date) {
+        String[] partsOfDate = date.toString().split(" ");
+
+        return partsOfDate[2] + "-" + turnMonthStringToNumb(partsOfDate[1]) + "-" + partsOfDate[5];
+    }
 
     private static String turnMonthStringToNumb (String monthString) {
         String month;

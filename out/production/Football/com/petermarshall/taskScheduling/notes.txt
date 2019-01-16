@@ -54,7 +54,7 @@ more simple.
 
 Pieces:
 
-- Need a file just to simply store the date and time of when we last predicted all the games we may have missed.
+- Need a file just to simply store the date and time of when we last predicted all the games we may have missed. DONE
 
 - In runPredictor method, we will have a check to see if the date is more than 2 weeks before today. If it is, then we need to set that date within the GetmatchesFromDb class.
 Then we need to get the matches we did not predict from the database and set an array of matches to predict within the GetMatchesFromDb class.
@@ -62,6 +62,37 @@ Then within the GetMatchesFromDb class, we can add the stats for the teams in th
 require refactoring addFeaturesToMatchesToPredict method to bring out the method that adds the array of features to the match to predict.
 - After this, we need to call Predict.addPredictionsToGames on our old matches to predict.
 - Then finally we can go about comparing our results to those from bookies. Probably need to create a new method as we do not want to be emailing bets from 2 weeks ago to my email.
-- Will also need to update database (and initDB method) to include a field in matches that said whether we actually predicted on this game in real time.
+- Will also need to update database (and initDB method) to include a field in matches that said whether we actually predicted on this game in real time. Also want a field to check that each game has actually been predicted on. DONE
 - Finally, update emailling method to tell us how many games we predicted live and what our results for those were as well as our overall performance even if the model was not running at the time.
+
+
+
+
+
+Editing GetMatchesFromDb
+
+Need to have a method to add the features to our old MatchesToPredict.
+Need to add in something within createData that will add the stats to the right games. Should we split up the ArrayList into leagues for faster choosing of games?
+
+
+When we come across new match, we first need to add the lineups to our MatchToPredict.
+Within comeAcrossNewMatch, we need to check whether the new game we're looking at is one we missed and need to predict. If it is, we need to add the base things about each team before we add the stats to each team.
+
+
+Really we should be able to add the lineups and the teams stats at the same time before we save the stats to each teams season and
+
+First need a check to see if
+
+
+
+
+
+
+
+TODO: probably should move the predicting missed games to be the day before we email performance updates?
+TODO: add check to make sure we do not make predictions on games where the teams have fewer than 7 games played.
+
+
+
+
 

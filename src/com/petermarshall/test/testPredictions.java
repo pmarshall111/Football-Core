@@ -1,4 +1,4 @@
-package com.petermarshall.taskScheduling;
+package com.petermarshall.test;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
@@ -31,7 +31,7 @@ public class testPredictions {
         SofaScore.addLineupsToGamesAboutToStart(matches);
         GetMatchesFromDb.addFeaturesToMatchesToPredict(matches);
         OddsChecker.addBookiesOddsForGames(matches);
-        Predict.addPredictionsToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
+        Predict.addOurProbabilitiesToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
 
         StringBuilder emailBody = new StringBuilder();
         emailBody.append("Dear app user,\n\n We currently suggest placing the following bets: \n\n");
@@ -45,7 +45,7 @@ public class testPredictions {
         bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getBookie());
 
         //method can be called without last argument, to assume that we've signed up for all bookies.
-        boolean gamesToEmail = Predict.addGoodBetsToEmailBody(matches, emailBody, bookiesWeveSignedUpFor, true);
+        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, bookiesWeveSignedUpFor);
         if (gamesToEmail) {
             SendEmail.sendOutEmail("New bet", emailBody.toString());
             System.out.println("We found a good bet!");
