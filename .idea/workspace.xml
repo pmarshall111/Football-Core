@@ -130,13 +130,13 @@
           <entry key="arff" value="22" />
           <entry key="dummy" value="52" />
           <entry key="gitignore" value="23" />
-          <entry key="java" value="246299" />
+          <entry key="java" value="246315" />
           <entry key="txt" value="18570" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="246299" />
+          <entry key="JAVA" value="246315" />
           <entry key="PLAIN_TEXT" value="18667" />
         </counts>
       </usages-collector>
@@ -196,8 +196,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="89" column="74" selection-start-line="89" selection-start-column="74" selection-end-line="89" selection-end-column="74" />
+            <state relative-caret-position="394">
+              <caret line="88" column="39" lean-forward="true" selection-start-line="88" selection-start-column="39" selection-end-line="88" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -403,8 +403,8 @@
         <option value="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/BetResultsTotalled.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/mail/UptimeData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
+        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" />
       </list>
     </option>
   </component>
@@ -549,7 +549,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547659353533" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547714179981" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/com/petermarshall/logging" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
@@ -1229,8 +1229,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="89" column="74" selection-start-line="89" selection-start-column="74" selection-end-line="89" selection-end-column="74" />
+        <state relative-caret-position="394">
+          <caret line="88" column="39" lean-forward="true" selection-start-line="88" selection-start-column="39" selection-end-line="88" selection-end-column="39" />
         </state>
       </provider>
     </entry>
