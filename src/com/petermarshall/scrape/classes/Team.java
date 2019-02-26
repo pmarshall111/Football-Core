@@ -29,40 +29,52 @@ public class Team {
     }
 
     /*
-     * Method called from SofaScore scraping method. Initially tries to get a match with the day SofaScore has in their
+     * Method called from SofaScore & Understat scraping methods. Initially tries to get a match with the day SofaScore has in their
      * database. However, Understat has some matches where the days played are not the same as those according to SofaScore.
      * To allow for this, if the exact day match fails we look for the match 2 days either side of the date this method is
      * called with. If method still cannot find the match, we will return null.
      */
-    public Match getMatch(Date date, String awayTeamName) {
-        Date dateKey = DateHelper.removeTimeFromDate(date);
+    //TODO: surely we can separate out getMatch to be one overload with the date and then another with the away team name? Slight problem is that we store all games in 1 array
+    //todo: no matter if they are home or away. possibly have methods getMatchFromDate, getMatchFromAwayTeamName, getMatchFromHomeTeamName.
 
+    //TODO: need to see where these funcs are used and how it will impact current project.
+    public Match getMatchFromDate(Date date) {
+        Date dateKey = DateHelper.removeTimeFromDate(date);
         Match match = matchMap.getOrDefault(dateKey, null);
 
-        if (match == null && awayTeamName != null) {
-
-            String compatibleTeamName = Team.makeTeamNamesCompatible(awayTeamName);
-
-            Date[] dates = new Date[]{
-                    DateHelper.add1DayToDate(dateKey),
-                    DateHelper.add1DayToDate(DateHelper.add1DayToDate(dateKey)),
-                    DateHelper.subtract1DayFromDate(dateKey),
-                    DateHelper.subtract1DayFromDate(DateHelper.subtract1DayFromDate(dateKey))
-            };
+        if (match == null) {
+            Date[] dates = getPotentialDates(dateKey);
 
             for (Date d: dates) {
                 match = matchMap.getOrDefault(d, null);
-                if (match != null && match.getAwayTeam().getTeamName().equals(compatibleTeamName)) return match;
+                if (match != null) {
+                    break;
+                }
             }
         }
 
         return match;
     }
-     // Overloaded method used by Understat scraper where the xG stats do not come with the opposition team name. No discrepancy
-     // with dates as it's from the same site.
-    public Match getMatch(Date date) {
-        Date dateKey = DateHelper.removeTimeFromDate(date);
-        return matchMap.getOrDefault(dateKey, null);
+
+    public Match getMatchFromAwayTeamName(String teamName) {
+        teamName = Team.makeTeamNamesCompatible(teamName);
+        for (Match m: matchMap.values()) {
+            if (m.isAwayTeam(teamName)) return m;
+        }
+        return null;
+    }
+
+    private Date[] getPotentialDates(Date dateKey) {
+        Date yesterday = DateHelper.add1DayToDate(dateKey);
+        Date today = DateHelper.subtract1DayFromDate(dateKey);
+
+        //order is important as we want to have dates closest to target date first.
+        return new Date[]{
+                yesterday,
+                today,
+                DateHelper.add1DayToDate(today),
+                DateHelper.subtract1DayFromDate(yesterday)
+        };
     }
 
 

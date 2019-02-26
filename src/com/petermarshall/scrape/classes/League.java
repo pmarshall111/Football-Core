@@ -55,7 +55,7 @@ public class League {
 
     private void scrapeSeason(Season currSeason) {
         Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(this.seasonIds.getSofaScoreLeagueName(), this.seasonIds.getLeagueId(),
-                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), null, null);
+                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), null, null, currSeason);
 
         System.out.println("For " + currSeason.getSeasonKey() + ", we have " + allGameIds.size() + "ids");
         allGameIds.forEach(gameId -> {
@@ -91,7 +91,7 @@ public class League {
         Understat.addSeasonsGames(this, currSeasonKey, beginningOfLastMatchDate, beginningOfYesterday);
 
         Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(this.seasonIds.getSofaScoreLeagueName(), this.seasonIds.getLeagueId(),
-                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), beginningOfLastMatchDate, beginningOfYesterday);
+                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), beginningOfLastMatchDate, beginningOfYesterday, currSeason);
 
         System.out.println("For " + currSeason.getSeasonKey() + " in " + name +", we have " + allGameIds.size() + "new ids");
         allGameIds.forEach(gameId -> {

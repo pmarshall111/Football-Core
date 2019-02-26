@@ -46,4 +46,6 @@ public class Season {
         return matches;
     }
 
+    public boolean hasMatches() {return matches.size() > 0;}
+
 }

@@ -660,7 +660,7 @@ public class GetMatchesFromDb {
             //format lineups
             ArrayList<String> homeLineup = match.getHomeTeamPlayers();
             ArrayList<String> awayLineup = match.getAwayTeamPlayers();
-            if (homeLineup == null || awayLineup == null) throw new RuntimeException("Lineups not set!");
+            if (homeLineup == null || awayLineup == null) throw new RuntimeException("Lineups not set! " + match.getHomeTeamName() + " vs " + match.getAwayTeamName());
             if (homeLineup.size() != 11 || awayLineup.size() != 11) throw new RuntimeException("Trying to predict on a match without proper lineup size. " +
                     match.getHomeTeamName() + " vs " + match.getAwayTeamName());
 

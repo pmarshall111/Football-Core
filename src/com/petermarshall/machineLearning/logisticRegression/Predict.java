@@ -1,5 +1,6 @@
 package com.petermarshall.machineLearning.logisticRegression;
 
+import com.petermarshall.ConvertOdds;
 import com.petermarshall.database.ResultBetOn;
 import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.logging.MatchLog;
@@ -196,7 +197,9 @@ public class Predict {
             } else {
                 //then we found no good bets
                 MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
+                DataSource.openConnection();
                 DataSource.logBetPlaced(noBetFound);
+                DataSource.closeConnection();
 
             }
         }
@@ -239,13 +242,13 @@ public class Predict {
 
         //comparing our values to bookies
         HashMap<String, double[]> bookieOdds = match.getBookiesOdds();
-        if (bookieOdds == null || bookieOdds.size() == 0) throw new RuntimeException("We have no bookie odds to compare our probabilities to!");
+        if (bookieOdds == null || bookieOdds.size() == 0) throw new RuntimeException("We have no bookie odds to compare our probabilities to! The game is " + match.getHomeTeamName() + " vs " + match.getAwayTeamName());
 
         for (String bookie: bookieOdds.keySet()) {
 
             if (allowedBookies.contains(bookie)) {
                 double[] bookiesOdds = bookieOdds.get(bookie);
-                double[] bookiesProbabilities = convertOddsToProbabilities(bookiesOdds);
+                double[] bookiesProbabilities = ConvertOdds.convert3OddsToProbabilities(bookiesOdds);
 
 //                    double bookieWinRatio = bookiesOdds[0]/bookiesOdds[2];
 //                    double bookieLossRatio = bookiesOdds[2]/bookiesOdds[0];
@@ -296,7 +299,9 @@ public class Predict {
 //                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
 
                     MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, odds, BASE_STAKE);
+                    DataSource.openConnection();
                     DataSource.logBetPlaced(matchLog);
+                    DataSource.closeConnection();
                 }
 
 
@@ -352,14 +357,6 @@ public class Predict {
         return new MatchLog(match, whenGameWasPredicted, resultBetOn, odds, BASE_STAKE);
     }
 
-
-    private static double[] convertOddsToProbabilities(double[] odds) {
-        double[] probabilities = new double[3];
-        for (int i = 0; i<odds.length; i++) {
-            probabilities[i] = 1/odds[i];
-        }
-        return probabilities;
-    }
 
     public static SimpleMatrix getOurPredictions() {
         if (logitPredictions == null) throw new RuntimeException("We haven't predicted yet. Call calcPredictions first.");

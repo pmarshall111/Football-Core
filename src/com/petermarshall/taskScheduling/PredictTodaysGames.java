@@ -22,7 +22,7 @@ public class PredictTodaysGames {
 
     private static int minsAfterLineupsAnnouned = 15;
     private static int minsBeforeKickoff = 5;
-    private static final String trainedThetasPath = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv";
+    static final String trainedThetasPath = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv";
 
     /*
      * Method will update todays times in the database and also store the sofascore ID in the database. Then it gets the times of those games and sets times where we should
@@ -94,9 +94,9 @@ public class PredictTodaysGames {
 
             if (matchesWeDidntPredict.size() > 0) {
 
+                //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
                 GetMatchesFromDb.setGamesNeedPredictingAfterDate(checkGamesAfterDate);
                 GetMatchesFromDb.setMissedGamesThatNeedPredicting(matchesWeDidntPredict);
-                //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
 
             }
 

@@ -2,10 +2,7 @@ package com.petermarshall.scrape;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.Match;
-import com.petermarshall.scrape.classes.Season;
-import com.petermarshall.scrape.classes.Team;
+import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
@@ -23,7 +20,6 @@ public class Understat {
 
     private static final String UNDERSTAT_SITE = "https://understat.com/";
 
-
     public static void addLeaguesGames(League league) {
         int currentSeason = league.getStartYearFirstSeasonAvailable();
 
@@ -40,25 +36,10 @@ public class Understat {
      * Has parameters to only add games between 2 dates to scrape the most recent games.
      */
     public static void addSeasonsGames (League league, int seasonStartYear, Date earliestDate, Date latestDate) {
-        try (final WebClient webClient = new WebClient()) {
-            webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setJavaScriptEnabled(false);
+        UnderstatData data = getSeasonsData(league, seasonStartYear);
 
-            final HtmlPage page = webClient.getPage(UNDERSTAT_SITE + "league/" + league.getSeasonIds().getUnderstatUrl() + "/20" + seasonStartYear);
-
-            //dates will give us all basic information about the game.
-            //teams will give us an array of 38 matches for each team, with the non-penalty expected goals. no info about which team they played though.
-            Matcher dates = Pattern.compile("var datesData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
-            Matcher teams = Pattern.compile("var teamsData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
-
-            JSONArray datesData;
-            JSONObject teamsData;
-
-            if (dates.find() && teams.find()) {
-                datesData = (JSONArray) decodeAscii(dates.group(1));
-                teamsData = (JSONObject) decodeAscii(teams.group(1));
-            } else throw new RuntimeException("could not find data from Underscored page in season " + seasonStartYear);
-
+        JSONArray datesData = data.getDatesData();
+        JSONObject teamsData = data.getTeamsData();
 
             Season season = league.getSeason(seasonStartYear);
 
@@ -82,7 +63,12 @@ public class Understat {
                 if (homeTeamName.equals("Caen") && awayTeamName.equals("Toulouse") && dateString.equals("2018-04-14 18:00:00")) {
                     dateString = "2018-04-25 17:45:00";
                 }
-                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString);
+                Date date;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString);
+                } catch (java.text.ParseException e) {
+                    throw new RuntimeException("Bad dateTime from team " + homeTeamName + " vs " + awayTeamName + ". The date given is " + dateString);
+                }
 
                 //test to only add in games that are only new games, or games given between 2 dates.
                 if (earliestDate != null && latestDate != null &&
@@ -128,7 +114,13 @@ public class Understat {
                     if ((teamName.equals("Caen") || teamName.equals("Toulouse")) && dateTime.equals("2018-04-14 18:00:00")) {
                         dateTime = "2018-04-25 17:45:00";
                     }
-                    Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime);
+                    Date date;
+                    try {
+                        date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime);
+                    } catch (java.text.ParseException e) {
+                        throw new RuntimeException("Bad dateTime from team " + teamName + ". The date given is " + dateTime);
+                    }
+
 
                     //test to only add in games that are only new games, or games given between 2 dates.
                     if (earliestDate != null && latestDate != null &&
@@ -140,7 +132,7 @@ public class Understat {
 
 
 
-                    Match currMatch = currTeam.getMatch(date);
+                    Match currMatch = currTeam.getMatchFromDate(date);
                     if (currMatch == null)
                         throw new RuntimeException("Could not find match on " + date + " for team " + teamName);
 
@@ -150,10 +142,130 @@ public class Understat {
                     currMatch.setAwayXGF(isHomeTeam ? xGA : xGF);
                 }
             }
+
+    }
+
+
+    public static void addDataToGamesFromLeague(League league) {
+        int currentSeason = league.getStartYearFirstSeasonAvailable();
+
+        while (currentSeason < MOST_RECENT_SEASON_END) {
+            if (league.getSeason(currentSeason).hasMatches()) {
+                addDataToGamesInSeason(league, currentSeason);
+            }
+            currentSeason++;
+        }
+    }
+
+
+    /*
+     * League should be fully populated before this method is called. Strictly just adds data to an already created match.
+     * Adds GF&GA and xGF&xGA
+     */
+    private static void addDataToGamesInSeason(League league, int seasonStartYear) {
+        UnderstatData data = getSeasonsData(league, seasonStartYear);
+
+        JSONArray datesData = data.getDatesData();
+        JSONObject teamsData = data.getTeamsData();
+
+        Season season = league.getSeason(seasonStartYear);
+        HashSet<Match> matchesToUpdate = new HashSet<>(season.getAllMatches());
+
+
+        Iterator datesIterator = datesData.iterator();
+        while (datesIterator.hasNext()) {
+            JSONObject nextMatch = (JSONObject) datesIterator.next();
+
+            String homeTeamName = (String) ((JSONObject) nextMatch.get("h")).get("title");
+            String awayTeamName = (String) ((JSONObject) nextMatch.get("a")).get("title");
+
+            Match thisMatch = findMatchBetweenTeams(matchesToUpdate, homeTeamName, awayTeamName);
+            if (thisMatch != null) {
+                // will already have the date info in the match created from data from database.
+                JSONObject goals = (JSONObject) nextMatch.get("goals");
+
+                try {
+                    int homeGoals = Integer.parseInt(goals.get("h").toString());
+                    int awayGoals = Integer.parseInt(goals.get("a").toString());
+                    thisMatch.setHomeScore(homeGoals);
+                    thisMatch.setAwayScore(awayGoals);
+                } catch (NullPointerException e) {
+                    //understat most likely doesn't have goal stats because the game was postponed.
+                }
+            }
+        }
+
+
+        Iterator teamsIterator = teamsData.values().iterator();
+        while (teamsIterator.hasNext()) {
+            JSONObject teamObj = (JSONObject) teamsIterator.next();
+
+            String teamName = (String) teamObj.get("title");
+            Team currTeam = season.getTeam(teamName);
+            if (currTeam == null) continue;
+
+
+            JSONArray games = (JSONArray) teamObj.get("history");
+            Iterator gamesIterator = games.iterator();
+            while (gamesIterator.hasNext()) {
+                JSONObject gameObj = (JSONObject) gamesIterator.next();
+
+                String dateTime = (String) gameObj.get("date");
+                Date date;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime);
+                } catch (java.text.ParseException e) {
+                    throw new RuntimeException("Bad dateTime from team " + teamName + ". The date given is " + dateTime);
+                }
+
+                Match currMatch = currTeam.getMatchFromDate(date);
+                if (currMatch == null) continue;
+
+                boolean isHomeTeam = currMatch.getHomeTeam().getTeamName().equals(teamName);
+                double xGF = Double.parseDouble(gameObj.get("npxG").toString());
+                double xGA = Double.parseDouble(gameObj.get("npxGA").toString());
+
+                currMatch.setHomeXGF(isHomeTeam ? xGF : xGA);
+                currMatch.setAwayXGF(isHomeTeam ? xGA : xGF);
+            }
+        }
+    }
+
+
+
+    private static Match findMatchBetweenTeams(HashSet<Match> matches, String homeTeamName, String awayTeamName) {
+        return matches.stream()
+                .filter(m -> m.getHomeTeam().getTeamName().equals(homeTeamName) && m.getAwayTeam().getTeamName().equals(awayTeamName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static UnderstatData getSeasonsData(League league, int seasonStartYear) {
+        try (final WebClient webClient = new WebClient()) {
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setJavaScriptEnabled(false);
+
+            final HtmlPage page = webClient.getPage(UNDERSTAT_SITE + "league/" + league.getSeasonIds().getUnderstatUrl() + "/20" + seasonStartYear);
+
+            //dates will give us all basic information about the game.
+            //teams will give us an array of 38 matches for each team, with the non-penalty expected goals. no info about which team they played though.
+            Matcher dates = Pattern.compile("var datesData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
+            Matcher teams = Pattern.compile("var teamsData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
+
+            JSONArray datesData;
+            JSONObject teamsData;
+
+            if (dates.find() && teams.find()) {
+                datesData = (JSONArray) decodeAscii(dates.group(1));
+                teamsData = (JSONObject) decodeAscii(teams.group(1));
+                return new UnderstatData(datesData, teamsData);
+            }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
+
+        throw new RuntimeException("could not find data from Underscored page in season " + seasonStartYear);
     }
 
 

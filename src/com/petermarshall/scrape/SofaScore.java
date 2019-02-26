@@ -26,6 +26,9 @@ public class SofaScore {
 
     public static final String JSON_ENDING = "json";
 
+    static final String ALTERNATE_BASE_URL = "https://api.sofascore.com/api/v1";
+    static final String ALTERNATE_ODDS_ADD_ON = "/odds/1/all";
+
     //TESTING PURPOSES ONLY
     public static HashMap<String, Integer> numbBettingAdded = new HashMap<>();
     public static HashMap<String, Integer> gotToStartOfOdds = new HashMap<>();
@@ -42,16 +45,20 @@ public class SofaScore {
     private static String getPlayerRatingsUrl(int gameId) {
         return BASE_URL + EVENT_ADD_ON + gameId + LINEUPS_ADD_ON + JSON_ENDING;
     }
+    private static String getAlternateBetsUrl(int gameId) {
+        return ALTERNATE_BASE_URL + EVENT_ADD_ON + gameId + ALTERNATE_ODDS_ADD_ON;
+    }
 
 
     /*
-     * Takes a leagueId and seasonId (unique to each league) from the SodaScoreIds ENUM. Scrapes SofaScore
+     * Takes a leagueId and seasonId (unique to each league) from the LeagueSeasonIds ENUM. Scrapes SofaScore
      * and returns a set of all the Id's of the games in that season.
      *
      * Called from League class which loops through all it's seasons and calls this method.
      *
+     * When it finds an ID from that correlates to match in the season argument, it will add the ID to that match.
      */
-    public static Set<Integer> getGamesOfLeaguesSeason(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate ) {
+    public static Set<Integer> getGamesOfLeaguesSeason(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate, Season season ) {
         String url = getSeasonStatsUrl(leagueId, seasonId);
         Set<Integer> allGameIds = new HashSet<>();
 
@@ -74,37 +81,41 @@ public class SofaScore {
                     for (Object aJsonObject : events) {
                         JSONObject game = (JSONObject) aJsonObject;
 
+                        JSONObject homeTeam = (JSONObject) game.get("homeTeam");
+                        String homeTeamName = (String) homeTeam.get("name");
+                        JSONObject awayTeam = (JSONObject) game.get("awayTeam");
+                        String awayTeamName = (String) awayTeam.get("name");
+
                         String matchStatus = game.get("statusDescription").toString();
 
                         if (!matchStatus.equals("Postponed") && !matchStatus.equals("Canceled")) {
-                            if (earliestDate == null && latestDate == null) allGameIds.add(Integer.parseInt(game.get("id").toString()));
+                            int id = Integer.parseInt(game.get("id").toString());
+
+                            if (season != null) {
+                                Team hTeam = season.getTeam(homeTeamName);
+                                if (hTeam != null) {
+                                    Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
+                                    if (thisMatch != null) {
+                                        thisMatch.setSofaScoreGameId(id);
+                                    }
+                                }
+                            }
+
+                            if (earliestDate == null && latestDate == null) allGameIds.add(id);
                             else {
                                 String formattedStartDate = game.get("formatedStartDate").toString();
                                 String[] partsOfDate = formattedStartDate.split("\\.");
 
                                 Date gameDate = DateHelper.createDateyyyyMMdd(partsOfDate[2], partsOfDate[1], partsOfDate[0]);
 
-                                if (gameDate.before(latestDate) && gameDate.after(earliestDate)) allGameIds.add(Integer.parseInt(game.get("id").toString()));
+
+                                if (gameDate.before(latestDate) && gameDate.after(earliestDate)) allGameIds.add(id);
                             }
                         }
 
                     }
                 }
-            };
-
-//            JSONObject leagueSeason = (JSONObject) ((JSONArray) json.get("tournaments")).iterator().next();
-//            JSONArray events = (JSONArray) leagueSeason.get("events");
-//
-//            for (Object aJsonObject : events) {
-//                JSONObject game = (JSONObject) aJsonObject;
-//
-//                String matchStatus = game.get("statusDescription").toString();
-//
-//                if (!matchStatus.equals("Postponed") && !matchStatus.equals("Canceled")) {
-//                    allGameIds.add(Integer.parseInt(game.get("id").toString()));
-//                }
-//
-//            }
+            }
 
         } catch(ParseException e) {
             System.out.println(e.getMessage());
@@ -171,7 +182,7 @@ public class SofaScore {
 
             Team hTeam = season.getTeam(homeTeamName);
             if (hTeam == null) throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.makeTeamNamesCompatible(homeTeamName));
-            Match match = hTeam.getMatch(dateKey, awayTeamName);
+            Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
                 //debugging used for Team.makeTeamsCompatible
                 System.out.println(hTeam.getAllMatches().size());
@@ -192,33 +203,96 @@ public class SofaScore {
                 else throw new RuntimeException("could not find match with date " + dateKey + " from team " + homeTeamName + " against " + awayTeamName);
             }
 
-
             match.setSofaScoreGameId(gameId);
 
-            Iterator betsIterator = ((JSONArray) json.get("odds")).iterator();
+            JSONArray oddsArray = (JSONArray) json.get("odds");
+            ArrayList<Double> homeDrawAway = oddsArray != null ? getOdds(oddsArray) : getOddsAlternate(gameId);
+            match.setHomeDrawAwayOdds(homeDrawAway);
 
-            //debugging only
-            if (((JSONArray) json.get("odds")).size() > 0) {
-                gotToStartOfOdds.put(season.getSeasonKey(), gotToStartOfOdds.getOrDefault(season.getSeasonKey(), 0) + 1);
+            Boolean isFullTime = ((String) event.get("statusDescription")).equals("FT");
+            if (isFullTime) {
+                addPlayerRatingsToGame(match, gameId);
+                addFirstGoalScorer(match, json);
             }
 
-            while (betsIterator.hasNext()) {
-                JSONObject bet = (JSONObject) betsIterator.next();
-                String betType = (String) bet.get("name");
+        } catch(ParseException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
-                if (betType.equals("Full time")) {
-                    JSONObject oddsObj = (JSONObject) ((JSONArray) bet.get("regular")).iterator().next();
-                    JSONArray odds = (JSONArray) oddsObj.get("odds");
+    private static ArrayList<Double> getOdds(JSONArray oddsArray) {
+        Iterator betsIterator = oddsArray.iterator();
+
+        while (betsIterator.hasNext()) {
+            JSONObject bet = (JSONObject) betsIterator.next();
+            String betType = (String) bet.get("name");
+
+            if (betType.equals("Full time")) {
+                JSONObject oddsObj = (JSONObject) ((JSONArray) bet.get("regular")).iterator().next();
+                JSONArray odds = (JSONArray) oddsObj.get("odds");
 
 
-                    Iterator oddsIterator = odds.iterator();
+                Iterator oddsIterator = odds.iterator();
+                double homeOdds = -1d, drawOdds = -1d, awayOdds = -1d;
+                while (oddsIterator.hasNext()) {
+                    JSONObject oddsObject = (JSONObject) oddsIterator.next();
+                    String choice = oddsObject.get("choice").toString();
+                    double decimalOdds = Double.parseDouble(oddsObject.get("decimalValue").toString());
+
+                    switch (choice) {
+                        case "1":
+                            homeOdds = decimalOdds;
+                            break;
+                        case "X":
+                            drawOdds = decimalOdds;
+                            break;
+                        case "2":
+                            awayOdds = decimalOdds;
+                            break;
+                        default:
+                            throw new RuntimeException("odds were not home, draw or away!");
+                    }
+                }
+                if (homeOdds == -1d || drawOdds == -1d || awayOdds == -1d)
+                    throw new RuntimeException("not all odds were scraped!");
+
+                ArrayList<Double> homeDrawAway = new ArrayList<>();
+                homeDrawAway.add(homeOdds);
+                homeDrawAway.add(drawOdds);
+                homeDrawAway.add(awayOdds);
+                return homeDrawAway;
+            }
+        }
+
+        return new ArrayList<Double>(){{add(-1d); add(-1d); add(-1d);}};
+    }
+
+    private static ArrayList<Double> getOddsAlternate(int gameId) {
+        String url = getAlternateBetsUrl(gameId);
+        String jsonString = GetJsonHelper.jsonGetRequest(url);
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonString);
+
+            JSONArray markets = (JSONArray) json.get("markets");
+            for (Object marketObj: markets) {
+                JSONObject market = (JSONObject) marketObj;
+                String marketName = market.get("marketName").toString();
+
+                if (marketName.equals("Full time")) {
+                    JSONArray choices = (JSONArray) market.get("choices");
+                    ArrayList<Double> bettingOdds = new ArrayList<>();
+
                     double homeOdds = -1d, drawOdds = -1d, awayOdds = -1d;
-                    while (oddsIterator.hasNext()) {
-                        JSONObject oddsObject = (JSONObject) oddsIterator.next();
-                        String choice = oddsObject.get("choice").toString();
-                        double decimalOdds = Double.parseDouble(oddsObject.get("decimalValue").toString());
+                    for (Object choice: choices) {
+                        JSONObject betDetails = (JSONObject) choice;
+                        String fractionalBet = betDetails.get("fractionalValue").toString();
+                        double decimalOdds = ConvertOdds.fromFractionToDecimal(fractionalBet);
 
-                        switch(choice) {
+                        String team = betDetails.get("name").toString();
+                        switch (team) {
                             case "1":
                                 homeOdds = decimalOdds;
                                 break;
@@ -228,40 +302,27 @@ public class SofaScore {
                             case "2":
                                 awayOdds = decimalOdds;
                                 break;
-                                default:
-                                    throw new RuntimeException("odds were not home, draw or away!");
+                            default:
+                                throw new RuntimeException("odds were not home, draw or away!");
                         }
                     }
-                    if (homeOdds == -1d || drawOdds == -1d || awayOdds == -1d) throw new RuntimeException("not all odds were scraped!");
 
                     ArrayList<Double> homeDrawAway = new ArrayList<>();
                     homeDrawAway.add(homeOdds);
                     homeDrawAway.add(drawOdds);
                     homeDrawAway.add(awayOdds);
-
-                    match.setHomeDrawAwayOdds(homeDrawAway);
+                    return homeDrawAway;
                 }
-            }
-
-            //TESTING PURPOSESES ONLY
-            if (match.getHomeDrawAwayOdds().size() == 3) numbBettingAdded.put(season.getSeasonKey(), numbBettingAdded.getOrDefault(season.getSeasonKey(), 0) + 1);
-            ////////////
-
-
-            Boolean isFullTime = ((String) event.get("statusDescription")).equals("FT");
-            if (isFullTime) {
-
-                addPlayerRatingsToGame(match, gameId);
-                addFirstGoalScorer(match, json);
 
             }
 
+        } catch (ParseException e) {}
 
-        } catch(ParseException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+        return new ArrayList<Double>(){{add(-1d); add(-1d); add(-1d);}};
     }
+
+
+
 
     public static void main(String[] args) {
         Season season = new Season("18-19");

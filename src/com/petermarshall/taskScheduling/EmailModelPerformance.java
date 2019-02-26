@@ -42,9 +42,9 @@ public class EmailModelPerformance {
             addReminderToChangeModel(stringBuilder);
         }
 
-//        System.out.println(stringBuilder.toString());
+        System.out.println(stringBuilder.toString());
 
-        SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
+//        SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
     }
 
     private static void addTotalledDataToBuilder(StringBuilder stringBuilder, BetResultsTotalled totalledData) {
