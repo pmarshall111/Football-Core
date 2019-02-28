@@ -7,35 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/UnderstatData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Football_jar/Football.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/Football_jar/Football.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/DataSource.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/DataSource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/GetMatchesFromDb.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/GetMatchesFromDb.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/Predict.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/Predict.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/Understat.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/Understat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/League.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/League.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Match.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Match.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Team.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Team.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/EmailModelPerformance.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/EmailModelPerformance.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictTodaysGames.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictTodaysGames.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -101,7 +74,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="258451" />
+          <entry key="JAVA" value="258615" />
           <entry key="PLAIN_TEXT" value="18669" />
         </counts>
       </usages-collector>
@@ -121,7 +94,7 @@
         <counts>
           <entry key="CLASS" value="13" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="466" />
+          <entry key="JAVA" value="467" />
           <entry key="Manifest" value="2" />
           <entry key="PLAIN_TEXT" value="71" />
         </counts>
@@ -161,29 +134,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="1058" column="53" selection-start-line="1058" selection-start-column="53" selection-end-line="1058" selection-end-column="53" />
+            <state relative-caret-position="377">
+              <caret line="568" column="129" lean-forward="true" selection-start-line="568" selection-start-column="129" selection-end-line="568" selection-end-column="129" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/GetJsonHelper.java">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/sql/Statement.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+            <state relative-caret-position="513">
+              <caret line="350" column="18" selection-start-line="350" selection-start-column="18" selection-end-line="350" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="35" column="38" selection-start-line="35" selection-start-column="38" selection-end-line="35" selection-end-column="38" />
+            <state relative-caret-position="404">
+              <caret line="49" column="41" lean-forward="true" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2601#2602#0" expanded="true" />
@@ -196,8 +169,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="209" selection-start-line="209" selection-end-line="209" />
+            <state relative-caret-position="344">
+              <caret line="220" selection-start-line="220" selection-end-line="220" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -229,8 +202,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-260">
-              <caret line="39" column="90" selection-start-line="39" selection-start-column="90" selection-end-line="39" selection-end-column="90" />
+            <state relative-caret-position="378">
+              <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -359,15 +332,15 @@
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesWithoutData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertBets.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" />
+        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" />
+        <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
       </list>
     </option>
   </component>
@@ -512,7 +485,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551207673261" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551377406655" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/com/petermarshall/logging" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -671,8 +644,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946696" weight="0.2733189" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.38069415" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.2733189" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.38069415" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
@@ -750,7 +723,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java</url>
-          <line>1101</line>
+          <line>1104</line>
           <properties />
           <option name="timeStamp" value="26" />
         </line-breakpoint>
@@ -767,10 +740,10 @@
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>49</line>
+          <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java</url>
+          <line>198</line>
           <properties />
-          <option name="timeStamp" value="43" />
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -782,13 +755,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="155" column="13" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -1096,13 +1062,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-260">
-          <caret line="39" column="90" selection-start-line="39" selection-start-column="90" selection-end-line="39" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="353">
@@ -1149,13 +1108,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="1058" column="53" selection-start-line="1058" selection-start-column="53" selection-end-line="1058" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="434">
@@ -1165,23 +1117,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="209" selection-start-line="209" selection-end-line="209" />
+        <state relative-caret-position="344">
+          <caret line="220" selection-start-line="220" selection-end-line="220" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="35" column="38" selection-start-line="35" selection-start-column="38" selection-end-line="35" selection-end-column="38" />
+        <state relative-caret-position="404">
+          <caret line="49" column="41" lean-forward="true" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2601#2602#0" expanded="true" />
             <element signature="e#2639#2640#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/sql/Statement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="513">
+          <caret line="350" column="18" selection-start-line="350" selection-start-column="18" selection-end-line="350" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="377">
+          <caret line="568" column="129" lean-forward="true" selection-start-line="568" selection-start-column="129" selection-end-line="568" selection-end-column="129" />
         </state>
       </provider>
     </entry>

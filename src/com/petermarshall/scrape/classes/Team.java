@@ -65,14 +65,14 @@ public class Team {
     }
 
     private Date[] getPotentialDates(Date dateKey) {
-        Date yesterday = DateHelper.add1DayToDate(dateKey);
-        Date today = DateHelper.subtract1DayFromDate(dateKey);
+        Date yesterday = DateHelper.subtract1DayFromDate(dateKey);
+        Date tomorrow = DateHelper.add1DayToDate(dateKey);
 
         //order is important as we want to have dates closest to target date first.
         return new Date[]{
                 yesterday,
-                today,
-                DateHelper.add1DayToDate(today),
+                tomorrow,
+                DateHelper.add1DayToDate(tomorrow),
                 DateHelper.subtract1DayFromDate(yesterday)
         };
     }

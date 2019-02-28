@@ -571,7 +571,10 @@ public class DataSource {
 
 //                System.out.println(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length()-2));
 
-                    statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length()-2));
+                    boolean insertedPlayers = statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length()-2));
+                    if (!insertedPlayers) {
+                        System.out.println("We didn't insert players for both teams in " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
+                    }
 
                     numbMatchesUpdated++;
 
