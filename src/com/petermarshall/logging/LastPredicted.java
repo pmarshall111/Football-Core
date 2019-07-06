@@ -30,7 +30,7 @@ public class LastPredicted {
         try (BufferedReader br = new BufferedReader(new FileReader(locationOfDateLastPredicted))) {
 
             String dateString = br.readLine();
-            return DateHelper.getDateFromStandardDateString(dateString);
+            return DateHelper.getDateFromStandardToStringFormat(dateString);
 
         } catch (IOException e) {
             e.printStackTrace();

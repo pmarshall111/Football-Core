@@ -24,7 +24,7 @@ public class UptimeData {
     }
 
     public double getPercUptime() {
-        return (double) betsPredictedInRealTime / ( (double) betsPredictedLater + (double) betsPredictedInRealTime);
+        return 100 * betsPredictedInRealTime / (double) (betsPredictedLater + betsPredictedInRealTime);
     }
 
     public int getTotalNumbBets() {

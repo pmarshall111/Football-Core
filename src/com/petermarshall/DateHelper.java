@@ -192,6 +192,7 @@ public class DateHelper {
         }
     }
 
+    //confirmed to work with negative days 04/06/19
     public static Date addDaysToDate(Date date, int days) {
         SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
         String[] partsOfDate = date.toString().split(" ");
@@ -286,7 +287,19 @@ public class DateHelper {
         }
     }
 
-    public static Date getDateFromStandardDateString(String dateString) {
+    //2018-08-10 21:45:00
+    public static Date getDateFromUnderstatDateString(String dateString) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            return fmt.parse(dateString);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    //Tue Jun 04 16:36:21 UTC 2019
+    public static Date getDateFromStandardToStringFormat(String dateString) {
         SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
 
         String[] partsOfDate = dateString.split(" ");
@@ -313,9 +326,9 @@ public class DateHelper {
 //        System.out.println(setDate(2019,1,1));
 //        System.out.println(setMonthAndDay(new Date(), 5,5));
 
-//        System.out.println(getDateFromStandardDateString("Tue Jan 01 10:37:32 GMT 2019"));
+//        System.out.println(getDateFromStandardToStringFormat("Tue Jan 01 10:37:32 GMT 2019"));
 
-        System.out.println(addDaysToDate(new Date(), 30));
+        System.out.println(addDaysToDate(new Date(), -5));
     }
 
 }

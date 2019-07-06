@@ -1,9 +1,11 @@
 package com.petermarshall.machineLearning.createData;
+import com.petermarshall.DateHelper;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 import com.petermarshall.database.DataSource;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 //This file will be the main interface into the CreateData package.
 //Things we want to do with MachineLearning package:
@@ -31,12 +33,27 @@ public class Main {
         DataSource.closeConnection();
     }
 
+    /*
+     * Used to move data over to octave to see if our predict file in Java did the same things as the one in Octave.
+     */
+    public static void createFileOfMatchesFromCertainDate(String matchDataFileName, Date addMatchesAfter) {
+        DataSource.openConnection();
+
+        GetMatchesFromDb.loadInDataFromDb(addMatchesAfter);
+        ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
+        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, matchDataFileName);
+
+        DataSource.closeConnection();
+    }
+
     public static void addFeaturesToMatchesToPredict(ArrayList<MatchToPredict> matches) {
         GetMatchesFromDb.addFeaturesToMatchesToPredict(matches);
     }
 
     public static void main(String[] args) {
-        createFilesToTrainAndTestOn("octaveEvenMoreTraining.csv", "octaveEvenMoreTest.csv", "javaEvenMoreTest.csv");
+//        createFilesToTrainAndTestOn("octaveEvenMoreTraining.csv", "octaveEvenMoreTest.csv", "javaEvenMoreTest.csv");
+        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
+        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
     }
 
 }

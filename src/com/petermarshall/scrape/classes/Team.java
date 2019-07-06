@@ -64,16 +64,16 @@ public class Team {
         return null;
     }
 
+    //TODO: think of implications of extending this to 3 and possibly 4 days. Is it possible that we will assign data to the wrong game based on going too far out? For what is this used for?
     private Date[] getPotentialDates(Date dateKey) {
-        Date yesterday = DateHelper.subtract1DayFromDate(dateKey);
-        Date tomorrow = DateHelper.add1DayToDate(dateKey);
-
         //order is important as we want to have dates closest to target date first.
         return new Date[]{
-                yesterday,
-                tomorrow,
-                DateHelper.add1DayToDate(tomorrow),
-                DateHelper.subtract1DayFromDate(yesterday)
+                DateHelper.addDaysToDate(dateKey, 1),
+                DateHelper.addDaysToDate(dateKey, -1),
+                DateHelper.addDaysToDate(dateKey, 2),
+                DateHelper.addDaysToDate(dateKey, -2),
+                DateHelper.addDaysToDate(dateKey, 3),
+                DateHelper.addDaysToDate(dateKey, -3),
         };
     }
 

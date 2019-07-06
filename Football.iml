@@ -246,5 +246,6 @@
     <orderEntry type="library" name="weka-stable-3.8.0" level="project" />
     <orderEntry type="library" name="ejml-all-0.37" level="project" />
     <orderEntry type="library" name="org.simplejavamail:simple-java-mail:5.1.0" level="project" />
+    <orderEntry type="library" name="groovy-2.5.7" level="application" />
   </component>
 </module>

@@ -37,6 +37,12 @@ public class GetMatchesFromDb {
      *
      * Will only get data for played games, as we get the data out of the database by Player Ratings. (if the game hasn't been played yet, there will be no player ratings for that game.)
      */
+    public static void loadInDataFromDb(Date onlyAddTrainingMatchAfter) {
+        if (onlyAddTrainingMatchAfter != null) {
+            addTrainingMatchesOnlyAfter = onlyAddTrainingMatchAfter;
+        }
+        loadInDataFromDb();
+    }
     public static void loadInDataFromDb() {
         DataSource.openConnection();
 
@@ -80,6 +86,7 @@ public class GetMatchesFromDb {
     private static HashMap<String, HashMap<String, TrainingTeam>> leaguesOfTeams = new HashMap<>();
     private static HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
     private static ArrayList<TrainingMatch> trainingData = new ArrayList<>();
+    private static Date addTrainingMatchesOnlyAfter = null;
 
     //NOTE: we store this data outside of loop as we're looping through the player ratings. We only know we're done with a game when
     //we get to a player rating from a different match, or the end of the ResultSet. Sqlite3 doesn't support backwards iteration, so we cannot go back
@@ -193,7 +200,9 @@ public class GetMatchesFromDb {
                 homeScore != -1 && awayScore != -1 &&
                 homeXGF != -1 && awayXGF != -1 && homeWinOdds != -1 && drawOdds != -1 && awayWinOdds != -1) {
 
-            trainingData.add(match);
+            if (addTrainingMatchesOnlyAfter == null || match.getKickoffTime().after(addTrainingMatchesOnlyAfter)) {
+                trainingData.add(match);
+            }
 
         }
     }
@@ -461,7 +470,11 @@ public class GetMatchesFromDb {
         ArrayList<String> awayLineup = new ArrayList<>();
         for (int i = 0; i<11; i++) {
             homeLineup.add(homePlayers.get(i).getPlayerName());
-            awayLineup.add(awayPlayers.get(i).getPlayerName());
+            try {
+                awayLineup.add(awayPlayers.get(i).getPlayerName());
+            } catch (Exception e) {
+                System.out.println("we have an eerrr");
+            }
         }
 
         match.setHomeTeamStats(homeTeam.getTeamName(),

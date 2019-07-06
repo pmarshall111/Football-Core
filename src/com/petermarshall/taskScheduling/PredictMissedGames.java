@@ -1,5 +1,6 @@
 package com.petermarshall.taskScheduling;
 
+import com.petermarshall.DateHelper;
 import com.petermarshall.database.DataSource;
 import com.petermarshall.logging.LastPredicted;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
@@ -19,6 +20,8 @@ public class PredictMissedGames {
         DataSource.openConnection();
 
         Date checkGamesAfterDate = LastPredicted.getWhenMissedGamesWereLastPredicted();
+        checkGamesAfterDate = DateHelper.removeTimeFromDate(checkGamesAfterDate);
+
         ArrayList<MatchToPredict> matchesWeDidntPredict = DataSource.getMatchesWithoutPredictions(checkGamesAfterDate);
 
         if (matchesWeDidntPredict.size() > 0) {

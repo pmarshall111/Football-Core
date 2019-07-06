@@ -233,7 +233,7 @@ public class Predict {
         if (biggestIndex == -1 || biggestProb == -1 || secondBiggestProb == -1) throw new RuntimeException("Problem with getting the bet orders out of our predictions.");
 
         boolean winMostLikely = biggestIndex != 1;
-        boolean isBiggerThanSecondByDelta = biggestProb - secondBiggestProb > delta && winMostLikely;
+        boolean isBiggerThanSecondByDelta = (biggestProb - secondBiggestProb > delta) && winMostLikely;
 
 //            double ourWinRatio = ourPredictions[0]/ourPredictions[2];
 //            double ourLossRatio = ourPredictions[2]/ourPredictions[0];
@@ -255,7 +255,7 @@ public class Predict {
 //                    boolean betOnWinRatio = ourWinRatio - bookieWinRatio > sigma;
 //                    boolean betOnLossRatio = ourLossRatio - bookieLossRatio > sigma;
 
-                boolean betOnBetterThanBookies = biggestProb - bookiesProbabilities[biggestIndex] > gamma && isBiggerThanSecondByDelta;
+                boolean betOnBetterThanBookies = (biggestProb - bookiesProbabilities[biggestIndex] > gamma) && isBiggerThanSecondByDelta;
 
                 //IMPORTANT: MUST NOT CHANGE FORMAT OF STRINGS TO BE ADDED TO TREESET AS WE'RE SORTING BASED ON THE BOOKIES PREDICTION BEING THE FIRST VALUE.
 //                    if (betOnWinRatio) {
@@ -322,12 +322,11 @@ public class Predict {
         DataSource.openConnection();
 
         for (MatchToPredict match: matches) {
-            TreeSet<String> homeWin = new TreeSet<>();
-            TreeSet<String> awayWin = new TreeSet<>();
+            TreeSet<String> homeWinTreeSet = new TreeSet<>();
+            TreeSet<String> awayWinTreeSet = new TreeSet<>();
+            calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWinTreeSet, awayWinTreeSet);
 
-            calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWin, awayWin);
-            MatchLog matchLog = getMatchLogForMissedPredictionGame(match, homeWin, awayWin);
-
+            MatchLog matchLog = getMatchLogForMissedPredictionGame(match, homeWinTreeSet, awayWinTreeSet);
             DataSource.logBetPlaced(matchLog);
         }
 

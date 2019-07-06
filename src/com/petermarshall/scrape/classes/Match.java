@@ -14,7 +14,7 @@ public class Match {
 
     private int firstScorer; //1 means hometeam, 2 means awayteam
 
-    private final Date kickoffTime;
+    private Date kickoffTime;
 
     //player ratings data will come from sofascore scraper
     private HashMap<String, PlayerRating> homePlayerRatings;
@@ -83,7 +83,17 @@ public class Match {
     public Date getKickoffTime() {
         return kickoffTime;
     }
-
+    //changes kickoff time for the match and also changes the date in each teams' matchmap
+    //TODO: do we ened to change the date/position of the match in our season arraylist? what do we even use that for?
+    public void setKickoffTime(Date kickoffTime) {
+        HashMap<Date, Match> homeTeamHashMap = this.homeTeam.getAllMatches();
+        HashMap<Date, Match> awayTeamHashMap = this.awayTeam.getAllMatches();
+        homeTeamHashMap.put(kickoffTime, this);
+        homeTeamHashMap.remove(this.kickoffTime);
+        awayTeamHashMap.put(kickoffTime, this);
+        awayTeamHashMap.remove(this.kickoffTime);
+        this.kickoffTime = kickoffTime;
+    }
 
     public int getHomeScore() {
         return homeScore;

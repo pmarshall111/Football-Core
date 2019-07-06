@@ -27,6 +27,9 @@ public class DataSource {
     private static int MATCH_NEXT_ID = -1;
     private static int PLAYER_RATING_NEXT_ID = -1;
 
+    private static String HOMETEAM = "hometeam";
+    private static String AWAYTEAM = "awayteam";
+
     public static boolean isOpen() {
         try {
         return connection == null || !connection.isClosed();
@@ -498,9 +501,6 @@ public class DataSource {
                 String homeTeamName = match.getHomeTeam().getTeamName();
                 String awayTeamName = match.getAwayTeam().getTeamName();
 
-                String HOMETEAM = "hometeam";
-                String AWAYTEAM = "awayteam";
-
                 ResultSet resultSet = statement.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + HOMETEAM + "._id, " + AWAYTEAM + "._id, " +
                         MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() +
                         " FROM " + MatchTable.getTableName() +
@@ -519,10 +519,8 @@ public class DataSource {
                     int homeScoreInDb = resultSet.getInt(4);
                     double homeWinOdds = resultSet.getDouble(5);
 
-                    if (homeScoreInDb > -1 && homeWinOdds > -1) continue; //means we already have updated this game in the database. exiting here so we don't add duplicate player ratings.
 
-
-                    //needs to update homeXG, homescore, homeWinOdds, awayXG, awayscore, awaywinodds, drawodds, firstscorer.
+                    //needs to update homeXG, homescore, homeWinOdds, awayXG, awayscore, awaywinodds, drawodds, firstscorer, date (if a postponement has not been updated).
                     double homeXGF = match.getHomeXGF();
                     double awayXGF = match.getAwayXGF();
                     int homeScore = match.getHomeScore();
@@ -531,6 +529,7 @@ public class DataSource {
                     double drawOdds = match.getDrawOdds();
                     double awayOdds = match.getAwayOdds();
                     int firstScorer = match.getFirstScorer();
+                    String kickOffTime = DateHelper.getSqlDate(match.getKickoffTime());
 
                     if (homeXGF == -1d || awayXGF == -1d || homeScore == -1 || awayScore == -1 || homeOdds == -1d || drawOdds == -1d || awayOdds == -1d) {
                         System.out.println("TRYING TO STORE A PLAYED MATCH TO DATABASE WITHOUT HAVING ALL REQUIRED INFO. " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
@@ -548,7 +547,8 @@ public class DataSource {
                             " SET " + MatchTable.getColHomeXg() + " = " + homeXGF + ", " + MatchTable.getColAwayXg() + " = " + awayXGF + ", " +
                             MatchTable.getColHomeScore() + " = " + homeScore + ", " + MatchTable.getColAwayScore() + " = " + awayScore + ", " +
                             MatchTable.getColHomeWinOdds() + " = " + homeOdds + ", " + MatchTable.getColDrawOdds() + " = " + drawOdds + ", " +
-                            MatchTable.getColAwayWinOdds() + " = " + awayOdds + ", " + MatchTable.getColFirstScorer() + " = " + firstScorer +
+                            MatchTable.getColAwayWinOdds() + " = " + awayOdds + ", " + MatchTable.getColFirstScorer() + " = " + firstScorer + ", " +
+                            MatchTable.getColDate() + " = '" + kickOffTime + "'" +
                             " WHERE " + MatchTable.getTableName() + "._id" + " = " + matchId);
 
                     //writing player ratings
@@ -558,22 +558,15 @@ public class DataSource {
                     if (homeRatings.size() < 11 || awayRatings.size() < 11)
                         throw new RuntimeException("We have managed to scrape a game without all player ratings present. " + homeTeamName + " vs " + awayTeamName + " in " + seasonKey);
 
-                     StringBuilder SQL_INSERT_STATEMENT = new StringBuilder("INSERT INTO " + PlayerRatingsTable.getTableName() + " (" + PlayerRatingsTable.getColPlayerName() + ", " +
-                             PlayerRatingsTable.getColRating() + ", " + PlayerRatingsTable.getColMins() + ", " + PlayerRatingsTable.getColMatchId() + ", " +
-                             PlayerRatingsTable.getColTeamId() + ", _id ) " + "VALUES ");
+                    boolean homeTeamSuccessfulInsert = insertTeamsPlayerRatings(homeRatings, matchId, hometeamId, statement);
+                    boolean awayTeamSuccessfulInsert = insertTeamsPlayerRatings(awayRatings, matchId, awayteamId, statement);
 
-                     for (PlayerRating rating: homeRatings.values()) {
-                         addPlayerRatingsToStringBuilder(SQL_INSERT_STATEMENT, rating, matchId, hometeamId, ++PLAYER_RATING_NEXT_ID);
-                     }
-                     for (PlayerRating rating: homeRatings.values()) {
-                         addPlayerRatingsToStringBuilder(SQL_INSERT_STATEMENT, rating, matchId, awayteamId, ++PLAYER_RATING_NEXT_ID);
-                     }
-
-//                System.out.println(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length()-2));
-
-                    boolean insertedPlayers = statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length()-2));
-                    if (!insertedPlayers) {
-                        System.out.println("We didn't insert players for both teams in " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
+                    if (!homeTeamSuccessfulInsert && awayTeamSuccessfulInsert) {
+                        System.out.println("Both teams already have player ratings in DB " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
+                    } else if (!homeTeamSuccessfulInsert) {
+                        System.out.println("Home team already has player ratings " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
+                    } else if (!awayTeamSuccessfulInsert) {
+                        System.out.println("Away team already has player ratings " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
                     }
 
                     numbMatchesUpdated++;
@@ -587,6 +580,25 @@ public class DataSource {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static boolean insertTeamsPlayerRatings(HashMap<String, PlayerRating> playerRatings, int matchId, int teamId, Statement statement) {
+        StringBuilder SQL_INSERT_STATEMENT = createSqlInsertStatement();
+        for (PlayerRating rating: playerRatings.values()) {
+            addPlayerRatingsToStringBuilder(SQL_INSERT_STATEMENT, rating, matchId, teamId, ++PLAYER_RATING_NEXT_ID);
+        }
+
+        try {
+            return statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length() - 2));
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    private static StringBuilder createSqlInsertStatement() {
+        return new StringBuilder("INSERT INTO " + PlayerRatingsTable.getTableName() + " (" + PlayerRatingsTable.getColPlayerName() + ", " +
+                PlayerRatingsTable.getColRating() + ", " + PlayerRatingsTable.getColMins() + ", " + PlayerRatingsTable.getColMatchId() + ", " +
+                PlayerRatingsTable.getColTeamId() + ", _id ) " + "VALUES ");
     }
 
     private static void addPlayerRatingsToStringBuilder(StringBuilder stringBuilder, PlayerRating playerRating, int matchId, int teamId, int playerId) {
@@ -606,11 +618,13 @@ public class DataSource {
     }
 
     /*
-     * Needed because whoscored (who we created our dates from) sometimes have incorrect start dates and times.
+     * Needed because understat (who we created our dates from) sometimes have incorrect start dates and times.
      *
      * Called from SofaScore file.
      *
      * Will also be used to change postponed matches in the database.
+     *
+     * //TODO: needs a check to make sure the correct startDate format is given by the user.
      */
     public static void changeMatchStartTime(String seasonYear, String homeTeamName, String awayTeamName, String startDate, int sofaScoreID) {
         try (Statement statement = connection.createStatement()) {
@@ -923,7 +937,7 @@ public class DataSource {
             int numbPredictedRealTime = realTime.getInt(1);
             int numbPredictedLater = predictedLaterOn.getInt(1);
 
-            return new UptimeData(numbPredictedRealTime, numbPredictedLater, DateHelper.turnDateToddMMyyyyString(WHEN_CHANGED_DATABASE_TO_RECORD_PREDICTIONS));
+            return new UptimeData(numbPredictedLater, numbPredictedRealTime, DateHelper.turnDateToddMMyyyyString(WHEN_CHANGED_DATABASE_TO_RECORD_PREDICTIONS));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1006,34 +1020,85 @@ public class DataSource {
         return matchesWithoutPredictions;
     }
 
-    //TODO: add method to get missed matches out of database.
+
     /*
      * Method to be used to add data to games that do not have data in the database. can be caused by sites we scrape from not having all the data when we scrape.
      * Selects games without score data or bet data
      *
      * Adds matches and also creates teams. Then adds the created matches to the teams as this is how matches will mostly be accessed.
+     *
      */
     public static void addMissedMatches(HashSet<League> allLeagues) {
-        try (Statement statement = connection.createStatement()) {
-            String HOMETEAM = "hometeam";
-            String AWAYTEAM = "awayteam";
-            java.util.Date todayNoTime = DateHelper.setTimeOfDate(new java.util.Date(), 0, 0, 0);
-            String sqlBeginningOfToday = DateHelper.getSqlDate(todayNoTime);
 
-//            System.out.println("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-//                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
-//                    LeagueTable.getTableName() + "." + LeagueTable.getColName() +
-//                    " FROM " + MatchTable.getTableName() +
-//                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
-//                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
-//                    " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
-//                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-//                    " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " < " + sqlBeginningOfToday +
-//                    " AND (" + MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + " < " + 0 +
-//                    " OR " + MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + " < " + 0 + ")" +
-//                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + "ASC");
+        try (Statement statement1 = connection.createStatement();
+             Statement statement2 = connection.createStatement();
+             Statement statement3 = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
+            ResultSet r1 = getMatchesWithoutScoreOrOdds(statement1);
+            ResultSet r2 = getMatchesWhereOneTeamDoesNotHavePlayerRatings(statement2);
+            ResultSet r3 = getMatchesWithoutBothTeamsHavingPlayerRatings(statement3);
+
+            ResultSet[] matchesToAdd = new ResultSet[]{r1, r2, r3};
+
+            League currLeague = null;
+            Season currSeason = null;
+            for (ResultSet resultSet : matchesToAdd) {
+                while (resultSet.next()) {
+                    String homeTeamName = resultSet.getString(1);
+                    String awayTeamName = resultSet.getString(2);
+                    String date = resultSet.getString(3);
+                    String seasonYear = resultSet.getString(4);
+                    String leagueName = resultSet.getString(5);
+                    if (homeTeamName.equals("SC Bastia") && awayTeamName.equals("Lyon") && seasonYear.equals("16-17"))
+                        continue; //sofascore does not have player ratings for this game.
+
+                    if (currLeague == null || !currLeague.getName().equals(leagueName)) {
+                        currLeague = allLeagues.stream()
+                                .filter(l -> l.getName().equals(leagueName))
+                                .findFirst()
+                                .orElseThrow(RuntimeException::new);
+                        currSeason = currLeague.getSeason(seasonYear);
+                    } else if (currSeason == null || !currSeason.getSeasonKey().equals(seasonYear)) {
+                        currSeason = currLeague.getSeason(seasonYear);
+                    }
+
+                    //try to find teams
+                    Team homeTeam = currSeason.getTeam(homeTeamName);
+                    if (homeTeam == null) {
+                        homeTeam = new Team(homeTeamName);
+                        currSeason.addNewTeam(homeTeam);
+                    }
+
+                    Team awayTeam = currSeason.getTeam(awayTeamName);
+                    if (awayTeam == null) {
+                        awayTeam = new Team(awayTeamName);
+                        currSeason.addNewTeam(awayTeam);
+                    }
+
+                    java.util.Date kickoffTime = DateHelper.createDateFromSQL(date);
+
+                    Match match = homeTeam.getMatchFromAwayTeamName(awayTeamName);
+                    if (match == null) {
+                        match = new Match(homeTeam, awayTeam, kickoffTime);
+                        homeTeam.addMatch(match);
+                        awayTeam.addMatch(match);
+                        currSeason.addNewMatch(match);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static ResultSet getMatchesWithoutScoreOrOdds(Statement statement) {
+        java.util.Date todayNoTime = DateHelper.setTimeOfDate(new java.util.Date(), 0, 0, 0);
+        String sqlBeginningOfToday = DateHelper.getSqlDate(todayNoTime);
+
+        try {
+            return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
                     LeagueTable.getTableName() + "." + LeagueTable.getColName() +
                     " FROM " + MatchTable.getTableName() +
@@ -1045,53 +1110,63 @@ public class DataSource {
                     " AND (" + MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + " < " + 0 +
                     " OR " + MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + " < " + 0 + ")" +
                     " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
-
-            League currLeague = null;
-            Season currSeason = null;
-
-            while (resultSet.next()) {
-                String homeTeamName = resultSet.getString(1);
-                String awayTeamName = resultSet.getString(2);
-                String date = resultSet.getString(3);
-                String seasonYear = resultSet.getString(4);
-                String leagueName = resultSet.getString(5);
-                if (homeTeamName.equals("SC Bastia") && awayTeamName.equals("Lyon") && seasonYear.equals("16-17")) continue; //sofascore does not have player ratings for this game.
-
-                if (currLeague == null || !currLeague.getName().equals(leagueName)) {
-                    currLeague = allLeagues.stream()
-                                            .filter(l -> l.getName().equals(leagueName))
-                                            .findFirst()
-                                            .orElseThrow(RuntimeException::new);
-                    currSeason = currLeague.getSeason(seasonYear);
-                }
-                else if (currSeason == null || !currSeason.getSeasonKey().equals(seasonYear)) {
-                    currSeason = currLeague.getSeason(seasonYear);
-                }
-
-                //try to find teams
-                Team homeTeam = currSeason.getTeam(homeTeamName);
-                if (homeTeam == null) {
-                    homeTeam = new Team(homeTeamName);
-                    currSeason.addNewTeam(homeTeam);
-                }
-
-                Team awayTeam = currSeason.getTeam(awayTeamName);
-                if (awayTeam == null) {
-                    awayTeam = new Team(awayTeamName);
-                    currSeason.addNewTeam(awayTeam);
-                }
-
-                java.util.Date kickoffTime = DateHelper.createDateFromSQL(date);
-                //then create match
-                Match match = new Match(homeTeam, awayTeam, kickoffTime);
-
-                homeTeam.addMatch(match);
-                awayTeam.addMatch(match);
-                currSeason.addNewMatch(match);
-            }
-
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    //TODO: see if we can just scrape in all new data without deleting the teams ratings that are already in there.
+    //TODO: if we end up with duplicates, we will have to add some logic in here to make a delete request to the teams that have ratings in there. If we do this, we'll need to
+    //todo: enforce getMatchesWithoutBothTeamsHavingPlayerRatings() method before this one so that we do not get repeated games.
+    private static ResultSet getMatchesWhereOneTeamDoesNotHavePlayerRatings(Statement statement) {
+        java.util.Date todayNoTime = DateHelper.setTimeOfDate(new java.util.Date(), 0, 0, 0);
+        String sqlBeginningOfToday = DateHelper.getSqlDate(todayNoTime);
+
+        String countOfPlayersInMatchCol = "playersInMatch";
+
+        try {
+            return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
+                    LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + "COUNT(*) AS " + countOfPlayersInMatchCol +
+                    " FROM " + PlayerRatingsTable.getTableName() +
+                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
+                    " GROUP BY " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() +
+                    " HAVING " + countOfPlayersInMatchCol + " < " + 22 +
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static ResultSet getMatchesWithoutBothTeamsHavingPlayerRatings(Statement statement) {
+        java.util.Date todayNoTime = DateHelper.setTimeOfDate(new java.util.Date(), 0, 0, 0);
+        String sqlBeginningOfToday = DateHelper.getSqlDate(todayNoTime);
+
+        try {
+            return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
+                    LeagueTable.getTableName() + "." + LeagueTable.getColName() +
+                    " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
+                    " WHERE " + MatchTable.getTableName() + "._id" + " NOT IN (" +
+                    " SELECT " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() + " FROM " + PlayerRatingsTable.getTableName() + ")" +
+                    " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " < '" + sqlBeginningOfToday + "'" +
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 

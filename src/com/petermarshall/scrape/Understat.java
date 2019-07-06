@@ -2,6 +2,7 @@ package com.petermarshall.scrape;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
+import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
@@ -174,15 +175,15 @@ public class Understat {
 
         Iterator datesIterator = datesData.iterator();
         while (datesIterator.hasNext()) {
-            JSONObject nextMatch = (JSONObject) datesIterator.next();
+            JSONObject matchObj = (JSONObject) datesIterator.next();
 
-            String homeTeamName = (String) ((JSONObject) nextMatch.get("h")).get("title");
-            String awayTeamName = (String) ((JSONObject) nextMatch.get("a")).get("title");
+            String homeTeamName = (String) ((JSONObject) matchObj.get("h")).get("title");
+            String awayTeamName = (String) ((JSONObject) matchObj.get("a")).get("title");
 
             Match thisMatch = findMatchBetweenTeams(matchesToUpdate, homeTeamName, awayTeamName);
             if (thisMatch != null) {
-                // will already have the date info in the match created from data from database.
-                JSONObject goals = (JSONObject) nextMatch.get("goals");
+                updateMatchKickoffTime(thisMatch, matchObj);
+                JSONObject goals = (JSONObject) matchObj.get("goals");
 
                 try {
                     int homeGoals = Integer.parseInt(goals.get("h").toString());
@@ -218,6 +219,11 @@ public class Understat {
                     throw new RuntimeException("Bad dateTime from team " + teamName + ". The date given is " + dateTime);
                 }
 
+                //TODO: add a check in here for toulouse and the date "2018-12-18 00:00:00" to see if our getMatchFromDate is working.
+                if (currTeam.getTeamName().equals("Nantes") && dateTime.contains("2019-01-30")) {
+                    System.out.println("here");
+                }
+
                 Match currMatch = currTeam.getMatchFromDate(date);
                 if (currMatch == null) continue;
 
@@ -229,6 +235,16 @@ public class Understat {
                 currMatch.setAwayXGF(isHomeTeam ? xGA : xGF);
             }
         }
+    }
+
+    //updates the kickoff time in the match, and also must update the entry in each teams' matchmap
+    private static void updateMatchKickoffTime(Match match, JSONObject matchObj) {
+        //updating date info to make 100% sure we can find correct match when finding xG (xG data has no awayteam names, just dates.)
+        //NOTE: don't even need to do this anyway because Understat have different dates between their own data for the same game! fantastic!
+        String date = matchObj.get("datetime").toString();
+        Date understatKOTime = DateHelper.getDateFromUnderstatDateString(date);
+        match.setKickoffTime(understatKOTime);
+
     }
 
 
