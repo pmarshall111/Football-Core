@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 //Season class goes within the League class.
 public class Season {
-    private final String seasonKey;
+    private final String seasonKey; //TODO: WTF IS A SEASON KEY?? NEEDS TO BE MORE DESCRIPTIVE. SEEMS TO BE THE YEARS IN OPERATION. DB HAS BEEN CHANGED TO USE JUST THE BEGINNING YEAR.
     private HashMap<String, Team> teams;
     private ArrayList<Match> matches;
 

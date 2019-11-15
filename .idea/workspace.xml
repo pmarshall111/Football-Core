@@ -7,16 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/BetTable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/LogTable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/LeagueTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/LeagueTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingsTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/TeamTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/TeamTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -91,7 +83,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="24" />
-          <entry key="JAVA" value="268368" />
+          <entry key="JAVA" value="269950" />
           <entry key="PLAIN_TEXT" value="18678" />
         </counts>
       </usages-collector>
@@ -112,7 +104,7 @@
           <entry key="CLASS" value="13" />
           <entry key="Groovy" value="1" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="546" />
+          <entry key="JAVA" value="547" />
           <entry key="Manifest" value="2" />
           <entry key="PLAIN_TEXT" value="76" />
         </counts>
@@ -124,10 +116,23 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="104" column="37" lean-forward="true" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
+            <state relative-caret-position="228">
+              <caret line="251" column="5" lean-forward="true" selection-start-line="251" selection-start-column="5" selection-end-line="251" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="7" column="183" selection-start-line="7" selection-start-column="183" selection-end-line="7" selection-end-column="183" />
+              <folding>
+                <element signature="e#680#681#0" expanded="true" />
+                <element signature="e#712#713#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -238,7 +243,6 @@
         <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesWithoutData.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertBets.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" />
@@ -265,6 +269,7 @@
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/TeamTable.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/LeagueTable.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerTable.java" />
+        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" />
         <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
       </list>
     </option>
@@ -394,7 +399,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573830820615" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573834319523" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
@@ -561,7 +566,7 @@
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.327787" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3262295" />
       <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.40238613" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.40347072" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -635,7 +640,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java</url>
-          <line>1205</line>
+          <line>1219</line>
           <properties />
           <option name="timeStamp" value="26" />
         </line-breakpoint>
@@ -857,13 +862,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="319">
           <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -1137,10 +1135,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="183" selection-start-line="7" selection-start-column="183" selection-end-line="7" selection-end-column="183" />
+          <folding>
+            <element signature="e#680#681#0" expanded="true" />
+            <element signature="e#712#713#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="104" column="37" lean-forward="true" selection-start-line="104" selection-start-column="37" selection-end-line="104" selection-end-column="37" />
+        <state relative-caret-position="228">
+          <caret line="251" column="5" lean-forward="true" selection-start-line="251" selection-start-column="5" selection-end-line="251" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

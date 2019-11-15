@@ -21,15 +21,17 @@ public class DataSource {
     private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
     private static Connection connection;
 
-    private static int LEAGUE_NEXT_ID = -1;
-    private static int SEASON_NEXT_ID = -1;
-    private static int TEAM_NEXT_ID = -1;
-    private static int MATCH_NEXT_ID = -1;
-    private static int PLAYER_RATING_NEXT_ID = -1;
-    private static int PLAYER_NEXT_ID = -1;
+    private static int LEAGUE_ID = -1;
+    private static int SEASON_ID = -1;
+    private static int TEAM_ID = -1;
+    private static int MATCH_ID = -1;
+    private static int PLAYER_RATING_ID = -1;
+    private static int PLAYER_ID = -1;
 
     private static String HOMETEAM = "homeTeam";
     private static String AWAYTEAM = "awayTeam";
+
+    private static League currLeague;
 
     public static boolean isOpen() {
         try {
@@ -75,7 +77,8 @@ public class DataSource {
                     "' ('" + LeagueTable.getColName() + "' TEXT NOT NULL UNIQUE," + " '_id' INTEGER UNIQUE, PRIMARY KEY('_id') )");
 
             statement.execute("CREATE TABLE IF NOT EXISTS '" + SeasonTable.getTableName() +
-                    "' ('" + SeasonTable.getColYearBeginning() + "' INTEGER NOT NULL, '_id' INTEGER UNIQUE, PRIMARY KEY('_id') )");
+                    "' ('" + SeasonTable.getColYearBeginning() + "' INTEGER NOT NULL CHECK('" + SeasonTable.getColYearBeginning() + "' <= 99)" +
+                    ", '_id' INTEGER UNIQUE, PRIMARY KEY('_id') )");
 
             statement.execute("CREATE TABLE IF NOT EXISTS '" + TeamTable.getTableName() +
                     "' ('" + TeamTable.getColTeamName() + "' TEXT NOT NULL, '" + TeamTable.getColLeagueId() + "' INTEGER NOT NULL, "
@@ -139,22 +142,25 @@ public class DataSource {
                  Statement statement3 = connection.createStatement();
                  Statement statement4 = connection.createStatement();
                  Statement statement5 = connection.createStatement();
+                 Statement statement6 = connection.createStatement();
 
                  ResultSet LeagueSet = statement1.executeQuery("SELECT max(_id) FROM '" + LeagueTable.getTableName() + "'");
                  ResultSet SeasonSet = statement2.executeQuery("SELECT max(_id) FROM '" + SeasonTable.getTableName() + "'");
                  ResultSet TeamSet = statement3.executeQuery("SELECT max(_id) FROM '" + TeamTable.getTableName() + "'");
                  ResultSet MatchSet = statement4.executeQuery("SELECT max(_id) FROM '" + MatchTable.getTableName() + "'");
                  ResultSet PlayerRatingsSet = statement5.executeQuery("SELECT max(_id) FROM '" + PlayerRatingTable.getTableName() + "'");
+                 ResultSet PlayerSet = statement6.executeQuery("SELECT max(_id) FROM '" + PlayerTable.getTableName() + "'");
             ) {
 
-                LEAGUE_NEXT_ID = LeagueSet.getInt(1);
-                SEASON_NEXT_ID = SeasonSet.getInt(1);
-                TEAM_NEXT_ID = TeamSet.getInt(1);
-                MATCH_NEXT_ID = MatchSet.getInt(1);
-                PLAYER_RATING_NEXT_ID = PlayerRatingsSet.getInt(1);
+                LEAGUE_ID = LeagueSet.getInt(1);
+                SEASON_ID = SeasonSet.getInt(1);
+                TEAM_ID = TeamSet.getInt(1);
+                MATCH_ID = MatchSet.getInt(1);
+                PLAYER_RATING_ID = PlayerRatingsSet.getInt(1);
+                PLAYER_ID = PlayerSet.getInt(1);
 
-//                System.out.println("League: " + LEAGUE_NEXT_ID + "\nSeason: " + SEASON_NEXT_ID + "\nTeam: " + TEAM_NEXT_ID +
-//                        "\nMatch: " + MATCH_NEXT_ID + "\nPlayerRatings: " + PLAYER_RATING_NEXT_ID );
+//                System.out.println("League: " + LEAGUE_ID + "\nSeason: " + SEASON_ID + "\nTeam: " + TEAM_ID +
+//                        "\nMatch: " + MATCH_ID + "\nPlayerRatings: " + PLAYER_RATING_ID );
 
                 return true;
 
@@ -173,43 +179,44 @@ public class DataSource {
     public static void writeLeagueToDb(League league) {
         if (connection == null) throw new RuntimeException("trying to write data to db when db connection is not open");
 
-        System.out.println("Current primary key: " + LEAGUE_NEXT_ID);
+        System.out.println("Current primary key: " + LEAGUE_ID);
 
         try (Statement statement = connection.createStatement()) {
-
-            statement.execute("INSERT INTO " + LeagueTable.getTableName() + " (" + LeagueTable.getColName() + ", _id) " +
-                    "VALUES ( '" + league.getName() + "', " + ++LEAGUE_NEXT_ID + " )");
+            //TODO: worth introducing a function to show that we increment before we insert???
+            statement.execute("INSERT INTO '" + LeagueTable.getTableName() + "' (" + LeagueTable.getColName() + ", _id) " +
+                    "VALUES ( '" + league.getName() + "', " + ++LEAGUE_ID + " )");
 
             ArrayList<Season> allSeasons = league.getAllSeasons();
 
             allSeasons.forEach(season -> {
-                writeSeasonToDb(statement, season, LEAGUE_NEXT_ID);
+                writeSeasonToDb(statement, season);
             });
 
         } catch (SQLException e) {
+            //TODO: INTRODUCE LOGGING HERE
             System.out.println(e.getMessage());
             System.out.println("ERROR writing league " + league.getName() + " to db");
 
-            System.out.println("Error. Primary key now: " + LEAGUE_NEXT_ID);
+            System.out.println("Error. Primary key now: " + LEAGUE_ID);
             e.printStackTrace();
         }
     }
 
 
-    private static void writeSeasonToDb(Statement statement, Season season, int leagueId) {
+    private static void writeSeasonToDb(Statement statement, Season season) {
         try {
-            statement.execute("INSERT INTO " + SeasonTable.getTableName() + " (" + SeasonTable.getColYearBeginning() + ", " + SeasonTable.getColLeagueId() + ", _id) " +
-                    "VALUES ( '" + season.getSeasonKey() + "', " + leagueId + ", " + ++SEASON_NEXT_ID + " )");
+            statement.execute("INSERT INTO " + SeasonTable.getTableName() + " (" + SeasonTable.getColYearBeginning() + ", _id) " +
+                    "VALUES ( '" + season.getSeasonKey() + "', " + ++SEASON_ID + " )");
 
             ArrayList<Match> matchesInSeason = season.getAllMatches();
 
             matchesInSeason.forEach(match -> {
-                writeMatchToDb(statement, match, SEASON_NEXT_ID);
+                writeMatchToDb(statement, match, SEASON_ID);
             });
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("ERROR writing season " + season.getSeasonKey() + " from league " + leagueId + " to db");
+            System.out.println("ERROR writing season " + season.getSeasonKey() + " to db");
             e.printStackTrace();
         }
     }
@@ -217,24 +224,28 @@ public class DataSource {
     /*
      * Writes team to db if the team does not already exist in the database for that season. Otherwise it will find the team in the database.
      * Returns the Team _id for the requested team.
+     *
+     * TODO: HUGE PROBLEMS HERE. IF WE ALREADY HAVE LEAGUES AND TEAMS IN THE DATABASE AND GO TO WRITE A NEW TEAM TO THE DB, THE LEAGUE ID WE'D BE USING WOULD BE FOR
+     * TODO: A DIFFERENT TEAM. however this function is only currently used within the initial write so this is currently not an issue. Could be however in future.
      */
-    private static int writeTeamToDbIfNotThere(Statement statement, Team team, int seasonId) {
-        try (ResultSet teamQuerySet = statement.executeQuery("SELECT _id FROM " + TeamTable.getTableName() + " " +
-                "WHERE " + TeamTable.getColTeamName() + " = '" + team.getTeamName() + "' " +
-                "AND " + TeamTable.getColSeasonId() + " = " + seasonId)){
+    private static int writeTeamToDbIfNotThere(Statement statement, Team team) {
+        try (ResultSet teamQuerySet = statement.executeQuery("SELECT ( _id, " + LeagueTable.getTableName() + "._id) FROM '" + TeamTable.getTableName() +
+                "' INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
+                "WHERE " + TeamTable.getColTeamName() + " = '" + team.getTeamName() + "') " +
+                "AND " + LeagueTable.getTableName() + "._id = " + LEAGUE_ID)){
 
             if (teamQuerySet.next()) {
                 return teamQuerySet.getInt(1);
             }
             else {
-                statement.execute("INSERT INTO " + TeamTable.getTableName() + " (" + TeamTable.getColTeamName() + ", " + TeamTable.getColSeasonId() + ", _id) " +
-                        "VALUES ( '" + team.getTeamName() + "', " + seasonId + ", " + ++TEAM_NEXT_ID + " )");
-                return TEAM_NEXT_ID;
+                statement.execute("INSERT INTO " + TeamTable.getTableName() + " (" + TeamTable.getColTeamName() + ", " + TeamTable.getColLeagueId() + ", _id) " +
+                        "VALUES ( '" + team.getTeamName() + "', " + LEAGUE_ID + ", " + ++TEAM_ID + " )");
+                return TEAM_ID;
             }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("ERROR writing team " + team.getTeamName() + " from season " + seasonId + " to db");
+            System.out.println("ERROR writing team " + team.getTeamName() + " from league " + LEAGUE_ID + " to db");
             e.printStackTrace();
             return -1;
         }
@@ -246,8 +257,9 @@ public class DataSource {
      */
     private static void writeMatchToDb(Statement statement, Match match, int seasonId) {
         try {
-            int homeTeamId = writeTeamToDbIfNotThere(statement, match.getHomeTeam(), seasonId);
-            int awayTeamId = writeTeamToDbIfNotThere(statement, match.getAwayTeam(), seasonId);
+            //TODO: opportunity for concurrency here. Only continue once both threads have finished.
+            int homeTeamId = writeTeamToDbIfNotThere(statement, match.getHomeTeam());
+            int awayTeamId = writeTeamToDbIfNotThere(statement, match.getAwayTeam());
 
 //            System.out.println("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
 //                    MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
@@ -255,22 +267,24 @@ public class DataSource {
 //                    MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", _id) " +
 //                    "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
 //                    match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
-//                    match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + (MATCH_NEXT_ID+1) + ")");
+//                    match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + (MATCH_ID+1) + ")");
 
+            //TODO: change the way we store dates. Absolutely no need to have different date formats all over the place wondering which class uses which format
             statement.execute("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                     MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                     MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
-                    MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSofascoreId() + ", _id) " +
+                    MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonId() + ", _id) " +
                         "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
                         match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
-                        match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + match.getSofaScoreGameId() + ", " + ++MATCH_NEXT_ID + ")");
+                        match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + seasonId + ", " + ++MATCH_ID + ")");
 
 
+            //TODO: concurrent function plus writings players to db, not player ratings.
             match.getHomePlayerRatings().values().forEach(rating -> {
-                writePlayerRatingsToDb(statement, rating, MATCH_NEXT_ID, homeTeamId);
+                writePlayerRatingsToDb(statement, rating, MATCH_ID, homeTeamId);
             });
             match.getAwayPlayerRatings().values().forEach(rating -> {
-                writePlayerRatingsToDb(statement, rating, MATCH_NEXT_ID, awayTeamId);
+                writePlayerRatingsToDb(statement, rating, MATCH_ID, awayTeamId);
             });
 
         } catch (SQLException e) {
@@ -288,13 +302,13 @@ public class DataSource {
 //                    " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
 //                    PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
 //                    "VALUES ('" + playerRating.getName() + "', " + playerRating.getRating() + ", " + playerRating.getMinutesPlayed() + ", " +
-//                        matchId + ", " + teamId + ", " + ++PLAYER_RATING_NEXT_ID + ")");
+//                        matchId + ", " + teamId + ", " + ++PLAYER_RATING_ID + ")");
 
             statement.execute("INSERT INTO " + PlayerRatingTable.getTableName() +
                     " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
                     PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
                     "VALUES ('" + playerRating.getName() + "', " + playerRating.getRating() + ", " + playerRating.getMinutesPlayed() + ", " +
-                    matchId + ", " + teamId + ", " + ++PLAYER_RATING_NEXT_ID + ")");
+                    matchId + ", " + teamId + ", " + ++PLAYER_RATING_ID + ")");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -610,7 +624,7 @@ public class DataSource {
     private static boolean insertTeamsPlayerRatings(HashMap<String, PlayerRating> playerRatings, int matchId, int teamId, Statement statement) {
         StringBuilder SQL_INSERT_STATEMENT = createSqlInsertStatement();
         for (PlayerRating rating: playerRatings.values()) {
-            addPlayerRatingsToStringBuilder(SQL_INSERT_STATEMENT, rating, matchId, teamId, ++PLAYER_RATING_NEXT_ID);
+            addPlayerRatingsToStringBuilder(SQL_INSERT_STATEMENT, rating, matchId, teamId, ++PLAYER_RATING_ID);
         }
 
         try {
