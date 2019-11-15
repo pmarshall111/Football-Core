@@ -257,6 +257,7 @@ public class DataSource {
         }
     }
 
+    //TODO: can ABSOLUTELY use batch writes.
     private static void writePlayerRatingsToDb(Statement statement, PlayerRating playerRating, int matchId, int teamId) {
         try {
 
@@ -561,7 +562,7 @@ public class DataSource {
                     boolean homeTeamSuccessfulInsert = insertTeamsPlayerRatings(homeRatings, matchId, hometeamId, statement);
                     boolean awayTeamSuccessfulInsert = insertTeamsPlayerRatings(awayRatings, matchId, awayteamId, statement);
 
-                    if (!homeTeamSuccessfulInsert && awayTeamSuccessfulInsert) {
+                    if (!homeTeamSuccessfulInsert && !awayTeamSuccessfulInsert) {
                         System.out.println("Both teams already have player ratings in DB " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
                     } else if (!homeTeamSuccessfulInsert) {
                         System.out.println("Home team already has player ratings " + homeTeamName + " vs " + awayTeamName + " on " + match.getKickoffTime());
@@ -578,6 +579,7 @@ public class DataSource {
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            System.out.println("It's possible that our query to the database didn't return a result and therefore the resultset closes automatically, throwing this exception.");
             e.printStackTrace();
         }
     }
@@ -589,7 +591,8 @@ public class DataSource {
         }
 
         try {
-            return statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length() - 2));
+            statement.execute(SQL_INSERT_STATEMENT.substring(0, SQL_INSERT_STATEMENT.length() - 2));
+            return true;
         } catch (SQLException e) {
             return false;
         }
@@ -626,7 +629,7 @@ public class DataSource {
      *
      * //TODO: needs a check to make sure the correct startDate format is given by the user.
      */
-    public static void changeMatchStartTime(String seasonYear, String homeTeamName, String awayTeamName, String startDate, int sofaScoreID) {
+    public static void updateKickoffTime(String seasonYear, String homeTeamName, String awayTeamName, String startDate, int sofaScoreID) {
         try (Statement statement = connection.createStatement()) {
 
             System.out.println(homeTeamName + " vs " + awayTeamName + " on " + startDate);

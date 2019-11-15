@@ -16,7 +16,6 @@ import java.util.HashSet;
  * This method will get the games from the database without data in and try to scrape in the data again and store it in the database if successful.
  *
  *
- * TODO: problem looks more like Understat not adding data to the matches. Big problem is it cannot find the match in xG as the date has changed
  */
 public class ScrapeGamesMissingData {
 

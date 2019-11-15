@@ -138,6 +138,16 @@ public class DateHelper {
         }
     }
 
+    public static Date createDateyyyyMMddHHmmss(String yyyy, String MM, String dd, String HH, String mm, String ss) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            return fmt.parse(yyyy + "-" + MM + "-" + dd + " " + HH + ":" + mm + ":" + ss);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
     public static String getSqlDate(Date date) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

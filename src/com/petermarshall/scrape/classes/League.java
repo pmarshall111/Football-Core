@@ -71,6 +71,11 @@ public class League {
      * Will only scrape in results from yesterdays games. SofaScore scraped dates only give the day of the game, so if we tried to scrape in played games today,
      * the app would take all games to be played today and have no way of knowing if they have been played or not from sofascore.
      * For this reason, we only scrape yesterdays games as we know they will all have been played.
+     *
+     * TODO RECENT:
+     * Get out all previous games of the season that do not have final results before scrape time and look for those instead of just
+     * looking at games after a certain time.
+     * Would need to have an extra field called postponed.
      */
     public void scrapePlayedGames() {
         int currSeasonKey = getCurrentSeason();
@@ -84,14 +89,14 @@ public class League {
         Date beginningOfLastMatchDate = DateHelper.setTimeOfDate(lastMatchDate, 0, 0, 0);
 
         Date yesterday = DateHelper.subtract1DayFromDate(new Date());
-        Date beginningOfYesterday = DateHelper.setTimeOfDate(yesterday, 23, 59, 59);
+        Date lastMinuteOfYesterday = DateHelper.setTimeOfDate(yesterday, 23, 59, 59);
 
         System.out.println("lastMatchDate: " + lastMatchDate);
 
-        Understat.addSeasonsGames(this, currSeasonKey, beginningOfLastMatchDate, beginningOfYesterday);
+        Understat.addSeasonsGames(this, currSeasonKey, beginningOfLastMatchDate, lastMinuteOfYesterday);
 
         Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(this.seasonIds.getSofaScoreLeagueName(), this.seasonIds.getLeagueId(),
-                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), beginningOfLastMatchDate, beginningOfYesterday, currSeason);
+                                                                    this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), beginningOfLastMatchDate, lastMinuteOfYesterday, currSeason);
 
         System.out.println("For " + currSeason.getSeasonKey() + " in " + name +", we have " + allGameIds.size() + "new ids");
         allGameIds.forEach(gameId -> {

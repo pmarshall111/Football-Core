@@ -45,6 +45,7 @@ public class Main {
     }
 
     /*
+     *TODO
      * Method will check to see if leagueSeasonIds has new info to create a new season. Can do this by checking the database if the most recent season we have in there corresponds to the most
      * recent in leagueSeasonIds.
       * If it does, then we can scrape in all the games.

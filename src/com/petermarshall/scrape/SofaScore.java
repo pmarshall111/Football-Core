@@ -109,7 +109,9 @@ public class SofaScore {
                                 Date gameDate = DateHelper.createDateyyyyMMdd(partsOfDate[2], partsOfDate[1], partsOfDate[0]);
 
 
-                                if (gameDate.before(latestDate) && gameDate.after(earliestDate)) allGameIds.add(id);
+                                if (gameDate.before(latestDate) && (gameDate.after(earliestDate) || gameDate.equals(earliestDate))) {
+                                    allGameIds.add(id);
+                                }
                             }
                         }
 
@@ -401,7 +403,7 @@ public class SofaScore {
 
             String rating = playerObj.get("rating").toString();
             try {
-                PlayerRating playerRating = new PlayerRating(90, Double.parseDouble(playerObj.get("rating").toString()), playerName);
+                PlayerRating playerRating = new PlayerRating(90, Double.parseDouble(rating), playerName);
 
                 players.put(playerName, playerRating);
             } catch (NumberFormatException e) {
@@ -474,6 +476,8 @@ public class SofaScore {
      * Returns an ArrayList of game times.
      *
      * We should also add in a sofascore ID so that we don't have to scrape for all the games. we can just do 1 request - for the lineups.
+     *
+     * Needed because the times given at the beginning of the season are often moved around by the TV companies. Possibly not needed every day.
      */
     public static ArrayList<Date> updateTodaysKickoffTimes() {
         League[] leagues = new League[]{
@@ -542,7 +546,7 @@ public class SofaScore {
                         //now need to do an update in matches db
                         String seasonStart = leagues[0].getCurrentSeason() + "-" + (leagues[0].getCurrentSeason()+1);
 
-                        DataSource.changeMatchStartTime(seasonStart, homeTeam, awayTeam, dateString, matchId);
+                        DataSource.updateKickoffTime(seasonStart, homeTeam, awayTeam, dateString, matchId);
 
                         dates.add(date);
                     }
