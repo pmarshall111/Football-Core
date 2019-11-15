@@ -1,20 +1,20 @@
 package com.petermarshall.database.tables;
 
-public class PlayerRatingsTable {
-    private static final String TABLE_NAME = "player_ratings";
+public class PlayerRatingTable {
+    private static final String TABLE_NAME = "PlayerRating";
 
-    private static final String COL_PLAYER_NAME = "player_name";
-    private static final String COL_MINS = "mins_played";
+    private static final String COL_MINS = "minutes";
     private static final String COL_RATING = "rating";
-    private static final String COL_TEAM_ID = "team";
-    private static final String COL_MATCH_ID = "match";
+    private static final String COL_PLAYER_ID = "player_id";
+    private static final String COL_MATCH_ID = "match_id";
+    private static final String COL_TEAM_ID = "team_id";
 
     public static String getTableName() {
         return TABLE_NAME;
     }
 
-    public static String getColPlayerName() {
-        return COL_PLAYER_NAME;
+    public static String getColPlayerId() {
+        return COL_PLAYER_ID;
     }
 
     public static String getColMins() {

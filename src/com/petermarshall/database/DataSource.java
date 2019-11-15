@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
  * Class used to read, write and update data to database.
  */
 public class DataSource {
-    private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatches.db";
+    private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
     private static Connection connection;
 
     private static int LEAGUE_NEXT_ID = -1;
@@ -26,9 +26,10 @@ public class DataSource {
     private static int TEAM_NEXT_ID = -1;
     private static int MATCH_NEXT_ID = -1;
     private static int PLAYER_RATING_NEXT_ID = -1;
+    private static int PLAYER_NEXT_ID = -1;
 
-    private static String HOMETEAM = "hometeam";
-    private static String AWAYTEAM = "awayteam";
+    private static String HOMETEAM = "homeTeam";
+    private static String AWAYTEAM = "awayTeam";
 
     public static boolean isOpen() {
         try {
@@ -70,31 +71,53 @@ public class DataSource {
     public static boolean initDB() {
         try (Statement statement = connection.createStatement()) {
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + LeagueTable.getTableName() +
-                    " (" + LeagueTable.getColName() + " TEXT," + " _id INTEGER PRIMARY KEY, " +
-                    "UNIQUE( " + LeagueTable.getColName() + "))");
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + LeagueTable.getTableName() +
+                    "' ('" + LeagueTable.getColName() + "' TEXT NOT NULL UNIQUE," + " '_id' INTEGER UNIQUE, PRIMARY KEY('_id') )");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + SeasonTable.getTableName() +
-                    " (" + SeasonTable.getColYear() + " TEXT, " + SeasonTable.getColLeagueId() + " INTEGER, " + "_id INTEGER PRIMARY KEY )");
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + SeasonTable.getTableName() +
+                    "' ('" + SeasonTable.getColYearBeginning() + "' INTEGER NOT NULL, '_id' INTEGER UNIQUE, PRIMARY KEY('_id') )");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + TeamTable.getTableName() +
-                    " (" + TeamTable.getColTeamName() + " TEXT, " + TeamTable.getColSeasonId() + " INTEGER, " + "_id INTEGER PRIMARY KEY )");
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + TeamTable.getTableName() +
+                    "' ('" + TeamTable.getColTeamName() + "' TEXT NOT NULL, '" + TeamTable.getColLeagueId() + "' INTEGER NOT NULL, "
+                    + "'_id' INTEGER NOT NULL, PRIMARY KEY('_id'), " +
+                    "FOREIGN KEY('" + TeamTable.getColLeagueId() + "') REFERENCES '" + LeagueTable.getTableName() + "'('_id'))");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + MatchTable.getTableName() +
-                    " (" + MatchTable.getColDate() + " DATETIME, " +
-                    MatchTable.getColHometeamId() + " INTEGER, " + MatchTable.getColHomeXg() + " REAL, " +
-                    MatchTable.getColHomeScore() + " INTEGER, " + MatchTable.getColHomeWinOdds() + " REAL, " +
-                    MatchTable.getColAwayteamId() + " INTEGER, " + MatchTable.getColAwayXg() + " REAL, " +
-                    MatchTable.getColAwayScore() + " INTEGER, " + MatchTable.getColAwayWinOdds() + " REAL, " +
-                    MatchTable.getColDrawOdds() + " REAL, " + MatchTable.getColFirstScorer() + " INTEGER, " +
-                    MatchTable.getColSofascoreId() + " INTEGER DEFAULT -1, " + MatchTable.getColResultBetOn() + " INTEGER DEFAULT -1, " +
-                    MatchTable.getColOddsWhenBetPlaced() + " REAL DEFAULT -1.0, " + MatchTable.getColStakeOnBet() + "REAL DEFAULT 0, " +
-                    MatchTable.getColWhenGameWasPredicted() + " INTEGER DEFAULT -1, _id INTEGER PRIMARY KEY )");
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + MatchTable.getTableName() +
+                    "' ('" + MatchTable.getColHomeScore() + "' INTEGER, '" + MatchTable.getColAwayScore() + "' INTEGER, '" +
+                    MatchTable.getColHomeXg() + "' REAL, '" + MatchTable.getColAwayXg() + "' REAL, '" +
+                    MatchTable.getColDate() + "' TEXT NOT NULL, '" + MatchTable.getColHomeWinOdds() + "' REAL, '" +
+                    MatchTable.getColDrawOdds() + "' REAL, '" + MatchTable.getColAwayWinOdds() + "' REAL, '" +
+                    MatchTable.getColFirstScorer() + "' INTEGER, '" + MatchTable.getColIsPostponed() + "' INTEGER DEFAULT 0, '" +
+                    MatchTable.getColHometeamId() + "' INTEGER NOT NULL, '" + MatchTable.getColAwayteamId() + "' INTEGER NOT NULL, '" +
+                    MatchTable.getColSeasonId() + "' INTEGER NOT NULL, '" + MatchTable.getColPredictedLive() + "' INTEGER, '" +
+                    "CHECK('" + MatchTable.getColPredictedLive() + "' == 1 OR '" + MatchTable.getColPredictedLive() + "' == 2), " +
+                    "FOREIGN KEY('" + MatchTable.getColHometeamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
+                    "FOREIGN KEY('" + MatchTable.getColAwayteamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
+                    "PRIMARY KEY('_id'))");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingsTable.getTableName() +
-                    " (" + PlayerRatingsTable.getColPlayerName() + " TEXT, " +
-                    PlayerRatingsTable.getColRating() + " REAL, " + PlayerRatingsTable.getColMins() + " INTEGER, " +
-                    PlayerRatingsTable.getColMatchId() + " INTEGER, " + PlayerRatingsTable.getColTeamId() + " INTEGER, " + "_id INTEGER PRIMARY KEY )");
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + PlayerRatingTable.getTableName() +
+                    "' ('" + PlayerRatingTable.getColMins() + "' INTEGER NOT NULL, " + "CHECK ('" + PlayerRatingTable.getColMins() + "' <= 90 " +
+                    " AND '" + PlayerRatingTable.getColMins() + "' > 0), '" +
+                    PlayerRatingTable.getColRating() + "' REAL NOT NULL, " + "CHECK ('" + PlayerRatingTable.getColRating() + "' <= 10 " +
+                    "AND '" + PlayerRatingTable.getColRating() + "' > 0), '" + PlayerRatingTable.getColPlayerId() + "' INTEGER NOT NULL, '" +
+                    PlayerRatingTable.getColMatchId() + "' INTEGER NOT NULL, '" + PlayerRatingTable.getColTeamId() + "' INTEGER NOT NULL, " +
+                    "FOREIGN KEY('" + PlayerRatingTable.getColPlayerId() + "') REFERENCES '" + PlayerTable.getTableName() + "'('_id'), " +
+                    "FOREIGN KEY('" + PlayerRatingTable.getColTeamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
+                    "FOREIGN KEY('" + PlayerRatingTable.getColMatchId() + "') REFERENCES '" + MatchTable.getTableName() + "'('_id'), " +
+                    "PRIMARY KEY('_id'))");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + PlayerTable.getTableName() +
+                    "' ('" + PlayerTable.getColPlayerName() + "' TEXT NOT NULL, '_id' INTEGER NOT NULL, PRIMARY KEY('_id')");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + BetTable.getTableName() +
+                    "' ('" + BetTable.getColResultBetOn() + "' INTEGER NOT NULL " +
+                    "CHECK('" + BetTable.getColResultBetOn() + "' >= 1 AND '" + BetTable.getColResultBetOn() + "' <= 3), '" +
+                    BetTable.getColOdds() + "' REAL NOT NULL, '" + BetTable.getColStake() + "' REAL NOT NULL, '" +
+                    BetTable.getColMatchId() + "' INTEGER NOT NULL, " +
+                    "FOREIGN KEY('" + BetTable.getColMatchId() + "') REFERENCES '" + MatchTable.getTableName() + "'('_id'))");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS '" + LogTable.getTableName() +
+                    "'( '" + LogTable.getColDatetime() + "' TEXT, '" + LogTable.getColInfo() + "' TEXT)");
 
             return getNextIds();
 
@@ -121,7 +144,7 @@ public class DataSource {
                  ResultSet SeasonSet = statement2.executeQuery("SELECT max(_id) FROM '" + SeasonTable.getTableName() + "'");
                  ResultSet TeamSet = statement3.executeQuery("SELECT max(_id) FROM '" + TeamTable.getTableName() + "'");
                  ResultSet MatchSet = statement4.executeQuery("SELECT max(_id) FROM '" + MatchTable.getTableName() + "'");
-                 ResultSet PlayerRatingsSet = statement5.executeQuery("SELECT max(_id) FROM '" + PlayerRatingsTable.getTableName() + "'");
+                 ResultSet PlayerRatingsSet = statement5.executeQuery("SELECT max(_id) FROM '" + PlayerRatingTable.getTableName() + "'");
             ) {
 
                 LEAGUE_NEXT_ID = LeagueSet.getInt(1);
@@ -175,7 +198,7 @@ public class DataSource {
 
     private static void writeSeasonToDb(Statement statement, Season season, int leagueId) {
         try {
-            statement.execute("INSERT INTO " + SeasonTable.getTableName() + " (" + SeasonTable.getColYear() + ", " + SeasonTable.getColLeagueId() + ", _id) " +
+            statement.execute("INSERT INTO " + SeasonTable.getTableName() + " (" + SeasonTable.getColYearBeginning() + ", " + SeasonTable.getColLeagueId() + ", _id) " +
                     "VALUES ( '" + season.getSeasonKey() + "', " + leagueId + ", " + ++SEASON_NEXT_ID + " )");
 
             ArrayList<Match> matchesInSeason = season.getAllMatches();
@@ -261,15 +284,15 @@ public class DataSource {
     private static void writePlayerRatingsToDb(Statement statement, PlayerRating playerRating, int matchId, int teamId) {
         try {
 
-//            System.out.println("INSERT INTO " + PlayerRatingsTable.getTableName() +
-//                    " (" + PlayerRatingsTable.getColPlayerName() + ", " + PlayerRatingsTable.getColRating() + ", " + PlayerRatingsTable.getColMins() + ", " +
-//                    PlayerRatingsTable.getColMatchId() + ", " + PlayerRatingsTable.getColTeamId() + ", _id ) " +
+//            System.out.println("INSERT INTO " + PlayerRatingTable.getTableName() +
+//                    " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
+//                    PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
 //                    "VALUES ('" + playerRating.getName() + "', " + playerRating.getRating() + ", " + playerRating.getMinutesPlayed() + ", " +
 //                        matchId + ", " + teamId + ", " + ++PLAYER_RATING_NEXT_ID + ")");
 
-            statement.execute("INSERT INTO " + PlayerRatingsTable.getTableName() +
-                    " (" + PlayerRatingsTable.getColPlayerName() + ", " + PlayerRatingsTable.getColRating() + ", " + PlayerRatingsTable.getColMins() + ", " +
-                    PlayerRatingsTable.getColMatchId() + ", " + PlayerRatingsTable.getColTeamId() + ", _id ) " +
+            statement.execute("INSERT INTO " + PlayerRatingTable.getTableName() +
+                    " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
+                    PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
                     "VALUES ('" + playerRating.getName() + "', " + playerRating.getRating() + ", " + playerRating.getMinutesPlayed() + ", " +
                     matchId + ", " + teamId + ", " + ++PLAYER_RATING_NEXT_ID + ")");
 
@@ -301,7 +324,7 @@ public class DataSource {
 //                        " INNER JOIN " + SeasonTable.getTableName() + " ON " + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
 //                        " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
 //                        " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + league.getName() + "'" +
-//                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " = '" + season.getSeasonKey() + "'" +
+//                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + season.getSeasonKey() + "'" +
 //                        " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + match.getHomeTeam().getTeamName() + "'" +
 //                        " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + match.getAwayTeam().getTeamName() + "'");
 
@@ -311,7 +334,7 @@ public class DataSource {
                         " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
                         " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
                         " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + league.getName() + "'" +
-                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " = '" + season.getSeasonKey() + "'" +
+                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + season.getSeasonKey() + "'" +
                         " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + match.getHomeTeam().getTeamName() + "'" +
                         " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + match.getAwayTeam().getTeamName() + "'");
 
@@ -398,24 +421,24 @@ public class DataSource {
 
             //gets all data we need to plug back into our classes for every player rating, sorted firstly by date, and then by the match id, then the team that the player
             //played for and then finally by how many minutes the player played. This gives us grouped player ratings by match and team, ordered by minutes played.
-            ResultSet playerRatingsRows = statement.executeQuery("SELECT " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColPlayerName() + ", " +
-                    PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMins() + ", " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColRating() + ", " +
+            ResultSet playerRatingsRows = statement.executeQuery("SELECT " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + ", " +
+                    PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMins() + ", " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColRating() + ", " +
                     PLAYERS_TEAM + "." + TeamTable.getColTeamName() + " AS '" + PLAYERS_TEAM + "', " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
                     HOMETEAM + "." + TeamTable.getColTeamName() + " AS '" + HOMETEAM + "', " + MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeXg() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + " AS '" + AWAYTEAM + "', " +
                     MatchTable.getTableName() + "." + MatchTable.getColAwayScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayXg() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDrawOdds() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getTableName() + "." + MatchTable.getColFirstScorer() + ", " +
-                    MatchTable.getTableName() + "._id, " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() +
-                    " FROM " + PlayerRatingsTable.getTableName() +
-                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
-                    " INNER JOIN " + TeamTable.getTableName() + " AS " + PLAYERS_TEAM + " ON " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColTeamId() + " = " + PLAYERS_TEAM + "._id" +
+                    MatchTable.getTableName() + "._id, " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() +
+                    " FROM " + PlayerRatingTable.getTableName() +
+                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + PLAYERS_TEAM + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColTeamId() + " = " + PLAYERS_TEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
                     " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + leagueSeasonIds.name() + "'" +
-                    " ORDER BY " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " + PLAYERS_TEAM + ", " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMins() + " DESC");
+                    " ORDER BY " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " + PLAYERS_TEAM + ", " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMins() + " DESC");
 
             ArrayList statementAndResults = new ArrayList(); //no type arraylist as we are passing both the statement and resultset to another function.
             statementAndResults.add(statement);
@@ -510,7 +533,7 @@ public class DataSource {
                         " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
                         " WHERE " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + homeTeamName + "'" +
                         " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + awayTeamName + "'" +
-                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " = '" + seasonKey + "'");
+                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + seasonKey + "'");
 
 
                     //to write player ratings, we need the match id and the players team id.
@@ -599,9 +622,9 @@ public class DataSource {
     }
 
     private static StringBuilder createSqlInsertStatement() {
-        return new StringBuilder("INSERT INTO " + PlayerRatingsTable.getTableName() + " (" + PlayerRatingsTable.getColPlayerName() + ", " +
-                PlayerRatingsTable.getColRating() + ", " + PlayerRatingsTable.getColMins() + ", " + PlayerRatingsTable.getColMatchId() + ", " +
-                PlayerRatingsTable.getColTeamId() + ", _id ) " + "VALUES ");
+        return new StringBuilder("INSERT INTO " + PlayerRatingTable.getTableName() + " (" + PlayerRatingTable.getColPlayerName() + ", " +
+                PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " + PlayerRatingTable.getColMatchId() + ", " +
+                PlayerRatingTable.getColTeamId() + ", _id ) " + "VALUES ");
     }
 
     private static void addPlayerRatingsToStringBuilder(StringBuilder stringBuilder, PlayerRating playerRating, int matchId, int teamId, int playerId) {
@@ -646,7 +669,7 @@ public class DataSource {
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id " +
-                    " WHERE " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " = '" + seasonYear + "'" +
+                    " WHERE " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + seasonYear + "'" +
                     " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + homeTeamName + "'" +
                     " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + awayTeamName + "'");
 
@@ -699,7 +722,7 @@ public class DataSource {
             String latestDate = DateHelper.getSqlDate(latestKickoff);
 
             ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() +
-                    ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
+                    ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColSofascoreId() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
                     MatchTable.getTableName() + "._id" +
                     " FROM " + MatchTable.getTableName() +
@@ -755,7 +778,7 @@ public class DataSource {
                             " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                             " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                             " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id " +
-                            " WHERE " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " = '" + seasonKey + "'" +
+                            " WHERE " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + seasonKey + "'" +
                             " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + homeTeamName + "'" +
                             " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + awayTeamName + "'");
 
@@ -979,7 +1002,7 @@ public class DataSource {
             //also need odds for home draw away.
             //also will add in the _id from the database so it will be easy to update the records later
             ResultSet resultSet = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                    SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
+                    SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColSofascoreId() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDrawOdds() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getTableName() + "._id" +
@@ -1102,7 +1125,7 @@ public class DataSource {
 
         try {
             return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " +
                     LeagueTable.getTableName() + "." + LeagueTable.getColName() +
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
@@ -1112,7 +1135,7 @@ public class DataSource {
                     " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " < '" + sqlBeginningOfToday + "'" +
                     " AND (" + MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + " < " + 0 +
                     " OR " + MatchTable.getTableName() + "." + MatchTable.getColHomeWinOdds() + " < " + 0 + ")" +
-                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " ASC");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -1131,17 +1154,17 @@ public class DataSource {
 
         try {
             return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " +
                     LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + "COUNT(*) AS " + countOfPlayersInMatchCol +
-                    " FROM " + PlayerRatingsTable.getTableName() +
-                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                    " FROM " + PlayerRatingTable.getTableName() +
+                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-                    " GROUP BY " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() +
+                    " GROUP BY " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() +
                     " HAVING " + countOfPlayersInMatchCol + " < " + 22 +
-                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " ASC");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -1155,7 +1178,7 @@ public class DataSource {
 
         try {
             return statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + ", " +
                     LeagueTable.getTableName() + "." + LeagueTable.getColName() +
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
@@ -1163,9 +1186,9 @@ public class DataSource {
                     " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getTableName() + "." + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
                     " WHERE " + MatchTable.getTableName() + "._id" + " NOT IN (" +
-                    " SELECT " + PlayerRatingsTable.getTableName() + "." + PlayerRatingsTable.getColMatchId() + " FROM " + PlayerRatingsTable.getTableName() + ")" +
+                    " SELECT " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() + " FROM " + PlayerRatingTable.getTableName() + ")" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " < '" + sqlBeginningOfToday + "'" +
-                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYear() + " ASC");
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " ASC");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

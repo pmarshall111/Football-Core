@@ -1,40 +1,36 @@
 package com.petermarshall.database.tables;
 
 public class MatchTable {
+    private static final String TABLE_NAME = "Match";
 
-    private static final String TABLE_NAME = "match";
+    private static final String COL_HOME_SCORE = "homeScore";
+    private static final String COL_AWAY_SCORE = "awayScore";
+    private static final String COL_HOME_XG = "homeXG";
+    private static final String COL_AWAY_XG = "awayXG";
     private static final String COL_DATE = "date";
-    private static final String COL_HOMETEAM_ID = "hometeam_id";
-    private static final String COL_AWAYTEAM_ID = "awayteam_id";
-    private static final String COL_HOME_XG = "home_xG";
-    private static final String COL_AWAY_XG = "away_xG";
-    private static final String COL_HOME_WIN_ODDS = "home_win_odds";
-    private static final String COL_DRAW_ODDS = "draw_odds";
-    private static final String COL_AWAY_WIN_ODDS = "away_win_odds";
-    private static final String COL_HOME_SCORE = "home_score";
-    private static final String COL_AWAY_SCORE = "away_score";
-    private static final String COL_FIRST_SCORER = "first_scorer";
-    private static final String COL_SOFASCORE_ID = "sofascore_id";
-    private static final String COL_RESULT_BET_ON = "result_bet_on";
-    private static final String COL_ODDS_WHEN_BET_PLACED = "odds_when_bet_placed";
-    private static final String COL_STAKE_ON_BET = "stake_on_bet";
-    private static final String COL_WHEN_GAME_WAS_PREDICTED = "when_game_was_predicted";
+    private static final String COL_HOME_WIN_ODDS = "homeOdds";
+    private static final String COL_DRAW_ODDS = "drawOdds";
+    private static final String COL_AWAY_WIN_ODDS = "awayOdds";
+    private static final String COL_FIRST_SCORER = "firstScorer";
+    private static final String COL_IS_POSTPONED = "isPostponed";
+    private static final String COL_HOMETEAM_ID = "homeTeam_id";
+    private static final String COL_AWAYTEAM_ID = "awayTeam_id";
+    private static final String COL_SEASON_ID = "season_id";
+    private static final String COL_PREDICTED_LIVE = "predictedLive";
+
+    //private static final String COL_SOFASCORE_ID = "sofascore_id"; TODO: IS NEEDED??????
 
 
     public static String getTableName() {
         return TABLE_NAME;
     }
 
-    public static String getColDate() {
-        return COL_DATE;
+    public static String getColHomeScore() {
+        return COL_HOME_SCORE;
     }
 
-    public static String getColHometeamId() {
-        return COL_HOMETEAM_ID;
-    }
-
-    public static String getColAwayteamId() {
-        return COL_AWAYTEAM_ID;
+    public static String getColAwayScore() {
+        return COL_AWAY_SCORE;
     }
 
     public static String getColHomeXg() {
@@ -43,6 +39,10 @@ public class MatchTable {
 
     public static String getColAwayXg() {
         return COL_AWAY_XG;
+    }
+
+    public static String getColDate() {
+        return COL_DATE;
     }
 
     public static String getColHomeWinOdds() {
@@ -57,35 +57,27 @@ public class MatchTable {
         return COL_AWAY_WIN_ODDS;
     }
 
-    public static String getColHomeScore() {
-        return COL_HOME_SCORE;
-    }
-
-    public static String getColAwayScore() {
-        return COL_AWAY_SCORE;
-    }
-
     public static String getColFirstScorer() {
         return COL_FIRST_SCORER;
     }
 
-    public static String getColSofascoreId() {
-        return COL_SOFASCORE_ID;
+    public static String getColIsPostponed() {
+        return COL_IS_POSTPONED;
     }
 
-    public static String getColResultBetOn() {
-        return COL_RESULT_BET_ON;
+    public static String getColHometeamId() {
+        return COL_HOMETEAM_ID;
     }
 
-    public static String getColOddsWhenBetPlaced() {
-        return COL_ODDS_WHEN_BET_PLACED;
+    public static String getColAwayteamId() {
+        return COL_AWAYTEAM_ID;
     }
 
-    public static String getColStakeOnBet() {
-        return COL_STAKE_ON_BET;
+    public static String getColSeasonId() {
+        return COL_SEASON_ID;
     }
 
-    public static String getColWhenGameWasPredicted() {
-        return COL_WHEN_GAME_WAS_PREDICTED;
+    public static String getColPredictedLive() {
+        return COL_PREDICTED_LIVE;
     }
 }
