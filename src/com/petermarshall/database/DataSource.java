@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
+//TODO: Test DB initialisation via Java code is the same as in SQL.
+
 /*
  * IMPORTANT: To get data, we must first open the connection and once we're done we should close the connection.
  * Class used to read, write and update data to database.
@@ -26,7 +28,6 @@ public class DataSource {
     private static int TEAM_ID = -1;
     private static int MATCH_ID = -1;
     private static int PLAYER_RATING_ID = -1;
-    private static int PLAYER_ID = -1;
 
     private static String HOMETEAM = "homeTeam";
     private static String AWAYTEAM = "awayTeam";
@@ -102,15 +103,12 @@ public class DataSource {
                     "' ('" + PlayerRatingTable.getColMins() + "' INTEGER NOT NULL, " + "CHECK ('" + PlayerRatingTable.getColMins() + "' <= 90 " +
                     " AND '" + PlayerRatingTable.getColMins() + "' > 0), '" +
                     PlayerRatingTable.getColRating() + "' REAL NOT NULL, " + "CHECK ('" + PlayerRatingTable.getColRating() + "' <= 10 " +
-                    "AND '" + PlayerRatingTable.getColRating() + "' > 0), '" + PlayerRatingTable.getColPlayerId() + "' INTEGER NOT NULL, '" +
-                    PlayerRatingTable.getColMatchId() + "' INTEGER NOT NULL, '" + PlayerRatingTable.getColTeamId() + "' INTEGER NOT NULL, " +
-                    "FOREIGN KEY('" + PlayerRatingTable.getColPlayerId() + "') REFERENCES '" + PlayerTable.getTableName() + "'('_id'), " +
+                    "AND '" + PlayerRatingTable.getColRating() + "' > 0), '" +
+                    PlayerRatingTable.getColMatchId() + "' INTEGER NOT NULL, '" + PlayerRatingTable.getColTeamId() + "' INTEGER NOT NULL, '" +
+                    PlayerRatingTable.getColPlayerName() + "' TEXT NOT NULL, " +
                     "FOREIGN KEY('" + PlayerRatingTable.getColTeamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
                     "FOREIGN KEY('" + PlayerRatingTable.getColMatchId() + "') REFERENCES '" + MatchTable.getTableName() + "'('_id'), " +
                     "PRIMARY KEY('_id'))");
-
-            statement.execute("CREATE TABLE IF NOT EXISTS '" + PlayerTable.getTableName() +
-                    "' ('" + PlayerTable.getColPlayerName() + "' TEXT NOT NULL, '_id' INTEGER NOT NULL, PRIMARY KEY('_id')");
 
             statement.execute("CREATE TABLE IF NOT EXISTS '" + BetTable.getTableName() +
                     "' ('" + BetTable.getColResultBetOn() + "' INTEGER NOT NULL " +
@@ -142,22 +140,19 @@ public class DataSource {
                  Statement statement3 = connection.createStatement();
                  Statement statement4 = connection.createStatement();
                  Statement statement5 = connection.createStatement();
-                 Statement statement6 = connection.createStatement();
 
                  ResultSet LeagueSet = statement1.executeQuery("SELECT max(_id) FROM '" + LeagueTable.getTableName() + "'");
                  ResultSet SeasonSet = statement2.executeQuery("SELECT max(_id) FROM '" + SeasonTable.getTableName() + "'");
                  ResultSet TeamSet = statement3.executeQuery("SELECT max(_id) FROM '" + TeamTable.getTableName() + "'");
                  ResultSet MatchSet = statement4.executeQuery("SELECT max(_id) FROM '" + MatchTable.getTableName() + "'");
                  ResultSet PlayerRatingsSet = statement5.executeQuery("SELECT max(_id) FROM '" + PlayerRatingTable.getTableName() + "'");
-                 ResultSet PlayerSet = statement6.executeQuery("SELECT max(_id) FROM '" + PlayerTable.getTableName() + "'");
-            ) {
+                 ) {
 
                 LEAGUE_ID = LeagueSet.getInt(1);
                 SEASON_ID = SeasonSet.getInt(1);
                 TEAM_ID = TeamSet.getInt(1);
                 MATCH_ID = MatchSet.getInt(1);
                 PLAYER_RATING_ID = PlayerRatingsSet.getInt(1);
-                PLAYER_ID = PlayerSet.getInt(1);
 
 //                System.out.println("League: " + LEAGUE_ID + "\nSeason: " + SEASON_ID + "\nTeam: " + TEAM_ID +
 //                        "\nMatch: " + MATCH_ID + "\nPlayerRatings: " + PLAYER_RATING_ID );
@@ -298,6 +293,16 @@ public class DataSource {
     private static void writePlayerRatingsToDb(Statement statement, PlayerRating playerRating, int matchId, int teamId) {
         try {
 
+            /*
+             * Need to check if the right player that we want is in the database first to get the ID out.
+             * Perhaps for speed it would've been best to keep the old system in terms of how fast our writes are. Because now we need to potentially do 3 db operations
+             * as opposed to just the 1 from the system before. Anyway, might as well continue with current changes for experience.
+             *
+             * First get the player out of database. if not exists, create
+             * then create the player rating. Will be far more efficient with batch writes & reads I believe. So should still be faster, but still adds extra steps.
+             *
+             */
+
 //            System.out.println("INSERT INTO " + PlayerRatingTable.getTableName() +
 //                    " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
 //                    PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
@@ -316,6 +321,17 @@ public class DataSource {
             e.printStackTrace();
         }
     }
+
+    private static int getPlayerId(PlayerRating playerRating, int teamId) {
+        //thoughts are we need the players team and player name. so would need to pass these into the function. Also would place a
+        //limit on batch updates to be per team. Which is ok.
+
+        //Current potential issue with having players of the same name. Also could have redundant players if transfers happen.
+        //Also, what happens if one player leaves a club and then a player with the same name joins???
+
+
+    }
+
 
     //TODO: CHECK IF WORKING!!!
     /*

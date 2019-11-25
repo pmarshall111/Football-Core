@@ -5,7 +5,7 @@ public class PlayerRatingTable {
 
     private static final String COL_MINS = "minutes";
     private static final String COL_RATING = "rating";
-    private static final String COL_PLAYER_ID = "player_id";
+    private static final String COL_PLAYER_NAME = "playerName";
     private static final String COL_MATCH_ID = "match_id";
     private static final String COL_TEAM_ID = "team_id";
 
@@ -13,8 +13,8 @@ public class PlayerRatingTable {
         return TABLE_NAME;
     }
 
-    public static String getColPlayerId() {
-        return COL_PLAYER_ID;
+    public static String getColPlayerName() {
+        return COL_PLAYER_NAME;
     }
 
     public static String getColMins() {
