@@ -1,8 +1,10 @@
 package com.petermarshall.scrape;
 
 import com.petermarshall.*;
+import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -494,8 +496,10 @@ public class SofaScore {
         String url = "https://www.sofascore.com/football//" + today + "/json";
 
         HashMap<String, String> leagueNames = new HashMap<>();
+        HashMap<String, String> sofaScoreNameToDbName = new HashMap<>();
         for (League league: leagues) {
             leagueNames.put(league.getSeasonIds().getSofaScoreLeagueName(), league.getSeasonIds().getSofaScoreCountryName());
+            sofaScoreNameToDbName.put(league.getSeasonIds().getSofaScoreLeagueName(), league.getSeasonIds().name());
         }
 
         ArrayList<Date> dates = new ArrayList<>();
@@ -519,9 +523,12 @@ public class SofaScore {
                 String tournamentName = tournamentInfo.get("name").toString();
                 String countryName = countryInfo.get("name").toString();
 
-                if (leagueNames.getOrDefault(tournamentName, "NOT A REAL COUNTRY").equals(countryName)) {
+                //default value needed as we only want to get leagues that are in our db
+                if (leagueNames.getOrDefault(tournamentName, "_").equals(countryName)) {
                     //then we want to update that game in the database.
 
+                    String leagueName = sofaScoreNameToDbName.get(tournamentName);
+                    int leagueId = DS_Get.getLeagueId(leagueName);
                     JSONArray events = (JSONArray) currTournament.get("events");
                     Iterator eventsIterator = events.iterator();
 
@@ -530,6 +537,9 @@ public class SofaScore {
 
                         String homeTeam = ((JSONObject) event.get("homeTeam")).get("name").toString();
                         String awayTeam = ((JSONObject) event.get("awayTeam")).get("name").toString();
+                        //altering team names to match those stored in db. i.e. Wolverhampton Wanderers might be stored as Wolves.
+                        homeTeam = Team.makeTeamNamesCompatible(homeTeam);
+                        awayTeam = Team.makeTeamNamesCompatible(awayTeam);
 
                         int matchId = Integer.parseInt(event.get("id").toString());
 
@@ -537,16 +547,12 @@ public class SofaScore {
                         String startTime = event.get("startTime").toString();
 
                         String[] startDateParts = startDate.split("\\.");
-
-
                         //db dateString format is yyyy-mm-dd hh:mm:ss
                         String dateString = startDateParts[2] + "-" + startDateParts[1] + "-" + startDateParts[0] + " " + startTime + ":00";
                         Date date = DateHelper.createDateFromSQL(dateString);
+                        int seasonYearStart = leagues[0].getCurrentSeasonStartYear();
 
-                        //now need to do an update in matches db
-                        String seasonStart = leagues[0].getCurrentSeason() + "-" + (leagues[0].getCurrentSeason()+1);
-
-                        DataSource.updateKickoffTime(seasonStart, homeTeam, awayTeam, dateString, matchId);
+                        DS_Update.updateKickoffTime(seasonYearStart, homeTeam, awayTeam, dateString, leagueId);
 
                         dates.add(date);
                     }

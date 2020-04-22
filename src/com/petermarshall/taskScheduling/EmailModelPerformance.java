@@ -1,10 +1,8 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.BetResult;
-import com.petermarshall.mail.SendEmail;
 import com.petermarshall.database.BetResultsTotalled;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.mail.UptimeData;
 
 import java.util.Date;

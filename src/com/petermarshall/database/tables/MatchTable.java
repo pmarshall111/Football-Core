@@ -15,7 +15,7 @@ public class MatchTable {
     private static final String COL_IS_POSTPONED = "isPostponed";
     private static final String COL_HOMETEAM_ID = "homeTeam_id";
     private static final String COL_AWAYTEAM_ID = "awayTeam_id";
-    private static final String COL_SEASON_ID = "season_id";
+    private static final String COL_SEASON_YEAR_START = "season_year_start";
     private static final String COL_PREDICTED_LIVE = "predictedLive";
 
     //private static final String COL_SOFASCORE_ID = "sofascore_id"; TODO: IS NEEDED??????
@@ -73,8 +73,8 @@ public class MatchTable {
         return COL_AWAYTEAM_ID;
     }
 
-    public static String getColSeasonId() {
-        return COL_SEASON_ID;
+    public static String getColSeasonYearStart() {
+        return COL_SEASON_YEAR_START;
     }
 
     public static String getColPredictedLive() {

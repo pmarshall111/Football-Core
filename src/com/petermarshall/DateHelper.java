@@ -116,6 +116,16 @@ public class DateHelper {
         }
     }
 
+    public static Date subtractXDaysFromDate(Date date, int days) {
+        SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy");
+        String[] partsOfDate = date.toString().split(" ");
+        try {
+            return fmt.parse(partsOfDate[1] + "-" + (Integer.parseInt(partsOfDate[2])-days) + "-" + partsOfDate[5]);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
     public static Date add45MinsToDate(Date date) {
         SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
         String[] partsOfDate = date.toString().split(" ");

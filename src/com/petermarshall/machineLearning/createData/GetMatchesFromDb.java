@@ -2,7 +2,7 @@ package com.petermarshall.machineLearning.createData;
 
 import com.petermarshall.*;
 import com.petermarshall.machineLearning.createData.classes.*;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 
 

@@ -1,6 +1,9 @@
-package com.petermarshall.database;
+package com.petermarshall.database.datasource;
 
 import com.petermarshall.*;
+import com.petermarshall.database.BetResult;
+import com.petermarshall.database.BetResultsTotalled;
+import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.database.tables.*;
@@ -93,7 +96,7 @@ public class DataSource {
                     MatchTable.getColDrawOdds() + "' REAL, '" + MatchTable.getColAwayWinOdds() + "' REAL, '" +
                     MatchTable.getColFirstScorer() + "' INTEGER, '" + MatchTable.getColIsPostponed() + "' INTEGER DEFAULT 0, '" +
                     MatchTable.getColHometeamId() + "' INTEGER NOT NULL, '" + MatchTable.getColAwayteamId() + "' INTEGER NOT NULL, '" +
-                    MatchTable.getColSeasonId() + "' INTEGER NOT NULL, '" + MatchTable.getColPredictedLive() + "' INTEGER, '" +
+                    MatchTable.getColSeasonYearStart() + "' INTEGER NOT NULL, '" + MatchTable.getColPredictedLive() + "' INTEGER, '" +
                     "CHECK('" + MatchTable.getColPredictedLive() + "' == 1 OR '" + MatchTable.getColPredictedLive() + "' == 2), " +
                     "FOREIGN KEY('" + MatchTable.getColHometeamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
                     "FOREIGN KEY('" + MatchTable.getColAwayteamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
@@ -237,7 +240,6 @@ public class DataSource {
                         "VALUES ( '" + team.getTeamName() + "', " + LEAGUE_ID + ", " + ++TEAM_ID + " )");
                 return TEAM_ID;
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("ERROR writing team " + team.getTeamName() + " from league " + LEAGUE_ID + " to db");
@@ -268,7 +270,7 @@ public class DataSource {
             statement.execute("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                     MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                     MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
-                    MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonId() + ", _id) " +
+                    MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", _id) " +
                         "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
                         match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
                         match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + seasonId + ", " + ++MATCH_ID + ")");
@@ -293,16 +295,6 @@ public class DataSource {
     private static void writePlayerRatingsToDb(Statement statement, PlayerRating playerRating, int matchId, int teamId) {
         try {
 
-            /*
-             * Need to check if the right player that we want is in the database first to get the ID out.
-             * Perhaps for speed it would've been best to keep the old system in terms of how fast our writes are. Because now we need to potentially do 3 db operations
-             * as opposed to just the 1 from the system before. Anyway, might as well continue with current changes for experience.
-             *
-             * First get the player out of database. if not exists, create
-             * then create the player rating. Will be far more efficient with batch writes & reads I believe. So should still be faster, but still adds extra steps.
-             *
-             */
-
 //            System.out.println("INSERT INTO " + PlayerRatingTable.getTableName() +
 //                    " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
 //                    PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", _id ) " +
@@ -321,104 +313,6 @@ public class DataSource {
             e.printStackTrace();
         }
     }
-
-    private static int getPlayerId(PlayerRating playerRating, int teamId) {
-        //thoughts are we need the players team and player name. so would need to pass these into the function. Also would place a
-        //limit on batch updates to be per team. Which is ok.
-
-        //Current potential issue with having players of the same name. Also could have redundant players if transfers happen.
-        //Also, what happens if one player leaves a club and then a player with the same name joins???
-
-
-    }
-
-
-    //TODO: CHECK IF WORKING!!!
-    /*
-     * Legacy code used to put the remaining matches of season in the database if the first write only put in a % of the matches.
-     *
-     * //TODO: MOVE RESULTSETS INTO TRY WITH RESOURCES SO IT AUTO CLOSES
-     */
-    public static void addRemainingMatchesOfSeason(League league, Season season, int seasonid) {
-
-        season.getAllMatches().forEach(match -> {
-
-            try (Statement statement = connection.createStatement()){
-
-                String HOMETEAM = "hometeam";
-                String AWAYTEAM = "awayteam";
-
-//                System.out.println("SELECT count(*) FROM " + MatchTable.getTableName() +
-//                        " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
-//                        " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
-//                        " INNER JOIN " + SeasonTable.getTableName() + " ON " + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
-//                        " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-//                        " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + league.getName() + "'" +
-//                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + season.getSeasonKey() + "'" +
-//                        " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + match.getHomeTeam().getTeamName() + "'" +
-//                        " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + match.getAwayTeam().getTeamName() + "'");
-
-                ResultSet result = statement.executeQuery("SELECT count(*) FROM " + MatchTable.getTableName() +
-                        " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
-                        " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
-                        " INNER JOIN " + SeasonTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColSeasonId() + " = " + SeasonTable.getTableName() + "._id" +
-                        " INNER JOIN " + LeagueTable.getTableName() + " ON " + SeasonTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-                        " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + league.getName() + "'" +
-                        " AND " + SeasonTable.getTableName() + "." + SeasonTable.getColYearBeginning() + " = '" + season.getSeasonKey() + "'" +
-                        " AND " + HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + match.getHomeTeam().getTeamName() + "'" +
-                        " AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + match.getAwayTeam().getTeamName() + "'");
-
-                boolean found = result.getInt(1) == 1;
-
-                if (!found) {
-                   writeMatchToDb(statement, match, 2);
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                System.out.println("ERROR writing match " + match.getHomeTeam().getTeamName() + " vs " +match.getAwayTeam().getTeamName() + "on" + match.getKickoffTime());
-                e.printStackTrace();
-            }
-
-        });
-    }
-
-
-    //Code that can be quickly copied into a sql command
-//    SELECT player_ratings.player_name, player_ratings.mins_played,
-//    player_ratings.rating, playsFor.team_name AS 'players_team', match.date, h.team_name AS 'hometeam_name', match.home_score,
-//    match.home_xG, a.team_name AS 'awayteam_name', match.away_score, match.away_xG,
-//    match.home_win_odds, match.draw_odds, match.away_win_odds,
-//    match.first_scorer, season.season_years, league.name FROM player_ratings
-//    INNER JOIN match ON player_ratings.match = match._id
-//    INNER JOIN team as playsFor ON player_ratings.team = playsFor._id
-//    INNER JOIN team AS h ON match.hometeam_id = h._id
-//    INNER JOIN team AS a ON match.awayteam_id = a._id
-//    INNER JOIN season ON h.season_id = season._id
-//    INNER JOIN league ON season.league_id = league._id
-//    WHERE league.name = 'EPL'
-//    ORDER BY date;
-
-        //to delete all player ratings from a certain league
-//    DELETE FROM player_ratings
-//    WHERE player_ratings.match IN (
-//            SELECT match._id from match
-//            INNER JOIN team ON (match.awayteam_id = team._id)
-//    INNER JOIN season ON (team.season_id = season._id)
-//    INNER JOIN league ON (season.league_id = league._id)
-//    WHERE league.name = 'LIGUE_1'
-//            );
-//
-
-//        DELETE FROM match
-//    WHERE match.awayteam_id IN (
-//            SELECT team._id from team
-//            INNER JOIN season ON (team.season_id = season._id)
-//    INNER JOIN league ON (season.league_id = league._id)
-//    WHERE league.name = 'LIGUE_1'
-//            );
-
-
 
     /*
      * Method to be called by machineLearning.GetMatchesFromDb and will return a ResultSet of all Player Ratings populated with
@@ -448,6 +342,7 @@ public class DataSource {
             String PLAYERS_TEAM = "players_team";
             String HOMETEAM = "hometeam";
             String AWAYTEAM = "awayteam";
+
 
             //gets all data we need to plug back into our classes for every player rating, sorted firstly by date, and then by the match id, then the team that the player
             //played for and then finally by how many minutes the player played. This gives us grouped player ratings by match and team, ordered by minutes played.

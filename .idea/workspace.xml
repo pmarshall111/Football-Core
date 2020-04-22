@@ -7,13 +7,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DataSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,135 +37,6 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Football$Main.ic" NAME="Main Coverage Results" MODIFIED="1539898610747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-969427246">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="51" />
-          <entry key="project.open.time.10" value="1" />
-          <entry key="project.open.time.103" value="1" />
-          <entry key="project.open.time.11" value="3" />
-          <entry key="project.open.time.125" value="1" />
-          <entry key="project.open.time.13" value="2" />
-          <entry key="project.open.time.136" value="1" />
-          <entry key="project.open.time.166" value="1" />
-          <entry key="project.open.time.18" value="1" />
-          <entry key="project.open.time.21" value="1" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.31" value="1" />
-          <entry key="project.open.time.34" value="1" />
-          <entry key="project.open.time.37" value="1" />
-          <entry key="project.open.time.38" value="1" />
-          <entry key="project.open.time.48" value="1" />
-          <entry key="project.open.time.49" value="2" />
-          <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.53" value="1" />
-          <entry key="project.open.time.57" value="1" />
-          <entry key="project.open.time.58" value="4" />
-          <entry key="project.open.time.6" value="1" />
-          <entry key="project.open.time.60" value="3" />
-          <entry key="project.open.time.61" value="1" />
-          <entry key="project.open.time.62" value="1" />
-          <entry key="project.open.time.64" value="1" />
-          <entry key="project.open.time.67" value="1" />
-          <entry key="project.open.time.68" value="1" />
-          <entry key="project.open.time.7" value="2" />
-          <entry key="project.open.time.70" value="1" />
-          <entry key="project.open.time.72" value="2" />
-          <entry key="project.open.time.73" value="3" />
-          <entry key="project.open.time.74" value="1" />
-          <entry key="project.open.time.76" value="1" />
-          <entry key="project.open.time.79" value="2" />
-          <entry key="project.open.time.8" value="2" />
-          <entry key="project.open.time.80" value="2" />
-          <entry key="project.open.time.81" value="1" />
-          <entry key="project.open.time.86" value="1" />
-          <entry key="project.open.time.88" value="2" />
-          <entry key="project.open.time.91" value="2" />
-          <entry key="project.open.time.92" value="1" />
-          <entry key="project.open.time.97" value="2" />
-          <entry key="project.opened" value="62" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="arff" value="22" />
-          <entry key="dummy" value="52" />
-          <entry key="gitignore" value="23" />
-          <entry key="java" value="246419" />
-          <entry key="txt" value="18570" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Groovy" value="24" />
-          <entry key="JAVA" value="271238" />
-          <entry key="PLAIN_TEXT" value="18678" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="MF" value="2" />
-          <entry key="arff" value="12" />
-          <entry key="class" value="13" />
-          <entry key="csv" value="15" />
-          <entry key="gitignore" value="1" />
-          <entry key="iml" value="1" />
-          <entry key="java" value="422" />
-          <entry key="txt" value="39" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="CLASS" value="13" />
-          <entry key="Groovy" value="1" />
-          <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="548" />
-          <entry key="Manifest" value="2" />
-          <entry key="PLAIN_TEXT" value="76" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2529">
-              <caret line="154" column="62" selection-start-line="154" selection-start-column="62" selection-end-line="154" selection-end-column="62" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
-              <folding>
-                <element signature="e#549#550#0" expanded="true" />
-                <element signature="e#587#588#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="7" column="183" selection-start-line="7" selection-start-column="183" selection-end-line="7" selection-end-column="183" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -159,261 +46,29 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>homeSeason</find>
-      <find>(\d+)</find>
-      <find>place&quot;</find>
-      <find>update</find>
-      <find>MatchTab</find>
-      <find>psvm</find>
-      <find>set</find>
-      <find>partsOfT</find>
-      <find>CDA</find>
-      <find>CDATA</find>
-      <find>Home</find>
-      <find>awayLast5AwayOpponentsWholeSeasonPPG</find>
-      <find>writeAll</find>
-      <find>\* \w+</find>
-      <find>System.out</find>
-      <find>&quot; INNER JOIN &quot; +</find>
-      <find>MatchToPre</find>
-      <find>logB</find>
-      <find>new Match</find>
-      <find>recentData</find>
-      <find>BASE_ST</find>
-      <find>addI</find>
-      <find>could not find game for</find>
-      <find>odds</find>
-      <find>jso</find>
-      <find>&quot;We</find>
-      <find>addMiss</find>
-      <find>main</find>
-      <find>we have an</find>
-      <find>SQL</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>away</replace>
-      <replace>delimiter</replace>
-      <replace>ratioMoneyIn</replace>
-      <replace>\($1.getBookie()</replace>
-      <replace>prediction</replace>
-      <replace>Loss</replace>
-      <replace>ourPredictions[i]</replace>
-      <replace>Against</replace>
-      <replace>Home</replace>
-      <replace>= ;</replace>
-      <replace>pow</replace>
-      <replace>(Math.pow($1,2)</replace>
-      <replace>Subtracted</replace>
-      <replace>mForm</replace>
-      <replace>Form</replace>
-      <replace>() + delimiter)</replace>
-      <replace>$1History</replace>
-      <replace>= new ArrayList&lt;&gt;();</replace>
-      <replace>awayForm</replace>
-      <replace>AWAY_GAMES</replace>
-      <replace>TeamAway</replace>
-      <replace>0</replace>
-      <replace>, IGNORE_FIRST_N_GAMES)</replace>
-      <replace>(Math.pow($1, pow)</replace>
-      <replace>awaySeason</replace>
-      <replace>&quot;$1&quot;</replace>
-      <replace>0$1</replace>
-      <replace>Away</replace>
-      <replace>awayLast5AwayOpponentsLast5PPG</replace>
-      <replace>betResultsTotalled</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/dateLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/dateWhenLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/LogGamesWithMissedPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/ResultBetOn.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/GamePredictedOn.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/WhenGameWasPredicted.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/MatchLog.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/GamesWithMissedPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/testPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/missedGamePredictions.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/LastPredicted.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/notes.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/BetResultsTotalled.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/MissedMatch.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/UnderstatData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesWithoutData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertBets.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/mail/UptimeData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/PredictTest.groovy" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" />
-        <option value="$PROJECT_DIR$/src/ntoes.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingsTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/BetTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/LogTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/TeamTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/LeagueTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="width" value="697" />
-    <option name="height" value="735" />
-  </component>
+  <component name="ProjectId" id="1aoUIZvJuiTnTAofBYFiagsxfq4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="database" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="database" type="462c0819:PsiDirectoryNode" />
-              <item name="tables" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="logging" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-              <item name="createData" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-              <item name="logisticRegression" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="mail" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="taskScheduling" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Football" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Football" type="616d4139:PackageViewModuleNode" />
-            </path>
-            <path>
-              <item name="Football" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Football" type="616d4139:PackageViewModuleNode" />
-              <item name="com" type="1f31426a:PackageElementNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573834709396" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575646977338" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/com/petermarshall/logging" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
@@ -446,18 +101,6 @@
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Application.UpdatePlayedGames">
     <configuration name="EmailModelPerformance" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -552,6 +195,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1539852151403</updated>
+      <workItem from="1587401455481" duration="1936000" />
+      <workItem from="1587542748232" duration="11011000" />
     </task>
     <servers />
   </component>
@@ -564,68 +209,22 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2859304" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3262295" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.40238613" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.40347072" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.329718" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50053304" side_tool="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.329718" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="Maven Projects" order="7" />
-    </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.32995737" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.45119306" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50053304" side_tool="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.329718" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="Maven Projects" order="7" />
-    </layout-to-restore>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="WindowStateProjectService">
+    <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser" timestamp="1587546490486">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587546490486" />
+    <state x="410" y="114" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587543591545">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="410" y="114" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587543591545" />
+    <state x="388" y="191" key="com.intellij.ide.util.TipDialog" timestamp="1587542744993">
+      <screen x="0" y="0" width="1360" height="728" />
+    </state>
+    <state x="388" y="191" key="com.intellij.ide.util.TipDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587542744993" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -633,79 +232,66 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/Main.java</url>
           <line>108</line>
-          <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
           <line>27</line>
-          <properties />
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java</url>
           <line>39</line>
-          <properties />
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java</url>
-          <line>1235</line>
-          <properties />
+          <url>file://$PROJECT_DIR$/src/com/petermarshall/database/datasource/DataSource.java</url>
+          <line>1128</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java</url>
           <line>47</line>
-          <properties />
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java</url>
-          <line>46</line>
-          <properties />
+          <line>44</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>49</line>
-          <properties />
+          <line>48</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
           <line>475</line>
-          <properties />
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>36</line>
-          <properties />
+          <line>35</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java</url>
           <line>223</line>
-          <properties />
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>34</line>
-          <properties />
+          <line>33</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java</url>
           <line>42</line>
-          <properties />
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java</url>
           <line>105</line>
-          <properties />
           <option name="timeStamp" value="71" />
         </line-breakpoint>
       </breakpoints>
@@ -716,381 +302,6 @@
         <watch expression="((HashMap.Node)league.seasons.entrySet().toArray()[2]).getValue()" custom="java.util.HashMap.Node" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/Optional.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="132" column="13" selection-start-line="132" selection-start-column="13" selection-end-line="132" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/CalcPotentialMoneyMade.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2849">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="29" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/GetJsonHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Enum.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="61" column="25" selection-start-line="61" selection-start-column="25" selection-end-line="61" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/sql/Statement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5559">
-          <caret line="350" column="18" selection-start-line="350" selection-start-column="18" selection-end-line="350" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="682">
-          <caret line="66" column="190" selection-start-line="66" selection-start-column="190" selection-end-line="66" selection-end-column="190" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/WhenGameWasPredicted.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/mail/UptimeData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="32" column="1" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testThetas.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/RetrainPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="74" column="31" selection-start-line="74" selection-start-column="31" selection-end-line="74" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/test/PredictTest.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="32" column="78" selection-start-line="32" selection-start-column="78" selection-end-line="32" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/WriteTrainingData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="48" column="33" lean-forward="true" selection-start-line="48" selection-start-column="23" selection-end-line="48" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="88" column="77" lean-forward="true" selection-start-line="88" selection-start-column="77" selection-end-line="88" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="13" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gamesAfterModelWasMade.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ntoes.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/DateHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2448">
-          <caret line="146" column="24" selection-start-line="146" selection-start-column="24" selection-end-line="146" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/LeagueSeasonIds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-168">
-          <caret line="38" column="23" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/UnderstatData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="46" column="72" selection-start-line="46" selection-start-column="72" selection-end-line="46" selection-end-column="72" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="24" lean-forward="true" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="77" column="58" selection-start-line="77" selection-start-column="58" selection-end-line="77" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/OddsChecker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="21" column="98" lean-forward="true" selection-start-line="21" selection-start-column="98" selection-end-line="21" selection-end-column="98" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="190" column="61" lean-forward="true" selection-start-line="190" selection-start-column="61" selection-end-line="190" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2720">
-          <caret line="173" column="33" selection-start-line="173" selection-start-column="33" selection-end-line="173" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="396" column="18" selection-start-line="396" selection-start-column="18" selection-end-line="396" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="584">
-          <caret line="126" column="67" selection-start-line="126" selection-start-column="67" selection-end-line="126" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#54155#54156#0" expanded="true" />
-            <element signature="e#54190#54191#0" expanded="true" />
-            <element signature="e#54491#54492#0" expanded="true" />
-            <element signature="e#54520#54521#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/MatchLog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/GamesWithMissedPredictions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="16" column="40" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="17" column="135" lean-forward="true" selection-start-line="17" selection-start-column="135" selection-end-line="17" selection-end-column="135" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/LastPredicted.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="29" column="99" lean-forward="true" selection-start-line="29" selection-start-column="99" selection-end-line="29" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="23" lean-forward="true" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/TeamTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="117" column="34" selection-start-line="117" selection-start-column="34" selection-end-line="117" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="13" column="5" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="5" lean-forward="true" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/LeagueTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/LogTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/BetTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10">
-          <caret line="308" column="15" selection-start-line="308" selection-start-column="15" selection-end-line="308" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="7" column="183" selection-start-line="7" selection-start-column="183" selection-end-line="7" selection-end-column="183" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/tables/PlayerRatingTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
-          <folding>
-            <element signature="e#549#550#0" expanded="true" />
-            <element signature="e#587#588#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2529">
-          <caret line="154" column="62" selection-start-line="154" selection-start-column="62" selection-end-line="154" selection-end-column="62" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
   </component>
   <component name="masterDetails">
     <states>

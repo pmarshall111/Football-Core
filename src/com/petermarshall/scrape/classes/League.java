@@ -3,7 +3,7 @@ package com.petermarshall.scrape.classes;
 import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 
 import java.util.*;
 
@@ -78,7 +78,7 @@ public class League {
      * Would need to have an extra field called postponed.
      */
     public void scrapePlayedGames() {
-        int currSeasonKey = getCurrentSeason();
+        int currSeasonKey = getCurrentSeasonStartYear();
         Season currSeason = this.getSeason(currSeasonKey);
 
         DataSource.openConnection();
@@ -145,7 +145,7 @@ public class League {
     /*
      * Returns the start year of the curent season
      */
-    public int getCurrentSeason() {
+    public int getCurrentSeasonStartYear() {
         int highestNumb = -1;
         for (String key: this.seasons.keySet()) {
             int seasonStart = Integer.parseInt(key.substring(0,2));

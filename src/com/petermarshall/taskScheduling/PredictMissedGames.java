@@ -1,7 +1,7 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.logging.LastPredicted;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;

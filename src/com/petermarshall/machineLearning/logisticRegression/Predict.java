@@ -5,7 +5,7 @@ import com.petermarshall.database.ResultBetOn;
 import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.equation.Equation;

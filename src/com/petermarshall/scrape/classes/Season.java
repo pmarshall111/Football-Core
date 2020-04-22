@@ -26,10 +26,12 @@ public class Season {
     }
 
 
-
-
     public String getSeasonKey() {
         return seasonKey;
+    }
+
+    public int getSeasonYearStart() {
+        return Integer.parseInt(seasonKey.split("-")[0]);
     }
 
     public Team getTeam(String teamName) {

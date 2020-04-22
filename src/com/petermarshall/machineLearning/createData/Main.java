@@ -2,7 +2,7 @@ package com.petermarshall.machineLearning.createData;
 import com.petermarshall.DateHelper;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.database.DataSource;
+import com.petermarshall.database.datasource.DataSource;
 
 import java.util.ArrayList;
 import java.util.Date;
