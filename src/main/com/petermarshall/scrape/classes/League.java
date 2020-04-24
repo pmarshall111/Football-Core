@@ -1,4 +1,4 @@
-package com.petermarshall.scrape.classes;
+package main.petermarshall.scrape.classes;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.SofaScore;
