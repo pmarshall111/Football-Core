@@ -36,7 +36,7 @@ public class OddsChecker {
         ArrayList<MatchToPredict> RUSSIA = new ArrayList<>();
 
         for (MatchToPredict match: matches) {
-            switch(match.getLeagueSeasonIdName()) {
+            switch(match.getLeagueName()) {
                 case "EPL":
                     PL.add(match);
                     break;

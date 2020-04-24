@@ -15,8 +15,7 @@ public class MatchToPredict {
     private final String awayTeamName;
 
     private final String seasonKey;
-    private final String leagueSeasonIdName;
-    private final int sofaScoreId;
+    private final String leagueName;
 
     private ArrayList<String> homeTeamPlayers;
     private ArrayList<String> awayTeamPlayers;
@@ -26,16 +25,22 @@ public class MatchToPredict {
     private double[] ourPredictions;
     private LinkedHashMap<String, double[]> bookiesOdds;
 
+    //db id here to make it quicker to update the db with the bet if we decide to make a bet.
     private final int database_id;
+    private final int sofascore_id;
 
-    public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueName, int sofaScoreId, String sqlDateString, int database_id) {
+    public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueName, String sqlDateString, int database_id, int sofascore_id) {
         this.homeTeamName = homeTeamName;
         this.awayTeamName = awayTeamName;
         this.seasonKey = seasonKey;
-        this.leagueSeasonIdName = leagueName;
-        this.sofaScoreId = sofaScoreId;
+        this.leagueName = leagueName;
         this.sqlDateString = sqlDateString;
         this.database_id = database_id;
+        this.sofascore_id = sofascore_id;
+    }
+
+    public int getSofascore_id() {
+        return sofascore_id;
     }
 
     public void setHomeTeamPlayers(ArrayList<String> homeTeamPlayers) {
@@ -46,8 +51,8 @@ public class MatchToPredict {
         this.awayTeamPlayers = awayTeamPlayers;
     }
 
-    public String getLeagueSeasonIdName() {
-        return leagueSeasonIdName;
+    public String getLeagueName() {
+        return leagueName;
     }
 
     public String getHomeTeamName() {
@@ -64,10 +69,6 @@ public class MatchToPredict {
 
     public int getSeasonYearStart() {
         return Integer.parseInt(seasonKey.substring(0,2));
-    }
-
-    public int getSofaScoreId() {
-        return sofaScoreId;
     }
 
     public ArrayList<String> getHomeTeamPlayers() {
@@ -88,6 +89,16 @@ public class MatchToPredict {
 
     public HashMap<String, double[]> getBookiesOdds() {
         return bookiesOdds;
+    }
+
+    public double getHomeOdds() {
+        return bookiesOdds.get(0)[0];
+    }
+    public double getDrawOdds() {
+        return bookiesOdds.get(0)[1];
+    }
+    public double getAwayOdds() {
+        return bookiesOdds.get(0)[2];
     }
 
     public void setBookiesOdds(LinkedHashMap<String, double[]> bookiesOdds) {

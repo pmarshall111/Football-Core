@@ -2,6 +2,7 @@ package com.petermarshall.scrape;
 
 import com.petermarshall.*;
 import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.database.datasource.DataSource;
@@ -514,7 +515,7 @@ public class SofaScore {
             JSONArray tournaments = (JSONArray) football.get("tournaments");
             Iterator tournamentIterator = tournaments.iterator();
 
-            DataSource.openConnection();
+            DS_Main.openConnection();
             while (tournamentIterator.hasNext()) {
                 JSONObject currTournament = (JSONObject) tournamentIterator.next();
                 JSONObject tournamentInfo = (JSONObject) currTournament.get("tournament");
@@ -561,7 +562,7 @@ public class SofaScore {
 
 
         } catch (ParseException e) {}
-        finally {DataSource.closeConnection();}
+        finally {DS_Main.closeConnection();}
 
         return dates;
     }
@@ -569,7 +570,7 @@ public class SofaScore {
 
     public static void addLineupsToGamesAboutToStart(ArrayList<MatchToPredict> matches) {
         for (MatchToPredict match: matches) {
-            String url = getPlayerRatingsUrl(match.getSofaScoreId());
+            String url = getPlayerRatingsUrl(match.getSofascore_id());
 
             try {
                 String jsonString = GetJsonHelper.jsonGetRequest(url);
@@ -615,32 +616,3 @@ public class SofaScore {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

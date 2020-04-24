@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class DS_Update {
-    public static void addPlayedGamesToDB(League league, Season season) {
+    public static void updateGamesInDB(League league, Season season) {
         try (Statement statement = DS_Main.connection.createStatement();
             Statement batchStatement = DS_Main.connection.createStatement();
         ) {

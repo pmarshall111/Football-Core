@@ -1,5 +1,6 @@
 package com.petermarshall.taskScheduling;
 
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
@@ -19,38 +20,38 @@ import java.util.HashSet;
 public class ScrapeGamesMissingData {
 
     public static void addDataToMissedGames() {
-        HashSet<League> allLeagues = new HashSet<League>() {{
-            add(new League(LeagueSeasonIds.EPL));
-            add(new League(LeagueSeasonIds.BUNDESLIGA));
-            add(new League(LeagueSeasonIds.LA_LIGA));
-            add(new League(LeagueSeasonIds.LIGUE_1));
-            add(new League(LeagueSeasonIds.SERIE_A));
-            add(new League(LeagueSeasonIds.RUSSIA));
-        }};
-
-        DataSource.openConnection();
-        DataSource.addMissedMatches(allLeagues);
-
-        filterOutLeaguesWithNoGames(allLeagues);
-        allLeagues.forEach(league -> {
-            Understat.addDataToGamesFromLeague(league);
-
-            LeagueSeasonIds ids = league.getSeasonIds();
-            ArrayList<Season> allSeasons = league.getAllSeasons();
-            allSeasons.forEach(season -> {
-                if (season.getAllMatches().size() > 0) {
-                    SofaScore.getGamesOfLeaguesSeason(ids.getSofaScoreLeagueName(), ids.getLeagueId(), ids.getLeaguesSeasonId(season.getSeasonKey()),
-                            null, null, season);
-
-                    season.getAllMatches().forEach(match -> {
-                        if (match.getSofaScoreGameId() > 0) SofaScore.addInfoToGame(season, match.getSofaScoreGameId());
-                    });
-
-                    DataSource.addPlayedGamesToDB(season);
-                }
-            });
-        });
-        DataSource.closeConnection();
+//        HashSet<League> allLeagues = new HashSet<League>() {{
+//            add(new League(LeagueSeasonIds.EPL));
+//            add(new League(LeagueSeasonIds.BUNDESLIGA));
+//            add(new League(LeagueSeasonIds.LA_LIGA));
+//            add(new League(LeagueSeasonIds.LIGUE_1));
+//            add(new League(LeagueSeasonIds.SERIE_A));
+//            add(new League(LeagueSeasonIds.RUSSIA));
+//        }};
+//
+//        DataSource.openConnection();
+//        DataSource.addMissedMatches(allLeagues);
+//
+//        filterOutLeaguesWithNoGames(allLeagues);
+//        allLeagues.forEach(league -> {
+//            Understat.addDataToGamesFromLeague(league);
+//
+//            LeagueSeasonIds ids = league.getSeasonIds();
+//            ArrayList<Season> allSeasons = league.getAllSeasons();
+//            allSeasons.forEach(season -> {
+//                if (season.getAllMatches().size() > 0) {
+//                    SofaScore.getGamesOfLeaguesSeason(ids.getSofaScoreLeagueName(), ids.getLeagueId(), ids.getLeaguesSeasonId(season.getSeasonKey()),
+//                            null, null, season);
+//
+//                    season.getAllMatches().forEach(match -> {
+//                        if (match.getSofaScoreGameId() > 0) SofaScore.addInfoToGame(season, match.getSofaScoreGameId());
+//                    });
+//
+//                    DataSource.addPlayedGamesToDB(season);
+//                }
+//            });
+//        });
+//        DataSource.closeConnection();
     }
 
     private static void filterOutLeaguesWithNoGames(HashSet<League> leagues) {

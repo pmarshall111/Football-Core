@@ -1,8 +1,10 @@
-package com.petermarshall.test;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
+import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.database.datasource.DataSource;
@@ -24,12 +26,13 @@ public class testPredictions {
         Date earliestGame = DateHelper.setTimeOfDate(new Date(), 19,00,0);
         Date latestGame = DateHelper.setTimeOfDate(new Date(), 20,20,0);
 
-        DataSource.openConnection();
-        ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
-        DataSource.closeConnection();
+        DS_Main.openConnection();
+//        ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
+        ArrayList<MatchToPredict> matches = DS_Get.getMatchesToPredict();
+        DS_Main.closeConnection();
 
         SofaScore.addLineupsToGamesAboutToStart(matches);
-        GetMatchesFromDb.addFeaturesToMatchesToPredict(matches);
+        PastStatsCalculator.addFeaturesToPredict(matches);
         OddsChecker.addBookiesOddsForGames(matches);
         Predict.addOurProbabilitiesToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
 

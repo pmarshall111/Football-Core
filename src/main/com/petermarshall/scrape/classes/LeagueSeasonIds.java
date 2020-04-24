@@ -12,12 +12,12 @@ import java.util.HashMap;
  * corresponds to that season. Later season id's follow.
  */
 public enum LeagueSeasonIds {
-    EPL("EPL", "Premier League", "England", 17, new int[]{-1, 10356, 11733, 13380, 17359}),
-    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{-1, 10495, 11906, 13662, 18020}),
-    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, -1, 11818, 13477, 17597}),
-    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{-1, 10596, 11966, 13768, 17932}),
-    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{-1, 10373, 11648, 13384, 17279}),
-    RUSSIA("RFPL", "Premier Liga", "Russia", 203, new int[]{-1, -1, 11868, 13387, 17753});
+    EPL("EPL", "Premier League", "England", 17, new int[]{-1, 10356, 11733, 13380, 17359, 23776}),
+    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{-1, 10495, 11906, 13662, 18020, 24127}),
+    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, -1, 11818, 13477, 17597, 23538}),
+    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{-1, 10596, 11966, 13768, 17932, 24644}),
+    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{-1, 10373, 11648, 13384, 17279, 23872}),
+    RUSSIA("RFPL", "Premier Liga", "Russia", 203, new int[]{-1, -1, 11868, 13387, 17753, 23682});
 
     private static final int MOST_RECENT_SEASON_END;
 

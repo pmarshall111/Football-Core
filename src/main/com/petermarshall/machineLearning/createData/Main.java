@@ -1,8 +1,10 @@
 package com.petermarshall.machineLearning.createData;
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 import com.petermarshall.database.datasource.DataSource;
+import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,46 +16,37 @@ import java.util.Date;
 public class Main {
 
     public static void createFilesToTrainAndTestOn(String octaveTrainingDataFileName, String octaveTestDataFileName, String javaTestDataFileName) {
-        DataSource.openConnection();
-
-        GetMatchesFromDb.loadInDataFromDb();
-        ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
+        DS_Main.openConnection();
+        ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
         WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, octaveTrainingDataFileName, octaveTestDataFileName, javaTestDataFileName);
-
-        DataSource.closeConnection();
+        DS_Main.closeConnection();
     }
 
     public static void createFileJustToTrainOn(String octaveTrainingDataFileName) {
-        DataSource.openConnection();
-
-        GetMatchesFromDb.loadInDataFromDb();
-        ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
+        DS_Main.openConnection();
+        ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
         WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, octaveTrainingDataFileName);
-
-        DataSource.closeConnection();
+        DS_Main.closeConnection();
     }
 
     /*
      * Used to move data over to octave to see if our predict file in Java did the same things as the one in Octave.
      */
-    public static void createFileOfMatchesFromCertainDate(String matchDataFileName, Date addMatchesAfter) {
-        DataSource.openConnection();
+//    public static void createFileOfMatchesFromCertainDate(String matchDataFileName, Date addMatchesAfter) {
+//        DataSource.openConnection();
+//
+//        GetMatchesFromDb.loadInDataFromDb(addMatchesAfter);
+//        ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
+//        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, matchDataFileName);
+//
+//        DataSource.closeConnection();
+//    }
 
-        GetMatchesFromDb.loadInDataFromDb(addMatchesAfter);
-        ArrayList<TrainingMatch> trainingMatches = GetMatchesFromDb.getTrainingData();
-        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, matchDataFileName);
-
-        DataSource.closeConnection();
-    }
-
-    public static void addFeaturesToMatchesToPredict(ArrayList<MatchToPredict> matches) {
-        GetMatchesFromDb.addFeaturesToMatchesToPredict(matches);
-    }
 
     public static void main(String[] args) {
 //        createFilesToTrainAndTestOn("octaveEvenMoreTraining.csv", "octaveEvenMoreTest.csv", "javaEvenMoreTest.csv");
         Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
-        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
+//        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
     }
 
 }

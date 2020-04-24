@@ -17,27 +17,27 @@ public class PredictMissedGames {
     }
 
     static void predictMissedGames() {
-        DataSource.openConnection();
-
-        Date checkGamesAfterDate = LastPredicted.getWhenMissedGamesWereLastPredicted();
-        checkGamesAfterDate = DateHelper.removeTimeFromDate(checkGamesAfterDate);
-
-        ArrayList<MatchToPredict> matchesWeDidntPredict = DataSource.getMatchesWithoutPredictions(checkGamesAfterDate);
-
-        if (matchesWeDidntPredict.size() > 0) {
-            System.out.println("Predicting missed games. We missed " + matchesWeDidntPredict.size() + " games since " + checkGamesAfterDate);
-
-            //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
-            GetMatchesFromDb.setGamesNeedPredictingAfterDate(checkGamesAfterDate);
-            GetMatchesFromDb.setMissedGamesThatNeedPredicting(matchesWeDidntPredict);
-            GetMatchesFromDb.addFeaturesToMatchesToPredict(new ArrayList<>());
-
-            Predict.addOurProbabilitiesToGames(matchesWeDidntPredict, PredictTodaysGames.trainedThetasPath);
-            Predict.missedGamesBetDecisionAndLog(matchesWeDidntPredict);
-
-            LastPredicted.setAllMissedGamesPredictedUpTo2DaysAgo();
-        }
-        System.out.println("Done predicting games.");
-        DataSource.closeConnection();
+//        DataSource.openConnection();
+//
+//        Date checkGamesAfterDate = LastPredicted.getWhenMissedGamesWereLastPredicted();
+//        checkGamesAfterDate = DateHelper.removeTimeFromDate(checkGamesAfterDate);
+//
+//        ArrayList<MatchToPredict> matchesWeDidntPredict = DataSource.getMatchesWithoutPredictions(checkGamesAfterDate);
+//
+//        if (matchesWeDidntPredict.size() > 0) {
+//            System.out.println("Predicting missed games. We missed " + matchesWeDidntPredict.size() + " games since " + checkGamesAfterDate);
+//
+//            //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
+//            GetMatchesFromDb.setGamesNeedPredictingAfterDate(checkGamesAfterDate);
+//            GetMatchesFromDb.setMissedGamesThatNeedPredicting(matchesWeDidntPredict);
+//            GetMatchesFromDb.addFeaturesToMatchesToPredict(new ArrayList<>());
+//
+//            Predict.addOurProbabilitiesToGames(matchesWeDidntPredict, PredictTodaysGames.trainedThetasPath);
+//            Predict.missedGamesBetDecisionAndLog(matchesWeDidntPredict);
+//
+//            LastPredicted.setAllMissedGamesPredictedUpTo2DaysAgo();
+//        }
+//        System.out.println("Done predicting games.");
+//        DataSource.closeConnection();
     }
 }

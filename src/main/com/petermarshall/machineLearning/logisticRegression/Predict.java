@@ -3,6 +3,8 @@ package com.petermarshall.machineLearning.logisticRegression;
 import com.petermarshall.ConvertOdds;
 import com.petermarshall.database.ResultBetOn;
 import com.petermarshall.database.WhenGameWasPredicted;
+import com.petermarshall.database.datasource.DS_Insert;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.database.datasource.DataSource;
@@ -196,11 +198,10 @@ public class Predict {
                 madeChanges = true;
             } else {
                 //then we found no good bets
-                MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
-                DataSource.openConnection();
-                DataSource.logBetPlaced(noBetFound);
-                DataSource.closeConnection();
-
+//                MatchLog noBetFound = new MatchLog(match, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
+//                DS_Main.openConnection();
+//                DS_Insert.logBetPlaced(noBetFound);
+//                DS_Main.closeConnection();
             }
         }
 
@@ -299,9 +300,9 @@ public class Predict {
 //                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
 
                     MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, odds, BASE_STAKE);
-                    DataSource.openConnection();
-                    DataSource.logBetPlaced(matchLog);
-                    DataSource.closeConnection();
+                    DS_Main.openConnection();
+                    DS_Insert.logBetPlaced(matchLog);
+                    DS_Main.closeConnection();
                 }
 
 
@@ -315,11 +316,12 @@ public class Predict {
     }
 
 
+    //do we really want to look at missed bets?
     public static void missedGamesBetDecisionAndLog(ArrayList<MatchToPredict> matches) {
         HashSet<String> allowedBookies = new HashSet<>();
         allowedBookies.add(OddsCheckerBookies.BET365.getBookie());
 
-        DataSource.openConnection();
+//        DS_Main.openConnection();
 
         for (MatchToPredict match: matches) {
             TreeSet<String> homeWinTreeSet = new TreeSet<>();
@@ -327,10 +329,10 @@ public class Predict {
             calculateIfGoodBetAndAddToTreeSet(match, allowedBookies, homeWinTreeSet, awayWinTreeSet);
 
             MatchLog matchLog = getMatchLogForMissedPredictionGame(match, homeWinTreeSet, awayWinTreeSet);
-            DataSource.logBetPlaced(matchLog);
+//            DS_Main.logBetPlaced(matchLog);
         }
 
-        DataSource.closeConnection();
+//        DS_Main.closeConnection();
 
     }
 

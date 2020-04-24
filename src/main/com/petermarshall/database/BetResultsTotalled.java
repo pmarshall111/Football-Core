@@ -11,7 +11,7 @@ public class BetResultsTotalled {
         this.totalMoneyIn = 0;
     }
 
-    void addBet(double moneyOut, double odds, int resultBetOn, int result) {
+    public void addBet(double moneyOut, double odds, int resultBetOn, int result) {
         if (moneyOut > 0) {
             numbBetsPlaced++;
             totalMoneyOut += moneyOut;

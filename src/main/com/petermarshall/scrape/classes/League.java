@@ -1,6 +1,9 @@
-package main.petermarshall.scrape.classes;
+package com.petermarshall.scrape.classes;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Main;
+import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
 import com.petermarshall.database.datasource.DataSource;
@@ -81,10 +84,10 @@ public class League {
         int currSeasonKey = getCurrentSeasonStartYear();
         Season currSeason = this.getSeason(currSeasonKey);
 
-        DataSource.openConnection();
-        DataSource.initDB();
+        DS_Main.openConnection();
+        DS_Main.initDB();
 
-        String lastMatchPlayed = DataSource.getMostRecentMatchInDb(this.getSeasonIds());
+        String lastMatchPlayed = DS_Get.getMostRecentMatchInLeague(this);
         Date lastMatchDate = DateHelper.createDateFromSQL(lastMatchPlayed);
         Date beginningOfLastMatchDate = DateHelper.setTimeOfDate(lastMatchDate, 0, 0, 0);
 
@@ -103,8 +106,8 @@ public class League {
             SofaScore.addInfoToGame(currSeason, gameId);
         });
 
-        DataSource.addPlayedGamesToDB(currSeason);
-        DataSource.closeConnection();
+        DS_Update.updateGamesInDB(this, currSeason);
+        DS_Main.closeConnection();
     }
 
 

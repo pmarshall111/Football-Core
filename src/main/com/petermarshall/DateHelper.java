@@ -91,6 +91,10 @@ public class DateHelper {
         else return year2Digits;
     }
 
+    public static int getStartYearForCurrentSeason() {
+        return getEndingYearForCurrentSeason(new Date())-1;
+    }
+
     public static Date add1DayToDate(Date date) {
         SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy");
         String[] partsOfDate = date.toString().split(" ");

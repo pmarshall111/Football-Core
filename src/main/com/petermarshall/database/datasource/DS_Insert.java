@@ -2,13 +2,18 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.tables.*;
+import com.petermarshall.logging.MatchLog;
+import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
+import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class DS_Insert {
     private static int LEAGUE_ID = -1;
@@ -33,12 +38,7 @@ public class DS_Insert {
             LEAGUE_ID = LeagueSet.getInt(1);
             TEAM_ID = TeamSet.getInt(1);
             MATCH_ID = MatchSet.getInt(1);
-
-//                System.out.println("League: " + LEAGUE_ID + "\nSeason: " + SEASON_ID + "\nTeam: " + TEAM_ID +
-//                        "\nMatch: " + MATCH_ID + "\nPlayerRatings: " + PLAYER_RATING_ID );
-
             return true;
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -104,10 +104,11 @@ public class DS_Insert {
                   statement.addBatch("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                           MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                           MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
-                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", _id) " +
+                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() +
+                          MatchTable.getColSofascoreId() + ", _id) " +
                           "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
                           match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
-                          match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + seasonYearStart + ", " + ++MATCH_ID + ")");
+                          match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer() + ", " + seasonYearStart + ", " + match.getSofaScoreGameId() + ", " + ++MATCH_ID + ")");
 
                   addPlayerRatingsToBatch(statement, match.getHomePlayerRatings(), MATCH_ID, homeTeamId);
                   addPlayerRatingsToBatch(statement, match.getAwayPlayerRatings(), MATCH_ID, awayTeamId);
@@ -136,6 +137,17 @@ public class DS_Insert {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static void logBetPlaced(MatchLog matchLog) {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+            statement.execute("INSERT INTO " + BetTable.getTableName() +
+                    " (" + BetTable.getColResultBetOn() + ", " + BetTable.getColOdds() + ", " + BetTable.getColStake() + ", " + BetTable.getColMatchId() + ") " +
+                    "VALUES (" + matchLog.getResultBetOn().getSqlIntCode() + ", " + matchLog.getOddsBetOn() + ", " +
+                    matchLog.getStake() + ", " + matchLog.getMatch().getDatabase_id() + ")");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

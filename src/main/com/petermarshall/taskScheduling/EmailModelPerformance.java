@@ -2,6 +2,7 @@ package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.BetResultsTotalled;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.mail.UptimeData;
 
@@ -21,26 +22,26 @@ public class EmailModelPerformance {
         Date lastChangeOfModel = calculateWhenModelWasLastChanged();
 
 
-        DataSource.openConnection();
-
-        BetResultsTotalled betResults = DataSource.getResultsOfPredictions(null, null, null);
-        BetResultsTotalled resultsSinceLastModelChange = DataSource.getResultsOfPredictions(lastChangeOfModel, null, null);
-        UptimeData uptimeData = DataSource.getModelOnlinePercentage();
-
-        DataSource.closeConnection();
-
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Hello Peter,\nhere is a summary of the performance of your betting app: ");
-
-        addTotalledDataToBuilder(stringBuilder, betResults);
-        addRecentModelDataToBuilder(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
-        addUptimeDataToBuilder(stringBuilder, uptimeData);
-        if (isModelDueToBeChanged()) {
-            addReminderToChangeModel(stringBuilder);
-        }
-
-        System.out.println(stringBuilder.toString());
+//        DS_Main.openConnection();
+//
+//        BetResultsTotalled betResults = DataSource.getResultsOfPredictions(null, null, null);
+//        BetResultsTotalled resultsSinceLastModelChange = DataSource.getResultsOfPredictions(lastChangeOfModel, null, null);
+//        UptimeData uptimeData = DataSource.getModelOnlinePercentage();
+//
+//        DS_Main.closeConnection();
+//
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append("Hello Peter,\nhere is a summary of the performance of your betting app: ");
+//
+//        addTotalledDataToBuilder(stringBuilder, betResults);
+//        addRecentModelDataToBuilder(stringBuilder, lastChangeOfModel, resultsSinceLastModelChange);
+//        addUptimeDataToBuilder(stringBuilder, uptimeData);
+//        if (isModelDueToBeChanged()) {
+//            addReminderToChangeModel(stringBuilder);
+//        }
+//
+//        System.out.println(stringBuilder.toString());
 
 //        SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
     }

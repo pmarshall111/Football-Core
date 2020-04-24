@@ -9,6 +9,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DS_Main {
+    //used for calls to db to ensure consistent naming
+    static final String HOMETEAM = "hometeam";
+    static final String AWAYTEAM = "awayteam";
+
     private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
     static Connection connection;
 
@@ -65,10 +69,11 @@ public class DS_Main {
                     MatchTable.getColHomeXg() + "' REAL, '" + MatchTable.getColAwayXg() + "' REAL, '" +
                     MatchTable.getColDate() + "' TEXT NOT NULL, '" + MatchTable.getColHomeWinOdds() + "' REAL, '" +
                     MatchTable.getColDrawOdds() + "' REAL, '" + MatchTable.getColAwayWinOdds() + "' REAL, '" +
-                    MatchTable.getColFirstScorer() + "' INTEGER, '" + MatchTable.getColIsPostponed() + "' INTEGER DEFAULT 0, '" +
+                    MatchTable.getColFirstScorer() + "' INTEGER DEFAULT -1, '" + MatchTable.getColIsPostponed() + "' INTEGER DEFAULT 0, '" +
                     MatchTable.getColHometeamId() + "' INTEGER NOT NULL, '" + MatchTable.getColAwayteamId() + "' INTEGER NOT NULL, '" +
                     MatchTable.getColSeasonYearStart() + "' INTEGER NOT NULL, '_id' INTEGER NOT NULL UNIQUE,'" +
-                    MatchTable.getColPredictedLive() + "' INTEGER, 'CHECK('" + MatchTable.getColPredictedLive() + "' == 1 OR '" + MatchTable.getColPredictedLive() + "' == 2), " +
+                    MatchTable.getColPredictedLive() + "' INTEGER, 'CHECK('" + MatchTable.getColPredictedLive() + "' == 0 OR '" + MatchTable.getColPredictedLive() + "' == 1), '" +
+                    MatchTable.getColSofascoreId() + "' INTEGER, " +
                     "FOREIGN KEY('" + MatchTable.getColHometeamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
                     "FOREIGN KEY('" + MatchTable.getColAwayteamId() + "') REFERENCES '" + TeamTable.getTableName() + "'('_id'), " +
                     "PRIMARY KEY('_id'))");

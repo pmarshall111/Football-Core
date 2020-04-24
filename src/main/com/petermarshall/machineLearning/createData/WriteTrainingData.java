@@ -1,6 +1,7 @@
 package com.petermarshall.machineLearning.createData;
 
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
+import com.petermarshall.machineLearning.createData.refactor.CreateFeatures;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,10 +64,11 @@ public class WriteTrainingData {
                                            String delimiter, boolean includeTitles) {
 
         try (FileWriter writer = new FileWriter(fileName)) {
-
             if (includeTitles) {
+
+                ArrayList<Double> features = trainingData.get(0).getFeatures();
                 //ONLY IN HERE TO MAKE WEKA HAPPY THAT THE FIRST ROW IS THE TITLES
-                for (int i = 1; i <= 53; i++) {
+                for (int i = 1; i <= features.size(); i++) {
                     writer.append(i + delimiter);
                 }
                 writer.append("\n");
@@ -74,112 +76,14 @@ public class WriteTrainingData {
 
             for (int i = 0; i<trainingData.size(); i++) {
                 TrainingMatch match = trainingData.get(i);
-
                 Date kickoffTime = match.getKickoffTime();
-
                 if (earliestDate != null && kickoffTime.before(earliestDate)) continue;
                 else if (latestDate != null && kickoffTime.after(latestDate)) continue;
 
-
-                //home team total stats
-                writer.append(match.getHomeTeamAvgGoalsFor() + delimiter); //2
-                writer.append(match.getHomeTeamAvgGoalsAgainst() + delimiter);
-                writer.append(match.getHomeTeamAvgXGF() + delimiter);
-                writer.append(match.getHomeTeamAvgXGA() + delimiter);
-                writer.append(match.getHomeTeamWeightedAvgXGF() + delimiter);
-                writer.append(match.getHomeTeamWeightedAvgXGA() + delimiter);
-                writer.append(match.getAvgHomeTeamPoints() + delimiter);
-                writer.append(match.getLast5HomeTeamPoints() + delimiter);
-                writer.append(match.getIfScoredFirstHomeTeamPoints() + delimiter);
-                writer.append(match.getIfConceededFirstHomeTeamPoints() + delimiter);
-                writer.append(match.getHomeTeamPointsAgainstOpposition() + delimiter);
-                writer.append(match.getHomeTeamMinsWeightedLineupRating() + delimiter);
-                writer.append(match.getHomeTeamStrength() + delimiter); //14
-
-                //home team home stats
-                writer.append(match.getHomeTeamAvgHomeGoalsFor() + delimiter); //15
-                writer.append(match.getHomeTeamAvgHomeGoalsAgainst() + delimiter);
-                writer.append(match.getHomeTeamAvgHomeXGF() + delimiter);
-                writer.append(match.getHomeTeamAvgHomeXGA() + delimiter);
-                writer.append(match.getHomeTeamWeightedAvgHomeXGF() + delimiter);
-                writer.append(match.getHomeTeamWeightedAvgHomeXGA() + delimiter);
-                writer.append(match.getAvgHomeTeamHomePoints() + delimiter);
-                writer.append(match.getLast5HomeTeamHomePoints() + delimiter);
-                writer.append(match.getIfScoredFirstAtHomeHomeTeamPoints() + delimiter);
-                writer.append(match.getIfConceededFirstAtHomeHomeTeamPoints() + delimiter);
-                writer.append(match.getHomeTeamPointsAtHomeAgainstOpposition() + delimiter);
-                writer.append(match.getHomeTeamAtHomeMinsWeightedLineupRating() + delimiter);
-                writer.append(match.getHomeTeamHomeStrength() + delimiter); //27
-
-                //awawy team total stats
-                writer.append(match.getAwayTeamAvgGoalsFor() + delimiter); //28
-                writer.append(match.getAwayTeamAvgGoalsAgainst() + delimiter);
-                writer.append(match.getAwayTeamAvgXGF() + delimiter);
-                writer.append(match.getAwayTeamAvgXGA() + delimiter);
-                writer.append(match.getAwayTeamWeightedAvgXGF() + delimiter);
-                writer.append(match.getAwayTeamWeightedAvgXGA() + delimiter);
-                writer.append(match.getAvgAwayTeamPoints() + delimiter);
-                writer.append(match.getLast5AwayTeamPoints() + delimiter);
-                writer.append(match.getIfScoredFirstAwayTeamPoints() + delimiter);
-                writer.append(match.getIfConceededFirstAwayTeamPoints() + delimiter);
-                writer.append(match.getAwayTeamPointsAgainstOpposition() + delimiter);
-                writer.append(match.getAwayTeamMinsWeightedLineupRating() + delimiter);
-                writer.append(match.getAwayTeamStrength() + delimiter); //40
-
-                //away team away stats
-                writer.append(match.getAwayTeamAvgAwayGoalsFor() + delimiter); //41
-                writer.append(match.getAwayTeamAvgAwayGoalsAgainst() + delimiter);
-                writer.append(match.getAwayTeamAvgAwayXGF() + delimiter);
-                writer.append(match.getAwayTeamAvgAwayXGA() + delimiter);
-                writer.append(match.getAwayTeamWeightedAvgAwayXGF() + delimiter);
-                writer.append(match.getAwayTeamWeightedAvgAwayXGA() + delimiter);
-                writer.append(match.getAvgAwayTeamAwayPoints() + delimiter);
-                writer.append(match.getLast5AwayTeamAwayPoints() + delimiter);
-                writer.append(match.getIfScoredFirstAtAwayAwayTeamPoints() + delimiter);
-                writer.append(match.getIfConceededFirstAtAwayAwayTeamPoints() + delimiter);
-                writer.append(match.getAwayTeamPointsAtAwayAgainstOpposition() + delimiter);
-                writer.append(match.getAwayTeamAtAwayMinsWeightedLineupRating() + delimiter);
-                writer.append(match.getAwayTeamAwayStrength() + delimiter); //53
-
-                //prediction stats
-                writer.append(match.getHomeTeamWeightedAvgXGF() - match.getAwayTeamWeightedAvgXGA() + delimiter); //expected home team goals
-                writer.append(match.getAwayTeamWeightedAvgXGF() - match.getHomeTeamWeightedAvgXGA() + delimiter); // expected away team goals
-                writer.append(match.getHomeTeamWeightedAvgHomeXGF() - match.getAwayTeamWeightedAvgAwayXGA() + delimiter); //expected home team home goals
-                writer.append(match.getAwayTeamWeightedAvgAwayXGF() - match.getHomeTeamWeightedAvgHomeXGA() + delimiter); // expected away team away goals
-
-
-                //powered vals
-                double homeTeamTotalGF = match.getHomeTeamAvgGoalsFor();
-                double awayTeamTotalLineupRating = match.getAwayTeamMinsWeightedLineupRating();
-                double awayTeamTotalXGF = match.getAwayTeamAvgXGF();
-                double awayTeamAwayPts = match.getAvgAwayTeamAwayPoints();
-                double homeTeamTotalXGF = match.getHomeTeamAvgXGF();
-                double homeTeamHomeGF = match.getHomeTeamAvgHomeGoalsFor();
-                double homeTeamTotalLineupRating = match.getHomeTeamMinsWeightedLineupRating();
-                double awayTeamTotalXGA = match.getAwayTeamAvgXGA();
-                double homeTeamHomePts = match.getAvgHomeTeamHomePoints();
-                double homeTeamWeightedXGA = match.getHomeTeamWeightedAvgXGA();
-                //10
-                double awayTeamAwayWeightedXGF = match.getAwayTeamWeightedAvgAwayXGF();
-                double awayTeamAvfGF = match.getAwayTeamAvgGoalsFor();
-                double homeTeamHomeXGF = match.getHomeTeamAvgHomeXGF();
-
-                double[] toCombine = new double[]{homeTeamTotalGF, awayTeamTotalLineupRating, awayTeamTotalXGF, awayTeamAwayPts, homeTeamTotalXGF, homeTeamHomeGF,
-                        homeTeamTotalLineupRating, awayTeamTotalXGA, homeTeamHomePts, homeTeamWeightedXGA, awayTeamAwayWeightedXGF, awayTeamAvfGF, homeTeamHomeXGF};
-
-
-                ArrayList<Double> newFeatures = combineFeatures(toCombine);
-                for (double feature: newFeatures) writer.append(feature + delimiter);
-
-
-//                //odds
-                writer.append(match.getHomeTeamProbability() + delimiter);
-                writer.append(match.getDrawProbability() + delimiter);
-                writer.append(match.getAwayTeamProbability() + delimiter);
-
-                //result
-                writer.append(match.getResult() + "");
-                writer.append("\n");
+                ArrayList<Double> features = match.getFeatures();
+                for (double f : features) {
+                    writer.append(f + delimiter);
+                }
             }
 
         } catch (IOException e) {}

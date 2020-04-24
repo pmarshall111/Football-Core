@@ -1,6 +1,6 @@
 package com.petermarshall.database.tables;
 
-public class MatchTable {
+public abstract class MatchTable {
     private static final String TABLE_NAME = "Match";
 
     private static final String COL_HOME_SCORE = "homeScore";
@@ -17,9 +17,11 @@ public class MatchTable {
     private static final String COL_AWAYTEAM_ID = "awayTeam_id";
     private static final String COL_SEASON_YEAR_START = "season_year_start";
     private static final String COL_PREDICTED_LIVE = "predictedLive";
+    private static final String COL_SOFASCORE_ID = "sofascore_id";
 
-    //private static final String COL_SOFASCORE_ID = "sofascore_id"; TODO: IS NEEDED??????
-
+    public static String getColSofascoreId() {
+        return COL_SOFASCORE_ID;
+    }
 
     public static String getTableName() {
         return TABLE_NAME;

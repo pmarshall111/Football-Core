@@ -1,11 +1,20 @@
 package com.petermarshall.machineLearning.createData.classes;
 
+import com.petermarshall.DateHelper;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
+import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.COMPARE_LAST_N_GAMES;
+import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.NUMB_SEASONS_HISTORY;
+
+//Purpose of training match is to hold all data that we have for a match, to make it easier to change which features we
+//use for our ML model.
 public class TrainingMatch {
+    private ArrayList<Double> features;
 
-    //HOME TOTAL DATA
+    //HOME OVR DATA
     private String homeTeamName;
     private double homeTeamAvgGoalsFor;
     private double homeTeamAvgGoalsAgainst;
@@ -13,8 +22,7 @@ public class TrainingMatch {
     private double homeTeamAvgXGA;
     private double homeTeamWeightedAvgXGF;
     private double homeTeamWeightedAvgXGA;
-    
-    //NEW FORM CALCULATED FIELDS (USING WEIGHTED AVG)
+    //WEIGHTED AVG FORM CALCULATED FIELDS
     private double homeTeamFormGoalsFor;
     private double homeTeamFormGoalsAgainst;
     private double homeTeamFormXGF;
@@ -30,7 +38,7 @@ public class TrainingMatch {
     private double homeTeamAvgFormWeightedXGA;
     private double homeTeamAvgFormXGFLast5Games;
     private double homeTeamAvgFormXGALast5Games;
-    
+    //EXTRA HOME
     private double avgHomeTeamPoints;
     private double last5HomeTeamPoints;
     private double ifScoredFirstHomeTeamPoints;
@@ -38,15 +46,11 @@ public class TrainingMatch {
     private double homeTeamPointsAgainstOpposition;
     private double homeTeamMinsWeightedLineupRating;
     private double homeTeamGamesWeightedLineupRating;
-    //calc'd by looking at how many minutes are on the pitch vs the minutes of highest 11 players (justification: highest 11 players minutes will be the players the manager thinks
-    // works best in his team.)
-    private double homeTeamStrength;
-    
+    private double homeTeamStrength; //calc'd by looking at how many minutes are on the pitch vs the minutes of highest 11 players (justification: highest 11 players minutes will be the players the manager thinks works best in his team.)
     private double homeTeamsOpponentsWholeSeasonPPG;
     private double homeTeamsLast5OpponentsWholeSeasonPPG;
     private double homeTeamsOpponentsLast5PPG;
     private double homeTeamLast5OpponentsLast5PPG;
-    //clean sheet stats
     private double homeTeamsAvgNumbCleanSheets;
     private double homeTeamsLast5AvgNumbCleanSheets;
     
@@ -79,13 +83,10 @@ public class TrainingMatch {
     private double homeTeamAtHomeMinsWeightedLineupRating;
     private double homeTeamAtHomeGamesWeightedLineupRating;
     private double homeTeamHomeStrength;
-
     private double homeTeamsHomeOpponentsWholeSeasonPPG;
     private double homeTeamsLast5HomeOpponentsWholeSeasonPPG;
-
     private double homeTeamsHomeOpponentsLast5PPG;
     private double homeTeamLast5HomeOpponentsLast5PPG;
-
     private double homeTeamsHomeAvgNumbCleanSheets;
     private double homeTeamsLast5HomeAvgNumbCleanSheets;
     
@@ -120,12 +121,10 @@ public class TrainingMatch {
     private double awayTeamMinsWeightedLineupRating;
     private double awayTeamGamesWeightedLineupRating;
     private double awayTeamStrength;
-    
     private double awayTeamsOpponentsWholeSeasonPPG;
     private double awayTeamsLast5OpponentsWholeSeasonPPG;
     private double awayTeamsOpponentsLast5PPG;
     private double awayTeamLast5OpponentsLast5PPG;
-
     private double awayTeamsAvgNumbCleanSheets;
     private double awayTeamsLast5AvgNumbCleanSheets;
 
@@ -158,15 +157,12 @@ public class TrainingMatch {
     private double awayTeamAtAwayMinsWeightedLineupRating;
     private double awayTeamAtAwayGamesWeightedLineupRating;
     private double awayTeamAwayStrength;
-
     private double awayTeamsAwayOpponentsWholeSeasonPPG;
     private double awayTeamsLast5AwayOpponentsWholeSeasonPPG;
     private double awayTeamsAwayOpponentsLast5PPG;
     private double awayTeamLast5AwayOpponentsLast5PPG;
-
     private double awayTeamsAwayAvgNumbCleanSheets;
     private double awayTeamsLast5AwayAvgNumbCleanSheets;
-
 
     //MISC DATA
     //probabilities calculated from betting odds
@@ -176,215 +172,207 @@ public class TrainingMatch {
     private int homeScore;
     private int awayScore;
     private Date kickoffTime;
-    private int homeTeamHomeGamesPlayed;
-    private int awayTeamAwayGamesPlayed;
+    private int homeTeamGamesPlayed;
+    private int awayTeamGamesPlayed;
     private int seasonYearStart;
 
-    public void setMiscStats(double homeTeamProbability, double awayTeamProbability, double drawProbability, int homeScore, int awayScore, Date kickoffTime,
-                             int homeTeamHomeGamesPlayed, int awayTeamAwayGamesPlayed, String seasonYears) {
+    public ArrayList<Double> getFeatures() {
+        return features;
+    }
 
-        this.homeTeamProbability = homeTeamProbability;
-        this.awayTeamProbability = awayTeamProbability;
-        this.drawProbability = drawProbability;
+    public void setFeatures(ArrayList<Double> features) {
+        this.features = features;
+    }
+
+    public TrainingMatch(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
+                         HashMap<String, Player> homeLineup, HashMap<String, Player> awayLineup, double homeOdds, double drawOdds, double awayOdds,
+                         int homeScore, int awayScore, String kickoff, int seasonYearStart) {
+
+        setHomeTeamStats(homeTeam, homeSeason, homeLineup, awayTeam, GamesSelector.ALL_GAMES);
+        setHomeTeamAtHomeStats(homeTeam, homeSeason, homeLineup, awayTeam, GamesSelector.ONLY_HOME_GAMES);
+        setAwayTeamStats(awayTeam, awaySeason, awayLineup, homeTeam, GamesSelector.ALL_GAMES);
+        setAwayTeamAtAwayStats(awayTeam, awaySeason, awayLineup, homeTeam, GamesSelector.ONLY_AWAY_GAMES);
+        setMiscStats(homeOdds, drawOdds, awayOdds, homeScore, awayScore, kickoff, homeSeason.getNumbGamesPlayed(), awaySeason.getNumbGamesPlayed(), seasonYearStart);
+    }
+    //needed to create a training match for historic games of previous seasons so that future TrainingMatches can be made.
+    //used when we predict games and do not go through the entire history of the games, just the current season. Limited info is retrieved from the old games.
+    public TrainingMatch(TrainingTeam homeTeam, TrainingTeam awayTeam, int homeScore, int awayScore, int seasonYearStart) {
+        this.homeTeamName = homeTeam.getTeamName();
+        this.awayTeamName = awayTeam.getTeamName();
         this.homeScore = homeScore;
         this.awayScore = awayScore;
-        this.kickoffTime = kickoffTime;
-        this.homeTeamHomeGamesPlayed = homeTeamHomeGamesPlayed;
-        this.awayTeamAwayGamesPlayed = awayTeamAwayGamesPlayed;
-        this.seasonYearStart = Integer.parseInt(seasonYears.substring(0, 2));
+        this.seasonYearStart = seasonYearStart;
     }
 
-    public void setHomeTeamStats (String homeTeamName, double homeTeamAvgGoalsFor, double homeTeamAvgGoalsAgainst, double homeTeamAvgXGF, double homeTeamAvgXGA,
-                                  double homeTeamWeightedAvgXGF, double homeTeamWeightedAvgXGA, double homeTeamFormGoalsFor, double homeTeamFormGoalsAgainst, double homeTeamFormXGF,
-                                  double homeTeamFormXGA, double homeTeamFormWeightedXGF, double homeTeamFormWeightedXGA, 
-                                  double homeTeamAvgFormGoalsFor, double homeTeamAvgFormGoalsAgainst, double homeTeamAvgFormXGF, double homeTeamAvgFormXGA, 
-                                  double homeTeamAvgFormWeightedXGF, double homeTeamAvgFormWeightedXGA, double homeTeamAvgFormXGFLast5Games, double homeTeamAvgFormXGALast5Games,
-                                  double avgHomeTeamPoints, double last5HomeTeamPoints,
-                                  double ifScoredFirstHomeTeamPoints, double ifConceededFirstHomeTeamPoints, double homeTeamPointsAgainstOpposition,
-                                  double homeTeamMinsWeightedLineupRating, double homeTeamGamesWeighredLineupRating, double homeTeamStrength,
-                                  double homeTeamsOpponentsWholeSeasonPPG, double homeTeamsLast5OpponentsWholeSeasonPPG,
-                                  double homeTeamsOpponentsLast5PPG, double homeTeamLast5OpponentsLast5PPG,
-                                  double homeTeamsAvgNumbCleanSheets, double homeTeamsLast5AvgNumbCleanSheets) {
-
-        this.homeTeamName = homeTeamName;
-        this.homeTeamAvgGoalsFor = homeTeamAvgGoalsFor;
-        this.homeTeamAvgGoalsAgainst = homeTeamAvgGoalsAgainst;
-        this.homeTeamAvgXGF = homeTeamAvgXGF;
-        this.homeTeamAvgXGA = homeTeamAvgXGA;
-        this.homeTeamWeightedAvgXGF = homeTeamWeightedAvgXGF;
-        this.homeTeamWeightedAvgXGA = homeTeamWeightedAvgXGA;
-        this.homeTeamFormGoalsFor = homeTeamFormGoalsFor;
-        this.homeTeamFormGoalsAgainst = homeTeamFormGoalsAgainst;
-        this.homeTeamFormXGF = homeTeamFormXGF;
-        this.homeTeamFormXGA = homeTeamFormXGA;
-        this.homeTeamFormWeightedXGF = homeTeamFormWeightedXGF;
-        this.homeTeamFormWeightedXGA = homeTeamFormWeightedXGA;
-        this.homeTeamAvgFormGoalsFor = homeTeamAvgFormGoalsFor;
-        this.homeTeamAvgFormGoalsAgainst = homeTeamAvgFormGoalsAgainst;
-        this.homeTeamAvgFormXGF = homeTeamAvgFormXGF;
-        this.homeTeamAvgFormXGA = homeTeamAvgFormXGA;
-        this.homeTeamAvgFormWeightedXGF = homeTeamAvgFormWeightedXGF;
-        this.homeTeamAvgFormWeightedXGA = homeTeamAvgFormWeightedXGA;
-        this.homeTeamAvgFormXGFLast5Games = homeTeamAvgFormXGFLast5Games;
-        this.homeTeamAvgFormXGALast5Games = homeTeamAvgFormXGALast5Games;
-        this.avgHomeTeamPoints = avgHomeTeamPoints;
-        this.last5HomeTeamPoints = last5HomeTeamPoints;
-        this.ifScoredFirstHomeTeamPoints = ifScoredFirstHomeTeamPoints;
-        this.ifConceededFirstHomeTeamPoints = ifConceededFirstHomeTeamPoints;
-        this.homeTeamPointsAgainstOpposition = homeTeamPointsAgainstOpposition;
-        this.homeTeamMinsWeightedLineupRating = homeTeamMinsWeightedLineupRating;
-        this.homeTeamGamesWeightedLineupRating = homeTeamGamesWeighredLineupRating;
-        this.homeTeamStrength = homeTeamStrength;
-        this.homeTeamsOpponentsWholeSeasonPPG = homeTeamsOpponentsWholeSeasonPPG;
-        this.homeTeamsLast5OpponentsWholeSeasonPPG = homeTeamsLast5OpponentsWholeSeasonPPG;
-        this.homeTeamsOpponentsLast5PPG = homeTeamsOpponentsLast5PPG;
-        this.homeTeamLast5OpponentsLast5PPG = homeTeamLast5OpponentsLast5PPG;
+    private double calcProbabilityFromOdds(double odds) {
+        return 1/odds;
     }
 
-    public void setHomeTeamAtHomeStats (double homeTeamAvgHomeGoalsFor, double homeTeamAvgHomeGoalsAgainst, double homeTeamAvgHomeXGF, double homeTeamAvgHomeXGA,
-                                  double homeTeamWeightedAvgHomeXGF, double homeTeamWeightedAvgHomeXGA, double homeTeamHomeFormGoalsFor, double homeTeamHomeFormGoalsAgainst, double homeTeamHomeFormXGF,
-                                        double homeTeamHomeFormXGA, double homeTeamHomeFormWeightedXGF, double homeTeamHomeFormWeightedXGA,
-                                        double homeTeamHomeAvgFormGoalsFor, double homeTeamHomeAvgFormGoalsAgainst, double homeTeamHomeAvgFormXGF, double homeTeamHomeAvgFormXGA,
-                                        double homeTeamHomeAvgFormWeightedXGF, double homeTeamHomeAvgFormWeightedXGA, double homeTeamHomeAvgFormXGFLast5Games, double homeTeamHomeAvgFormXGALast5Games,
-                                        double avgHomeTeamHomePoints, double last5HomeTeamHomePoints,
-                                  double ifScoredFirstAtHomeHomeTeamPoints, double ifConceededFirstAtHomeHomeTeamPoints, double homeTeamPointsAtHomeAgainstOpposition,
-                                  double homeTeamAtHomeMinsWeightedLineupRating, double homeTeamAtHomeGamesWeightedLineupRating, double homeTeamHomeStrength,
-                                        double homeTeamsHomeOpponentsWholeSeasonPPG, double homeTeamsLast5HomeOpponentsWholeSeasonPPG,
-                                        double homeTeamsHomeOpponentsLast5PPG, double homeTeamLast5HomeOpponentsLast5PPG,
-                                        double homeTeamsHomeAvgNumbCleanSheets, double homeTeamsLast5HomeAvgNumbCleanSheets) {
-        
-        this.homeTeamAvgHomeGoalsFor = homeTeamAvgHomeGoalsFor;
-        this.homeTeamAvgHomeGoalsAgainst = homeTeamAvgHomeGoalsAgainst;
-        this.homeTeamAvgHomeXGF = homeTeamAvgHomeXGF;
-        this.homeTeamAvgHomeXGA = homeTeamAvgHomeXGA;
-        this.homeTeamWeightedAvgHomeXGF = homeTeamWeightedAvgHomeXGF;
-        this.homeTeamWeightedAvgHomeXGA = homeTeamWeightedAvgHomeXGA;
-        this.homeTeamHomeFormGoalsFor = homeTeamHomeFormGoalsFor;
-        this.homeTeamHomeFormGoalsAgainst = homeTeamHomeFormGoalsAgainst;
-        this.homeTeamHomeFormXGF = homeTeamHomeFormXGF;
-        this.homeTeamHomeFormXGA = homeTeamHomeFormXGA;
-        this.homeTeamHomeFormWeightedXGF = homeTeamHomeFormWeightedXGF;
-        this.homeTeamHomeFormWeightedXGA = homeTeamHomeFormWeightedXGA;
-        this.homeTeamHomeAvgFormGoalsFor = homeTeamHomeAvgFormGoalsFor;
-        this.homeTeamHomeAvgFormGoalsAgainst = homeTeamHomeAvgFormGoalsAgainst;
-        this.homeTeamHomeAvgFormXGF = homeTeamHomeAvgFormXGF;
-        this.homeTeamHomeAvgFormXGA = homeTeamHomeAvgFormXGA;
-        this.homeTeamHomeAvgFormWeightedXGF = homeTeamHomeAvgFormWeightedXGF;
-        this.homeTeamHomeAvgFormWeightedXGA = homeTeamHomeAvgFormWeightedXGA;
-        this.homeTeamHomeAvgFormXGFLast5Games = homeTeamHomeAvgFormXGFLast5Games;
-        this.homeTeamHomeAvgFormXGALast5Games = homeTeamHomeAvgFormXGALast5Games;
-        this.avgHomeTeamHomePoints = avgHomeTeamHomePoints;
-        this.last5HomeTeamHomePoints = last5HomeTeamHomePoints;
-        this.ifScoredFirstAtHomeHomeTeamPoints = ifScoredFirstAtHomeHomeTeamPoints;
-        this.ifConceededFirstAtHomeHomeTeamPoints = ifConceededFirstAtHomeHomeTeamPoints;
-        this.homeTeamPointsAtHomeAgainstOpposition = homeTeamPointsAtHomeAgainstOpposition;
-        this.homeTeamAtHomeMinsWeightedLineupRating = homeTeamAtHomeMinsWeightedLineupRating;
-        this.homeTeamAtHomeGamesWeightedLineupRating = homeTeamAtHomeGamesWeightedLineupRating;
-        this.homeTeamHomeStrength = homeTeamHomeStrength;
-        this.homeTeamsHomeOpponentsWholeSeasonPPG = homeTeamsHomeOpponentsWholeSeasonPPG;
-        this.homeTeamsLast5HomeOpponentsWholeSeasonPPG = homeTeamsLast5HomeOpponentsWholeSeasonPPG;
-        this.homeTeamsHomeOpponentsLast5PPG = homeTeamsHomeOpponentsLast5PPG;
-        this.homeTeamLast5HomeOpponentsLast5PPG = homeTeamLast5HomeOpponentsLast5PPG;
-        this.homeTeamsHomeAvgNumbCleanSheets = homeTeamsHomeAvgNumbCleanSheets;
-        this.homeTeamsLast5HomeAvgNumbCleanSheets = homeTeamsLast5HomeAvgNumbCleanSheets;
+    private void setMiscStats(double homeOdds, double drawOdds, double awayOdds, int homeScore, int awayScore, String kickoff, int homeTeamGamesPlayed, int awayTeamGamesPlayed, int seasonYearStart) {
+        this.homeTeamProbability = calcProbabilityFromOdds(homeOdds);
+        this.drawProbability = calcProbabilityFromOdds(drawOdds);
+        this.awayTeamProbability = calcProbabilityFromOdds(awayOdds);
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+        this.kickoffTime = DateHelper.createDateFromSQL(kickoff);
+        this.homeTeamGamesPlayed = homeTeamGamesPlayed;
+        this.awayTeamGamesPlayed = awayTeamGamesPlayed;
+        this.seasonYearStart = seasonYearStart;
+    }
+    
+    public void setHomeTeamStats(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, HashMap<String, Player> homeLineup, TrainingTeam awayTeam, GamesSelector venueSelector) {
+        ArrayList<String> playersNames =  new ArrayList<>(homeLineup.keySet());
+        this.homeTeamName = homeTeam.getTeamName();
+        this.homeTeamAvgGoalsFor = homeSeason.getAvgGoalsFor(venueSelector);
+        this.homeTeamAvgGoalsAgainst = homeSeason.getAvgGoalsAgainst(venueSelector);
+        this.homeTeamAvgXGF = homeSeason.getAvgXGF(venueSelector);
+        this.homeTeamAvgXGA = homeSeason.getAvgXGA(venueSelector);
+        this.homeTeamWeightedAvgXGF = homeSeason.getWeightedAvgXGF(venueSelector);
+        this.homeTeamWeightedAvgXGA = homeSeason.getWeightedAvgXGA(venueSelector);
+        this.homeTeamFormGoalsFor = homeSeason.getFormGoalsFor(venueSelector);
+        this.homeTeamFormGoalsAgainst = homeSeason.getFormGoalsAgainst(venueSelector);
+        this.homeTeamFormXGF = homeSeason.getFormXGF(venueSelector);
+        this.homeTeamFormXGA = homeSeason.getFormXGA(venueSelector);
+        this.homeTeamFormWeightedXGF = homeSeason.getFormWeightedXGF(venueSelector);
+        this.homeTeamFormWeightedXGA = homeSeason.getFormWeightedXGA(venueSelector);
+        this.homeTeamAvgFormGoalsFor = homeSeason.getAvgFormGoalsFor(venueSelector, 0);
+        this.homeTeamAvgFormGoalsAgainst = homeSeason.getAvgFormGoalsAgainst(venueSelector, 0);
+        this.homeTeamAvgFormXGF = homeSeason.getAvgFormXGF(venueSelector, 0);
+        this.homeTeamAvgFormXGA = homeSeason.getAvgFormXGA(venueSelector, 0);
+        this.homeTeamAvgFormWeightedXGF = homeSeason.getAvgFormWeightedXGF(venueSelector, 0);
+        this.homeTeamAvgFormWeightedXGA = homeSeason.getAvgFormWeightedXGA(venueSelector, 0);
+        this.homeTeamAvgFormXGFLast5Games = homeSeason.getFormXGFOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamAvgFormXGALast5Games = homeSeason.getFormXGAOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.avgHomeTeamPoints = homeSeason.getAvgPoints(venueSelector);
+        this.last5HomeTeamPoints = homeSeason.getAvgPointsOverLastXGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.ifScoredFirstHomeTeamPoints = homeSeason.getAvgPointsWhenScoredFirst(venueSelector);
+        this.ifConceededFirstHomeTeamPoints = homeSeason.getAvgPointsWhenConceededFirst(venueSelector);
+        this.homeTeamPointsAgainstOpposition = homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), venueSelector, seasonYearStart - NUMB_SEASONS_HISTORY);
+        this.homeTeamMinsWeightedLineupRating = homeSeason.getMinsWeightedLineupRating(venueSelector, playersNames);
+        this.homeTeamGamesWeightedLineupRating = homeSeason.getGamesWeightedLineupRating(venueSelector, playersNames);
+        this.homeTeamStrength = homeSeason.getLineupStrength(venueSelector, playersNames);
+        this.homeTeamsOpponentsWholeSeasonPPG = homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(venueSelector);
+        this.homeTeamsLast5OpponentsWholeSeasonPPG = homeSeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamsOpponentsLast5PPG = homeSeason.getAvgPointsOfAllOpponentsLast5Games(venueSelector);
+        this.homeTeamLast5OpponentsLast5PPG = homeSeason.getAvgPointsOfLastXOpponentsLast5Games(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamsAvgNumbCleanSheets = homeSeason.getAvgNumberOfCleanSheets(venueSelector);
+        this.homeTeamsLast5AvgNumbCleanSheets = homeSeason.getAvgNumberOfCleanSheetsLastXGames(venueSelector, COMPARE_LAST_N_GAMES, true);
     }
 
-    public void setAwayTeamStats (String awayTeamName, double awayTeamAvgGoalsFor, double awayTeamAvgGoalsAgainst, double awayTeamAvgXGF, double awayTeamAvgXGA,
-                         double awayTeamWeightedAvgXGF, double awayTeamWeightedAvgXGA, double awayTeamFormGoalsFor, double awayTeamFormGoalsAgainst, double awayTeamFormXGF,
-                                  double awayTeamFormXGA, double awayTeamFormWeightedXGF, double awayTeamFormWeightedXGA,
-                                  double awayTeamAvgFormGoalsFor, double awayTeamAvgFormGoalsAgainst, double awayTeamAvgFormXGF, double awayTeamAvgFormXGA,
-                                  double awayTeamAvgFormWeightedXGF, double awayTeamAvgFormWeightedXGA, double awayTeamAvgFormXGFLast5Games, double awayTeamAvgFormXGALast5Games,
-                                  double avgAwayTeamPoints, double last5AwayTeamPoints,
-                         double ifScoredFirstAwayTeamPoints, double ifConceededFirstAwayTeamPoints, double awayTeamPointsAgainstOpposition,
-                         double awayTeamMinsWeightedLineupRating, double awayTeamGamesWeighredLineupRating, double awayTeamStrength,
-                                  double awayTeamsOpponentsWholeSeasonPPG, double awayTeamsLast5OpponentsWholeSeasonPPG,
-                                  double awayTeamsOpponentsLast5PPG, double awayTeamLast5OpponentsLast5PPG,
-                                  double awayTeamsAvgNumbCleanSheets, double awayTeamsLast5AvgNumbCleanSheets) {
-
-        this.awayTeamName = awayTeamName;
-        this.awayTeamAvgGoalsFor = awayTeamAvgGoalsFor;
-        this.awayTeamAvgGoalsAgainst = awayTeamAvgGoalsAgainst;
-        this.awayTeamAvgXGF = awayTeamAvgXGF;
-        this.awayTeamAvgXGA = awayTeamAvgXGA;
-        this.awayTeamWeightedAvgXGF = awayTeamWeightedAvgXGF;
-        this.awayTeamWeightedAvgXGA = awayTeamWeightedAvgXGA;
-        this.awayTeamFormGoalsFor = awayTeamFormGoalsFor;
-        this.awayTeamFormGoalsAgainst = awayTeamFormGoalsAgainst;
-        this.awayTeamFormXGF = awayTeamFormXGF;
-        this.awayTeamFormXGA = awayTeamFormXGA;
-        this.awayTeamFormWeightedXGF = awayTeamFormWeightedXGF;
-        this.awayTeamFormWeightedXGA = awayTeamFormWeightedXGA;
-        this.awayTeamAvgFormGoalsFor = awayTeamAvgFormGoalsFor;
-        this.awayTeamAvgFormGoalsAgainst = awayTeamAvgFormGoalsAgainst;
-        this.awayTeamAvgFormXGF = awayTeamAvgFormXGF;
-        this.awayTeamAvgFormXGA = awayTeamAvgFormXGA;
-        this.awayTeamAvgFormWeightedXGF = awayTeamAvgFormWeightedXGF;
-        this.awayTeamAvgFormWeightedXGA = awayTeamAvgFormWeightedXGA;
-        this.awayTeamAvgFormXGFLast5Games = awayTeamAvgFormXGFLast5Games;
-        this.awayTeamAvgFormXGALast5Games = awayTeamAvgFormXGALast5Games;
-        this.avgAwayTeamPoints = avgAwayTeamPoints;
-        this.last5AwayTeamPoints = last5AwayTeamPoints;
-        this.ifScoredFirstAwayTeamPoints = ifScoredFirstAwayTeamPoints;
-        this.ifConceededFirstAwayTeamPoints = ifConceededFirstAwayTeamPoints;
-        this.awayTeamPointsAgainstOpposition = awayTeamPointsAgainstOpposition;
-        this.awayTeamMinsWeightedLineupRating = awayTeamMinsWeightedLineupRating;
-        this.awayTeamGamesWeightedLineupRating = awayTeamGamesWeighredLineupRating;
-        this.awayTeamStrength = awayTeamStrength;
-        this.awayTeamsOpponentsWholeSeasonPPG = awayTeamsOpponentsWholeSeasonPPG;
-        this.awayTeamsLast5OpponentsWholeSeasonPPG = awayTeamsLast5OpponentsWholeSeasonPPG;
-        this.awayTeamsOpponentsLast5PPG = awayTeamsOpponentsLast5PPG;
-        this.awayTeamLast5OpponentsLast5PPG = awayTeamLast5OpponentsLast5PPG;
-        this.awayTeamsAvgNumbCleanSheets = awayTeamsAvgNumbCleanSheets;
-        this.awayTeamsLast5AvgNumbCleanSheets = awayTeamsLast5AvgNumbCleanSheets;
+    public void setHomeTeamAtHomeStats(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, HashMap<String, Player> homeLineup, TrainingTeam awayTeam, GamesSelector venueSelector) {
+        ArrayList<String> playersNames =  new ArrayList<>(homeLineup.keySet());
+        this.homeTeamAvgHomeGoalsFor = homeSeason.getAvgGoalsFor(venueSelector);
+        this.homeTeamAvgHomeGoalsAgainst = homeSeason.getAvgGoalsAgainst(venueSelector);
+        this.homeTeamAvgHomeXGF = homeSeason.getAvgXGF(venueSelector);
+        this.homeTeamAvgHomeXGA = homeSeason.getAvgXGA(venueSelector);
+        this.homeTeamWeightedAvgHomeXGF = homeSeason.getWeightedAvgXGF(venueSelector);
+        this.homeTeamWeightedAvgHomeXGA = homeSeason.getWeightedAvgXGA(venueSelector);
+        this.homeTeamHomeFormGoalsFor = homeSeason.getFormGoalsFor(venueSelector);
+        this.homeTeamHomeFormGoalsAgainst = homeSeason.getFormGoalsAgainst(venueSelector);
+        this.homeTeamHomeFormXGF = homeSeason.getFormXGF(venueSelector);
+        this.homeTeamHomeFormXGA = homeSeason.getFormXGA(venueSelector);
+        this.homeTeamHomeFormWeightedXGF = homeSeason.getFormWeightedXGF(venueSelector);
+        this.homeTeamHomeFormWeightedXGA = homeSeason.getFormWeightedXGA(venueSelector);
+        this.homeTeamHomeAvgFormGoalsFor = homeSeason.getAvgFormGoalsFor(venueSelector, 0);
+        this.homeTeamHomeAvgFormGoalsAgainst = homeSeason.getAvgFormGoalsAgainst(venueSelector, 0);
+        this.homeTeamHomeAvgFormXGF = homeSeason.getAvgFormXGF(venueSelector, 0);
+        this.homeTeamHomeAvgFormXGA = homeSeason.getAvgFormXGA(venueSelector, 0);
+        this.homeTeamHomeAvgFormWeightedXGF = homeSeason.getAvgFormWeightedXGF(venueSelector, 0);
+        this.homeTeamHomeAvgFormWeightedXGA = homeSeason.getAvgFormWeightedXGA(venueSelector, 0);
+        this.homeTeamHomeAvgFormXGFLast5Games = homeSeason.getFormXGFOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamHomeAvgFormXGALast5Games = homeSeason.getFormXGAOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.avgHomeTeamHomePoints = homeSeason.getAvgPoints(venueSelector);
+        this.last5HomeTeamHomePoints = homeSeason.getAvgPointsOverLastXGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.ifScoredFirstAtHomeHomeTeamPoints = homeSeason.getAvgPointsWhenScoredFirst(venueSelector);
+        this.ifConceededFirstAtHomeHomeTeamPoints = homeSeason.getAvgPointsWhenConceededFirst(venueSelector);
+        this.homeTeamPointsAtHomeAgainstOpposition = homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), venueSelector, seasonYearStart - NUMB_SEASONS_HISTORY);
+        this.homeTeamAtHomeMinsWeightedLineupRating = homeSeason.getMinsWeightedLineupRating(venueSelector, playersNames);
+        this.homeTeamAtHomeGamesWeightedLineupRating = homeSeason.getGamesWeightedLineupRating(venueSelector, playersNames);
+        this.homeTeamHomeStrength = homeSeason.getLineupStrength(venueSelector, playersNames);
+        this.homeTeamsHomeOpponentsWholeSeasonPPG = homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(venueSelector);
+        this.homeTeamsLast5HomeOpponentsWholeSeasonPPG = homeSeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamsHomeOpponentsLast5PPG = homeSeason.getAvgPointsOfAllOpponentsLast5Games(venueSelector);
+        this.homeTeamLast5HomeOpponentsLast5PPG = homeSeason.getAvgPointsOfLastXOpponentsLast5Games(venueSelector, COMPARE_LAST_N_GAMES);
+        this.homeTeamsHomeAvgNumbCleanSheets = homeSeason.getAvgNumberOfCleanSheets(venueSelector);
+        this.homeTeamsLast5HomeAvgNumbCleanSheets = homeSeason.getAvgNumberOfCleanSheetsLastXGames(venueSelector, COMPARE_LAST_N_GAMES, true);
+    }
+    
+    public void setAwayTeamStats(TrainingTeam awayTeam, TrainingTeamsSeason awaySeason, HashMap<String, Player> awayLineup, TrainingTeam homeTeam, GamesSelector venueSelector) {
+        ArrayList<String> playersNames =  new ArrayList<>(awayLineup.keySet());
+        this.awayTeamName = awayTeam.getTeamName();
+        this.awayTeamAvgGoalsFor = awaySeason.getAvgGoalsFor(venueSelector);
+        this.awayTeamAvgGoalsAgainst = awaySeason.getAvgGoalsAgainst(venueSelector);
+        this.awayTeamAvgXGF = awaySeason.getAvgXGF(venueSelector);
+        this.awayTeamAvgXGA = awaySeason.getAvgXGA(venueSelector);
+        this.awayTeamWeightedAvgXGF = awaySeason.getWeightedAvgXGF(venueSelector);
+        this.awayTeamWeightedAvgXGA = awaySeason.getWeightedAvgXGA(venueSelector);
+        this.awayTeamFormGoalsFor = awaySeason.getFormGoalsFor(venueSelector);
+        this.awayTeamFormGoalsAgainst = awaySeason.getFormGoalsAgainst(venueSelector);
+        this.awayTeamFormXGF = awaySeason.getFormXGF(venueSelector);
+        this.awayTeamFormXGA = awaySeason.getFormXGA(venueSelector);
+        this.awayTeamFormWeightedXGF = awaySeason.getFormWeightedXGF(venueSelector);
+        this.awayTeamFormWeightedXGA = awaySeason.getFormWeightedXGA(venueSelector);
+        this.awayTeamAvgFormGoalsFor = awaySeason.getAvgFormGoalsFor(venueSelector, 0);
+        this.awayTeamAvgFormGoalsAgainst = awaySeason.getAvgFormGoalsAgainst(venueSelector, 0);
+        this.awayTeamAvgFormXGF = awaySeason.getAvgFormXGF(venueSelector, 0);
+        this.awayTeamAvgFormXGA = awaySeason.getAvgFormXGA(venueSelector, 0);
+        this.awayTeamAvgFormWeightedXGF = awaySeason.getAvgFormWeightedXGF(venueSelector, 0);
+        this.awayTeamAvgFormWeightedXGA = awaySeason.getAvgFormWeightedXGA(venueSelector, 0);
+        this.awayTeamAvgFormXGFLast5Games = awaySeason.getFormXGFOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamAvgFormXGALast5Games = awaySeason.getFormXGAOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.avgAwayTeamPoints = awaySeason.getAvgPoints(venueSelector);
+        this.last5AwayTeamPoints = awaySeason.getAvgPointsOverLastXGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.ifScoredFirstAwayTeamPoints = awaySeason.getAvgPointsWhenScoredFirst(venueSelector);
+        this.ifConceededFirstAwayTeamPoints = awaySeason.getAvgPointsWhenConceededFirst(venueSelector);
+        this.awayTeamPointsAgainstOpposition = awayTeam.getPointsOfLastMatchups(homeTeam.getTeamName(), venueSelector, seasonYearStart - NUMB_SEASONS_HISTORY);
+        this.awayTeamMinsWeightedLineupRating = awaySeason.getMinsWeightedLineupRating(venueSelector, playersNames);
+        this.awayTeamGamesWeightedLineupRating = awaySeason.getGamesWeightedLineupRating(venueSelector, playersNames);
+        this.awayTeamStrength = awaySeason.getLineupStrength(venueSelector, playersNames);
+        this.awayTeamsOpponentsWholeSeasonPPG = awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(venueSelector);
+        this.awayTeamsLast5OpponentsWholeSeasonPPG = awaySeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamsOpponentsLast5PPG = awaySeason.getAvgPointsOfAllOpponentsLast5Games(venueSelector);
+        this.awayTeamLast5OpponentsLast5PPG = awaySeason.getAvgPointsOfLastXOpponentsLast5Games(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamsAvgNumbCleanSheets = awaySeason.getAvgNumberOfCleanSheets(venueSelector);
+        this.awayTeamsLast5AvgNumbCleanSheets = awaySeason.getAvgNumberOfCleanSheetsLastXGames(venueSelector, COMPARE_LAST_N_GAMES, true);
     }
 
 
-    public void setAwayTeamAtAwayStats (double awayTeamAvgAwayGoalsFor, double awayTeamAvgAwayGoalsAgainst, double awayTeamAvgAwayXGF, double awayTeamAvgAwayXGA,
-                                        double awayTeamWeightedAvgAwayXGF, double awayTeamWeightedAvgAwayXGA, double awayTeamAwayFormGoalsFor, double awayTeamAwayFormGoalsAgainst, double awayTeamAwayFormXGF,
-                                        double awayTeamAwayFormXGA, double awayTeamAwayFormWeightedXGF, double awayTeamAwayFormWeightedXGA,
-                                        double awayTeamAwayAvgFormGoalsFor, double awayTeamAwayAvgFormGoalsAgainst, double awayTeamAwayAvgFormXGF, double awayTeamAwayAvgFormXGA,
-                                        double awayTeamAwayAvgFormWeightedXGF, double awayTeamAwayAvgFormWeightedXGA, double awayTeamAwayAvgFormXGFLast5Games, double awayTeamAwayAvgFormXGALast5Games,
-                                        double avgAwayTeamAwayPoints, double last5AwayTeamAwayPoints,
-                                        double ifScoredFirstAtAwayAwayTeamPoints, double ifConceededFirstAtAwayAwayTeamPoints, double awayTeamPointsAtAwayAgainstOpposition,
-                                        double awayTeamAtAwayMinsWeightedLineupRating, double awayTeamAtAwayGamesWeightedLineupRating, double awayTeamAwayStrength,
-                                        double awayTeamsAwayOpponentsWholeSeasonPPG, double awayTeamsLast5AwayOpponentsWholeSeasonPPG,
-                                        double awayTeamsAwayOpponentsLast5PPG, double awayTeamLast5AwayOpponentsLast5PPG,
-                                        double awayTeamsAwayAvgNumbCleanSheets, double awayTeamsLast5AwayAvgNumbCleanSheets) {
-
-        this.awayTeamAvgAwayGoalsFor = awayTeamAvgAwayGoalsFor;
-        this.awayTeamAvgAwayGoalsAgainst = awayTeamAvgAwayGoalsAgainst;
-        this.awayTeamAvgAwayXGF = awayTeamAvgAwayXGF;
-        this.awayTeamAvgAwayXGA = awayTeamAvgAwayXGA;
-        this.awayTeamWeightedAvgAwayXGF = awayTeamWeightedAvgAwayXGF;
-        this.awayTeamWeightedAvgAwayXGA = awayTeamWeightedAvgAwayXGA;
-        this.awayTeamAwayFormGoalsFor = awayTeamAwayFormGoalsFor;
-        this.awayTeamAwayFormGoalsAgainst = awayTeamAwayFormGoalsAgainst;
-        this.awayTeamAwayFormXGF = awayTeamAwayFormXGF;
-        this.awayTeamAwayFormXGA = awayTeamAwayFormXGA;
-        this.awayTeamAwayFormWeightedXGF = awayTeamAwayFormWeightedXGF;
-        this.awayTeamAwayFormWeightedXGA = awayTeamAwayFormWeightedXGA;
-        this.awayTeamAwayAvgFormGoalsFor = awayTeamAwayAvgFormGoalsFor;
-        this.awayTeamAwayAvgFormGoalsAgainst = awayTeamAwayAvgFormGoalsAgainst;
-        this.awayTeamAwayAvgFormXGF = awayTeamAwayAvgFormXGF;
-        this.awayTeamAwayAvgFormXGA = awayTeamAwayAvgFormXGA;
-        this.awayTeamAwayAvgFormWeightedXGF = awayTeamAwayAvgFormWeightedXGF;
-        this.awayTeamAwayAvgFormWeightedXGA = awayTeamAwayAvgFormWeightedXGA;
-        this.awayTeamAwayAvgFormXGFLast5Games = awayTeamAwayAvgFormXGFLast5Games;
-        this.awayTeamAwayAvgFormXGALast5Games = awayTeamAwayAvgFormXGALast5Games;
-        this.avgAwayTeamAwayPoints = avgAwayTeamAwayPoints;
-        this.last5AwayTeamAwayPoints = last5AwayTeamAwayPoints;
-        this.ifScoredFirstAtAwayAwayTeamPoints = ifScoredFirstAtAwayAwayTeamPoints;
-        this.ifConceededFirstAtAwayAwayTeamPoints = ifConceededFirstAtAwayAwayTeamPoints;
-        this.awayTeamPointsAtAwayAgainstOpposition = awayTeamPointsAtAwayAgainstOpposition;
-        this.awayTeamAtAwayMinsWeightedLineupRating = awayTeamAtAwayMinsWeightedLineupRating;
-        this.awayTeamAtAwayGamesWeightedLineupRating = awayTeamAtAwayGamesWeightedLineupRating;
-        this.awayTeamAwayStrength = awayTeamAwayStrength;
-        this.awayTeamsAwayOpponentsWholeSeasonPPG = awayTeamsAwayOpponentsWholeSeasonPPG;
-        this.awayTeamsLast5AwayOpponentsWholeSeasonPPG = awayTeamsLast5AwayOpponentsWholeSeasonPPG;
-        this.awayTeamsAwayOpponentsLast5PPG = awayTeamsAwayOpponentsLast5PPG;
-        this.awayTeamLast5AwayOpponentsLast5PPG = awayTeamLast5AwayOpponentsLast5PPG;
-        this.awayTeamsAwayAvgNumbCleanSheets = awayTeamsAwayAvgNumbCleanSheets;
-        this.awayTeamsLast5AwayAvgNumbCleanSheets = awayTeamsLast5AwayAvgNumbCleanSheets;
+    public void setAwayTeamAtAwayStats(TrainingTeam awayTeam, TrainingTeamsSeason awaySeason, HashMap<String, Player> awayLineup, TrainingTeam homeTeam, GamesSelector venueSelector) {
+        ArrayList<String> playersNames =  new ArrayList<>(awayLineup.keySet());
+        this.awayTeamAvgAwayGoalsFor = awaySeason.getAvgGoalsFor(venueSelector);
+        this.awayTeamAvgAwayGoalsAgainst = awaySeason.getAvgGoalsAgainst(venueSelector);
+        this.awayTeamAvgAwayXGF = awaySeason.getAvgXGF(venueSelector);
+        this.awayTeamAvgAwayXGA = awaySeason.getAvgXGA(venueSelector);
+        this.awayTeamWeightedAvgAwayXGF = awaySeason.getWeightedAvgXGF(venueSelector);
+        this.awayTeamWeightedAvgAwayXGA = awaySeason.getWeightedAvgXGA(venueSelector);
+        this.awayTeamAwayFormGoalsFor = awaySeason.getFormGoalsFor(venueSelector);
+        this.awayTeamAwayFormGoalsAgainst = awaySeason.getFormGoalsAgainst(venueSelector);
+        this.awayTeamAwayFormXGF = awaySeason.getFormXGF(venueSelector);
+        this.awayTeamAwayFormXGA = awaySeason.getFormXGA(venueSelector);
+        this.awayTeamAwayFormWeightedXGF = awaySeason.getFormWeightedXGF(venueSelector);
+        this.awayTeamAwayFormWeightedXGA = awaySeason.getFormWeightedXGA(venueSelector);
+        this.awayTeamAwayAvgFormGoalsFor = awaySeason.getAvgFormGoalsFor(venueSelector, 0);
+        this.awayTeamAwayAvgFormGoalsAgainst = awaySeason.getAvgFormGoalsAgainst(venueSelector, 0);
+        this.awayTeamAwayAvgFormXGF = awaySeason.getAvgFormXGF(venueSelector, 0);
+        this.awayTeamAwayAvgFormXGA = awaySeason.getAvgFormXGA(venueSelector, 0);
+        this.awayTeamAwayAvgFormWeightedXGF = awaySeason.getAvgFormWeightedXGF(venueSelector, 0);
+        this.awayTeamAwayAvgFormWeightedXGA = awaySeason.getAvgFormWeightedXGA(venueSelector, 0);
+        this.awayTeamAwayAvgFormXGFLast5Games = awaySeason.getFormXGFOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamAwayAvgFormXGALast5Games = awaySeason.getFormXGAOverLastNGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.avgAwayTeamAwayPoints = awaySeason.getAvgPoints(venueSelector);
+        this.last5AwayTeamAwayPoints = awaySeason.getAvgPointsOverLastXGames(venueSelector, COMPARE_LAST_N_GAMES);
+        this.ifScoredFirstAtAwayAwayTeamPoints = awaySeason.getAvgPointsWhenScoredFirst(venueSelector);
+        this.ifConceededFirstAtAwayAwayTeamPoints = awaySeason.getAvgPointsWhenConceededFirst(venueSelector);
+        this.awayTeamPointsAtAwayAgainstOpposition = awayTeam.getPointsOfLastMatchups(homeTeam.getTeamName(), venueSelector, seasonYearStart - NUMB_SEASONS_HISTORY);
+        this.awayTeamAtAwayMinsWeightedLineupRating = awaySeason.getMinsWeightedLineupRating(venueSelector, playersNames);
+        this.awayTeamAtAwayGamesWeightedLineupRating = awaySeason.getGamesWeightedLineupRating(venueSelector, playersNames);
+        this.awayTeamAwayStrength = awaySeason.getLineupStrength(venueSelector, playersNames);
+        this.awayTeamsAwayOpponentsWholeSeasonPPG = awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(venueSelector);
+        this.awayTeamsLast5AwayOpponentsWholeSeasonPPG = awaySeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamsAwayOpponentsLast5PPG = awaySeason.getAvgPointsOfAllOpponentsLast5Games(venueSelector);
+        this.awayTeamLast5AwayOpponentsLast5PPG = awaySeason.getAvgPointsOfLastXOpponentsLast5Games(venueSelector, COMPARE_LAST_N_GAMES);
+        this.awayTeamsAwayAvgNumbCleanSheets = awaySeason.getAvgNumberOfCleanSheets(venueSelector);
+        this.awayTeamsLast5AwayAvgNumbCleanSheets = awaySeason.getAvgNumberOfCleanSheetsLastXGames(venueSelector, COMPARE_LAST_N_GAMES, true);
     }
 
     public int getPoints(String teamName) {
@@ -564,12 +552,12 @@ public class TrainingMatch {
         return seasonYearStart;
     }
 
-    public int getHomeTeamHomeGamesPlayed() {
-        return homeTeamHomeGamesPlayed;
+    public int getHomeTeamGamesPlayed() {
+        return homeTeamGamesPlayed;
     }
 
-    public int getAwayTeamAwayGamesPlayed() {
-        return awayTeamAwayGamesPlayed;
+    public int getAwayTeamGamesPlayed() {
+        return awayTeamGamesPlayed;
     }
 
     public double getHomeTeamAvgHomeGoalsFor() {

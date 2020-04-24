@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class TrainingTeam {
     private String teamName;
 
-    private HashMap<String, TrainingTeamsSeason> seasons;
+    private HashMap<Integer, TrainingTeamsSeason> seasons;
     private HashMap<String, ArrayList<TrainingMatch>> historyAgainstOtherTeams;
 
     public TrainingTeam(String teamName) {
@@ -24,12 +24,11 @@ public class TrainingTeam {
      * Gets the requested season.
      * DEFAULT: If requested season not present, it creates one and adds it to a hashmap.
      */
-    public TrainingTeamsSeason getTeamsSeason(String seasonYear) {
-        TrainingTeamsSeason reqSeason = this.seasons.getOrDefault(seasonYear, null);
-
+    public TrainingTeamsSeason getTeamsSeason(int seasonYearStart) {
+        TrainingTeamsSeason reqSeason = this.seasons.getOrDefault(seasonYearStart, null);
         if (reqSeason == null) {
-            reqSeason = new TrainingTeamsSeason(seasonYear);
-            this.seasons.put(seasonYear, reqSeason);
+            reqSeason = new TrainingTeamsSeason(seasonYearStart);
+            this.seasons.put(seasonYearStart, reqSeason);
         }
 
         return reqSeason;
@@ -45,7 +44,6 @@ public class TrainingTeam {
             matchesVsATeam = new ArrayList<>();
             historyAgainstOtherTeams.put(oppTeamName, matchesVsATeam);
         }
-
         matchesVsATeam.add(match);
     }
 

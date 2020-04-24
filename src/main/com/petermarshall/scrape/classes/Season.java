@@ -1,4 +1,4 @@
-package main.petermarshall.scrape.classes;
+package com.petermarshall.scrape.classes;
 
 import java.util.ArrayList;
 import java.util.HashMap;

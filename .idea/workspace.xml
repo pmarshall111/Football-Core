@@ -7,28 +7,123 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/datasource/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/tables/SeasonTable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Football.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Football.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/ConvertOdds.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/DateHelper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/BetResult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/BetResultsTotalled.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/DataSource.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/ResultBetOn.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/WhenGameWasPredicted.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/modelNotes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/tables/LeagueTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/tables/MatchTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/tables/PlayerRatingsTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/tables/SeasonTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/tables/TeamTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/GamesWithMissedPredictions.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/LastPredicted.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/MatchLog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/GetMatchesFromDb.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/WriteTrainingData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/GamesSelector.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/HomeAwayDouble.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/HomeAwayInt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/MatchToPredict.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/Player.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/TrainingMatch.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/TrainingTeam.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/CalcPotentialMoneyMade$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/CalcPotentialMoneyMade$Profits.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/CalcPotentialMoneyMade.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/Predict.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/notes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/logisticRegression/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/machineLearning/notes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/mail/SendEmail$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/mail/SendEmail.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/mail/UptimeData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/notes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/GetJsonHelper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/OddsChecker$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/OddsChecker.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/Understat.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/League.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/LeagueSeasonIds.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Match.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/OddsCheckerBookies.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/PlayerRating.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Season.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/Team.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/UnderstatData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/EmailModelPerformance.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictMissedGames.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictTodaysGames$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictTodaysGames$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/PredictTodaysGames.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ReminderAddNewSeason.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/RetrainPredictor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/UpdatePlayedGames.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/notes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/test$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/test$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/test/PredictTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/test/missedGamePredictions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/test/testMissedGamePredictions.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/test/testPredictions.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Football/ntoes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/BetResultsTotalled.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/BetResultsTotalled.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DataSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/MatchTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/MatchTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/CreateFeatures.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/CreateFeatures.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/PastStatsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/PastStatsCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/PlayerMatchDbData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/refactor/PlayerMatchDbData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/logisticRegression/Predict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/logisticRegression/Predict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/OddsChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/OddsChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueSeasonIds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueSeasonIds.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/EmailModelPerformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/EmailModelPerformance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictMissedGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictMissedGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictTodaysGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictTodaysGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/scrape/Understat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/Understat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/testMissedGamePredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/testMissedGamePredictions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/testPredictions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/testPredictions.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,24 +150,25 @@
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
+    <property name="Repository.Attach.Annotations" value="false" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575646977338" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -85,6 +181,8 @@
       <recent name="groovy.util.GroovyTestCase" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main\com" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall\logging" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football" />
@@ -102,7 +200,7 @@
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.UpdatePlayedGames">
+  <component name="RunManager" selected="Application.Main (1)">
     <configuration name="EmailModelPerformance" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.EmailModelPerformance" />
       <module name="Football" />
@@ -116,38 +214,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.scrape.Main" />
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.petermarshall.scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.createData.Main" />
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.machineLearning.createData.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PredictMissedGames" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.PredictMissedGames" />
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ScrapeGamesMissingData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.ScrapeGamesMissingData" />
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="PATTERN" value="com.petermarshall.machineLearning.createData.refactor.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -158,6 +243,7 @@
     <configuration name="UpdatePlayedGames" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.UpdatePlayedGames" />
       <module name="Football" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
@@ -168,20 +254,35 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Understat" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.Understat" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.EmailModelPerformance" />
-      <item itemvalue="Application.PredictMissedGames" />
-      <item itemvalue="Application.ScrapeGamesMissingData" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.UpdatePlayedGames" />
+      <item itemvalue="JUnit.Understat" />
+      <item itemvalue="Application.Main (1)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main (1)" />
+        <item itemvalue="JUnit.Understat" />
         <item itemvalue="Application.UpdatePlayedGames" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.EmailModelPerformance" />
-        <item itemvalue="Application.PredictMissedGames" />
-        <item itemvalue="Application.ScrapeGamesMissingData" />
       </list>
     </recent_temporary>
   </component>
@@ -196,7 +297,12 @@
       <option name="presentableId" value="Default" />
       <updated>1539852151403</updated>
       <workItem from="1587401455481" duration="1936000" />
-      <workItem from="1587542748232" duration="11011000" />
+      <workItem from="1587542748232" duration="14994000" />
+      <workItem from="1587582160279" duration="4283000" />
+      <workItem from="1587632712354" duration="26020000" />
+      <workItem from="1587690789303" duration="203000" />
+      <workItem from="1587691547308" duration="38000" />
+      <workItem from="1587734931075" duration="6340000" />
     </task>
     <servers />
   </component>
@@ -210,88 +316,139 @@
     </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser" timestamp="1587546490486">
-      <screen x="0" y="0" width="1360" height="728" />
+    <state x="414" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587634203717">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634203717" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser" timestamp="1587742111889">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587546490486" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587742111889" />
+    <state x="1293" y="353" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1587634132845">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1293" y="353" key="#com.intellij.ide.util.TreeClassChooserDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634132845" />
+    <state x="440" y="80" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1587581903677">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="312" y="56" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576527165" />
+    <state x="440" y="80" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587581903677" />
+    <state x="462" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587688370347">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="462" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587688370347" />
     <state x="410" y="114" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587543591545">
       <screen x="0" y="0" width="1360" height="728" />
     </state>
     <state x="410" y="114" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587543591545" />
-    <state x="388" y="191" key="com.intellij.ide.util.TipDialog" timestamp="1587542744993">
-      <screen x="0" y="0" width="1360" height="728" />
+    <state x="740" y="278" key="FileChooserDialogImpl" timestamp="1587634193186">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="278" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634193186" />
+    <state x="226" y="0" key="SettingsEditor" timestamp="1587634826837">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="160" y="0" key="SettingsEditor/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576491837" />
+    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634826837" />
+    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587583035610" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog" timestamp="1587690781236">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="388" y="191" key="com.intellij.ide.util.TipDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587542744993" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587690781236" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587582150100" />
+    <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1587577089228">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587577089228" />
+    <state x="-1441" y="-8" width="1150" height="721" maximized="true" key="dock-window-1" timestamp="1587736880456">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1441" y="-8" width="1150" height="721" maximized="true" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587736880456" />
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1587681574616">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587681574616" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587686859968">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587686859968" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/Main.java</url>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/Main.java</url>
           <line>108</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
           <line>27</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java</url>
+          <url>file://$PROJECT_DIR$/src/test/testMissedGamePredictions.java</url>
           <line>39</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/database/datasource/DataSource.java</url>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DataSource.java</url>
           <line>1128</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java</url>
-          <line>47</line>
+          <url>file://$PROJECT_DIR$/src/test/testPredictions.java</url>
+          <line>50</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java</url>
-          <line>44</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/EmailModelPerformance.java</url>
+          <line>45</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>48</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
+          <line>49</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
           <line>475</line>
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>35</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
+          <line>36</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java</url>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/Understat.java</url>
           <line>223</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>33</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
+          <line>34</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java</url>
-          <line>42</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java</url>
+          <line>38</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java</url>
-          <line>105</line>
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java</url>
+          <line>107</line>
           <option name="timeStamp" value="71" />
         </line-breakpoint>
       </breakpoints>
@@ -302,83 +459,5 @@
         <watch expression="((HashMap.Node)league.seasons.entrySet().toArray()[2]).getValue()" custom="java.util.HashMap.Node" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <last-edited>Football:jar</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-                <option value="0.5" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>Python 3.7 (venv) interpreter library</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>Python 3.7 (venv)</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>Football</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>org.simplejavamail:simple-java-mail:5.1.0</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>

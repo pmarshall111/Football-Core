@@ -1,9 +1,12 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.logging.LastPredicted;
 import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
+import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.database.datasource.DataSource;
@@ -78,47 +81,19 @@ public class PredictTodaysGames {
         Date earliestGame = DateHelper.addMinsToDate(scrapeTime, minsBeforeKickoff);
         Date latestGame = DateHelper.addMinsToDate(scrapeTime, 60 - minsAfterLineupsAnnouned);
 
-        boolean needToPredictGamesWeMissed = LastPredicted.timeToPredictMissedGames();
-        ArrayList<MatchToPredict> matchesWeDidntPredict = new ArrayList<>();
 
-        DataSource.openConnection();
-        ArrayList<MatchToPredict> matchesHappeningNow = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
-
-        if (needToPredictGamesWeMissed) {
-            //get array of MatchesToPredict from database with odds, TeamNames, league, season
-            //set Date field and also MatchesToPredict field within GetMatchesFromDB class so it knows when to start checking if it's looking at a match it needs to predict
-
-
-            Date checkGamesAfterDate = LastPredicted.getWhenMissedGamesWereLastPredicted();
-            matchesWeDidntPredict = DataSource.getMatchesWithoutPredictions(checkGamesAfterDate);
-
-            if (matchesWeDidntPredict.size() > 0) {
-
-                //NOTE: When we add features to the match to predict, we will also add features to these missed games we want to log through logic within GetMatchesFromDb.
-                GetMatchesFromDb.setGamesNeedPredictingAfterDate(checkGamesAfterDate);
-                GetMatchesFromDb.setMissedGamesThatNeedPredicting(matchesWeDidntPredict);
-
-            }
-
-            System.out.println("Predicting missed games. We missed " + matchesWeDidntPredict.size() + " games since " + checkGamesAfterDate);
-        }
-
-        DataSource.closeConnection();
+        DS_Main.openConnection();
+        ArrayList<MatchToPredict> matchesHappeningNow = DS_Get.getMatchesToPredict(earliestGame, latestGame);
+        DS_Main.closeConnection();
 
 
 
         SofaScore.addLineupsToGamesAboutToStart(matchesHappeningNow);
-        GetMatchesFromDb.addFeaturesToMatchesToPredict(matchesHappeningNow); //method will check to see whether it needs to add stats to missed prediction games while it creates current stats
+        PastStatsCalculator.addFeaturesToPredict(matchesHappeningNow);
         //for each team from all the games in the database.
         OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
         Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);
 
-        if (needToPredictGamesWeMissed) {
-            Predict.addOurProbabilitiesToGames(matchesWeDidntPredict, trainedThetasPath);
-            Predict.missedGamesBetDecisionAndLog(matchesWeDidntPredict);
-
-            LastPredicted.setAllMissedGamesPredictedUpTo2DaysAgo();
-        }
 
 
         StringBuilder emailBody = new StringBuilder();
