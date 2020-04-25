@@ -14,7 +14,8 @@ public class DS_Main {
     static final String AWAYTEAM = "awayteam";
 
     private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
-    static Connection connection;
+    public static final String TEST_CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesTEST.db";
+    public static Connection connection;
 
     public static boolean isOpen() {
         try {
@@ -31,6 +32,15 @@ public class DS_Main {
     public static boolean openConnection() {
         try {
             connection = DriverManager.getConnection(CONNECTION_NAME);
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    public static boolean openTestConnection() {
+        try {
+            connection = DriverManager.getConnection(TEST_CONNECTION_NAME);
             return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());

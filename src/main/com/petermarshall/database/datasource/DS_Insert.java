@@ -55,9 +55,9 @@ public class DS_Insert {
         if (DS_Main.connection == null) {
             DS_Main.openConnection();
         }
-
-        System.out.println("Current primary key: " + LEAGUE_ID);
-
+        if (LEAGUE_ID == -1) {
+            getNextIds();
+        }
         try (Statement statement = DS_Main.connection.createStatement()) {
             statement.execute("INSERT INTO '" + LeagueTable.getTableName() + "' (" + LeagueTable.getColName() + ", _id) " +
                     "VALUES ( '" + league.getName() + "', " + ++LEAGUE_ID + " )");
@@ -80,6 +80,9 @@ public class DS_Insert {
 
 
     static int writeTeamToDb(Team t) {
+        if (TEAM_ID == -1) {
+            getNextIds();
+        }
         try (Statement statement = DS_Main.connection.createStatement()) {
             statement.execute("INSERT INTO " + TeamTable.getTableName() + " (" + TeamTable.getColTeamName() + ", " + TeamTable.getColLeagueId() + ", _id) " +
                     "VALUES ( '" + t.getTeamName() + "', " + LEAGUE_ID + ", " + ++TEAM_ID + " )");
@@ -95,6 +98,9 @@ public class DS_Insert {
     private static void writeMatchesToDb(ArrayList<Match> matches, HashMap<String, Integer> teamIds, int seasonYearStart) {
         //need to add to the batch both the player ratings and also the matches. need to add matches first as the player ratings need
         //the matchId
+        if (MATCH_ID == -1) {
+            getNextIds();
+        }
         try (Statement statement = DS_Main.connection.createStatement()) {
 
           matches.forEach(match -> {
@@ -125,7 +131,7 @@ public class DS_Insert {
         }
     }
 
-    static void addPlayerRatingsToBatch(Statement batchStmt, HashMap<String, PlayerRating> pRatings, int matchId, int teamId) {
+    public static void addPlayerRatingsToBatch(Statement batchStmt, HashMap<String, PlayerRating> pRatings, int matchId, int teamId) {
         pRatings.forEach((name, rating) -> {
             try {
                 batchStmt.addBatch("INSERT INTO " + PlayerRatingTable.getTableName() +

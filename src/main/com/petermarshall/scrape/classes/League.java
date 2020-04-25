@@ -158,6 +158,12 @@ public class League {
         return highestNumb;
     }
 
+    //For testing purposes only
+    public static Season addASeason(League league, String year) {
+        Season nSeason = new Season(year);
+        league.seasons.put(year, nSeason);
+        return nSeason;
+    }
 }
 
 
