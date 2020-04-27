@@ -1,8 +1,9 @@
 package com.petermarshall.database.tables;
 
 public class TeamTable {
-    private static final String TABLE_NAME = "Team";
+    private TeamTable() {}
 
+    private static final String TABLE_NAME = "Team";
     private static final String COL_TEAM_NAME = "name";
     private static final String COL_LEAGUE_ID = "league_id";
 

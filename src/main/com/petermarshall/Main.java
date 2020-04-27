@@ -102,7 +102,7 @@ public class Main {
 //        }
 
         League league = new League(LeagueSeasonIds.EPL);
-        league.scrapePlayedGames();
+        league.scrapeAndSavePlayedGames();
 
         System.out.println("pausing here");
 

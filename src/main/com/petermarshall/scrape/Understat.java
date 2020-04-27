@@ -33,8 +33,6 @@ public class Understat {
 
     /*
      * Method will get teams expected goals for and against for each matchday.
-     * Should it also calculate a rating as to how well each team has done over the last 5 games?
-     *
      * Has parameters to only add games between 2 dates to scrape the most recent games.
      */
     public static void addSeasonsGames (League league, int seasonStartYear, Date earliestDate, Date latestDate) {
@@ -134,85 +132,6 @@ public class Understat {
         }
     }
 
-
-    /*
-     * League should be fully populated before this method is called. Strictly just adds data to an already created match.
-     * Adds GF&GA and xGF&xGA
-     */
-    private static void addDataToGamesInSeason(League league, int seasonStartYear) {
-        UnderstatData data = getSeasonsData(league, seasonStartYear);
-
-        JSONArray datesData = data.getDatesData();
-        JSONObject teamsData = data.getTeamsData();
-
-        Season season = league.getSeason(seasonStartYear);
-        HashSet<Match> matchesToUpdate = new HashSet<>(season.getAllMatches());
-
-
-        Iterator datesIterator = datesData.iterator();
-        while (datesIterator.hasNext()) {
-            JSONObject matchObj = (JSONObject) datesIterator.next();
-
-            String homeTeamName = (String) ((JSONObject) matchObj.get("h")).get("title");
-            String awayTeamName = (String) ((JSONObject) matchObj.get("a")).get("title");
-
-            Match thisMatch = findMatchBetweenTeams(matchesToUpdate, homeTeamName, awayTeamName);
-            if (thisMatch != null) {
-                updateMatchKickoffTime(thisMatch, matchObj);
-                JSONObject goals = (JSONObject) matchObj.get("goals");
-
-                try {
-                    int homeGoals = Integer.parseInt(goals.get("h").toString());
-                    int awayGoals = Integer.parseInt(goals.get("a").toString());
-                    thisMatch.setHomeScore(homeGoals);
-                    thisMatch.setAwayScore(awayGoals);
-                } catch (NullPointerException e) {
-                    //understat most likely doesn't have goal stats because the game was postponed.
-                }
-            }
-        }
-
-
-        Iterator teamsIterator = teamsData.values().iterator();
-        while (teamsIterator.hasNext()) {
-            JSONObject teamObj = (JSONObject) teamsIterator.next();
-
-            String teamName = (String) teamObj.get("title");
-            Team currTeam = season.getTeam(teamName);
-            if (currTeam == null) continue;
-
-
-            JSONArray games = (JSONArray) teamObj.get("history");
-            Iterator gamesIterator = games.iterator();
-            while (gamesIterator.hasNext()) {
-                JSONObject gameObj = (JSONObject) gamesIterator.next();
-
-                String dateTime = (String) gameObj.get("date");
-                Date date;
-                try {
-                    date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime);
-                } catch (java.text.ParseException e) {
-                    throw new RuntimeException("Bad dateTime from team " + teamName + ". The date given is " + dateTime);
-                }
-
-                //TODO: add a check in here for toulouse and the date "2018-12-18 00:00:00" to see if our getMatchFromDate is working.
-                if (currTeam.getTeamName().equals("Nantes") && dateTime.contains("2019-01-30")) {
-                    System.out.println("here");
-                }
-
-                Match currMatch = currTeam.getMatchFromDate(date);
-                if (currMatch == null) continue;
-
-                boolean isHomeTeam = currMatch.getHomeTeam().getTeamName().equals(teamName);
-                double xGF = Double.parseDouble(gameObj.get("npxG").toString());
-                double xGA = Double.parseDouble(gameObj.get("npxGA").toString());
-
-                currMatch.setHomeXGF(isHomeTeam ? xGF : xGA);
-                currMatch.setAwayXGF(isHomeTeam ? xGA : xGF);
-            }
-        }
-    }
-
     //updates the kickoff time in the match, and also must update the entry in each teams' matchmap
     private static void updateMatchKickoffTime(Match match, JSONObject matchObj) {
         //updating date info to make 100% sure we can find correct match when finding xG (xG data has no awayteam names, just dates.)
@@ -221,15 +140,6 @@ public class Understat {
         Date understatKOTime = DateHelper.getDateFromUnderstatDateString(date);
         match.setKickoffTime(understatKOTime);
 
-    }
-
-
-
-    private static Match findMatchBetweenTeams(HashSet<Match> matches, String homeTeamName, String awayTeamName) {
-        return matches.stream()
-                .filter(m -> m.getHomeTeam().getTeamName().equals(homeTeamName) && m.getAwayTeam().getTeamName().equals(awayTeamName))
-                .findFirst()
-                .orElse(null);
     }
 
     private static UnderstatData getSeasonsData(League league, int seasonStartYear) {
@@ -246,7 +156,6 @@ public class Understat {
 
             JSONArray datesData;
             JSONObject teamsData;
-
             if (dates.find() && teams.find()) {
                 datesData = (JSONArray) decodeAscii(dates.group(1));
                 teamsData = (JSONObject) decodeAscii(teams.group(1));
@@ -256,7 +165,6 @@ public class Understat {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         throw new RuntimeException("could not find data from Underscored page in season " + seasonStartYear);
     }
 
@@ -267,7 +175,6 @@ public class Understat {
     public static JSONAware decodeAscii (String input) {
         Matcher match = Pattern.compile("\\\\x([0-9A-F]{2})").matcher(input);
         StringBuffer result = new StringBuffer();
-
         while (match.find()) {
             match.appendReplacement(result, ((char) Integer.parseInt(match.group(1), 16)) + "");
         }
@@ -275,7 +182,6 @@ public class Understat {
 
         JSONParser parser = new JSONParser();
         JSONAware json = null;
-
 //        System.out.println("result \n" + result.toString());
         try {
             json =  (JSONAware) parser.parse(result.toString());
@@ -283,7 +189,6 @@ public class Understat {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return json;
     }
 }

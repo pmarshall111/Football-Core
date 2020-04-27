@@ -9,7 +9,6 @@ import com.petermarshall.scrape.Understat;
 
 import java.util.*;
 
-
 /*
  * Class will contain seasons, which will contain all the info about the league in that season.
  */
@@ -38,7 +37,6 @@ public class League {
     }
 
     //SCRAPERS
-
     /*
      * Goes through each season to add in base game stats from understat.
      * Then goes through each season and gets more detailed stats from Sofascore for each game.
@@ -57,7 +55,6 @@ public class League {
      */
     public void scrapeOneSeason(int seasonStart) {
         Understat.addSeasonsGames(this, seasonStart, null, null);
-
         scrapeSeason(this.getSeason(seasonStart));
     }
 
@@ -79,38 +76,26 @@ public class League {
      * Will only scrape in results from yesterdays games. SofaScore scraped dates only give the day of the game, so if we tried to scrape in played games today,
      * the app would take all games to be played today and have no way of knowing if they have been played or not from sofascore.
      * For this reason, we only scrape yesterdays games as we know they will all have been played.
-     *
-     * TODO RECENT:
-     * Get out all previous games of the season that do not have final results before scrape time and look for those instead of just
-     * looking at games after a certain time.
-     * Would need to have an extra field called postponed.
      */
-    public void scrapePlayedGames() {
+    public void scrapeAndSavePlayedGames() {
         int currSeasonKey = getCurrentSeasonStartYear();
         Season currSeason = this.getSeason(currSeasonKey);
-
         DS_Main.openProductionConnection();
         DS_Main.initDB();
-
         String lastMatchPlayed = DS_Get.getMostRecentMatchInLeague(this);
         Date lastMatchDate = DateHelper.createDateFromSQL(lastMatchPlayed);
         Date beginningOfLastMatchDate = DateHelper.setTimeOfDate(lastMatchDate, 0, 0, 0);
-
         Date yesterday = DateHelper.subtract1DayFromDate(new Date());
         Date lastMinuteOfYesterday = DateHelper.setTimeOfDate(yesterday, 23, 59, 59);
-
         System.out.println("lastMatchDate: " + lastMatchDate);
 
         Understat.addSeasonsGames(this, currSeasonKey, beginningOfLastMatchDate, lastMinuteOfYesterday);
-
         Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(this.seasonIds.getSofaScoreLeagueName(), this.seasonIds.getLeagueId(),
                                                                     this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), beginningOfLastMatchDate, lastMinuteOfYesterday, currSeason);
-
         System.out.println("For " + currSeason.getSeasonKey() + " in " + name +", we have " + allGameIds.size() + "new ids");
         allGameIds.forEach(gameId -> {
             SofaScore.addInfoToGame(currSeason, gameId);
         });
-
         DS_Update.updateGamesInDB(this, currSeason);
         DS_Main.closeConnection();
     }
@@ -159,7 +144,6 @@ public class League {
             int seasonStart = Integer.parseInt(key.substring(0,2));
             if (seasonStart > highestNumb) highestNumb = seasonStart;
         }
-
         return highestNumb;
     }
 
@@ -170,17 +154,3 @@ public class League {
         return nSeason;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,6 +2,7 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.database.tables.*;
 import com.petermarshall.machineLearning.createData.classes.Player;
+import com.petermarshall.scrape.classes.Team;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -71,7 +72,9 @@ public class DS_Main {
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + TeamTable.getTableName() +
                     " (" + TeamTable.getColTeamName() + " TEXT NOT NULL, " + TeamTable.getColLeagueId() + " INTEGER NOT NULL, "
-                    + "_id INTEGER NOT NULL UNIQUE, PRIMARY KEY(_id), " +
+                    + "_id INTEGER NOT NULL UNIQUE, " +
+                    " UNIQUE(" + TeamTable.getColTeamName() + ", " + TeamTable.getColLeagueId() + ")," +
+                    " PRIMARY KEY(_id), " +
                     "FOREIGN KEY(" + TeamTable.getColLeagueId() + ") REFERENCES " + LeagueTable.getTableName() + "(_id))");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + MatchTable.getTableName() +
@@ -86,6 +89,7 @@ public class DS_Main {
                     MatchTable.getColSofascoreId() + " INTEGER, " +
                     "FOREIGN KEY(" + MatchTable.getColHometeamId() + ") REFERENCES " + TeamTable.getTableName() + "(_id), " +
                     "FOREIGN KEY(" + MatchTable.getColAwayteamId() + ") REFERENCES " + TeamTable.getTableName() + "(_id), " +
+                    "UNIQUE(" + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColSeasonYearStart() + "), " +
                     "PRIMARY KEY(_id))");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingTable.getTableName() +

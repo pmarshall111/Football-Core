@@ -15,19 +15,4 @@ public enum ResultBetOn {
     public int getSqlIntCode() {
         return sqlIntCode;
     }
-
-    public static ResultBetOn getMeaningOfSqlCode(int code) {
-        switch(code) {
-            case -1:
-                return ResultBetOn.NOT_BET_ON;
-            case 0:
-                return ResultBetOn.HOME_WIN;
-            case 1:
-                return ResultBetOn.DRAW;
-            case 2:
-                return ResultBetOn.AWAY_WIN;
-        }
-
-        return null;
-    }
 }

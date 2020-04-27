@@ -10,22 +10,16 @@ import java.util.LinkedHashMap;
  */
 public class MatchToPredict {
     private final String sqlDateString; //will be stored as an SQL type datestring e.g. 2018-12-21 20:00:00
-
     private final String homeTeamName;
     private final String awayTeamName;
-
     private final String seasonKey;
     private final String leagueName;
-
     private ArrayList<String> homeTeamPlayers;
     private ArrayList<String> awayTeamPlayers;
-
     private ArrayList<Double> features; //will be set with bias parameter included as first entry
-
     private double[] ourPredictions;
     private LinkedHashMap<String, double[]> bookiesOdds;
-
-    //db id here to make it quicker to update the db with the bet if we decide to make a bet.
+    //ids here to make it quicker to update the db with the bet if we decide to make a bet, and sofascore to quickly get scraping data.
     private final int database_id;
     private final int sofascore_id;
 

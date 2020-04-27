@@ -10,92 +10,71 @@ import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator
 import static com.petermarshall.machineLearning.createData.classes.GamesSelector.*;
 import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.COMPARE_LAST_N_GAMES;
 
+//contains metrics that can be used to create the features for a match to predict.
+//huge range of fields to allow for choice when creating features & training model
 public class TrainingTeamsSeason {
     private int seasonYearStart;
-
     //Using arrays here so if we want to we can calculate fields for last 5 games etc.
     //Not done the same for weighted xG because that's already been taken into account (bc it's weighted)
     private ArrayList<HomeAwayInt> goalsFor;
     private ArrayList<HomeAwayInt> goalsAgainst;
-
     private ArrayList<HomeAwayDouble> xGF;
     private ArrayList<HomeAwayDouble> xGA;
-
     private ArrayList<HomeAwayInt> points;
     private ArrayList<HomeAwayInt> pointsScoredFirst;
     private ArrayList<HomeAwayInt> pointsConceededFirst;
-
     private ArrayList<HomeAwayDouble> totalPointsPerGameOfOpponentsWholeSeason; //can be used to calculate the difficulty of opponents a team has faced over the season. contains opponents total PPG
     private ArrayList<HomeAwayDouble> homeAwayPointsPerGameOfOpponentsWholeSeason; //contains opponents Home/Away PPG.
-
     private ArrayList<HomeAwayDouble> totalPointsPerGameOfOpponentsLast5;
     private ArrayList<HomeAwayDouble> homeAwayPointsPerGameOfOpponentsLast5;
-
     //initialising the xGF as average goals per game in PL 2017/18.
     private static double AVG_GOALS_PER_GAME = 1.34;
-
-
     //places more weight on more recent results.
     private double totalWeightedXGF = AVG_GOALS_PER_GAME;
     private double homeWeightedXGF = AVG_GOALS_PER_GAME;
     private double awayWeightedXGF = AVG_GOALS_PER_GAME;
-
     private double totalWeightedXGA = AVG_GOALS_PER_GAME;
     private double homeWeightedXGA = AVG_GOALS_PER_GAME;
     private double awayWeightedXGA = AVG_GOALS_PER_GAME;
-
-
     //will be calculated by using a teams actual xGF and seeing how they performed against the oppositions weighted xGA.
     //initialised to be that each team scored/conceeded the exact amount of goals that the other team's stats expected them to conceede. (0 goals more than expected)
     //FormWeighted says how many more xG the team got against what the opponents recent weighted xG suggested they should.
     private double totalFormWeightedXGF = 0;
     private double homeFormWeightedXGF = 0;
     private double awayFormWeightedXGF = 0;
-
     private double totalFormWeightedXGA = 0;
     private double homeFormWeightedXGA = 0;
     private double awayFormWeightedXGA = 0;
-
     //will have arrays so we can look at the last X amount of games as an average instead of using the weightedAvg thing.
     private ArrayList<HomeAwayDouble> totalFormWeightedXGFHistory = new ArrayList<>();
     private ArrayList<HomeAwayDouble> totalFormWeightedXGAHistory = new ArrayList<>();
-
     //compares how many more goals were scored against the oppositions average goals against
     //will be calculated by taking a teams actual goals and comparing against the oppositions average goals conceeded to see how much they overperformed.
     private double totalFormGoalsFor = 0;
     private double homeFormGoalsFor = 0;
     private double awayFormGoalsFor = 0;
-
     private double totalFormGoalsAgainst = 0;
     private double homeFormGoalsAgainst = 0;
     private double awayFormGoalsAgainst = 0;
-    
     //arrays
     private ArrayList<HomeAwayDouble> totalFormGoalsForHistory = new ArrayList<>();
     private ArrayList<HomeAwayDouble> totalFormGoalsAgainstHistory = new ArrayList<>();
-
-
     //compares how many more xG were achieved against the oppositions xGA
     //will be calculated by taking a teams actual xG and comparing against the oppositions average xGA to see how much they overperformed.
     private double totalFormXGF = 0;
     private double homeFormXGF = 0;
     private double awayFormXGF = 0;
-
     private double totalFormXGA = 0;
     private double homeFormXGA = 0;
     private double awayFormXGA = 0;
-    
     //arrays
     private ArrayList<HomeAwayDouble> totalFormXGFHistory = new ArrayList<>();
     private ArrayList<HomeAwayDouble> totalFormXGAHistory = new ArrayList<>();
-
-
     //kept as a hashmap to enable super fast player updates - which will be most used operation.
     private HashMap<String, Player> playerStats;
 
     TrainingTeamsSeason(int seasonYearStart) {
         this.seasonYearStart = seasonYearStart;
-
         this.goalsFor = new ArrayList<>();
         this.goalsAgainst = new ArrayList<>();
         this.xGF = new ArrayList<>();
@@ -103,14 +82,11 @@ public class TrainingTeamsSeason {
         this.points = new ArrayList<>();
         this.pointsScoredFirst = new ArrayList<>();
         this.pointsConceededFirst = new ArrayList<>();
-
         this.playerStats = new HashMap<>();
-
         this.totalPointsPerGameOfOpponentsWholeSeason = new ArrayList<>(); //can be used to calculate the difficulty of opponents a team has faced over the season. contains opponents total PPG
         this.homeAwayPointsPerGameOfOpponentsWholeSeason = new ArrayList<>(); //contains opponents Home/Away PPG.
         this.totalPointsPerGameOfOpponentsLast5 = new ArrayList<>();
         this.homeAwayPointsPerGameOfOpponentsLast5 = new ArrayList<>();
-        
     }
 
     public int getNumbGamesPlayed(GamesSelector gamesSelector) {

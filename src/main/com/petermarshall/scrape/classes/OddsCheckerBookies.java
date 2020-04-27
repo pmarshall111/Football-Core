@@ -69,8 +69,6 @@ public enum OddsCheckerBookies {
         allBookies.add(SMARKETS.getBookie());
     }
     
-    
-    
     private final String bookie;
 
     OddsCheckerBookies(String bookie) {

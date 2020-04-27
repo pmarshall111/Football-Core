@@ -58,12 +58,15 @@ public class DS_Insert {
         }
         try (Statement statement = DS_Main.connection.createStatement()) {
 
-            statement.execute("INSERT INTO '" + LeagueTable.getTableName() + "' (" + LeagueTable.getColName() + ", _id) " +
+            statement.execute("INSERT OR IGNORE INTO '" + LeagueTable.getTableName() + "' (" + LeagueTable.getColName() + ", _id) " +
                     "VALUES ( '" + league.getName() + "', " + ++LEAGUE_ID + " )");
 
+            //need to get league id from DB if we're scraping in a new season and the league is already in the database. Otherwise will insert
+            //with a leagueId that doesn't correspond to a league in the database. Insert operation will fail.
+            int leagueId = DS_Get.getLeagueId(league);
             ArrayList<Season> allSeasons = league.getAllSeasons();
             allSeasons.forEach(season -> {
-                HashMap<String, Integer> teamIds = getTeamIds(season.getAllTeams(), LEAGUE_ID);
+                HashMap<String, Integer> teamIds = getTeamIds(season.getAllTeams(), leagueId);
                 writeMatchesToDb(season.getAllMatches(), teamIds, season.getSeasonYearStart());
             });
 
@@ -83,7 +86,7 @@ public class DS_Insert {
             getNextIds();
         }
         try (Statement statement = DS_Main.connection.createStatement()) {
-            statement.execute("INSERT INTO " + TeamTable.getTableName() + " (" + TeamTable.getColTeamName() + ", " + TeamTable.getColLeagueId() + ", _id) " +
+            statement.execute("INSERT OR IGNORE INTO " + TeamTable.getTableName() + " (" + TeamTable.getColTeamName() + ", " + TeamTable.getColLeagueId() + ", _id) " +
                     "VALUES ( '" + t.getTeamName() + "', " + LEAGUE_ID + ", " + ++TEAM_ID + " )");
             return TEAM_ID;
         }  catch (SQLException e) {
@@ -106,7 +109,7 @@ public class DS_Insert {
               int homeTeamId = teamIds.get(match.getHomeTeam().getTeamName());
               int awayTeamId = teamIds.get(match.getAwayTeam().getTeamName());
               try {
-                  statement.addBatch("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
+                  statement.addBatch("INSERT OR IGNORE INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                           MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                           MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
                           MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", " +

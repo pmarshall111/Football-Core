@@ -5,13 +5,12 @@ import java.util.HashMap;
 
 //Season class goes within the League class.
 public class Season {
-    private final String seasonKey; //TODO: WTF IS A SEASON KEY?? NEEDS TO BE MORE DESCRIPTIVE. SEEMS TO BE THE YEARS IN OPERATION. DB HAS BEEN CHANGED TO USE JUST THE BEGINNING YEAR.
+    private final String seasonKey; //format 14-15 or 19-20
     private HashMap<String, Team> teams;
     private ArrayList<Match> matches;
 
     public Season(String seasonKey) {
         this.seasonKey = seasonKey;
-
         this.teams = new HashMap<>();
         this.matches = new ArrayList<>();
     }
@@ -25,7 +24,6 @@ public class Season {
         return team;
     }
 
-
     public String getSeasonKey() {
         return seasonKey;
     }
@@ -35,8 +33,8 @@ public class Season {
     }
 
     public Team getTeam(String teamName) {
+        //compatible name needed to make the team names the same from sofascore to understat. teams in db use understat names.
         String compatibleTeamName = Team.makeTeamNamesCompatible(teamName);
-
         return this.teams.getOrDefault(compatibleTeamName, null);
     }
 
@@ -49,5 +47,4 @@ public class Season {
     }
 
     public boolean hasMatches() {return matches.size() > 0;}
-
 }

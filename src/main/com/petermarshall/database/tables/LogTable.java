@@ -1,8 +1,9 @@
 package com.petermarshall.database.tables;
 
 public class LogTable {
-    private static final String TABLE_NAME = "Log";
+    private LogTable() {}
 
+    private static final String TABLE_NAME = "Log";
     private static final String COL_DATETIME = "dateTime";
     private static final String COL_INFO = "info";
 

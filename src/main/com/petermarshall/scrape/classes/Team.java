@@ -6,21 +6,17 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Team {
-
     private String teamName;
     private HashMap<Date, Match> matchMap;
 
     public Team(String teamName) {
         this.teamName = teamName;
-
         this.matchMap = new HashMap<>();
     }
 
     public boolean addMatch(Match match) {
         Date date = match.getKickoffTime();
-
         Date dateKey = DateHelper.removeTimeFromDate(date);
-
         if (matchMap.containsKey(dateKey)) return false;
         else {
             matchMap.put(dateKey, match);
@@ -28,16 +24,22 @@ public class Team {
         }
     }
 
+    public Match getMatchFromAwayTeamName(String teamName) {
+        teamName = Team.makeTeamNamesCompatible(teamName);
+        for (Match m: matchMap.values()) {
+            if (m.isAwayTeam(teamName)) return m;
+        }
+        return null;
+    }
+
     /*
      * Method called from SofaScore & Understat scraping methods. Initially tries to get a match with the day SofaScore has in their
      * database. However, Understat has some matches where the days played are not the same as those according to SofaScore.
      * To allow for this, if the exact day match fails we look for the match 2 days either side of the date this method is
      * called with. If method still cannot find the match, we will return null.
+     * Required instead of just finding the match from the opponents team name as Understat data does not store opposition team names,
+     * but instead just gives the match dates and then the data.
      */
-    //TODO: surely we can separate out getMatch to be one overload with the date and then another with the away team name? Slight problem is that we store all games in 1 array
-    //todo: no matter if they are home or away. possibly have methods getMatchFromDate, getMatchFromAwayTeamName, getMatchFromHomeTeamName.
-
-    //TODO: need to see where these funcs are used and how it will impact current project.
     public Match getMatchFromDate(Date date) {
         Date dateKey = DateHelper.removeTimeFromDate(date);
         Match match = matchMap.getOrDefault(dateKey, null);
@@ -56,15 +58,6 @@ public class Team {
         return match;
     }
 
-    public Match getMatchFromAwayTeamName(String teamName) {
-        teamName = Team.makeTeamNamesCompatible(teamName);
-        for (Match m: matchMap.values()) {
-            if (m.isAwayTeam(teamName)) return m;
-        }
-        return null;
-    }
-
-    //TODO: think of implications of extending this to 3 and possibly 4 days. Is it possible that we will assign data to the wrong game based on going too far out? For what is this used for?
     private Date[] getPotentialDates(Date dateKey) {
         //order is important as we want to have dates closest to target date first.
         return new Date[]{
@@ -77,8 +70,6 @@ public class Team {
         };
     }
 
-
-
     public HashMap<Date, Match> getAllMatches() {
         return matchMap;
     }
@@ -86,10 +77,6 @@ public class Team {
     public String getTeamName() {
         return teamName;
     }
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
 
     /*
      * Used to convert SofaScore team names to those used in Understat. This way round because teams are first created into

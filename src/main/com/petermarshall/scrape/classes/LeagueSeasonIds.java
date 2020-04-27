@@ -10,6 +10,7 @@ import java.util.HashMap;
  * Contains the Id's needed to scrape from SofaScore. Id's will be equal to -1 if during that season SofaScore did
  * not have the ratings available for that league season. The earliest season is 2014-15, and the first int[] Id
  * corresponds to that season. Later season id's follow.
+ * NOTE: once added new season Ids here, the seasons must be scraped to the database by creating a call to Scrape.scrapeOneSeason();
  */
 public enum LeagueSeasonIds {
     EPL("EPL", "Premier League", "England", 17, new int[]{-1, 10356, 11733, 13380, 17359, 23776}),

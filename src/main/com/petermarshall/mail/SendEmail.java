@@ -8,7 +8,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class SendEmail {
-
     private final static String username = "javatestemail470@gmail.com";
     private final static String password = "Test_ing123";
     private final static String to = "pmarshall1993@hotmail.com";
@@ -39,9 +38,7 @@ public class SendEmail {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setText(body);
-
             Transport.send(message);
-
             return true;
 
         } catch (MessagingException e) {

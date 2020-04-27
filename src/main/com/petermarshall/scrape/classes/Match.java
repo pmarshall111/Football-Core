@@ -4,24 +4,17 @@ import java.util.*;
 
 public class Match {
     private final Team homeTeam;
-    private double homeXGF = -1;
-
     private final Team awayTeam;
+    private double homeXGF = -1;
     private double awayXGF = -1;
-
     private int homeScore;
     private int awayScore;
-
     private int firstScorer; //1 means hometeam, 2 means awayteam
-
     private Date kickoffTime;
-
     //player ratings data will come from sofascore scraper
     private HashMap<String, PlayerRating> homePlayerRatings;
     private HashMap<String, PlayerRating> awayPlayerRatings;
-
     private ArrayList<Double> homeDrawAwayOdds;
-
     private int sofaScoreGameId;
 
     /*
@@ -40,12 +33,9 @@ public class Match {
         this.kickoffTime = kickoffTime;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
-
         this.firstScorer = -1;
-
         this.homePlayerRatings = new HashMap<>();
         this.awayPlayerRatings = new HashMap<>();
-
         this.homeDrawAwayOdds = new ArrayList<>();
         //initialising so we have something to put into our database.
         this.homeDrawAwayOdds.add(-1d);
@@ -60,7 +50,6 @@ public class Match {
         this.awayXGF = awayXGF;
     }
 
-
     public Team getHomeTeam() {
         return homeTeam;
     }
@@ -71,7 +60,6 @@ public class Match {
     public boolean isHomeTeam(String homeTeamName) {return homeTeam.getTeamName().equals(homeTeamName);}
     public boolean isAwayTeam(String awayTeamName) {return awayTeam.getTeamName().equals(awayTeamName);}
 
-
     public double getHomeXGF() {
         return homeXGF;
     }
@@ -79,12 +67,11 @@ public class Match {
         return awayXGF;
     }
 
-
     public Date getKickoffTime() {
         return kickoffTime;
     }
-    //changes kickoff time for the match and also changes the date in each teams' matchmap
-    //TODO: do we ened to change the date/position of the match in our season arraylist? what do we even use that for?
+
+    //changes kickoff time for the match and also changes the date in each teams' matchmap so the match can be found via the new date
     public void setKickoffTime(Date kickoffTime) {
         HashMap<Date, Match> homeTeamHashMap = this.homeTeam.getAllMatches();
         HashMap<Date, Match> awayTeamHashMap = this.awayTeam.getAllMatches();
@@ -103,11 +90,10 @@ public class Match {
     }
     public void setHomeScore(int homeScore) {
         this.homeScore = homeScore;
-    } //TODO: why are setters not used?
+    }
     public void setAwayScore(int awayScore) {
         this.awayScore = awayScore;
     }
-
 
     public int getFirstScorer() {
         return firstScorer;
@@ -121,7 +107,6 @@ public class Match {
         this.firstScorer = firstScorer;
     }
 
-
     public HashMap<String, PlayerRating> getHomePlayerRatings() {
         return homePlayerRatings;
     }
@@ -129,14 +114,12 @@ public class Match {
         this.homePlayerRatings = homePlayerRatings;
     }
 
-
     public HashMap<String, PlayerRating> getAwayPlayerRatings() {
         return awayPlayerRatings;
     }
     public void setAwayPlayerRatings(HashMap<String, PlayerRating> awayPlayerRatings) {
         this.awayPlayerRatings = awayPlayerRatings;
     }
-
 
     public ArrayList<Double> getHomeDrawAwayOdds() {
         return homeDrawAwayOdds;
@@ -153,7 +136,6 @@ public class Match {
     public void setHomeDrawAwayOdds(ArrayList<Double> homeDrawAwayOdds) {
         this.homeDrawAwayOdds = homeDrawAwayOdds;
     }
-
 
     public int getSofaScoreGameId() {
         return sofaScoreGameId;

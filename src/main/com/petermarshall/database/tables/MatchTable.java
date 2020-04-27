@@ -1,8 +1,9 @@
 package com.petermarshall.database.tables;
 
-public abstract class MatchTable {
-    private static final String TABLE_NAME = "Match";
+public class MatchTable {
+    private MatchTable() {}
 
+    private static final String TABLE_NAME = "Match";
     private static final String COL_HOME_SCORE = "homeScore";
     private static final String COL_AWAY_SCORE = "awayScore";
     private static final String COL_HOME_XG = "homeXG";
