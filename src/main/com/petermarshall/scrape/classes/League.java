@@ -6,7 +6,6 @@ import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
-import com.petermarshall.database.datasource.DataSource;
 
 import java.util.*;
 
@@ -18,6 +17,12 @@ public class League {
     private final String name;
     private HashMap<String, Season> seasons;
     private LeagueSeasonIds seasonIds;
+
+    public static void main(String[] args) {
+        League epl = new League(LeagueSeasonIds.EPL);
+        epl.scrapeOneSeason(19);
+        System.out.println("hi");
+    }
 
     //constructor will create a league with a bunch of blank seasons from the leagueSeasonIds.
     public League(LeagueSeasonIds leagueSeasonIds) {
@@ -84,7 +89,7 @@ public class League {
         int currSeasonKey = getCurrentSeasonStartYear();
         Season currSeason = this.getSeason(currSeasonKey);
 
-        DS_Main.openConnection();
+        DS_Main.openProductionConnection();
         DS_Main.initDB();
 
         String lastMatchPlayed = DS_Get.getMostRecentMatchInLeague(this);

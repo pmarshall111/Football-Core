@@ -3,13 +3,10 @@ package com.petermarshall.taskScheduling;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.logging.LastPredicted;
-import com.petermarshall.machineLearning.createData.GetMatchesFromDb;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
-import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
@@ -82,7 +79,7 @@ public class PredictTodaysGames {
         Date latestGame = DateHelper.addMinsToDate(scrapeTime, 60 - minsAfterLineupsAnnouned);
 
 
-        DS_Main.openConnection();
+        DS_Main.openProductionConnection();
         ArrayList<MatchToPredict> matchesHappeningNow = DS_Get.getMatchesToPredict(earliestGame, latestGame);
         DS_Main.closeConnection();
 

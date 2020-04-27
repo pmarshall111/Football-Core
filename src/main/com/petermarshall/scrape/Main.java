@@ -2,7 +2,6 @@ package com.petermarshall.scrape;
 
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 
@@ -28,7 +27,7 @@ public class Main {
             System.out.println("Starting to scrape league " + (i+1) + " out of " + leagueIds.length + ". Current league: " + league.getName());
             league.scrapeEverything();
 
-            DS_Main.openConnection();
+            DS_Main.openProductionConnection();
             DS_Main.initDB();
             System.out.println("Scraped everything for " + league.getName() + ". Commencing write to database...");
             DS_Insert.writeLeagueToDb(league);
@@ -49,6 +48,7 @@ public class Main {
 
     public static void main(String[] args) {
         //scrapeRecentlyPlayedMatches();
+        scrapeEverythingIntoDbFirstTime();
         System.out.println("no more errors");
     }
 }

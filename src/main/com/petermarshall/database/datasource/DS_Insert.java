@@ -3,17 +3,15 @@ package com.petermarshall.database.datasource;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.tables.*;
 import com.petermarshall.logging.MatchLog;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+
+import static com.petermarshall.database.datasource.DS_Get.getTeamId;
 
 public class DS_Insert {
     private static int LEAGUE_ID = -1;
@@ -25,7 +23,7 @@ public class DS_Insert {
      *
      * Requires separate statements as once you execute a new query on the same statement, the old resultSet is also closed.
      */
-    private static boolean getNextIds() {
+    public static boolean getNextIds() {
         try (Statement statement1 = DS_Main.connection.createStatement();
              Statement statement2 = DS_Main.connection.createStatement();
              Statement statement3 = DS_Main.connection.createStatement();
@@ -53,18 +51,19 @@ public class DS_Insert {
      */
     public static void writeLeagueToDb(League league) {
         if (DS_Main.connection == null) {
-            DS_Main.openConnection();
+            DS_Main.openProductionConnection();
         }
         if (LEAGUE_ID == -1) {
             getNextIds();
         }
         try (Statement statement = DS_Main.connection.createStatement()) {
+
             statement.execute("INSERT INTO '" + LeagueTable.getTableName() + "' (" + LeagueTable.getColName() + ", _id) " +
                     "VALUES ( '" + league.getName() + "', " + ++LEAGUE_ID + " )");
 
             ArrayList<Season> allSeasons = league.getAllSeasons();
             allSeasons.forEach(season -> {
-                HashMap<String, Integer> teamIds = DS_Get.getTeamIds(season.getAllTeams(), LEAGUE_ID);
+                HashMap<String, Integer> teamIds = getTeamIds(season.getAllTeams(), LEAGUE_ID);
                 writeMatchesToDb(season.getAllMatches(), teamIds, season.getSeasonYearStart());
             });
 
@@ -110,7 +109,7 @@ public class DS_Insert {
                   statement.addBatch("INSERT INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                           MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                           MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
-                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() +
+                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", " +
                           MatchTable.getColSofascoreId() + ", _id) " +
                           "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
                           match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
@@ -123,7 +122,7 @@ public class DS_Insert {
               }
 
           });
-          statement.executeLargeBatch();
+          statement.executeBatch();
         } catch (SQLException e) {
             //TODO: add log
             System.out.println(e);
@@ -134,7 +133,7 @@ public class DS_Insert {
     public static void addPlayerRatingsToBatch(Statement batchStmt, HashMap<String, PlayerRating> pRatings, int matchId, int teamId) {
         pRatings.forEach((name, rating) -> {
             try {
-                batchStmt.addBatch("INSERT INTO " + PlayerRatingTable.getTableName() +
+                batchStmt.addBatch("INSERT OR IGNORE INTO " + PlayerRatingTable.getTableName() +
                         " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
                         PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ") " +
                         "VALUES ('" + rating.getName() + "', " + rating.getRating() + ", " + rating.getMinutesPlayed() + ", " +
@@ -154,6 +153,20 @@ public class DS_Insert {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    static HashMap<String, Integer> getTeamIds(HashMap<String, Team> teams, int leagueId) {
+        HashMap<String, Integer> ids = new HashMap<>();
+        teams.keySet().forEach(key -> {
+            //getting team id
+            int id = getTeamId(key, leagueId);
+            if (id < 0) {
+                //then we could not find a team of that name in db
+                id = writeTeamToDb(teams.get(key));
+            }
+            ids.put(key, id);
+        });
+        return ids;
     }
 
 }

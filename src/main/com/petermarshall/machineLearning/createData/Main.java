@@ -1,9 +1,7 @@
 package com.petermarshall.machineLearning.createData;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
 
 import java.util.ArrayList;
@@ -16,14 +14,14 @@ import java.util.Date;
 public class Main {
 
     public static void createFilesToTrainAndTestOn(String octaveTrainingDataFileName, String octaveTestDataFileName, String javaTestDataFileName) {
-        DS_Main.openConnection();
+        DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
         WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, octaveTrainingDataFileName, octaveTestDataFileName, javaTestDataFileName);
         DS_Main.closeConnection();
     }
 
     public static void createFileJustToTrainOn(String octaveTrainingDataFileName) {
-        DS_Main.openConnection();
+        DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
         WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, octaveTrainingDataFileName);
         DS_Main.closeConnection();

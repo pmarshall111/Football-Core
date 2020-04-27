@@ -5,7 +5,6 @@ import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -186,7 +185,9 @@ public class SofaScore {
             Date dateKey = DateHelper.createDateyyyyMMdd(dateInfo[2], dateInfo[1], dateInfo[0]);
 
             Team hTeam = season.getTeam(homeTeamName);
-            if (hTeam == null) throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.makeTeamNamesCompatible(homeTeamName));
+            if (hTeam == null) {
+                throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.makeTeamNamesCompatible(homeTeamName));
+            }
             Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
                 //debugging used for Team.makeTeamsCompatible
@@ -515,7 +516,7 @@ public class SofaScore {
             JSONArray tournaments = (JSONArray) football.get("tournaments");
             Iterator tournamentIterator = tournaments.iterator();
 
-            DS_Main.openConnection();
+            DS_Main.openProductionConnection();
             while (tournamentIterator.hasNext()) {
                 JSONObject currTournament = (JSONObject) tournamentIterator.next();
                 JSONObject tournamentInfo = (JSONObject) currTournament.get("tournament");

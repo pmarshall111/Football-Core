@@ -1,12 +1,10 @@
 package database;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
-import com.petermarshall.database.tables.BetTable;
-import com.petermarshall.database.tables.LeagueTable;
-import com.petermarshall.database.tables.MatchTable;
-import com.petermarshall.database.tables.PlayerRatingTable;
+import com.petermarshall.database.tables.*;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.Match;
 import com.petermarshall.scrape.classes.Season;
@@ -21,23 +19,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.petermarshall.database.datasource.DS_Main.TEST_CONNECTION_NAME;
 import static com.petermarshall.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
 
 public class Update {
     @Before
-    public static void setup() {
-        DS_Main.openTestConnection();
-        DS_Main.initDB();
+    public void setup() {
+        DbTestHelper.setupNewTestDb();
     }
 
     @Test
-    public static void addsStatsCorrectly() {
+    public void addsStatsCorrectly() {
         GenerateData data = addBulkData(false);
         League league = data.getLeagues().get(0);
-        Season season = league.getAllSeasons().get(0);
+        Season season = getSeasonWithGames(league);
         Match match = season.getAllMatches().get(0);
         String playerInMatch = match.getHomePlayerRatings().values().iterator().next().getName();
         try {
@@ -47,8 +43,6 @@ public class Update {
                     " FROM " + PlayerRatingTable.getTableName() +
                     " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerInMatch + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             while (rs.next()) {
                 //ensuring there is no data already
                 int homeScore = rs.getInt(1);
@@ -59,13 +53,13 @@ public class Update {
                 double drawOdds = rs.getDouble(6);
                 double awayOdds = rs.getDouble(7);
                 int firstScorer = rs.getInt(8);
-                Assert.assertEquals(null, homeScore);
-                Assert.assertEquals(null, awayScore);
-                Assert.assertEquals(null, homeXg);
-                Assert.assertEquals(null, homeXg);
-                Assert.assertEquals(null, homeXg);
-                Assert.assertEquals(null, homeXg);
-                Assert.assertEquals(null, homeXg);
+                Assert.assertEquals(-1, homeScore);
+                Assert.assertEquals(-1, awayScore);
+                Assert.assertEquals(-1, homeXg, 0.0001);
+                Assert.assertEquals(-1, awayXg, 0.0001);
+                Assert.assertEquals(-1, homeOdds, 0.0001);
+                Assert.assertEquals(-1, drawOdds, 0.0001);
+                Assert.assertEquals(-1, awayOdds, 0.0001);
                 Assert.assertEquals(-1, firstScorer);
             }
             match.setHomeScore(HOMESCORE);
@@ -85,17 +79,15 @@ public class Update {
                     " FROM " + PlayerRatingTable.getTableName() +
                     " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerInMatch + "'");
-            int numbRecordsAfterUpdate = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecordsAfterUpdate);
             while (rsAfterUpdate.next()) {
-                int homeScore = rs.getInt(1);
-                int awayScore = rs.getInt(2);
-                double homeXg = rs.getDouble(3);
-                double awayXg = rs.getDouble(4);
-                double homeOdds = rs.getDouble(5);
-                double drawOdds = rs.getDouble(6);
-                double awayOdds = rs.getDouble(7);
-                int firstScorer = rs.getInt(8);
+                int homeScore = rsAfterUpdate.getInt(1);
+                int awayScore = rsAfterUpdate.getInt(2);
+                double homeXg = rsAfterUpdate.getDouble(3);
+                double awayXg = rsAfterUpdate.getDouble(4);
+                double homeOdds = rsAfterUpdate.getDouble(5);
+                double drawOdds = rsAfterUpdate.getDouble(6);
+                double awayOdds = rsAfterUpdate.getDouble(7);
+                int firstScorer = rsAfterUpdate.getInt(8);
                 Assert.assertEquals(HOMESCORE, homeScore);
                 Assert.assertEquals(AWAYSCORE, awayScore);
                 Assert.assertEquals(HOMEXG, homeXg, 0.0001);
@@ -112,34 +104,24 @@ public class Update {
     }
 
     @Test
-    public static void canUpdateTheKickoffTime() {
+    public void canUpdateTheKickoffTime() {
         GenerateData data = addBulkData(false);
         League league = data.getLeagues().get(0);
-        Season season = league.getAllSeasons().get(0);
+        Season season = getSeasonWithGames(league);
         int seasonYearStart = season.getSeasonYearStart();
         Match match = season.getAllMatches().get(2);
         String homeTeam = match.getHomeTeam().getTeamName();
         String awayTeam = match.getAwayTeam().getTeamName();
         String playerInMatch = match.getHomePlayerRatings().values().iterator().next().getName();
-        try {
-            Statement s = connection.createStatement();
-            ResultSet rs = s.executeQuery("SELECT _id FROM " + LeagueTable.getTableName() +
-                    " WHERE " + LeagueTable.getColName() + " = '" + league.getName() + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
-            int leagueId = -1;
-            while (rs.next()) {
-                leagueId = rs.getInt(1);
-            }
+        try (Statement s = connection.createStatement()) {
+            int leagueId = DS_Get.getLeagueId(league);
             String newStartDate = DateHelper.getSqlDate(new Date(0));
             DS_Update.updateKickoffTime(seasonYearStart, homeTeam, awayTeam, newStartDate, leagueId);
             ResultSet rsAfterUpdate = s.executeQuery("SELECT " + MatchTable.getColDate() + " FROM " + PlayerRatingTable.getTableName() +
                     " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerInMatch + "'");
-            int numbRecordsAfterUpdate = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
-            while (rs.next()) {
-                String dateFromDb = rs.getString(1);
+            while (rsAfterUpdate.next()) {
+                String dateFromDb = rsAfterUpdate.getString(1);
                 Assert.assertEquals(newStartDate, dateFromDb);
             }
         } catch (SQLException e) {
@@ -148,19 +130,18 @@ public class Update {
         }
     }
 
-    @After
-    public static void tearDown() {
-        try {
-            if (connection.getMetaData().getURL().equals(TEST_CONNECTION_NAME)) {
-                Statement s = connection.createStatement();
-                s.addBatch("DROP TABLE " + LeagueTable.getTableName());
-                s.addBatch("DROP TABLE " + MatchTable.getTableName());
-                s.addBatch("DROP TABLE " + PlayerRatingTable.getTableName());
-                s.addBatch("DROP TABLE " + BetTable.getTableName());
-                s.executeBatch();
+    private Season getSeasonWithGames(League league) {
+        ArrayList<Season> seasons = league.getAllSeasons();
+        for (Season s: seasons) {
+            if (s.hasMatches()) {
+                return s;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
+        return null;
+    }
+
+    @After
+    public void tearDown() {
+        DS_Main.closeConnection();
     }
 }

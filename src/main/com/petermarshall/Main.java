@@ -5,8 +5,6 @@ import com.petermarshall.scrape.classes.LeagueSeasonIds;
 import org.apache.commons.logging.LogFactory;
 
 public class Main {
-    public static int MOST_RECENT_SEASON_END = 19;
-
 
     public static void main(String[] args) {
         LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");

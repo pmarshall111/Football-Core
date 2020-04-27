@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-//Class will generate 2 unique leagues, having 2 seasons, having 10 unique teams and 5 unique matches, with 22 unique players for each match
-//2 leagues, 40 teams, 20 matches, 440 players
+//for 1 league: 2 seasons, 8 teams per season, 4 matches per season,  22 players per match
+//totals: 2 leagues, 4 seasons, 32 teams, 16 matches, 352 players
 public class GenerateData {
     private ArrayList<League> leagues;
     private ArrayList<Team> teams;
@@ -74,13 +74,16 @@ public class GenerateData {
     }
 
     private void addDataToMatch(Match m) {
-        m.setAwayXGF(AWAYXG);
-        m.setFirstScorer(1);
-        m.setHomeXGF(HOMEXG);
         m.setHomeScore(HOMESCORE);
         m.setAwayScore(AWAYSCORE);
+        m.setHomeXGF(HOMEXG);
+        m.setAwayXGF(AWAYXG);
+        m.setFirstScorer(1);
         m.setSofaScoreGameId(matches.size());
         ArrayList<Double> odds = new ArrayList<>();
+        odds.add(HOMEODDS);
+        odds.add(DRAWODDS);
+        odds.add(AWAYODDS);
         m.setHomeDrawAwayOdds(odds);
     }
 
@@ -88,13 +91,13 @@ public class GenerateData {
         HashMap<String, PlayerRating> homeRatings = new HashMap<>();
         HashMap<String, PlayerRating> awayRatings = new HashMap<>();
         for (int j = 0; j<11; j++) {
-            String playerName = StringUtils.rightPad("home"+seasonYear+matchNumb+leagueName, j, "_");
+            String playerName = "home"+j+"match"+matchNumb+leagueName+seasonYear;
             PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName);
             this.playerRatings.add(pr);
             homeRatings.put(playerName, pr);
         }
         for (int j = 0; j<11; j++) {
-            String playerName = StringUtils.rightPad("away"+seasonYear+matchNumb+leagueName, j, "_");
+            String playerName = "away"+j+"match"+matchNumb+leagueName+seasonYear;
             PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName);
             this.playerRatings.add(pr);
             awayRatings.put(playerName, pr);

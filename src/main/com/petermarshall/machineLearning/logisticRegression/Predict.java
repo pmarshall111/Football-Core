@@ -7,7 +7,6 @@ import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.database.datasource.DataSource;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.equation.Equation;
@@ -300,7 +299,7 @@ public class Predict {
 //                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
 
                     MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, odds, BASE_STAKE);
-                    DS_Main.openConnection();
+                    DS_Main.openProductionConnection();
                     DS_Insert.logBetPlaced(matchLog);
                     DS_Main.closeConnection();
                 }

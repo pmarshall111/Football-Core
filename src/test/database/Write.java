@@ -14,28 +14,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-import static com.petermarshall.database.datasource.DS_Main.TEST_CONNECTION_NAME;
 import static com.petermarshall.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
 
 public class Write {
     @Before
-    public static void setup() {
-        DS_Main.openTestConnection();
-        DS_Main.initDB();
+    public void setup() {
+        DbTestHelper.setupNewTestDb();
     }
 
     @Test
-    public static void canAddRecordsWithIncreasingIds() {
+    public void canAddRecordsWithIncreasingIds() {
         //did not use autoincrement as this hurts performance.
         addBulkData(true);
         try {
             Statement s = connection.createStatement();
             ResultSet rs = s.executeQuery("SELECT _id FROM " + MatchTable.getTableName());
-            int numbRecords = rs.getFetchSize();
-            Assert.assertNotEquals(0, numbRecords);
-            int prevId = -1;
+            int prevId = 0;
             while (rs.next()) {
                 int id = rs.getInt(1);
                 Assert.assertEquals(prevId + 1, id);
@@ -48,14 +44,12 @@ public class Write {
     }
 
     @Test
-    public static void doesNotInsertDuplicates() {
+    public void insertsCorrectNumbOfMatches() {
         GenerateData data = addBulkData(true);
         addBulkData(true);
         try {
             Statement s = connection.createStatement();
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName());
-            int numbRecords = rs.getFetchSize();
-            Assert.assertNotEquals(0, numbRecords);
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(data.getMatches().size(), count);
@@ -67,9 +61,9 @@ public class Write {
     }
 
     @Test
-    public static void insertsAPlayerWithCorrectTeam() {
+    public void insertsAPlayerWithCorrectTeam() {
         GenerateData data = addBulkData(true);
-        Match m = data.getMatches().get(20);
+        Match m = data.getMatches().get(10);
         String homeTeamName = m.getHomeTeam().getTeamName();
         String awayTeamName = m.getAwayTeam().getTeamName();
         String firstHomePlayer = m.getHomePlayerRatings().values().iterator().next().getName();
@@ -82,8 +76,6 @@ public class Write {
                         " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
                         " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + firstHomePlayer + "'" +
                         " AND " + TeamTable.getTableName() + "." + TeamTable.getColTeamName() + " = '" + homeTeamName + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(1, count);
@@ -94,8 +86,6 @@ public class Write {
                             " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
                             " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + firstAwayPlayer + "'" +
                             " AND " + TeamTable.getTableName() + "." + TeamTable.getColTeamName() + " = '" + awayTeamName + "'");
-            numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(1, count);
@@ -107,9 +97,9 @@ public class Write {
     }
 
     @Test
-    public static void addsTheCorrectDataToMatch() {
+    public void addsTheCorrectDataToMatch() {
         GenerateData data = addBulkData(true);
-        Match m = data.getMatches().get(25);
+        Match m = data.getMatches().get(10);
         String playerInMatch = m.getHomePlayerRatings().values().iterator().next().getName();
         try {
             Statement s = connection.createStatement();
@@ -119,8 +109,6 @@ public class Write {
                             " FROM " + PlayerRatingTable.getTableName() +
                             " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                             " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerInMatch + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             while (rs.next()) {
                 int homeScore = rs.getInt(1);
                 int awayScore = rs.getInt(2);
@@ -146,7 +134,7 @@ public class Write {
     }
 
     @Test
-    public static void addsTheCorrectDataToPlayer() {
+    public void addsTheCorrectDataToPlayer() {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
@@ -156,8 +144,6 @@ public class Write {
                     "SELECT " + PlayerRatingTable.getColMins() + ", " + PlayerRatingTable.getColRating() +
                             " FROM " + PlayerRatingTable.getTableName() +
                             " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             while (rs.next()) {
                 int mins = rs.getInt(1);
                 double rating = rs.getDouble(2);
@@ -171,7 +157,7 @@ public class Write {
     }
 
     @Test
-    public static void doesntAddRepeatedPlayer() {
+    public void doesntAddRepeatedPlayer() {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
@@ -181,9 +167,7 @@ public class Write {
             ResultSet rs = s.executeQuery(
                     "SELECT " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
                             " FROM " + PlayerRatingTable.getTableName() +
-                            " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
+                            " WHERE " + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
             int matchId = -1, teamId = -1;
             while (rs.next()) {
                 matchId = rs.getInt(1);
@@ -196,9 +180,11 @@ public class Write {
             s.executeBatch();
             //check if in db
             s.executeQuery("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
-                    " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
-            int numbRecordsAfterInsert = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecordsAfterInsert);
+                    " WHERE " + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
+            while (rs.next()) {
+                int count = rs.getInt(1);
+                Assert.assertEquals(1, count);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             fail();
@@ -206,7 +192,7 @@ public class Write {
     }
 
     @Test
-    public static void addsOtherPlayersEvenWithRepeatedPlayer() {
+    public void addsOtherPlayersEvenWithRepeatedPlayer() {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
@@ -217,8 +203,6 @@ public class Write {
                     "SELECT " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
                             " FROM " + PlayerRatingTable.getTableName() +
                             " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
-            int numbRecords = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecords);
             int matchId = -1, teamId = -1;
             while (rs.next()) {
                 matchId = rs.getInt(1);
@@ -232,10 +216,12 @@ public class Write {
             DS_Insert.addPlayerRatingsToBatch(s, pRatings, matchId, teamId);
             s.executeBatch();
             //check if in db
-            s.executeQuery("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
+            ResultSet withNewPlayerRs = s.executeQuery("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
                     " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + newPlayerName + "'");
-            int numbRecordsAfterInsert = rs.getFetchSize();
-            Assert.assertEquals(1, numbRecordsAfterInsert);
+            while (withNewPlayerRs.next()) {
+                int count = withNewPlayerRs.getInt(1);
+                Assert.assertEquals(1, count);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             fail();
@@ -243,19 +229,8 @@ public class Write {
     }
 
     @After
-    public static void tearDown() {
-        try {
-            if (connection.getMetaData().getURL().equals(TEST_CONNECTION_NAME)) {
-                Statement s = connection.createStatement();
-                s.addBatch("DROP TABLE " + LeagueTable.getTableName());
-                s.addBatch("DROP TABLE " + MatchTable.getTableName());
-                s.addBatch("DROP TABLE " + PlayerRatingTable.getTableName());
-                s.addBatch("DROP TABLE " + BetTable.getTableName());
-                s.executeBatch();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    public void tearDown() {
+        DS_Main.closeConnection();
     }
 
 }

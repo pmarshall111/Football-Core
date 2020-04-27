@@ -13,15 +13,13 @@ import java.util.HashMap;
 
 public class DS_Update {
     public static void updateGamesInDB(League league, Season season) {
-        try (Statement statement = DS_Main.connection.createStatement();
-            Statement batchStatement = DS_Main.connection.createStatement();
-        ) {
-            Date lastMatchInDb = DateHelper.createDateFromSQL(DS_Get.getMostRecentMatchInLeague(league)); //TODO: check if correct also standardise all dates
+        try (Statement batchStatement = DS_Main.connection.createStatement()) {
+            Date lastMatchInDb = DateHelper.createDateFromSQL(DS_Get.getMostRecentMatchInLeague(league));
             Date matchLimit = DateHelper.subtractXDaysFromDate(lastMatchInDb, 7);
 
             int leagueId = DS_Get.getLeagueId(league);
             int seasonYearStart = season.getSeasonYearStart();
-            HashMap<String, Integer> teamIds = DS_Get.getTeamIds(season.getAllTeams(), leagueId);
+            HashMap<String, Integer> teamIds = DS_Insert.getTeamIds(season.getAllTeams(), leagueId);
             season.getAllMatches().forEach(match -> {
                 if (match.getKickoffTime().after(matchLimit)) {
                     int homeTeamId = teamIds.get(match.getHomeTeam().getTeamName());
@@ -44,7 +42,7 @@ public class DS_Update {
                     DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);
                 }
             });
-
+            batchStatement.executeBatch();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("It's possible that our query to the database didn't return a result and therefore the resultset closes automatically, throwing this exception.");
@@ -60,7 +58,7 @@ public class DS_Update {
     public static void updateKickoffTime(int seasonYearStart, String homeTeamName, String awayTeamName, String startDate, int leagueId) {
         try (Statement statement = DS_Main.connection.createStatement()) {
             int homeTeamId = DS_Get.getTeamId(homeTeamName, leagueId);
-            int awayTeamId = DS_Get.getTeamId(homeTeamName, leagueId);
+            int awayTeamId = DS_Get.getTeamId(awayTeamName, leagueId);
 
             statement.execute("UPDATE " + MatchTable.getTableName() +
                     " SET " + MatchTable.getColDate() + " = '" + startDate +
