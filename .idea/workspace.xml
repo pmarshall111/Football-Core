@@ -8,31 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/ResultBetOn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/ResultBetOn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/WhenGameWasPredicted.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/WhenGameWasPredicted.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/BetTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/BetTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/LeagueTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/LeagueTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/LogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/LogTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/MatchTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/MatchTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/PlayerRatingTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/PlayerRatingTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/TeamTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/tables/TeamTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/mail/SendEmail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/mail/SendEmail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Scrape.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Understat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/Understat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueSeasonIds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueSeasonIds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/OddsCheckerBookies.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/OddsCheckerBookies.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Season.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Season.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePlayedGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePlayedGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,11 +49,12 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
+    <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -186,11 +163,11 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Scrape" />
       <item itemvalue="JUnit.Write" />
       <item itemvalue="JUnit.Update" />
       <item itemvalue="JUnit.Update.addsStatsCorrectly" />
       <item itemvalue="JUnit.Update.canUpdateTheKickoffTime" />
-      <item itemvalue="Application.Scrape" />
     </list>
     <recent_temporary>
       <list>
@@ -220,7 +197,9 @@
       <workItem from="1587691547308" duration="38000" />
       <workItem from="1587734931075" duration="6993000" />
       <workItem from="1587823430037" duration="14214000" />
-      <workItem from="1587985266287" duration="24908000" />
+      <workItem from="1587985266287" duration="25052000" />
+      <workItem from="1588081645341" duration="190000" />
+      <workItem from="1589014371916" duration="463000" />
     </task>
     <servers />
   </component>
@@ -242,6 +221,10 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
+    <state x="349" y="381" key="#SQL_Dialects.inPresentationMode" timestamp="1589014884702">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="349" y="381" key="#SQL_Dialects.inPresentationMode/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589014884702" />
     <state x="414" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587997904520">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -277,41 +260,45 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="278" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634193186" />
-    <state width="1877" height="315" key="GridCell.Tab.0.bottom" timestamp="1588026921506">
+    <state width="1877" height="259" key="GridCell.Tab.0.bottom" timestamp="1588030587183">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588026921506" />
-    <state width="1877" height="315" key="GridCell.Tab.0.center" timestamp="1588026921506">
+    <state width="1877" height="259" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587183" />
+    <state width="1877" height="259" key="GridCell.Tab.0.center" timestamp="1588030587183">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588026921506" />
-    <state width="1877" height="315" key="GridCell.Tab.0.left" timestamp="1588026921506">
+    <state width="1877" height="259" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587183" />
+    <state width="1877" height="259" key="GridCell.Tab.0.left" timestamp="1588030587183">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588026921506" />
-    <state width="1877" height="315" key="GridCell.Tab.0.right" timestamp="1588026921506">
+    <state width="1877" height="259" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587183" />
+    <state width="1877" height="259" key="GridCell.Tab.0.right" timestamp="1588030587183">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588026921506" />
-    <state width="1877" height="259" key="GridCell.Tab.1.bottom" timestamp="1588015566191">
+    <state width="1877" height="259" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587183" />
+    <state width="1877" height="259" key="GridCell.Tab.1.bottom" timestamp="1588030587199">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588015566191" />
-    <state width="1877" height="259" key="GridCell.Tab.1.center" timestamp="1588015566191">
+    <state width="1877" height="259" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587199" />
+    <state width="1877" height="259" key="GridCell.Tab.1.center" timestamp="1588030587199">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588015566191" />
-    <state width="1877" height="259" key="GridCell.Tab.1.left" timestamp="1588015566191">
+    <state width="1877" height="259" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587199" />
+    <state width="1877" height="259" key="GridCell.Tab.1.left" timestamp="1588030587199">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588015566191" />
-    <state width="1877" height="259" key="GridCell.Tab.1.right" timestamp="1588015566191">
+    <state width="1877" height="259" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587199" />
+    <state width="1877" height="259" key="GridCell.Tab.1.right" timestamp="1588030587199">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588015566191" />
+    <state width="1877" height="259" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588030587199" />
     <state x="226" y="0" key="SettingsEditor" timestamp="1587634826837">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="-1920" y="6" key="SettingsEditor.inPresentationMode" timestamp="1589014841447">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1920" y="6" key="SettingsEditor.inPresentationMode/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589014841447" />
     <state x="160" y="0" key="SettingsEditor/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576491837" />
     <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634826837" />
     <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587583035610" />

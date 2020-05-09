@@ -6,10 +6,6 @@ import com.petermarshall.database.tables.LeagueTable;
 import com.petermarshall.database.tables.MatchTable;
 import com.petermarshall.database.tables.PlayerRatingTable;
 import com.petermarshall.database.tables.TeamTable;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,9 +13,13 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.fail;
 
-//NOTE: Must only test the numbers of items in the database. No calls to DS_Insert or DS_Update as this file tests production db.
+//NOTE: Class must have NO calls to DS_Insert or DS_Update as this file tests production db.
 public class Integrity {
     @Before
     public static void openConnection() {
@@ -50,8 +50,8 @@ public class Integrity {
             Statement s = DS_Main.connection.createStatement();
             String totalPlayers = "totalplayers";
             ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + totalPlayers + " FROM " + PlayerRatingTable.getTableName() +
-                    " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
-                    " HAVING " + totalPlayers + " < 11");
+                                            " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
+                                            " HAVING " + totalPlayers + " < 11");
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(0, count);
