@@ -35,6 +35,12 @@ public class Scrape {
         }
     }
 
+    public static void scrapeOneSeasonOfOneLeague(int seasonYearStart, LeagueSeasonIds leagueSeasonIds) {
+        League league = new League(leagueSeasonIds);
+        league.scrapeOneSeason(seasonYearStart);
+        writeToDb(league);
+    }
+
     private static void writeToDb(League league) {
         DS_Main.openProductionConnection();
         DS_Main.initDB();
@@ -45,16 +51,20 @@ public class Scrape {
     }
 
     public static void main(String[] args) {
+        scrapeOneSeasonOfOneLeague(15, LeagueSeasonIds.EPL);
+        
+
+
         //scrapeRecentlyPlayedMatches();
 //        scrapeEverythingIntoDbFirstTime();
-        System.out.println("no more errors");
-        League league = new League(LeagueSeasonIds.EPL);
-        league.scrapeEverything();
-        DS_Main.openProductionConnection();
-        DS_Main.initDB();
-        System.out.println("Scraped everything for " + league.getName() + ". Commencing write to database...");
-        DS_Insert.writeLeagueToDb(league);
-        DS_Main.closeConnection();
-        System.out.println("Completed writing to databse!");
+//        System.out.println("no more errors");
+//        League league = new League(LeagueSeasonIds.EPL);
+//        league.scrapeEverything();
+//        DS_Main.openProductionConnection();
+//        DS_Main.initDB();
+//        System.out.println("Scraped everything for " + league.getName() + ". Commencing write to database...");
+//        DS_Insert.writeLeagueToDb(league);
+//        DS_Main.closeConnection();
+//        System.out.println("Completed writing to databse!");
     }
 }
