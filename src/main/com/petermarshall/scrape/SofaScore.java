@@ -180,6 +180,7 @@ public class SofaScore {
 
             JSONArray oddsArray = (JSONArray) json.get("odds");
             ArrayList<Double> homeDrawAway = oddsArray != null ? getOdds(oddsArray) : getOddsAlternate(gameId);
+
             match.setHomeDrawAwayOdds(homeDrawAway);
             Boolean isFullTime = ((String) event.get("statusDescription")).equals("FT");
             if (isFullTime) {
@@ -278,7 +279,7 @@ public class SofaScore {
                     return homeDrawAway;
                 }
             }
-        } catch (ParseException e) {}
+        } catch (Exception e) {}
         return new ArrayList<Double>(){{add(-1d); add(-1d); add(-1d);}};
     }
 

@@ -29,6 +29,11 @@ public class Update {
         DbTestHelper.setupNewTestDb();
     }
 
+    @After
+    public void tearDown() {
+        DS_Main.closeConnection();
+    }
+
     @Test
     public void addsStatsCorrectly() {
         GenerateData data = addBulkData(false);
@@ -138,10 +143,5 @@ public class Update {
             }
         }
         return null;
-    }
-
-    @After
-    public void tearDown() {
-        DS_Main.closeConnection();
     }
 }

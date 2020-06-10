@@ -24,69 +24,48 @@ public class PastStatsCalculator {
         LeagueSeasonIds[] leagues = LeagueSeasonIds.values();
         ArrayList<TrainingMatch> allMatches = new ArrayList<>();
         for (LeagueSeasonIds league : leagues) {
-            try {
-                //statement has to be passed in or else it auto closes and resultset not accessible
-                ArrayList stmtAndResults = DS_Get.getLeagueData(league);
-                Statement statement = (Statement) stmtAndResults.get(0);
-                ResultSet leaguePlayerData = (ResultSet) stmtAndResults.get(1);
-                allMatches.addAll(createLeaguesMatches(leaguePlayerData));
-                leaguePlayerData.close();
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ArrayList<PlayerMatchDbData> pmdbData = DS_Get.getLeagueData(league);
+            allMatches.addAll(createLeaguesMatches(pmdbData, new HashMap<>()));
         }
         return allMatches;
     }
 
     //func will be given the leagues for which the season must be calculated and also the historic results
+    //TODO: will need tests for this. Can get historic matches out correctly etc
     public static void addFeaturesToPredict(ArrayList<MatchToPredict> matches) {
         //first need to get an idea of what leagues we need
         HashMap<String, ArrayList<MatchToPredict>> leagueMatches = new HashMap<>();
         for (MatchToPredict m : matches) {
-            leagueMatches.putIfAbsent(m.getLeagueName(), new ArrayList<MatchToPredict>());
+            leagueMatches.putIfAbsent(m.getLeagueName(), new ArrayList<>());
             leagueMatches.get(m.getLeagueName()).add(m);
         }
         //now can go through leagueNames updating the matchesToPredict with features.
         //gets the current seasons matches to create stats for each teams season thus far
         //also gets previous matches in past seasons from the database
         leagueMatches.forEach((league, toPredicts) -> {
-            ArrayList playerRatingsStmtAndResults = DS_Get.getLeagueData(league, DateHelper.getStartYearForCurrentSeason());
-            Statement statement1 = (Statement) playerRatingsStmtAndResults.get(0);
-            ResultSet leaguePlayerData = (ResultSet) playerRatingsStmtAndResults.get(1);
-            ArrayList matchesStmtAndResults = DS_Get.getMatchesBetweenTeams(league, matches, NUMB_SEASONS_HISTORY);
-            Statement statement2 = (Statement) matchesStmtAndResults.get(0);
-            ResultSet matchesData = (ResultSet) matchesStmtAndResults.get(1);
-            try {
-                HashMap<String, TrainingTeam> teamsInLeague = createHistoricMatchups(matchesData);
-                statement2.close();
-                //don't care about return value here. the func will go through and update all teams seasons to the most up to date vals
-                createLeaguesMatches(leaguePlayerData, teamsInLeague);
-                toPredicts.forEach(mtp -> {
-                    int currSeason = DateHelper.getStartYearForCurrentSeason();
-                    TrainingTeam homeTeam = teamsInLeague.get(mtp.getHomeTeamName());
-                    TrainingTeam awayTeam = teamsInLeague.get(mtp.getAwayTeamName());
-                    TrainingTeamsSeason homeSeason = homeTeam.getTeamsSeason(currSeason);
-                    TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
-                    ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                            mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                                                                            currSeason, -1, -1, -1, -1);
-                    ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                                            currSeason, -1, -1, -1, -1);
-                    mtp.setFeatures(features);
-                    mtp.setFeaturesNoLineups(featuresNoLineups);
-                });
-                statement1.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ArrayList<PlayerMatchDbData> playerRatings = DS_Get.getLeagueData(league, DateHelper.getStartYearForCurrentSeason());
+            ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(league, matches, NUMB_SEASONS_HISTORY);
+            HashMap<String, TrainingTeam> teamsInLeague = createHistoricMatchups(pastMatches);
+            //don't care about return value here. the func will go through and update all teams seasons to the most up to date vals
+            createLeaguesMatches(playerRatings, teamsInLeague);
+            toPredicts.forEach(mtp -> {
+                int currSeason = DateHelper.getStartYearForCurrentSeason();
+                TrainingTeam homeTeam = teamsInLeague.get(mtp.getHomeTeamName());
+                TrainingTeam awayTeam = teamsInLeague.get(mtp.getAwayTeamName());
+                TrainingTeamsSeason homeSeason = homeTeam.getTeamsSeason(currSeason);
+                TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
+                ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
+                                                                        mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
+                                                                        currSeason, -1, -1, -1, -1);
+                ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
+                                                                                        currSeason, -1, -1, -1, -1);
+                mtp.setFeatures(features);
+                mtp.setFeaturesNoLineups(featuresNoLineups);
+            });
         });
     }
 
-    private static ArrayList<TrainingMatch> createLeaguesMatches(ResultSet playerRatings) throws SQLException {
-        return createLeaguesMatches(playerRatings, new HashMap<>());
-    }
-    private static ArrayList<TrainingMatch> createLeaguesMatches(ResultSet playerRatings, HashMap<String, TrainingTeam> teamsInLeague) throws SQLException {
+    private static ArrayList<TrainingMatch> createLeaguesMatches(ArrayList<PlayerMatchDbData> playerRatings, HashMap<String, TrainingTeam> teamsInLeague) {
         int lastMatchId = -1; //to be used to see if we come across a new match
         TrainingTeam homeTeam = null;
         TrainingTeamsSeason homeSeason = null;
@@ -95,15 +74,16 @@ public class PastStatsCalculator {
         HashMap<String, Player> homeLineup = new HashMap<>();
         HashMap<String, Player> awayLineup = new HashMap<>();
         ArrayList<TrainingMatch> matches = new ArrayList<>();
+        PlayerMatchDbData lastRecordData = null; //we only save a game once we get to data from a new match so need access to last record
         PlayerMatchDbData data = null;
 
         //need to go through, and collect data for the current team
-        while (playerRatings.next()) {
-            data = new PlayerMatchDbData(playerRatings);
+        for (int i = 0; i<playerRatings.size(); i++) {
+            data = playerRatings.get(i);
             if (lastMatchId != data.getMatchId()) {
                 //we have a new match. first need to save old stats
                 if (lastMatchId != -1) {
-                    saveData(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup, data, matches);
+                    saveData(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup, lastRecordData, matches);
                 }
 
                 //then need to update fields for next iter
@@ -114,7 +94,7 @@ public class PastStatsCalculator {
                 homeTeam = teamsInLeague.get(data.getHomeTeam());
                 awayTeam = teamsInLeague.get(data.getAwayTeam());
                 homeSeason = homeTeam.getTeamsSeason(data.getSeasonYearStart());
-                awaySeason = homeTeam.getTeamsSeason(data.getSeasonYearStart());
+                awaySeason = awayTeam.getTeamsSeason(data.getSeasonYearStart());
             }
 
             if (data.playsForHomeTeam()) {
@@ -122,19 +102,22 @@ public class PastStatsCalculator {
             } else {
                 awayLineup.put(data.getName(), new Player(data.getName(), data.getMins(), data.getRating(), false));
             }
+            lastMatchId = data.getMatchId();
+            lastRecordData = data;
         }
         //saving 1 last time to save the final record.
         if (data != null) {
             saveData(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup, data, matches);
         }
-
         return matches;
     }
 
-    private static HashMap<String, TrainingTeam> createHistoricMatchups(ResultSet matches) throws SQLException {
+    private static HashMap<String, TrainingTeam> createHistoricMatchups(ArrayList<HistoricMatchDbData> matches) {
         HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
-        while (matches.next()) {
-            HistoricMatchDbData data = new HistoricMatchDbData(matches);
+        if (matches == null) {
+            return teamsInLeague;
+        }
+        for (HistoricMatchDbData data: matches) {
             teamsInLeague.putIfAbsent(data.getHomeTeam(), new TrainingTeam(data.getHomeTeam()));
             teamsInLeague.putIfAbsent(data.getAwayTeam(), new TrainingTeam(data.getAwayTeam()));
             TrainingTeam homeTeam = teamsInLeague.get(data.getHomeTeam());
@@ -163,29 +146,144 @@ public class PastStatsCalculator {
     private static void saveData(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, TrainingTeam awayTeam, TrainingTeamsSeason awaySeason, HashMap<String, Player> homeLineup, HashMap<String, Player> awayLineup,
                                  PlayerMatchDbData data, ArrayList<TrainingMatch> matches) {
         //creating match which we can create features on later
-        TrainingMatch match = new TrainingMatch(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup,
+        HashMap<String, Player> homeStartingXI = getStartingXI(homeLineup);
+        HashMap<String, Player> awayStartingXI = getStartingXI(awayLineup);
+        TrainingMatch match = new TrainingMatch(homeTeam, homeSeason, awayTeam, awaySeason, homeStartingXI, awayStartingXI,
                 data.getHomeOdds(), data.getDrawOdds(), data.getAwayOdds(),
                 data.getHomeScore(), data.getAwayScore(), data.getDate(),
                 data.getSeasonYearStart());
         ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                new ArrayList<>(homeLineup.keySet()), new ArrayList<>(awayLineup.keySet()),
+                                                                new ArrayList<>(homeStartingXI.keySet()), new ArrayList<>(awayStartingXI.keySet()),
                                                                 data.getSeasonYearStart(),
                                                                 data.getHomeOdds(), data.getDrawOdds(),
                                                                 data.getAwayOdds(), data.getResult());
+        ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getHomeOdds(),
+                                                                                    data.getDrawOdds(), data.getAwayOdds(), data.getResult());
         match.setFeatures(features);
+        match.setFeaturesNoLineups(featuresNoLineups);
         if (homeSeason.getNumbGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
                 awaySeason.getNumbGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA) {
             matches.add(match);
         }
-        //saving stats to season and team history
-        homeSeason.addGameStats(data.getHomeScore(), data.getAwayScore(), data.getHomeXGF(), data.getAwayXGF(),
-                data.getFirstScorer() == 1, data.getFirstScorer() != -1, true, awaySeason);
-        awaySeason.addGameStats(data.getAwayScore(), data.getHomeScore(), data.getAwayXGF(), data.getHomeXGF(),
-                data.getFirstScorer() == 2, data.getFirstScorer() != -1, false, homeSeason);
         if (data.getHomeScore() != -1 && data.getAwayScore() != -1) {
+            //saving stats to season and team history
+            addStatsToTeamsSeasons(data, homeSeason, awaySeason, homeLineup, awayLineup);
             homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
             awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
         }
+    }
+
+    private static HashMap<String,Player> getStartingXI(HashMap<String,Player> allPlayers) {
+        if (allPlayers.size() == 11) return allPlayers;
+        HashMap<String,Player> startingXI = new HashMap<>();
+        ArrayList<Player> players = new ArrayList<>(allPlayers.values());
+        players.sort((p1,p2) -> {
+            return p2.getOvrMins() - p1.getOvrMins();
+        });
+        for (int i = 0; i<11; i++) {
+            Player p = players.get(i);
+            startingXI.put(p.getPlayerName(), p);
+        }
+        return startingXI;
+    }
+
+    //method gets the data first out rather than passing in the oppositions season, so that we use the stats before each season is updated.
+    public static void addStatsToTeamsSeasons(PlayerMatchDbData data, TrainingTeamsSeason homeSeason, TrainingTeamsSeason awaySeason,
+                                               HashMap<String, Player> homeLineup, HashMap<String, Player> awayLineup) {
+        double homeTotalAvgGoalsFor = homeSeason.getAvgGoalsFor(GamesSelector.ALL_GAMES);
+        double homeTotalAvgGoalsAgainst = homeSeason.getAvgGoalsAgainst(GamesSelector.ALL_GAMES);
+        double homeHomeAvgGoalsFor = homeSeason.getAvgGoalsFor(GamesSelector.ONLY_HOME_GAMES);
+        double homeHomeAvgGoalsAgainst = homeSeason.getAvgGoalsAgainst(GamesSelector.ONLY_HOME_GAMES);
+        double homeTotalAvgXGF = homeSeason.getAvgXGF(GamesSelector.ALL_GAMES);
+        double homeTotalAvgXGA = homeSeason.getAvgXGA(GamesSelector.ALL_GAMES);
+        double homeHomeAvgXGF = homeSeason.getAvgXGF(GamesSelector.ONLY_HOME_GAMES);
+        double homeHomeAvgXGA = homeSeason.getAvgXGA(GamesSelector.ONLY_HOME_GAMES);
+        double homeWeightedTotalXGF = homeSeason.getWeightedAvgXGF(GamesSelector.ALL_GAMES);
+        double homeWeightedTotalXGA = homeSeason.getWeightedAvgXGA(GamesSelector.ALL_GAMES);
+        double homeWeightedHomeXGF = homeSeason.getWeightedAvgXGF(GamesSelector.ONLY_HOME_GAMES);
+        double homeWeightedHomeXGA = homeSeason.getWeightedAvgXGA(GamesSelector.ONLY_HOME_GAMES);
+
+        double awayTotalAvgGoalsFor = awaySeason.getAvgGoalsFor(GamesSelector.ALL_GAMES);
+        double awayTotalAvgGoalsAgainst = awaySeason.getAvgGoalsAgainst(GamesSelector.ALL_GAMES);
+        double awayAwayAvgGoalsFor = awaySeason.getAvgGoalsFor(GamesSelector.ONLY_AWAY_GAMES);
+        double awayAwayAvgGoalsAgainst = awaySeason.getAvgGoalsAgainst(GamesSelector.ONLY_AWAY_GAMES);
+        double awayTotalAvgXGF = awaySeason.getAvgXGF(GamesSelector.ALL_GAMES);
+        double awayTotalAvgXGA = awaySeason.getAvgXGA(GamesSelector.ALL_GAMES);
+        double awayAwayAvgXGF = awaySeason.getAvgXGF(GamesSelector.ONLY_AWAY_GAMES);
+        double awayAwayAvgXGA = awaySeason.getAvgXGA(GamesSelector.ONLY_AWAY_GAMES);
+        double awayWeightedTotalXGF = awaySeason.getWeightedAvgXGF(GamesSelector.ALL_GAMES);
+        double awayWeightedTotalXGA = awaySeason.getWeightedAvgXGA(GamesSelector.ALL_GAMES);
+        double awayWeightedAwayXGF = awaySeason.getWeightedAvgXGF(GamesSelector.ONLY_AWAY_GAMES);
+        double awayWeightedAwayXGA = awaySeason.getWeightedAvgXGA(GamesSelector.ONLY_AWAY_GAMES);
+
+        //added in later
+        double homeTotalPPG = homeSeason.getAvgPoints(GamesSelector.ALL_GAMES);
+        double homeHomePPG = homeSeason.getAvgPoints(GamesSelector.ONLY_HOME_GAMES);
+        double homeLast5TotalPPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
+        double homeLast5HomePPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_HOME_GAMES, COMPARE_LAST_N_GAMES);
+
+        double awayTotalPPG = awaySeason.getAvgPoints(GamesSelector.ALL_GAMES);
+        double awayAwayPPG = awaySeason.getAvgPoints(GamesSelector.ONLY_AWAY_GAMES);
+        double awayLast5TotalPPG = awaySeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
+        double awayLast5AwayPPG = awaySeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_AWAY_GAMES, COMPARE_LAST_N_GAMES);
+
+        homeSeason.addGameStats(data.getHomeScore(),
+                data.getAwayScore(),
+                data.getHomeXGF(),
+                data.getAwayXGF(),
+                data.getFirstScorer() == 1,
+                data.getFirstScorer() != -1,
+                true,
+                awayTotalAvgGoalsFor,
+                awayTotalAvgGoalsAgainst,
+                awayAwayAvgGoalsFor,
+                awayAwayAvgGoalsAgainst,
+                awayTotalAvgXGF,
+                awayTotalAvgXGA,
+                awayAwayAvgXGF,
+                awayAwayAvgXGA,
+                awayWeightedTotalXGF,
+                awayWeightedTotalXGA,
+                awayWeightedAwayXGF,
+                awayWeightedAwayXGA,
+                awayTotalPPG,
+                awayAwayPPG,
+                awayLast5TotalPPG,
+                awayLast5AwayPPG);
+
+        ArrayList<Player> homePlayerRatings = new ArrayList<>(homeLineup.values());
+        homePlayerRatings.forEach(player -> {
+            homeSeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), true);
+        });
+
+        awaySeason.addGameStats(data.getAwayScore(),
+                data.getHomeScore(),
+                data.getAwayXGF(),
+                data.getHomeXGF(),
+                data.getFirstScorer() == 2,
+                data.getFirstScorer() != -1,
+                false,
+                homeTotalAvgGoalsFor,
+                homeTotalAvgGoalsAgainst,
+                homeHomeAvgGoalsFor,
+                homeHomeAvgGoalsAgainst,
+                homeTotalAvgXGF,
+                homeTotalAvgXGA,
+                homeHomeAvgXGF,
+                homeHomeAvgXGA,
+                homeWeightedTotalXGF,
+                homeWeightedTotalXGA,
+                homeWeightedHomeXGF,
+                homeWeightedHomeXGA,
+                homeTotalPPG,
+                homeHomePPG,
+                homeLast5TotalPPG,
+                homeLast5HomePPG);
+
+        ArrayList<Player> awayPlayerRatings = new ArrayList<>(awayLineup.values());
+        awayPlayerRatings.forEach(player -> {
+            awaySeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), false);
+        });
     }
 
 }

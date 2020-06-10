@@ -3,7 +3,7 @@ package com.petermarshall.database.tables;
 public class PlayerRatingTable {
     private PlayerRatingTable() {}
 
-    private static final String TABLE_NAME = "PlayerRating";
+    private static final String TABLE_NAME = "playerrating";
     private static final String COL_MINS = "minutes";
     private static final String COL_RATING = "rating";
     private static final String COL_PLAYER_NAME = "playerName";

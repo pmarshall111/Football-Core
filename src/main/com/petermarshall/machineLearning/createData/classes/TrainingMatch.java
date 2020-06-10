@@ -13,6 +13,7 @@ import static com.petermarshall.machineLearning.createData.refactor.PastStatsCal
 //use for our ML model.
 public class TrainingMatch {
     private ArrayList<Double> features;
+    private ArrayList<Double> featuresNoLineups;
 
     //HOME OVR DATA
     private String homeTeamName;
@@ -182,6 +183,14 @@ public class TrainingMatch {
 
     public void setFeatures(ArrayList<Double> features) {
         this.features = features;
+    }
+
+    public ArrayList<Double> getFeaturesNoLineups() {
+        return featuresNoLineups;
+    }
+
+    public void setFeaturesNoLineups(ArrayList<Double> featuresNoLineups) {
+        this.featuresNoLineups = featuresNoLineups;
     }
 
     public TrainingMatch(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import com.petermarshall.machineLearning.createData.classes.GamesSelector.*;
-import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
-
 import static com.petermarshall.machineLearning.createData.classes.GamesSelector.*;
 import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.COMPARE_LAST_N_GAMES;
 
@@ -16,19 +13,19 @@ public class TrainingTeamsSeason {
     private int seasonYearStart;
     //Using arrays here so if we want to we can calculate fields for last 5 games etc.
     //Not done the same for weighted xG because that's already been taken into account (bc it's weighted)
-    private ArrayList<HomeAwayInt> goalsFor;
-    private ArrayList<HomeAwayInt> goalsAgainst;
-    private ArrayList<HomeAwayDouble> xGF;
-    private ArrayList<HomeAwayDouble> xGA;
-    private ArrayList<HomeAwayInt> points;
-    private ArrayList<HomeAwayInt> pointsScoredFirst;
-    private ArrayList<HomeAwayInt> pointsConceededFirst;
-    private ArrayList<HomeAwayDouble> totalPointsPerGameOfOpponentsWholeSeason; //can be used to calculate the difficulty of opponents a team has faced over the season. contains opponents total PPG
-    private ArrayList<HomeAwayDouble> homeAwayPointsPerGameOfOpponentsWholeSeason; //contains opponents Home/Away PPG.
-    private ArrayList<HomeAwayDouble> totalPointsPerGameOfOpponentsLast5;
-    private ArrayList<HomeAwayDouble> homeAwayPointsPerGameOfOpponentsLast5;
+    private ArrayList<HomeAwayWrapper> goalsFor;
+    private ArrayList<HomeAwayWrapper> goalsAgainst;
+    private ArrayList<HomeAwayWrapper> xGF;
+    private ArrayList<HomeAwayWrapper> xGA;
+    private ArrayList<HomeAwayWrapper> points;
+    private ArrayList<HomeAwayWrapper> pointsScoredFirst;
+    private ArrayList<HomeAwayWrapper> pointsConceededFirst;
+    private ArrayList<HomeAwayWrapper> totalPointsPerGameOfOpponentsWholeSeason; //can be used to calculate the difficulty of opponents a team has faced over the season. contains opponents total PPG
+    private ArrayList<HomeAwayWrapper> homeAwayPointsPerGameOfOpponentsWholeSeason; //contains opponents Home/Away PPG.
+    private ArrayList<HomeAwayWrapper> totalPointsPerGameOfOpponentsLast5;
+    private ArrayList<HomeAwayWrapper> homeAwayPointsPerGameOfOpponentsLast5;
     //initialising the xGF as average goals per game in PL 2017/18.
-    private static double AVG_GOALS_PER_GAME = 1.34;
+    public static final double AVG_GOALS_PER_GAME = 1.34;
     //places more weight on more recent results.
     private double totalWeightedXGF = AVG_GOALS_PER_GAME;
     private double homeWeightedXGF = AVG_GOALS_PER_GAME;
@@ -46,8 +43,8 @@ public class TrainingTeamsSeason {
     private double homeFormWeightedXGA = 0;
     private double awayFormWeightedXGA = 0;
     //will have arrays so we can look at the last X amount of games as an average instead of using the weightedAvg thing.
-    private ArrayList<HomeAwayDouble> totalFormWeightedXGFHistory = new ArrayList<>();
-    private ArrayList<HomeAwayDouble> totalFormWeightedXGAHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormWeightedXGFHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormWeightedXGAHistory = new ArrayList<>();
     //compares how many more goals were scored against the oppositions average goals against
     //will be calculated by taking a teams actual goals and comparing against the oppositions average goals conceeded to see how much they overperformed.
     private double totalFormGoalsFor = 0;
@@ -57,8 +54,8 @@ public class TrainingTeamsSeason {
     private double homeFormGoalsAgainst = 0;
     private double awayFormGoalsAgainst = 0;
     //arrays
-    private ArrayList<HomeAwayDouble> totalFormGoalsForHistory = new ArrayList<>();
-    private ArrayList<HomeAwayDouble> totalFormGoalsAgainstHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormGoalsForHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormGoalsAgainstHistory = new ArrayList<>();
     //compares how many more xG were achieved against the oppositions xGA
     //will be calculated by taking a teams actual xG and comparing against the oppositions average xGA to see how much they overperformed.
     private double totalFormXGF = 0;
@@ -68,12 +65,12 @@ public class TrainingTeamsSeason {
     private double homeFormXGA = 0;
     private double awayFormXGA = 0;
     //arrays
-    private ArrayList<HomeAwayDouble> totalFormXGFHistory = new ArrayList<>();
-    private ArrayList<HomeAwayDouble> totalFormXGAHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormXGFHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormXGAHistory = new ArrayList<>();
     //kept as a hashmap to enable super fast player updates - which will be most used operation.
     private HashMap<String, Player> playerStats;
 
-    TrainingTeamsSeason(int seasonYearStart) {
+    public TrainingTeamsSeason(int seasonYearStart) {
         this.seasonYearStart = seasonYearStart;
         this.goalsFor = new ArrayList<>();
         this.goalsAgainst = new ArrayList<>();
@@ -89,10 +86,113 @@ public class TrainingTeamsSeason {
         this.homeAwayPointsPerGameOfOpponentsLast5 = new ArrayList<>();
     }
 
+    /*
+     * Method adds the game stats for a game to a team. IMPORTANT: Needs to be called after the TrainingMatch has been created. Otherwise when we create the TrainingMatch,
+     * it will include the stats from the TrainingMatch that we're trying to predict. Whereas we want the training match to be
+     * a predictor, so must include data from previous games only.
+     *
+     * Method has checks to only add data if the parameters we've been given != -1. Filters out incomplete data.
+     *
+     * NOTE: we cannot just pass in the opponents TrainingTeamsSeason or we will update one and then use the updated version to update the other. We need to create temp variables and pass them
+     * into each teams addGameStats method.
+     */
+    public void addGameStats(int goalsFor, int goalsAgainst, double xGF, double xGA, boolean scoredFirst, boolean hasScoredFirstData, boolean homeTeam, double oppositionAvgTotalGF,
+                             double oppositionAvgTotalGA, double oppositionAvgHomeAwayGF, double oppositionAvgHomeAwayGA, double oppositionAvgTotalXGF, double oppositionAvgTotalXGA,
+                             double oppositionAvgHomeAwayXGF, double oppositionAvgHomeAwayXGA, double oppositionWeightedTotalXGF, double oppositionWeightedTotalXGA,
+                             double oppositionWeightedHomeAwayXGF, double oppositionWeightedHomeAwayXGA, double opponentTotalWholeSeasonPPG, double opponentHomeAwayWholeSeasonPPG,
+                             double opponentTotalLast5PPG, double opponentHomeAwayLast5PPG) {
+
+        if (goalsFor != -1 && goalsAgainst != -1) {
+            this.goalsFor.add(new HomeAwayWrapper(homeTeam, goalsFor));
+            this.goalsAgainst.add(new HomeAwayWrapper(homeTeam, goalsAgainst));
+
+            HomeAwayWrapper points = new HomeAwayWrapper(homeTeam, goalsFor > goalsAgainst ? 3 : goalsFor == goalsAgainst ? 1 : 0);
+            this.points.add(points);
+            if (hasScoredFirstData && (goalsFor > 0 || goalsAgainst > 0)) {
+                if (scoredFirst) this.pointsScoredFirst.add(points);
+                else this.pointsConceededFirst.add(points);
+            }
+
+            //new fields
+            this.totalPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(homeTeam, opponentTotalWholeSeasonPPG));
+            this.homeAwayPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(homeTeam, opponentHomeAwayWholeSeasonPPG));
+
+            this.totalPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(homeTeam, opponentTotalLast5PPG));
+            this.homeAwayPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(homeTeam, opponentHomeAwayLast5PPG));
+            //end of new fields
+
+            this.totalFormGoalsForHistory.add(new HomeAwayWrapper(homeTeam, goalsFor - oppositionAvgTotalGA)); //TODO: will need to check that these parameters are not these exponential avg vals
+            this.totalFormGoalsAgainstHistory.add(new HomeAwayWrapper(homeTeam, goalsAgainst - oppositionAvgTotalGF));
+
+            this.totalFormGoalsFor = calcExponWeightedAvg(this.totalFormGoalsFor, goalsFor - oppositionAvgTotalGA);
+            this.totalFormGoalsAgainst = calcExponWeightedAvg(this.totalFormGoalsAgainst, goalsAgainst - oppositionAvgTotalGF);
+            if (homeTeam) {
+                this.homeFormGoalsFor = calcExponWeightedAvg(this.homeFormGoalsFor, goalsFor - oppositionAvgHomeAwayGA);
+                this.homeFormGoalsAgainst = calcExponWeightedAvg(this.homeFormGoalsAgainst, goalsAgainst - oppositionAvgHomeAwayGF);
+            } else {
+                this.awayFormGoalsFor = calcExponWeightedAvg(this.awayFormGoalsFor, goalsFor - oppositionAvgHomeAwayGA);
+                this.awayFormGoalsAgainst = calcExponWeightedAvg(this.awayFormGoalsAgainst, goalsAgainst - oppositionAvgHomeAwayGF);
+            }
+        }
+
+
+        if (xGF != -1 && xGA != -1) {
+            this.xGF.add(new HomeAwayWrapper(homeTeam, xGF));
+            this.xGA.add(new HomeAwayWrapper(homeTeam, xGA));
+
+            this.totalWeightedXGF = calcExponWeightedAvg(this.totalWeightedXGF, xGF);
+            this.totalWeightedXGA = calcExponWeightedAvg(this.totalWeightedXGA, xGA);
+            if (homeTeam) {
+                this.homeWeightedXGF = calcExponWeightedAvg(this.homeWeightedXGF, xGF);
+                this.homeWeightedXGA = calcExponWeightedAvg(this.homeWeightedXGA, xGA);
+            } else {
+                this.awayWeightedXGF = calcExponWeightedAvg(this.awayWeightedXGF, xGF);
+                this.awayWeightedXGA = calcExponWeightedAvg(this.awayWeightedXGA, xGA);
+            }
+
+            //how many more xG we had compared to how many the oppositions form dictated we should have had. A measure of how good team is compared to other teams opposition has faced.
+
+            //all calculated with exponentially weighted averages to include overperformance over the whole season, but place more weight ont he most recent games.
+            this.totalFormXGFHistory.add(new HomeAwayWrapper(homeTeam, xGF - oppositionAvgTotalXGA));
+            this.totalFormXGAHistory.add(new HomeAwayWrapper(homeTeam, xGA - oppositionAvgTotalXGF));
+            this.totalFormWeightedXGFHistory.add(new HomeAwayWrapper(homeTeam, xGF - oppositionWeightedTotalXGA));
+            this.totalFormWeightedXGAHistory.add(new HomeAwayWrapper(homeTeam, xGA - oppositionWeightedTotalXGF));
+
+            this.totalFormXGF = calcExponWeightedAvg(this.totalFormXGF, xGF - oppositionAvgTotalXGA);
+            this.totalFormXGA = calcExponWeightedAvg(this.totalFormXGA, xGA - oppositionAvgTotalXGF);
+            this.totalFormWeightedXGF = calcExponWeightedAvg(this.totalFormWeightedXGF, xGF - oppositionWeightedTotalXGA);
+            this.totalFormWeightedXGA = calcExponWeightedAvg(this.totalFormWeightedXGA, xGA - oppositionWeightedTotalXGF);
+
+            if (homeTeam) {
+                this.homeFormXGF = calcExponWeightedAvg(this.homeFormXGF, xGF - oppositionAvgHomeAwayXGA);
+                this.homeFormXGA = calcExponWeightedAvg(this.homeFormXGA, xGA - oppositionAvgHomeAwayXGF);
+                this.homeFormWeightedXGF = calcExponWeightedAvg(this.homeFormWeightedXGF, xGF - oppositionWeightedHomeAwayXGA);
+                this.homeFormWeightedXGA = calcExponWeightedAvg(this.homeFormWeightedXGA, xGA - oppositionWeightedHomeAwayXGF);
+            } else {
+                this.awayFormXGF = calcExponWeightedAvg(this.awayFormXGF, xGF - oppositionAvgHomeAwayXGA);
+                this.awayFormXGA = calcExponWeightedAvg(this.awayFormXGA, xGA - oppositionAvgHomeAwayXGF);
+                this.awayFormWeightedXGF = calcExponWeightedAvg(this.awayFormWeightedXGF, xGF - oppositionWeightedHomeAwayXGA);
+                this.awayFormWeightedXGA = calcExponWeightedAvg(this.awayFormWeightedXGA, xGA - oppositionWeightedHomeAwayXGF);
+            }
+        }
+    }
+
+
+
+    /*
+     * Adds stats to player unless player has not played a game yet. In that case, default action is to create a new player obj and add it to player map.
+     */
+    public void addPlayerStats(String playerName, int minsPlayed, double rating, boolean homeTeam) {
+        Player player = this.playerStats.getOrDefault(playerName, null);
+
+        if (player == null) this.playerStats.put(playerName, new Player(playerName, minsPlayed, rating, homeTeam));
+        else player.addMatchMinsRating(minsPlayed, rating, homeTeam);
+    }
+
     public int getNumbGamesPlayed(GamesSelector gamesSelector) {
         if (gamesSelector.getSetting() == 3) return this.points.size();
         else {
-            ArrayList<HomeAwayInt> filteredList =  new ArrayList<HomeAwayInt>(this.points);
+            ArrayList<HomeAwayWrapper> filteredList =  new ArrayList<>(this.points);
             filteredList.removeIf(record -> gamesSelector.getSetting() == 1 ? record.isHome() : !record.isHome());
 
             return filteredList.size();
@@ -109,11 +209,11 @@ public class TrainingTeamsSeason {
      * Points in the middle would be 1.5;
      */
     public double getAvgGoalsFor(GamesSelector gamesSelector) {
-        return calcHomeAway(this.goalsFor, null, gamesSelector.getSetting(), 1.34);
+        return calcHomeAway(this.goalsFor, gamesSelector.getSetting(), 1.34);
     }
 
     public double getAvgGoalsAgainst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.goalsAgainst, null, gamesSelector.getSetting(), 1.34);
+        return calcHomeAway(this.goalsAgainst, gamesSelector.getSetting(), 1.34);
     }
 
     //default value of clean sheets is on average 0.29 per game. - averaging to about 11 clean sheets over a whole season.
@@ -122,12 +222,12 @@ public class TrainingTeamsSeason {
         return calcCleanSheetsAvg(this.goalsAgainst, gamesSelector, 0);
     }
     public double getAvgNumberOfCleanSheetsLastXGames(GamesSelector gamesSelector, int lastXGames, boolean lengthenResultToSizeOfLastXGames) {
-        ArrayList<HomeAwayInt> lastXGoalsAgainst = getLastNRecordsOfIntGroup(gamesSelector, this.goalsAgainst, lastXGames);
+        ArrayList<HomeAwayWrapper> lastXGoalsAgainst = getLastNRecords(gamesSelector, this.goalsAgainst, lastXGames);
         return calcCleanSheetsAvg(lastXGoalsAgainst, gamesSelector, lengthenResultToSizeOfLastXGames ? lastXGames : 0);
     }
-    private double calcCleanSheetsAvg(ArrayList<HomeAwayInt> goalsAgainst, GamesSelector gamesSelector,  int minLength) {
+    private double calcCleanSheetsAvg(ArrayList<HomeAwayWrapper> goalsAgainst, GamesSelector gamesSelector,  int minLength) {
         double numbGames = 0, cleanSheetCount = 0;
-        for (HomeAwayInt goalsAgainstRecord: goalsAgainst) {
+        for (HomeAwayWrapper goalsAgainstRecord: goalsAgainst) {
             if (gamesSelector.getSetting() == 3 ||
                     gamesSelector.getSetting() == 1 && goalsAgainstRecord.isHome() ||
                     gamesSelector.getSetting() == 2 && !goalsAgainstRecord.isHome()) {
@@ -146,11 +246,11 @@ public class TrainingTeamsSeason {
     }
 
     public double getAvgXGF(GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.xGF, gamesSelector.getSetting(), 1.34);
+        return calcHomeAway(this.xGF, gamesSelector.getSetting(), 1.34);
     }
 
     public double getAvgXGA(GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.xGA, gamesSelector.getSetting(), 1.34);
+        return calcHomeAway(this.xGA, gamesSelector.getSetting(), 1.34);
     }
 
     public double getWeightedAvgXGF (GamesSelector gamesSelector) {
@@ -204,100 +304,76 @@ public class TrainingTeamsSeason {
 
     //Getters for average Form fields
     public double getAvgFormGoalsFor(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormGoalsForHistory : removeFirstNRecordsOfGroup(this.totalFormGoalsForHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormGoalsForHistory : removeFirstNRecordsOfGroup(this.totalFormGoalsForHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
-    
+
     public double getAvgFormGoalsAgainst(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormGoalsAgainstHistory : removeFirstNRecordsOfGroup(this.totalFormGoalsAgainstHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormGoalsAgainstHistory : removeFirstNRecordsOfGroup(this.totalFormGoalsAgainstHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
 
     public double getAvgFormXGF(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormXGFHistory : removeFirstNRecordsOfGroup(this.totalFormXGFHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormXGFHistory : removeFirstNRecordsOfGroup(this.totalFormXGFHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
 
     public double getAvgFormXGA(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormXGAHistory : removeFirstNRecordsOfGroup(this.totalFormXGAHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormXGAHistory : removeFirstNRecordsOfGroup(this.totalFormXGAHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
-    
+
     public double getAvgFormWeightedXGF (GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormWeightedXGFHistory : removeFirstNRecordsOfGroup(this.totalFormWeightedXGFHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormWeightedXGFHistory : removeFirstNRecordsOfGroup(this.totalFormWeightedXGFHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
 
     public double getAvgFormWeightedXGA (GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(null,
-                removeFirstNGames == 0 ? this.totalFormWeightedXGAHistory : removeFirstNRecordsOfGroup(this.totalFormWeightedXGAHistory, removeFirstNGames),
+        return calcHomeAway(removeFirstNGames == 0 ? this.totalFormWeightedXGAHistory : removeFirstNRecordsOfGroup(this.totalFormWeightedXGAHistory, removeFirstNGames),
                 gamesSelector.getSetting(),
                 0);
     }
 
 
     public double getFormXGFOverLastNGames(GamesSelector gamesSelector, int numbPreviousGames) {
-        ArrayList<HomeAwayDouble> lastNGamesXGF = this.getLastNRecordsOfDoubleGroup(gamesSelector, this.totalFormXGFHistory, numbPreviousGames);
-        return calcHomeAway(null, lastNGamesXGF, gamesSelector.getSetting(), 1.5);
+        ArrayList<HomeAwayWrapper> lastNGamesXGF = this.getLastNRecords(gamesSelector, this.totalFormXGFHistory, numbPreviousGames);
+        return calcHomeAway(lastNGamesXGF, gamesSelector.getSetting(), 1.5);
     }
 
     public double getFormXGAOverLastNGames(GamesSelector gamesSelector, int numbPreviousGames) {
-        ArrayList<HomeAwayDouble> lastNGamesXGA = this.getLastNRecordsOfDoubleGroup(gamesSelector, this.totalFormXGAHistory, numbPreviousGames);
-        return calcHomeAway(null, lastNGamesXGA, gamesSelector.getSetting(), 1.5);
+        ArrayList<HomeAwayWrapper> lastNGamesXGA = this.getLastNRecords(gamesSelector, this.totalFormXGAHistory, numbPreviousGames);
+        return calcHomeAway(lastNGamesXGA, gamesSelector.getSetting(), 1.5);
     }
 
-    //TODO: this double/int separation of methods could be removed by just having an interface that the 2 classes implement, or another class they both extend.
-    private ArrayList<HomeAwayDouble> getLastNRecordsOfDoubleGroup(GamesSelector gamesSelector, ArrayList<HomeAwayDouble> source, int numbPreviousGames) {
-        ArrayList<HomeAwayDouble> lastNRecords = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> getLastNRecords(GamesSelector gamesSelector, ArrayList<HomeAwayWrapper> source, int numbPreviousGames) {
+        ArrayList<HomeAwayWrapper> lastNRecords = new ArrayList<>();
 
-        if (numbPreviousGames != 0) {
-            for (int i = source.size() - 1; i >= 0; i--) {
-                HomeAwayDouble currRecord = source.get(i);
-
-                if (gamesSelector.getSetting() == 3 ||
-                        (gamesSelector.getSetting() == 1 && currRecord.isHome()) ||
-                        (gamesSelector.getSetting() == 2 && !currRecord.isHome()))
-                    lastNRecords.add(currRecord);
-            }
-        }
-
-        return lastNRecords;
-    }
-    private ArrayList<HomeAwayInt> getLastNRecordsOfIntGroup(GamesSelector gamesSelector, ArrayList<HomeAwayInt> source, int numbPreviousGames) {
-        ArrayList<HomeAwayInt> lastNRecords = new ArrayList<>();
-
-        if (numbPreviousGames != 0) {
-            for (int i = source.size() - 1; i >= 0; i--) {
-                HomeAwayInt currRecord = source.get(i);
-
-                if (gamesSelector.getSetting() == 3 ||
-                        (gamesSelector.getSetting() == 1 && currRecord.isHome()) ||
-                        (gamesSelector.getSetting() == 2 && !currRecord.isHome()))
-                    lastNRecords.add(currRecord);
+        for (int i = source.size() - 1, count = 0; i >= 0 && count < numbPreviousGames; i--) {
+            HomeAwayWrapper currRecord = source.get(i);
+            if (gamesSelector.getSetting() == 3 ||
+                    (gamesSelector.getSetting() == 1 && currRecord.isHome()) ||
+                    (gamesSelector.getSetting() == 2 && !currRecord.isHome())) {
+                lastNRecords.add(currRecord);
+                count++;
             }
         }
 
         return lastNRecords;
     }
 
-    private ArrayList<HomeAwayDouble> removeFirstNRecordsOfGroup (ArrayList<HomeAwayDouble> source, int startGamesIgnored) {
+
+    private ArrayList<HomeAwayWrapper> removeFirstNRecordsOfGroup (ArrayList<HomeAwayWrapper> source, int startGamesIgnored) {
         return new ArrayList<>(source.subList(Math.min(startGamesIgnored, source.size()), source.size()));
     }
 
 
-
     public double getAvgPoints(GamesSelector gamesSelector) {
-        return calcHomeAway(this.points, null, gamesSelector.getSetting(), 1.5);
+        return calcHomeAway(this.points, gamesSelector.getSetting(), 1.5);
     }
 
     /*
@@ -305,17 +381,17 @@ public class TrainingTeamsSeason {
      * Goes until we get to the number of games we want to look at.
      */
     public double getAvgPointsOverLastXGames(GamesSelector gamesSelector, int numbPreviousGames) {
-        ArrayList<HomeAwayInt> lastXPoints = getLastNRecordsOfIntGroup(gamesSelector, this.points, numbPreviousGames);
+        ArrayList<HomeAwayWrapper> lastXPoints = getLastNRecords(gamesSelector, this.points, numbPreviousGames);
 
-        return calcHomeAway(lastXPoints,null, gamesSelector.getSetting(), 1.5);
+        return calcHomeAway(lastXPoints,gamesSelector.getSetting(), 1.5);
     }
 
     public double getAvgPointsWhenScoredFirst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.pointsScoredFirst, null, gamesSelector.getSetting(), 1.5);
+        return calcHomeAway(this.pointsScoredFirst, gamesSelector.getSetting(), 1.5);
     }
 
     public double getAvgPointsWhenConceededFirst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.pointsConceededFirst, null, gamesSelector.getSetting(), 1.5);
+        return calcHomeAway(this.pointsConceededFirst, gamesSelector.getSetting(), 1.5);
     }
 
 
@@ -327,38 +403,37 @@ public class TrainingTeamsSeason {
     private int ADD_DEFAULT_VALUE_UNTIL_N_LENGTH = 3;
 
     public double getAvgPointsOfAllOpponentsGamesWholeSeason (GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.totalPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAway(this.totalPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsGamesWholeSeason (GamesSelector gamesSelector, int lastNRecords) {
-        ArrayList<HomeAwayDouble> pPGOfOpponentsLast5Games = getLastNRecordsOfDoubleGroup(gamesSelector, this.totalPointsPerGameOfOpponentsWholeSeason , lastNRecords);
-        return calcHomeAway(null, pPGOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.totalPointsPerGameOfOpponentsWholeSeason , lastNRecords);
+        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
 
     public double getAvgPointsOfAllOpponentsHomeAwayGamesWholeSeason (GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.homeAwayPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAway(this.homeAwayPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsHomeAwayGamesWholeSeason (GamesSelector gamesSelector, int lastNRecords) {
-        ArrayList<HomeAwayDouble> pPGOfOpponentsLast5Games = getLastNRecordsOfDoubleGroup(gamesSelector, this.homeAwayPointsPerGameOfOpponentsWholeSeason , lastNRecords);
-        return calcHomeAway(null, pPGOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.homeAwayPointsPerGameOfOpponentsWholeSeason , lastNRecords);
+        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
-
 
     public double getAvgPointsOfAllOpponentsLast5Games (GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.totalPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAway(this.totalPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsLast5Games (GamesSelector gamesSelector, int lastNRecords) {
-        ArrayList<HomeAwayDouble> pPGOfOpponentsLast5Games = getLastNRecordsOfDoubleGroup(gamesSelector, this.totalPointsPerGameOfOpponentsLast5 , lastNRecords);
-        return calcHomeAway(null, pPGOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.totalPointsPerGameOfOpponentsLast5 , lastNRecords);
+        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
 
     public double getAvgPointsOfAllOpponentsHomeAwayLast5Games (GamesSelector gamesSelector) {
-        return calcHomeAway(null, this.homeAwayPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAway(this.homeAwayPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsHomeAwayLast5Games (GamesSelector gamesSelector, int lastNRecords) {
-        ArrayList<HomeAwayDouble> pPGOfOpponentsLast5Games = getLastNRecordsOfDoubleGroup(gamesSelector, this.homeAwayPointsPerGameOfOpponentsLast5 , lastNRecords);
-        return calcHomeAway(null, pPGOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.homeAwayPointsPerGameOfOpponentsLast5 , lastNRecords);
+        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), 1.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
     //
@@ -375,6 +450,10 @@ public class TrainingTeamsSeason {
      * minsWeightedRating is basically your average rating from a minute in a match
      */
     public double getMinsWeightedLineupRating (GamesSelector gamesSelector, ArrayList<String> startingXI) {
+        if (startingXI.size() != 11) {
+            throw new RuntimeException();
+        }
+
         double weightedRating = 0d;
         int teamMinsPlayed = 0;
 
@@ -413,6 +492,10 @@ public class TrainingTeamsSeason {
      * Gets the average rating of the lineup based on each players average rating per game.
      */
     public double getGamesWeightedLineupRating (GamesSelector gamesSelector, ArrayList<String> startingXI) {
+        if (startingXI.size() != 11) {
+            throw new RuntimeException();
+        }
+
         double weightedRating = 0d;
 
         for (String p: startingXI) {
@@ -441,13 +524,10 @@ public class TrainingTeamsSeason {
         double totalMinsInLineup = 0d, max11MinsInSquad = 0d;
 
         ArrayList<Player> players = new ArrayList<>(this.playerStats.values());
-        players.sort(new Comparator<Player>() {
-            @Override
-            public int compare(Player p1, Player p2) {
-                if (homeAwayTotalGamesSetting == 3) return p2.getOvrMins() - p1.getOvrMins();
-                else if (homeAwayTotalGamesSetting == 1) return p2.getHomeMins() - p1.getHomeMins();
-                else return p2.getAwayMins() - p1.getAwayMins();
-            }
+        players.sort((p1, p2) -> {
+            if (homeAwayTotalGamesSetting == 3) return p2.getOvrMins() - p1.getOvrMins();
+            else if (homeAwayTotalGamesSetting == 1) return p2.getHomeMins() - p1.getHomeMins();
+            else return p2.getAwayMins() - p1.getAwayMins();
         });
 
         int numbPlayersAdded = 0;
@@ -468,8 +548,6 @@ public class TrainingTeamsSeason {
     }
 
 
-
-
     /*
      * Called to calculate values from the array lists where we can specify if we just want the home records, away records, or both
      *
@@ -484,157 +562,38 @@ public class TrainingTeamsSeason {
      * Currently only used with opponentsPPG, where we only want extreme values when a team has only played either really good or really bad teams.
      * Values at the start where a team has lost 2 games and comes out with 0 does not compare to a team losing the last 5 games and coming out with 0.
      */
-    private double calcHomeAway (ArrayList<HomeAwayInt> intArray, ArrayList<HomeAwayDouble> doubleArray, int homeAwaySetting, double defaultValue, int makeLengthUpTo) {
-        if (intArray == null && doubleArray == null) throw new RuntimeException("calcHomeAway in TrainingTeamsSeason was called with 2 null arrays");
+    private double calcHomeAway (ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue, int makeLengthUpTo) {
+        if (doubleArray == null) throw new RuntimeException();
 
-        int numb = 0, matchesCounted = 0;
+        int matchesCounted = 0;
         double dNumb = 0d;
-
-        if (intArray != null) {
-            for (HomeAwayInt match: intArray) {
-                //setting is 2 or 3 (away or everything) && match is away
-                if (homeAwaySetting != 1 && !match.isHome()) {
-                    numb += match.getNumb();
-                    matchesCounted++;
-                }
-                //setting is 1 or 3 (home or everything) && match is at home
-                else if (homeAwaySetting != 2 && match.isHome()) {
-                    numb += match.getNumb();
-                    matchesCounted++;
-                }
-            }
-
-            while (matchesCounted < makeLengthUpTo) {
-                numb += defaultValue;
+        for (HomeAwayWrapper match: doubleArray) {
+            if (homeAwaySetting != 1 && !match.isHome()) {
+                dNumb += match.getNumb();
                 matchesCounted++;
             }
-
-            return matchesCounted == 0 ? defaultValue : (double) numb/matchesCounted;
-        }
-        else {
-            for (HomeAwayDouble match: doubleArray) {
-                if (homeAwaySetting != 1 && !match.isHome()) {
-                    dNumb += match.getNumb();
-                    matchesCounted++;
-                }
-                else if (homeAwaySetting != 2 && match.isHome()) {
-                    dNumb += match.getNumb();
-                    matchesCounted++;
-                }
-            }
-
-            while (matchesCounted < makeLengthUpTo) {
-                dNumb += defaultValue;
+            else if (homeAwaySetting != 2 && match.isHome()) {
+                dNumb += match.getNumb();
                 matchesCounted++;
             }
-
-            return matchesCounted == 0 ? defaultValue : dNumb/matchesCounted;
-        }
-    }
-    private double calcHomeAway (ArrayList<HomeAwayInt> intArray, ArrayList<HomeAwayDouble> doubleArray, int homeAwaySetting, double defaultValue) {
-        return calcHomeAway(intArray, doubleArray, homeAwaySetting, defaultValue, -1);
-    }
-
-
-
-
-
-    /*
-     * Method adds the game stats for a game to a team. IMPORTANT: Needs to be called after the TrainingMatch has been created. Otherwise when we create the TrainingMatch,
-     * it will include the stats from the TrainingMatch that we're trying to predict. Whereas we want the training match to be
-     * a predictor, so must include data from previous games only.
-     *
-     * Method has checks to only add data if the parameters we've been given != -1. Filters out incomplete data.
-     *
-     * NOTE: we cannot just pass in the opponents TrainingTeamsSeason or we will update one and then use the updated version to update the other. We need to create temp variables and pass them
-     * into each teams addGameStats method.
-     */
-    public void addGameStats(int goalsFor, int goalsAgainst, double xGF, double xGA, boolean scoredFirst, boolean hasScoredFirstData, boolean homeTeam, TrainingTeamsSeason oppositionSeason) {
-
-        if (goalsFor != -1 && goalsAgainst != -1) {
-            this.goalsFor.add(new HomeAwayInt(homeTeam, goalsFor));
-            this.goalsAgainst.add(new HomeAwayInt(homeTeam, goalsAgainst));
-
-            HomeAwayInt points = new HomeAwayInt(homeTeam, goalsFor > goalsAgainst ? 3 : goalsFor == goalsAgainst ? 1 : 0);
-            this.points.add(points);
-            if (hasScoredFirstData && (goalsFor > 0 || goalsAgainst > 0)) {
-                if (scoredFirst) this.pointsScoredFirst.add(points);
-                else this.pointsConceededFirst.add(points);
-            }
-
-            //new fields
-            this.totalPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayDouble(homeTeam, oppositionSeason.getAvgPoints(ALL_GAMES)));
-            this.homeAwayPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayDouble(homeTeam,  oppositionSeason.getAvgPoints(homeTeam ? ONLY_AWAY_GAMES : ONLY_HOME_GAMES)));
-
-            this.totalPointsPerGameOfOpponentsLast5.add(new HomeAwayDouble(homeTeam, oppositionSeason.getAvgPointsOverLastXGames(ALL_GAMES, COMPARE_LAST_N_GAMES)));
-            this.homeAwayPointsPerGameOfOpponentsLast5.add(new HomeAwayDouble(homeTeam, oppositionSeason.getAvgPointsOverLastXGames(ALL_GAMES, COMPARE_LAST_N_GAMES)));
-            //end of new fields
-
-            this.totalFormGoalsForHistory.add(new HomeAwayDouble(homeTeam, goalsFor - oppositionSeason.getAvgGoalsAgainst(ALL_GAMES)));
-            this.totalFormGoalsAgainstHistory.add(new HomeAwayDouble(homeTeam, goalsAgainst - oppositionSeason.getAvgGoalsFor(ALL_GAMES)));
-
-            this.totalFormGoalsFor = calcExponWeightedAvg(this.totalFormGoalsFor, goalsFor - oppositionSeason.getFormGoalsAgainst(ALL_GAMES));
-            this.totalFormGoalsAgainst = calcExponWeightedAvg(this.totalFormGoalsAgainst, goalsAgainst - oppositionSeason.getFormGoalsFor(ALL_GAMES));
-            if (homeTeam) {
-                this.homeFormGoalsFor = calcExponWeightedAvg(this.homeFormGoalsFor, goalsFor - oppositionSeason.getFormGoalsAgainst(ONLY_AWAY_GAMES));
-                this.homeFormGoalsAgainst = calcExponWeightedAvg(this.homeFormGoalsAgainst, goalsAgainst - oppositionSeason.getFormGoalsFor(ONLY_AWAY_GAMES));
-            } else {
-                this.awayFormGoalsFor = calcExponWeightedAvg(this.awayFormGoalsFor, goalsFor - oppositionSeason.getFormGoalsAgainst(ONLY_AWAY_GAMES));
-                this.awayFormGoalsAgainst = calcExponWeightedAvg(this.awayFormGoalsAgainst, goalsAgainst - oppositionSeason.getFormGoalsFor(ONLY_AWAY_GAMES));
-            }
         }
 
-        if (xGF != -1 && xGA != -1) {
-            this.xGF.add(new HomeAwayDouble(homeTeam, xGF));
-            this.xGA.add(new HomeAwayDouble(homeTeam, xGA));
-
-            this.totalWeightedXGF = calcExponWeightedAvg(this.totalWeightedXGF, xGF);
-            this.totalWeightedXGA = calcExponWeightedAvg(this.totalWeightedXGA, xGA);
-            if (homeTeam) {
-                this.homeWeightedXGF = calcExponWeightedAvg(this.homeWeightedXGF, xGF);
-                this.homeWeightedXGA = calcExponWeightedAvg(this.homeWeightedXGA, xGA);
-            } else {
-                this.awayWeightedXGF = calcExponWeightedAvg(this.awayWeightedXGF, xGF);
-                this.awayWeightedXGA = calcExponWeightedAvg(this.awayWeightedXGA, xGA);
-            }
-
-            //how many more xG we had compared to how many the oppositions form dictated we should have had. A measure of how good team is compared to other teams opposition has faced.
-            //all calculated with exponentially weighted averages to include overperformance over the whole season, but place more weight ont he most recent games.
-            this.totalFormXGFHistory.add(new HomeAwayDouble(homeTeam, xGF - oppositionSeason.getFormXGA(ALL_GAMES)));
-            this.totalFormXGAHistory.add(new HomeAwayDouble(homeTeam, xGA - oppositionSeason.getFormXGF(ALL_GAMES)));
-            this.totalFormWeightedXGFHistory.add(new HomeAwayDouble(homeTeam, xGF - oppositionSeason.getFormWeightedXGA(ALL_GAMES)));
-            this.totalFormWeightedXGAHistory.add(new HomeAwayDouble(homeTeam, xGA - oppositionSeason.getFormWeightedXGF(ALL_GAMES)));
-            
-            this.totalFormXGF = calcExponWeightedAvg(this.totalFormXGF, xGF - oppositionSeason.getFormXGA(ALL_GAMES));
-            this.totalFormXGA = calcExponWeightedAvg(this.totalFormXGA, xGA - oppositionSeason.getFormXGF(ALL_GAMES));
-            this.totalFormWeightedXGF = calcExponWeightedAvg(this.totalFormWeightedXGF, xGF - oppositionSeason.getFormWeightedXGA(ALL_GAMES));
-            this.totalFormWeightedXGA = calcExponWeightedAvg(this.totalFormWeightedXGA, xGA - oppositionSeason.getFormWeightedXGF(ALL_GAMES));
-            
-            if (homeTeam) {                
-                this.homeFormXGF = calcExponWeightedAvg(this.homeFormXGF, xGF - oppositionSeason.getFormXGA(ONLY_AWAY_GAMES));
-                this.homeFormXGA = calcExponWeightedAvg(this.homeFormXGA, xGA - oppositionSeason.getFormXGF(ONLY_AWAY_GAMES));
-                this.homeFormWeightedXGF = calcExponWeightedAvg(this.homeFormWeightedXGF, xGF - oppositionSeason.getFormWeightedXGA(ONLY_AWAY_GAMES));
-                this.homeFormWeightedXGA = calcExponWeightedAvg(this.homeFormWeightedXGA, xGA - oppositionSeason.getFormWeightedXGF(ONLY_AWAY_GAMES));
-            } else {                
-                this.awayFormXGF = calcExponWeightedAvg(this.awayFormXGF, xGF - oppositionSeason.getFormXGA(ONLY_HOME_GAMES));
-                this.awayFormXGA = calcExponWeightedAvg(this.awayFormXGA, xGA - oppositionSeason.getFormXGF(ONLY_HOME_GAMES));
-                this.awayFormWeightedXGF = calcExponWeightedAvg(this.awayFormWeightedXGF, xGF - oppositionSeason.getFormWeightedXGA(ONLY_HOME_GAMES));
-                this.awayFormWeightedXGA = calcExponWeightedAvg(this.awayFormWeightedXGA, xGA - oppositionSeason.getFormWeightedXGF(ONLY_HOME_GAMES));
-            }
+        while (matchesCounted < makeLengthUpTo) {
+            dNumb += defaultValue;
+            matchesCounted++;
         }
+        return matchesCounted == 0 ? defaultValue : dNumb/matchesCounted;
     }
 
-    /*
-     * Adds stats to player unless player has not played a game yet. In that case, default action is to create a new player obj and add it to player map.
-     */
-    public void addPlayerStats(String playerName, int minsPlayed, double rating, boolean homeTeam) {
-        Player player = this.playerStats.getOrDefault(playerName, null);
-
-        if (player == null) this.playerStats.put(playerName, new Player(playerName, minsPlayed, rating, homeTeam));
-        else player.addMatchMinsRating(minsPlayed, rating, homeTeam);
+    private double calcHomeAway (ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue) {
+        return calcHomeAway(doubleArray, homeAwaySetting, defaultValue, -1);
     }
 
-        private static double calcExponWeightedAvg(double currAvg, double newEntry) {
+
+
+
+
+    public static double calcExponWeightedAvg(double currAvg, double newEntry) {
         double ALPHA = 0.8;
         return ALPHA * currAvg + (1-ALPHA)*newEntry;
     }

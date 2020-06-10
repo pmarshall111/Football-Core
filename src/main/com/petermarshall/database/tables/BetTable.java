@@ -3,8 +3,8 @@ package com.petermarshall.database.tables;
 public class BetTable {
     private BetTable() {}
 
-    private static final String TABLE_NAME = "Bet";
-    private static final String COL_RESULT_BET_ON = "result_bet_on";
+    private static final String TABLE_NAME = "bet";
+    private static final String COL_RESULT_BET_ON = "resultBetOn";
     private static final String COL_ODDS = "odds";
     private static final String COL_STAKE = "stake";
     private static final String COL_MATCH_ID = "match_id";

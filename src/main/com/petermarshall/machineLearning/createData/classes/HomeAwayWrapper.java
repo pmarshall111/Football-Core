@@ -3,11 +3,11 @@ package com.petermarshall.machineLearning.createData.classes;
 /*
  * Used within TrainingTeamSeason so we can quickly filter between xGF or xGA that were home or away.
  */
-public class HomeAwayDouble {
+public class HomeAwayWrapper {
     private boolean home;
     private double numb;
 
-    public HomeAwayDouble(boolean home, double numb) {
+    public HomeAwayWrapper(boolean home, double numb) {
         this.home = home;
         this.numb = numb;
     }

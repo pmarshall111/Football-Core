@@ -8,15 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class WriteTrainingData {
 
     //INFO: current status is that AllMatchData function is the best. AllMatchDataPlusCleanSheets also performs quite well
-    public static void writeDataOutToCsvFiles(ArrayList<TrainingMatch> trainingData, String octaveTrainingDataFileName, String octaveTestDataFileName, String javaTestDataFileName) {
+    public static void writeDataOutToCsvFiles(ArrayList<TrainingMatch> trainingData) {
         Collections.shuffle(trainingData);
 
         ArrayList<TrainingMatch> trainingDataSet = new ArrayList<>(trainingData.subList(0, (int) (trainingData.size()*0.7)));
         ArrayList<TrainingMatch> testingDataSet = new ArrayList<>(trainingData.subList((int) (trainingData.size()*0.7), trainingData.size()));
+
+        writeFeaturesToCsv(trainingDataSet, "train.csv");
+        writeFeaturesToCsv(testingDataSet, "eval.csv");
 
 //        writeDataToCSVFile(octaveTrainingDataFileName, null, null, trainingDataSet, ",", false);
 //        writeDataToCSVFile(octaveTestDataFileName, null, null, testingDataSet, ",", false);
@@ -38,9 +42,9 @@ public class WriteTrainingData {
 //        writeAllMatchDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
 //        writeAllMatchDataToCSVFile(javaTestDataFileName, testingDataSet, " ");
 
-        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-        writeAllMatchDataPlusCleanSheetsToCSVFile(javaTestDataFileName, testingDataSet, " ");
+//        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
+//        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTestDataFileName, testingDataSet, ",");
+//        writeAllMatchDataPlusCleanSheetsToCSVFile(javaTestDataFileName, testingDataSet, " ");
 
 //        writeEvenMoreMatchDataToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
 //        writeEvenMoreMatchDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
@@ -49,6 +53,22 @@ public class WriteTrainingData {
 
     public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String octaveTrainingDataFileName) {
         writeAllMatchDataToCSVFile(octaveTrainingDataFileName, trainingData, ",");
+    }
+
+    public static void writeFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {
+        try (FileWriter writer = new FileWriter(fileName)) {
+            for (int i = 0; i < trainingData.size(); i++) {
+                TrainingMatch match = trainingData.get(i);
+                ArrayList<Double> features = match.getFeatures();
+                String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                writer.append(csv);
+                if (i != trainingData.size()-1) {
+                    writer.append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

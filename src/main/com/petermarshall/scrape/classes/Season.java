@@ -15,8 +15,9 @@ public class Season {
         this.matches = new ArrayList<>();
     }
 
-    public void addNewMatch(Match match) {
+    public Match addNewMatch(Match match) {
         this.matches.add(match);
+        return match;
     }
 
     public Team addNewTeam(Team team) {

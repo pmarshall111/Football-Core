@@ -5,8 +5,8 @@ import java.util.*;
 public class Match {
     private final Team homeTeam;
     private final Team awayTeam;
-    private double homeXGF = -1;
-    private double awayXGF = -1;
+    private double homeXGF;
+    private double awayXGF;
     private int homeScore;
     private int awayScore;
     private int firstScorer; //1 means hometeam, 2 means awayteam
@@ -34,6 +34,8 @@ public class Match {
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.firstScorer = -1;
+        this.homeXGF = -1;
+        this.awayXGF = -1;
         this.homePlayerRatings = new HashMap<>();
         this.awayPlayerRatings = new HashMap<>();
         this.homeDrawAwayOdds = new ArrayList<>();

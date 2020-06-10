@@ -4,9 +4,13 @@ import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.scrape.classes.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import static com.petermarshall.database.datasource.DS_Main.TEST_CONNECTION_NAME;
+import static com.petermarshall.database.datasource.DS_Main.connection;
 
 //for 1 league: 2 seasons, 8 teams per season, 4 matches per season,  22 players per match
 //totals: 2 leagues, 4 seasons, 32 teams, 16 matches, 352 players
@@ -28,13 +32,25 @@ public class GenerateData {
     static final int MINUTES = 90;
     static final double RATING = 8.7;
 
+    static final int NUMB_PLAYERS_PER_MATCH = 11;
+
     static GenerateData addBulkData(boolean addStatsToMatch) {
         GenerateData data = new GenerateData(addStatsToMatch);
         ArrayList<League> leagues = data.getLeagues();
-        leagues.forEach(league -> {
-            DS_Insert.writeLeagueToDb(league);
-        });
+        writeData(leagues);
         return data;
+    }
+
+    private static void writeData(ArrayList<League> leagues) {
+        try {
+            if (connection.getMetaData().getURL().equals(TEST_CONNECTION_NAME)) {
+                leagues.forEach(DS_Insert::writeLeagueToDb);
+            } else {
+                throw new RuntimeException("Data not added!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -51,7 +67,7 @@ public class GenerateData {
     private void addDataToLeagues(boolean addStatsToMatch) {
         leagues.forEach(league -> {
             for (int year = 19; year <= 20; year++) {
-                Season newSeason = League.addASeason(league, year+"");
+                Season newSeason = League.addASeason(league, year+"-"+(year+1));
                 for (int i = 1; i < 5; i++) {
                     String homeTeam = "Home" + "_game" + i +league.getName() + year;
                     String awayTeam = "Away" + "_game" + i +league.getName() + year;
@@ -90,13 +106,13 @@ public class GenerateData {
     private void addPlayerRatingsToMatch(Match m, int seasonYear, int matchNumb, String leagueName) {
         HashMap<String, PlayerRating> homeRatings = new HashMap<>();
         HashMap<String, PlayerRating> awayRatings = new HashMap<>();
-        for (int j = 0; j<11; j++) {
+        for (int j = 0; j<NUMB_PLAYERS_PER_MATCH; j++) {
             String playerName = "home"+j+"match"+matchNumb+leagueName+seasonYear;
             PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName);
             this.playerRatings.add(pr);
             homeRatings.put(playerName, pr);
         }
-        for (int j = 0; j<11; j++) {
+        for (int j = 0; j<NUMB_PLAYERS_PER_MATCH; j++) {
             String playerName = "away"+j+"match"+matchNumb+leagueName+seasonYear;
             PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName);
             this.playerRatings.add(pr);

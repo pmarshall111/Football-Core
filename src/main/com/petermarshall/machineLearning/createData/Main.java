@@ -16,14 +16,21 @@ public class Main {
     public static void createFilesToTrainAndTestOn(String octaveTrainingDataFileName, String octaveTestDataFileName, String javaTestDataFileName) {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
-        WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, octaveTrainingDataFileName, octaveTestDataFileName, javaTestDataFileName);
+//        WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, octaveTrainingDataFileName, octaveTestDataFileName, javaTestDataFileName);
         DS_Main.closeConnection();
     }
 
     public static void createFileJustToTrainOn(String octaveTrainingDataFileName) {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
-        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, octaveTrainingDataFileName);
+//        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, octaveTrainingDataFileName);
+        DS_Main.closeConnection();
+    }
+
+    public static void createFilesForDl4j() {
+        DS_Main.openProductionConnection();
+        ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
+        WriteTrainingData.writeDataOutToCsvFiles(trainingMatches);
         DS_Main.closeConnection();
     }
 
@@ -43,8 +50,9 @@ public class Main {
 
     public static void main(String[] args) {
 //        createFilesToTrainAndTestOn("octaveEvenMoreTraining.csv", "octaveEvenMoreTest.csv", "javaEvenMoreTest.csv");
-        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
+//        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
 //        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
+        createFilesForDl4j();
     }
 
 }

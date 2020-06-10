@@ -26,7 +26,7 @@ public class testPredictions {
 
         DS_Main.openProductionConnection();
 //        ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
-        ArrayList<MatchToPredict> matches = DS_Get.getMatchesToPredict();
+        ArrayList<MatchToPredict> matches = DS_Get.getMatchesToPredict(earliestGame, latestGame);
         DS_Main.closeConnection();
 
         SofaScore.addLineupsToGamesAboutToStart(matches);

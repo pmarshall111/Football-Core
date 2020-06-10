@@ -1,23 +1,23 @@
-package com.petermarshall.machineLearning.createData;
-
-import com.petermarshall.*;
-import com.petermarshall.machineLearning.createData.classes.*;
-import com.petermarshall.database.datasource.DataSource;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
-
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-
-/*
- * Class will get out data from database as each player rating and will create TrainingMatches that contains a measure of how each team was performing at the time.
- * Also used to create the features for our database.
- */
-public class GetMatchesFromDb {
+//package com.petermarshall.machineLearning.createData;
+//
+//import com.petermarshall.*;
+//import com.petermarshall.machineLearning.createData.classes.*;
+//import com.petermarshall.database.datasource.DataSource;
+//import com.petermarshall.scrape.classes.LeagueSeasonIds;
+//
+//
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.sql.Statement;
+//import java.util.ArrayList;
+//import java.util.Date;
+//import java.util.HashMap;
+//
+///*
+// * Class will get out data from database as each player rating and will create TrainingMatches that contains a measure of how each team was performing at the time.
+// * Also used to create the features for our database.
+// */
+//public class GetMatchesFromDb {
 //
 //    public static void main(String[] args) {
 //        DataSource.openConnection();
@@ -976,4 +976,4 @@ public class GetMatchesFromDb {
 //    public static double calcExponWeightedAvg(double currAvg, double newEntry) {
 //        return ALPHA * currAvg + (1-ALPHA)*newEntry;
 //    }
-}
+//}

@@ -63,9 +63,18 @@ public class League {
                                                                     this.seasonIds.getLeaguesSeasonId(currSeason.getSeasonKey()), null, null, currSeason);
 
         System.out.println("For " + currSeason.getSeasonKey() + ", we have " + allGameIds.size() + "ids");
-        allGameIds.forEach(gameId -> {
-            SofaScore.addInfoToGame(currSeason, gameId);
-        });
+
+//        allGameIds.forEach(gameId -> {
+//            SofaScore.addInfoToGame(currSeason, gameId);
+//        });
+        ArrayList<Integer> shuffledIds = new ArrayList<>(allGameIds);
+        Collections.shuffle(shuffledIds);
+        int added = 0;
+        for (Integer id: shuffledIds) {
+            SofaScore.addInfoToGame(currSeason, id);
+            System.out.println(added++);
+        }
+
     }
 
 
@@ -82,7 +91,7 @@ public class League {
         Season currSeason = this.getSeason(currSeasonKey);
         DS_Main.openProductionConnection();
         DS_Main.initDB();
-        String lastMatchPlayed = DS_Get.getMostRecentMatchInLeague(this);
+        String lastMatchPlayed = DS_Get.getLastCompletedMatchInLeague(this);
         Date lastMatchDate = DateHelper.createDateFromSQL(lastMatchPlayed);
         Date beginningOfLastMatchDate = DateHelper.setTimeOfDate(lastMatchDate, 0, 0, 0);
         Date yesterday = DateHelper.subtract1DayFromDate(new Date());

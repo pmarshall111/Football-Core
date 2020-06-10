@@ -1,5 +1,7 @@
 package com.petermarshall.machineLearning.createData.refactor;
 
+import com.petermarshall.machineLearning.createData.classes.Player;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -125,4 +127,17 @@ public class PlayerMatchDbData {
         else if (homeScore > awayScore) return 1;
         else return 3;
     }
+
+    //used for testing only
+    public static PlayerMatchDbData getTestPlayerMatchDbData(int homeScore, int awayScore, double homeXGF, double awayXGF, int firstScorer) {
+        PlayerMatchDbData pmdbData = new PlayerMatchDbData();
+        pmdbData.homeScore = homeScore;
+        pmdbData.awayScore = awayScore;
+        pmdbData.homeXGF = homeXGF;
+        pmdbData.awayXGF = awayXGF;
+        pmdbData.firstScorer = firstScorer;
+        return pmdbData;
+    }
+
+    private PlayerMatchDbData() {}
 }

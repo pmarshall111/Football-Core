@@ -51,8 +51,17 @@ public class Scrape {
     }
 
     public static void main(String[] args) {
-        scrapeOneSeasonOfOneLeague(15, LeagueSeasonIds.EPL);
-        
+//        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.EPL);
+//        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.LA_LIGA);
+//        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.SERIE_A);
+//        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.LIGUE_1);
+//        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.BUNDESLIGA);
+        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.RUSSIA);
+
+
+        //NOTE: COULD NOT GET ANY DATA FOR RUSSIA!
+        //Might need to port it over from the previous database somehow
+        //Happened again for russia year 17...
 
 
         //scrapeRecentlyPlayedMatches();

@@ -27,6 +27,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-common</artifactId>
+            <version>1.0.0-beta7</version>
+        </dependency>
     </dependencies>
 
 </project>

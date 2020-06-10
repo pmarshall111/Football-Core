@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,15 +28,25 @@ public class Write {
     @Test
     public void canAddRecordsWithIncreasingIds() {
         //did not use autoincrement as this hurts performance.
-        addBulkData(true);
+        GenerateData data = addBulkData(true);
         try {
             Statement s = connection.createStatement();
-            ResultSet rs = s.executeQuery("SELECT _id FROM " + MatchTable.getTableName());
-            int prevId = 0;
+            ResultSet rs = s.executeQuery("SELECT max(_id) FROM " + MatchTable.getTableName());
+            Integer prevId = null;
             while (rs.next()) {
-                int id = rs.getInt(1);
-                Assert.assertEquals(prevId + 1, id);
-                prevId = id;
+                prevId = rs.getInt(1);
+            }
+            League league = data.getLeagues().get(0);
+            Season untouchedSeason = league.getSeason(16);
+            Team team1 = untouchedSeason.addNewTeam(new Team("increasingId_team1"));
+            Team team2 = untouchedSeason.addNewTeam(new Team("increasingId_team2"));
+            untouchedSeason.addNewMatch(new Match(team1, team2, new Date(), 3, 1));
+            DS_Insert.writeLeagueToDb(league);
+            ResultSet rsAfterInsert = s.executeQuery("SELECT max(_id) FROM " + MatchTable.getTableName());
+            while (rsAfterInsert.next()) {
+                int id = rsAfterInsert.getInt(1);
+                Assert.assertNotNull(prevId);
+                Assert.assertEquals(prevId+1, id);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,6 +82,10 @@ public class Write {
         try {
             Statement s = connection.createStatement();
             //home
+            System.out.println("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
+                    " WHERE " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + " = '" + firstHomePlayer + "'" +
+                    " AND " + TeamTable.getTableName() + "." + TeamTable.getColTeamName() + " = '" + homeTeamName + "'");
             ResultSet rs = s.executeQuery(
                     "SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
                         " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
@@ -179,7 +194,7 @@ public class Write {
             DS_Insert.addPlayerRatingsToBatch(s, pRatings, matchId, teamId);
             s.executeBatch();
             //check if in db
-            s.executeQuery("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
+            rs = s.executeQuery("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
                     " WHERE " + PlayerRatingTable.getColPlayerName() + " = '" + playerName + "'");
             while (rs.next()) {
                 int count = rs.getInt(1);
@@ -221,6 +236,43 @@ public class Write {
             while (withNewPlayerRs.next()) {
                 int count = withNewPlayerRs.getInt(1);
                 Assert.assertEquals(1, count);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void givesPromotedTeamsCorrectLeagueId() {
+        GenerateData data = addBulkData(true);
+        League l = data.getLeagues().get(0);
+        Season s = l.getAllSeasons().stream().reduce((emptySeason, season) -> season.hasMatches() ? emptySeason : season).get();
+        String t1Name = "new_team1";
+        String t2Name = "new_team2";
+        Team t1 = s.addNewTeam(new Team(t1Name));
+        Team t2 = s.addNewTeam(new Team(t2Name));
+        Match m = s.addNewMatch(new Match(t1, t2, new Date(), 100, 0));
+        try {
+            //first get out leagueid of league we added match to
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT _id FROM " + LeagueTable.getTableName() +
+                        " WHERE " + LeagueTable.getColName() + " = '" + l.getName() + "'");
+            int leagueId = -1;
+            while (rs.next()) {
+                leagueId = rs.getInt(1);
+            }
+            //now insert league to DB again
+            DS_Insert.writeLeagueToDb(l);
+            //get out the ids of the teams we just added
+            ResultSet afterAddRs = stmt.executeQuery("SELECT " + TeamTable.getColLeagueId() +
+                    " FROM " + TeamTable.getTableName() +
+                    " WHERE " + TeamTable.getColTeamName() + " = '" + t1Name + "'" +
+                    " OR " + TeamTable.getColTeamName() + " = '" + t2Name + "'");
+            while (afterAddRs.next()) {
+                int afterAddleagueId = afterAddRs.getInt(1);
+                Assert.assertEquals(leagueId, afterAddleagueId);
             }
         } catch (SQLException e) {
             e.printStackTrace();

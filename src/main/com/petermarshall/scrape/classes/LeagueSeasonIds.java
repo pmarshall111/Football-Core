@@ -18,7 +18,7 @@ public enum LeagueSeasonIds {
     BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, -1, 11818, 13477, 17597, 23538}),
     SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{-1, 10596, 11966, 13768, 17932, 24644}),
     LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{-1, 10373, 11648, 13384, 17279, 23872}),
-    RUSSIA("RFPL", "Premier Liga", "Russia", 203, new int[]{-1, -1, 11868, 13387, 17753, 23682});
+    RUSSIA("RFPL", "Premier League", "Russia", 203, new int[]{-1, -1, 11868, 13387, 17753, 23682});
 
     private static final int MOST_RECENT_SEASON_END;
 

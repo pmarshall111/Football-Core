@@ -2,10 +2,8 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.tables.MatchTable;
-import com.petermarshall.database.tables.TeamTable;
 import com.petermarshall.scrape.classes.*;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
@@ -14,7 +12,7 @@ import java.util.HashMap;
 public class DS_Update {
     public static void updateGamesInDB(League league, Season season) {
         try (Statement batchStatement = DS_Main.connection.createStatement()) {
-            Date lastMatchInDb = DateHelper.createDateFromSQL(DS_Get.getMostRecentMatchInLeague(league));
+            Date lastMatchInDb = DateHelper.createDateFromSQL(DS_Get.getLastCompletedMatchInLeague(league));
             Date matchLimit = DateHelper.subtractXDaysFromDate(lastMatchInDb, 7);
 
             int leagueId = DS_Get.getLeagueId(league);
