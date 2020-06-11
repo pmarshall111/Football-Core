@@ -6,6 +6,7 @@ import com.petermarshall.machineLearning.createData.refactor.CreateFeatures;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -56,14 +57,18 @@ public class WriteTrainingData {
     }
 
     public static void writeFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+        try (FileWriter featuresWriter = new FileWriter(fileName);
+             FileWriter oddsWriter = new FileWriter("odds"+fileName)) {
             for (int i = 0; i < trainingData.size(); i++) {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeatures();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
-                writer.append(csv);
+                featuresWriter.append(csv);
+                String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
+                oddsWriter.append(odds);
                 if (i != trainingData.size()-1) {
-                    writer.append("\n");
+                    featuresWriter.append("\n");
+                    oddsWriter.append("\n");
                 }
             }
         } catch (IOException e) {

@@ -170,6 +170,7 @@ public class TrainingMatch {
     private double homeTeamProbability;
     private double awayTeamProbability;
     private double drawProbability;
+    private double[] odds;
     private int homeScore;
     private int awayScore;
     private Date kickoffTime;
@@ -221,6 +222,7 @@ public class TrainingMatch {
         this.homeTeamProbability = calcProbabilityFromOdds(homeOdds);
         this.drawProbability = calcProbabilityFromOdds(drawOdds);
         this.awayTeamProbability = calcProbabilityFromOdds(awayOdds);
+        this.odds = new double[]{homeOdds,drawOdds,awayOdds};
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.kickoffTime = DateHelper.createDateFromSQL(kickoff);
@@ -999,5 +1001,9 @@ public class TrainingMatch {
 
     public double getAwayTeamsLast5AwayAvgNumbCleanSheets() {
         return awayTeamsLast5AwayAvgNumbCleanSheets;
+    }
+
+    public double[] getOdds() {
+        return odds;
     }
 }

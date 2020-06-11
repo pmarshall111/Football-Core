@@ -29,9 +29,10 @@ public class TrainModel {
     //result will need to be at index 0
     private static String trainCsv = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\train.csv";
     private static String evalCsv = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\eval.csv";
+    private static String oddsEvalCsv = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\oddseval.csv";
+    private static String saveModelTo = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\trained_model.zip";
 
     public static void main(String[] args) throws Exception {
-
         int seed = 123;
         double learningRate = 0.01;
         int batchSize = 50;
@@ -70,23 +71,70 @@ public class TrainModel {
         model.setListeners(new ScoreIterationListener(10));  //Print score every 10 parameter updates
 
         model.fit(trainIter, nEpochs);
+        model.save(new File(saveModelTo));
 
 //        for (int i = 0; i<nEpochs; i++) {
 //            model.fit(allTrain);
 //        }
 
+        RecordReader rrTestOdds = new CSVRecordReader(csvLinesToSkip);
+        rrTestOdds.initialize(new FileSplit(new File(oddsEvalCsv)));
+        DataSetIterator testOddsIter = new RecordReaderDataSetIterator(rrTestOdds,batchSize);
+
         System.out.println("Evaluate model....");
+        MoneyResults mrHigherThanBookies = new MoneyResults();
+        MoneyResults mrHigherThanSecondHighest = new MoneyResults();
         Evaluation eval = new Evaluation(numOutputs);
         while(testIter.hasNext()){
             DataSet t = testIter.next();
             INDArray features = t.getFeatures();
-            INDArray lables = t.getLabels();
+            INDArray labels = t.getLabels();
             INDArray predicted = model.output(features,false);
 
-            eval.eval(lables, predicted);
+            INDArray odds = testOddsIter.next().getFeatures();
+            for (int i = 0; i<batchSize; i++) {
+                INDArray oddsRow = odds.getRow(i);
+                INDArray predictionRow = predicted.getRow(i);
+                INDArray labelsRow = labels.getRow(i);
+                decideToBet(oddsRow, predictionRow, labelsRow, mrHigherThanBookies, mrHigherThanSecondHighest);
+            }
+
+            eval.eval(labels, predicted);
         }
 
         //Print the evaluation statistics
         System.out.println(eval.stats());
+        mrHigherThanBookies.printResults();
+        mrHigherThanSecondHighest.printResults();
+    }
+
+    private static void decideToBet(INDArray oddsRow, INDArray predictionRow, INDArray labelsRow, MoneyResults higherThanBookies, MoneyResults higherThanSecondHighest) {
+        double btb = 0.15; //better than bookies
+        double htsh = 0.15; //higher than second highest
+        double bookieHomePred = calcProbabilityFromOdds(oddsRow.getDouble(0));
+        double bookieDrawPred = calcProbabilityFromOdds(oddsRow.getDouble(1));
+        double bookieAwayPred = calcProbabilityFromOdds(oddsRow.getDouble(2));
+
+        double homePrediction = predictionRow.getDouble(0);
+        double drawPrediction = predictionRow.getDouble(1);
+        double awayPrediction = predictionRow.getDouble(2);
+
+        if (homePrediction > bookieHomePred-btb) {
+            higherThanBookies.addBet(5, oddsRow.getDouble(0), labelsRow.getDouble(0) == 0);
+            if (homePrediction > drawPrediction-htsh && homePrediction > awayPrediction-htsh) {
+                higherThanSecondHighest.addBet(5, oddsRow.getDouble(0), labelsRow.getDouble(0) == 0);
+            }
+        }
+
+        if (awayPrediction > bookieAwayPred-btb) {
+            higherThanBookies.addBet(5, oddsRow.getDouble(2), labelsRow.getDouble(0) == 2);
+            if (awayPrediction > drawPrediction-htsh && awayPrediction > homePrediction-htsh) {
+                higherThanSecondHighest.addBet(5, oddsRow.getDouble(2), labelsRow.getDouble(0) == 2);
+            }
+        }
+    }
+
+    private static double calcProbabilityFromOdds(double odds) {
+        return 1/odds;
     }
 }

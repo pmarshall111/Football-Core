@@ -82,11 +82,12 @@ public class OddsChecker {
 
             ArrayList<JSONObject> matchUrls = new ArrayList<>();
 
-            int LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE = 56; //means we will get an error if the kickoff times do not match up as we're only allowing to look at games 56 mins in the future. This is because there may be games tomorrow etc that we're not interested in.
-            Date maxDateOfMatches = DateHelper.addMinsToDate(new Date(), LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE);
+//            int LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE = 56; //means we will get an error if the kickoff times do not match up as we're only allowing to look at games 56 mins in the future. This is because there may be games tomorrow etc that we're not interested in.
+//            Date maxDateOfMatches = DateHelper.addMinsToDate(new Date(), LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE);
+            Date maxDateOfMatches = DateHelper.addDaysToDate(new Date(), 21);
             String oddsCheckerDate = DateHelper.changeDateToOddsChecker(maxDateOfMatches);
 
-
+            System.out.println(page.asXml());
             Matcher dates = Pattern.compile("CDATA\\[([^]]+)").matcher(page.asXml());
             while (dates.find()) {
 //                System.out.println(dates.group(1));
@@ -122,7 +123,6 @@ public class OddsChecker {
                 String awayTeam = teamNames[1];
 
                 addOdds(correctMatch.get("url").toString(), match, homeTeam, awayTeam);
-
             }
 
         } catch (Exception e) {
@@ -145,7 +145,7 @@ public class OddsChecker {
 
             HtmlElement body = page.getBody();
 
-            ArrayList<DomNode> bookies = new ArrayList<>(body.querySelectorAll("a.b90med")); //gets the bookie names in order
+            ArrayList<DomNode> bookies = new ArrayList<>(body.querySelectorAll("a.bk-logo-click")); //gets the bookie names in order
             LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
             for (DomNode elem: bookies) {
                 bookiesOdds.put(elem.getAttributes().getNamedItem("title").getNodeValue(), new double[]{-1,-1,-1});
@@ -154,11 +154,8 @@ public class OddsChecker {
             ArrayList<DomNode> oddsRows = new ArrayList<>(body.querySelectorAll(".diff-row.evTabRow.bc")); //gets the 3 rows of bookie odds. one for home win, draw and loss. NOT ORDERED.
             for (int i = 0; i<oddsRows.size(); i++) {
                 //in here we will test the first and 3rd rows and then set the index in oddsArrays when setting the value to be home or away.
-                DomNode selection = oddsRows.get(i).querySelector("td.sel.nm");
-                String selectionName = selection.getTextContent();
-
+                String selectionName = oddsRows.get(i).getAttributes().getNamedItem("data-bname").getNodeValue();
                 int arrayPosition = getHomeDrawAway(selectionName, oddsCheckerHomeTeamName, "Draw", oddsCheckerAwayTeamName);
-
 
                 ArrayList<DomNode> odds = new ArrayList<>(oddsRows.get(i).querySelectorAll("td.bc.bs"));
                 ArrayList<double[]> oddsArrays = new ArrayList<>(bookiesOdds.values());
@@ -335,8 +332,14 @@ public class OddsChecker {
         String ourTeamName = "Atletico Madrid";
         String ourTeamName2 = "Atletic Bilbao";
 
+        ArrayList<MatchToPredict> mtps = new ArrayList<>();
+        mtps.add(new MatchToPredict("Manchester City", "Arsenal", "19-20", "EPL", "17/06/20",-1,-1));
+        mtps.add(new MatchToPredict("Aston Villa", "Sheffield United", "19-20", "EPL", "17/06/20",-1,-1));
+        mtps.add(new MatchToPredict("Everton", "Liverpool", "19-20", "EPL", "21/06/20",-1,-1));
 
-//        addBettersOddsForLeague(new ArrayList<>(), "https://www.oddschecker.com/football/spain/la-liga-primera");
+        addBettersOddsForLeague(mtps, "https://www.oddschecker.com/football/english/premier-league");
+
+        System.out.println("hi");
 
 //        System.out.println(getHomeDrawAway("Levantewwdll", "Levante", "Draw", "Girona"));
 //        addBookiesOddsForGames();
