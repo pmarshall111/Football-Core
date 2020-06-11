@@ -6,19 +6,16 @@ import com.petermarshall.database.BetResultsTotalled;
 import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.database.tables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.refactor.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.refactor.PlayerMatchDbData;
+import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
+import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
-import com.petermarshall.scrape.classes.Match;
-import com.petermarshall.scrape.classes.Team;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import static com.petermarshall.database.datasource.DS_Main.AWAYTEAM;

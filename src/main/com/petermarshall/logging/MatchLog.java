@@ -8,13 +8,15 @@ public class MatchLog {
     private final MatchToPredict match;
     private final WhenGameWasPredicted whenGameWasPredicted;
     private final ResultBetOn resultBetOn;
+    private final String bookieUsed;
     private final double oddsBetOn;
     private final double stake;
 
-    public MatchLog(MatchToPredict match, WhenGameWasPredicted whenGameWasPredicted, ResultBetOn resultBetOn, double oddsBetOn, double stake) {
+    public MatchLog(MatchToPredict match, WhenGameWasPredicted whenGameWasPredicted, ResultBetOn resultBetOn, String bookieUsed, double oddsBetOn, double stake) {
         this.match = match;
         this.whenGameWasPredicted = whenGameWasPredicted;
         this.resultBetOn = resultBetOn;
+        this.bookieUsed = bookieUsed;
         this.oddsBetOn = oddsBetOn;
         this.stake = stake;
     }
@@ -37,5 +39,9 @@ public class MatchLog {
 
     public double getStake() {
         return stake;
+    }
+
+    public String getBookieUsed() {
+        return bookieUsed;
     }
 }

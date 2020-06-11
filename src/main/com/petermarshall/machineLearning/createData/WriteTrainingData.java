@@ -1,7 +1,6 @@
 package com.petermarshall.machineLearning.createData;
 
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.machineLearning.createData.refactor.CreateFeatures;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,48 +11,19 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class WriteTrainingData {
-
-    //INFO: current status is that AllMatchData function is the best. AllMatchDataPlusCleanSheets also performs quite well
-    public static void writeDataOutToCsvFiles(ArrayList<TrainingMatch> trainingData) {
+    //INFO: (written 2019) current status is that AllMatchData function is the best. AllMatchDataPlusCleanSheets also performs quite well
+    //INFO: (written 06/2020) writeFeaturesToCsv performs well
+    public static void writeDataOutToCsvFiles(ArrayList<TrainingMatch> trainingData, String trainFileName, String testFileName) {
         Collections.shuffle(trainingData);
-
         ArrayList<TrainingMatch> trainingDataSet = new ArrayList<>(trainingData.subList(0, (int) (trainingData.size()*0.7)));
         ArrayList<TrainingMatch> testingDataSet = new ArrayList<>(trainingData.subList((int) (trainingData.size()*0.7), trainingData.size()));
 
-        writeFeaturesToCsv(trainingDataSet, "train.csv");
-        writeFeaturesToCsv(testingDataSet, "eval.csv");
-
-//        writeDataToCSVFile(octaveTrainingDataFileName, null, null, trainingDataSet, ",", false);
-//        writeDataToCSVFile(octaveTestDataFileName, null, null, testingDataSet, ",", false);
-//        writeDataToCSVFile(javaTestDataFileName, null, null, testingDataSet, " ", false);
-
-//        writeSubtractedDataToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-//        writeSubtractedDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-//        writeSubtractedDataToCSVFile(javaTestDataFileName, testingDataSet, " ");
-
-//        writeExtendedDataToCSVFile(octaveTrainingDataFileName, null, null, trainingDataSet, ",", false);
-//        writeExtendedDataToCSVFile(octaveTestDataFileName, null, null, testingDataSet, ",", false);
-//        writeExtendedDataToCSVFile(javaTestDataFileName, null, null, testingDataSet, " ", false);
-
-//        writeMoreMatchDataToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-//        writeMoreMatchDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-//        writeMoreMatchDataToCSVFile(javaTestDataFileName, testingDataSet, " ");
-
-//        writeAllMatchDataToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-//        writeAllMatchDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-//        writeAllMatchDataToCSVFile(javaTestDataFileName, testingDataSet, " ");
-
-//        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-//        writeAllMatchDataPlusCleanSheetsToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-//        writeAllMatchDataPlusCleanSheetsToCSVFile(javaTestDataFileName, testingDataSet, " ");
-
-//        writeEvenMoreMatchDataToCSVFile(octaveTrainingDataFileName, trainingDataSet, ",");
-//        writeEvenMoreMatchDataToCSVFile(octaveTestDataFileName, testingDataSet, ",");
-//        writeEvenMoreMatchDataToCSVFile(javaTestDataFileName, testingDataSet, " ");
+        writeFeaturesToCsv(trainingDataSet, trainFileName);
+        writeFeaturesToCsv(testingDataSet, testFileName);
     }
 
-    public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String octaveTrainingDataFileName) {
-        writeAllMatchDataToCSVFile(octaveTrainingDataFileName, trainingData, ",");
+    public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
+        writeFeaturesToCsv(trainingData, fileName);
     }
 
     public static void writeFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {

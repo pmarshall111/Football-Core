@@ -1,8 +1,12 @@
 package database;
 
+import com.petermarshall.database.ResultBetOn;
+import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.tables.*;
+import com.petermarshall.logging.MatchLog;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,8 +33,7 @@ public class Write {
     public void canAddRecordsWithIncreasingIds() {
         //did not use autoincrement as this hurts performance.
         GenerateData data = addBulkData(true);
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             ResultSet rs = s.executeQuery("SELECT max(_id) FROM " + MatchTable.getTableName());
             Integer prevId = null;
             while (rs.next()) {
@@ -58,8 +61,7 @@ public class Write {
     public void insertsCorrectNumbOfMatches() {
         GenerateData data = addBulkData(true);
         addBulkData(true);
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName());
             while (rs.next()) {
                 int count = rs.getInt(1);
@@ -79,8 +81,7 @@ public class Write {
         String awayTeamName = m.getAwayTeam().getTeamName();
         String firstHomePlayer = m.getHomePlayerRatings().values().iterator().next().getName();
         String firstAwayPlayer = m.getAwayPlayerRatings().values().iterator().next().getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             //home
             System.out.println("SELECT COUNT(*) FROM " + PlayerRatingTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
@@ -116,8 +117,7 @@ public class Write {
         GenerateData data = addBulkData(true);
         Match m = data.getMatches().get(10);
         String playerInMatch = m.getHomePlayerRatings().values().iterator().next().getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             ResultSet rs = s.executeQuery(
                     "SELECT " + MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                             MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColDrawOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getColFirstScorer() +
@@ -153,8 +153,7 @@ public class Write {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             ResultSet rs = s.executeQuery(
                     "SELECT " + PlayerRatingTable.getColMins() + ", " + PlayerRatingTable.getColRating() +
                             " FROM " + PlayerRatingTable.getTableName() +
@@ -176,8 +175,7 @@ public class Write {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             //first get out matchid and teamid of player
             ResultSet rs = s.executeQuery(
                     "SELECT " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
@@ -211,8 +209,7 @@ public class Write {
         GenerateData data = addBulkData(true);
         PlayerRating pr = data.getPlayerRatings().get(100);
         String playerName = pr.getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement();) {
             //first get out matchid and teamid of player
             ResultSet rs = s.executeQuery(
                     "SELECT " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
@@ -252,10 +249,9 @@ public class Write {
         String t2Name = "new_team2";
         Team t1 = s.addNewTeam(new Team(t1Name));
         Team t2 = s.addNewTeam(new Team(t2Name));
-        Match m = s.addNewMatch(new Match(t1, t2, new Date(), 100, 0));
-        try {
+        s.addNewMatch(new Match(t1, t2, new Date(), 100, 0));
+        try (Statement stmt = connection.createStatement()) {
             //first get out leagueid of league we added match to
-            Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(
                     "SELECT _id FROM " + LeagueTable.getTableName() +
                         " WHERE " + LeagueTable.getColName() + " = '" + l.getName() + "'");
@@ -274,6 +270,58 @@ public class Write {
                 int afterAddleagueId = afterAddRs.getInt(1);
                 Assert.assertEquals(leagueId, afterAddleagueId);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void canLogBetPlaced() {
+        GenerateData data = addBulkData(true);
+        League l = data.getLeagues().get(0);
+        Season s = l.getSeason(20);
+        Match m = s.getAllMatches().get(0);
+
+        try (Statement stmt = connection.createStatement()) {
+            String home = "home", away = "away";
+            ResultSet rs = stmt.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + MatchTable.getColDate() + " FROM " + MatchTable.getTableName() +
+                                            " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getColHometeamId() + " = " + home + "._id" +
+                                            " INNER JOIN " + TeamTable.getTableName() + " AS " + away + " ON " + MatchTable.getColAwayteamId() + " = " + away + "._id" +
+                                            " WHERE " + home + "." + TeamTable.getColTeamName() + " = '" + m.getHomeTeam().getTeamName() + "'" +
+                                            " AND " + away + "." + TeamTable.getColTeamName() + " = '" + m.getAwayTeam().getTeamName() + "'");
+            int dbId = -1;
+            String sqlMatchDate = "null";
+            while (rs.next()) {
+                dbId = rs.getInt(1);
+                sqlMatchDate = rs.getString(2);
+            }
+
+            MatchToPredict mtp = new MatchToPredict(m.getHomeTeam().getTeamName(), m.getAwayTeam().getTeamName(), s.getSeasonKey(),
+                    l.getName(), sqlMatchDate, dbId,m.getSofaScoreGameId());
+
+            ResultBetOn rbOn = ResultBetOn.HOME_WIN;
+            String bookieUsed = "BettingIsForFools";
+            double odds = 1.22;
+            int stake = 5;
+            DS_Insert.logBetPlaced(new MatchLog(mtp, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, rbOn, bookieUsed, odds, stake));
+
+            ResultSet rsBet = stmt.executeQuery("SELECT COUNT(*) FROM " + BetTable.getTableName());
+            while (rsBet.next()) {
+                Assert.assertEquals(1, rsBet.getInt(1));
+            }
+
+            rsBet = stmt.executeQuery("SELECT " + BetTable.getColStake() + ", " + BetTable.getColOdds() + ", " +
+                    BetTable.getColResultBetOn() + ", " + BetTable.getColBetPlacedWith() + " FROM " + BetTable.getTableName() +
+                    " WHERE " + BetTable.getColMatchId() + " = " + dbId);
+
+            while (rsBet.next()) {
+                Assert.assertEquals(stake, rsBet.getInt(1));
+                Assert.assertEquals(odds, rsBet.getDouble(2), 0.01);
+                Assert.assertEquals(rbOn.getSqlIntCode(), rsBet.getInt(3));
+                Assert.assertEquals(bookieUsed, rsBet.getString(4));
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             fail();

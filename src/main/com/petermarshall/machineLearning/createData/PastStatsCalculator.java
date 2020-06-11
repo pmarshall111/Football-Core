@@ -1,16 +1,12 @@
-package com.petermarshall.machineLearning.createData.refactor;
+package com.petermarshall.machineLearning.createData;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.machineLearning.createData.classes.*;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 //class to be used to create csv files to learn from and update cache in db for past seasons.
 public class PastStatsCalculator {

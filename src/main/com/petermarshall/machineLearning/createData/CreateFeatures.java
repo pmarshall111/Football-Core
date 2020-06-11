@@ -1,16 +1,13 @@
-package com.petermarshall.machineLearning.createData.refactor;
+package com.petermarshall.machineLearning.createData;
 
-import com.petermarshall.machineLearning.createData.classes.Player;
-import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.petermarshall.machineLearning.createData.classes.GamesSelector.ALL_GAMES;
-import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.COMPARE_LAST_N_GAMES;
-import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.NUMB_SEASONS_HISTORY;
+import static com.petermarshall.machineLearning.createData.PastStatsCalculator.COMPARE_LAST_N_GAMES;
+import static com.petermarshall.machineLearning.createData.PastStatsCalculator.NUMB_SEASONS_HISTORY;
 
 public class CreateFeatures {
     public static ArrayList<Double> getFeatures(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,

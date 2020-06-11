@@ -117,9 +117,9 @@ public class DS_Main {
                     statement.execute("CREATE TABLE IF NOT EXISTS " + BetTable.getTableName() + " (" +
                         BetTable.getColResultBetOn() + " int NOT NULL, " +
                         BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
-                        BetTable.getColMatchId() + " int NOT NULL, _id int NOT NULL, " +
-                            "UNIQUE KEY unique_match_id (" + BetTable.getColMatchId() + "), " +
-                        "CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
+                        BetTable.getColMatchId() + " int NOT NULL, " + BetTable.getColBetPlacedWith() + " text, " +
+                        " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
+                        " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
                             "CONSTRAINT result_in_range CHECK (((" +BetTable.getColResultBetOn() + " >= 1) and (" + BetTable.getColResultBetOn() + " <= 3)))" +
                             ")");
 

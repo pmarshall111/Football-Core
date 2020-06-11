@@ -1,6 +1,4 @@
-package com.petermarshall.machineLearning.createData.refactor;
-
-import com.petermarshall.machineLearning.createData.classes.Player;
+package com.petermarshall.machineLearning.createData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

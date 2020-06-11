@@ -4,17 +4,13 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.refactor.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator;
-import com.petermarshall.machineLearning.createData.refactor.PlayerMatchDbData;
-import com.petermarshall.scrape.classes.League;
+import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
+import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
-import com.petermarshall.scrape.classes.Match;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TrainingMatch {

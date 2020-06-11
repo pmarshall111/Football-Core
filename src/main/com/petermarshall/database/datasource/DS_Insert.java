@@ -164,9 +164,10 @@ public class DS_Insert {
     public static void logBetPlaced(MatchLog matchLog) {
         try (Statement statement = DS_Main.connection.createStatement()) {
             statement.execute("INSERT INTO " + BetTable.getTableName() +
-                    " (" + BetTable.getColResultBetOn() + ", " + BetTable.getColOdds() + ", " + BetTable.getColStake() + ", " + BetTable.getColMatchId() + ") " +
+                    " (" + BetTable.getColResultBetOn() + ", " + BetTable.getColOdds() + ", " + BetTable.getColStake() + ", " +
+                    BetTable.getColMatchId() + ", " + BetTable.getColBetPlacedWith() + ") " +
                     "VALUES (" + matchLog.getResultBetOn().getSqlIntCode() + ", " + matchLog.getOddsBetOn() + ", " +
-                    matchLog.getStake() + ", " + matchLog.getMatch().getDatabase_id() + ")");
+                    matchLog.getStake() + ", " + matchLog.getMatch().getDatabase_id() + ", '" + matchLog.getBookieUsed() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }

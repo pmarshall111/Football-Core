@@ -1,11 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-
-import static com.petermarshall.machineLearning.createData.classes.GamesSelector.*;
-import static com.petermarshall.machineLearning.createData.refactor.PastStatsCalculator.COMPARE_LAST_N_GAMES;
 
 //contains metrics that can be used to create the features for a match to predict.
 //huge range of fields to allow for choice when creating features & training model

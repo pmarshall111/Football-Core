@@ -8,6 +8,7 @@ public class BetTable {
     private static final String COL_ODDS = "odds";
     private static final String COL_STAKE = "stake";
     private static final String COL_MATCH_ID = "match_id";
+    private static final String COL_BET_PLACED_WITH = "betPlacedWith";
 
     public static String getTableName() {
         return TABLE_NAME;
@@ -27,5 +28,9 @@ public class BetTable {
 
     public static String getColMatchId() {
         return COL_MATCH_ID;
+    }
+
+    public static String getColBetPlacedWith() {
+        return COL_BET_PLACED_WITH;
     }
 }

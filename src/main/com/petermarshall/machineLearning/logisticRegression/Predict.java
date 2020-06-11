@@ -298,7 +298,7 @@ public class Predict {
 
 //                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
 
-                    MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, odds, BASE_STAKE);
+                    MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, "placeholder", odds, BASE_STAKE);
                     DS_Main.openProductionConnection();
                     DS_Insert.logBetPlaced(matchLog);
                     DS_Main.closeConnection();
@@ -342,7 +342,7 @@ public class Predict {
         } else if(awayWin.size() > 0) {
             return createMatchLogWhenGoodBetFound(match, awayWin, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
         } else {
-            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, -1, ZERO_STAKE);
+            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, "null", -1, ZERO_STAKE);
         }
 
     }
@@ -354,7 +354,7 @@ public class Predict {
         String[] descriptorParts = oddsDescriptor.split(" ");
         double odds = Double.parseDouble(descriptorParts[0]);
 
-        return new MatchLog(match, whenGameWasPredicted, resultBetOn, odds, BASE_STAKE);
+        return new MatchLog(match, whenGameWasPredicted, resultBetOn, "placeholder", odds, BASE_STAKE);
     }
 
 

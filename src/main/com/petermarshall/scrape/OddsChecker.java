@@ -124,7 +124,6 @@ public class OddsChecker {
 
                 addOdds(correctMatch.get("url").toString(), match, homeTeam, awayTeam);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
