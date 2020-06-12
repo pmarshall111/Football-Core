@@ -108,6 +108,26 @@ public class MatchToPredict {
         return features;
     }
 
+    public double[] getFeaturesWithoutResult() {
+        double[] dArr = new double[features.size()-1];
+        for (int i = 1; i<features.size(); i++) {
+            dArr[i-1] = features.get(i);
+        }
+        return dArr;
+    }
+
+    public ArrayList<Double> getFeaturesNoLineups() {
+        return featuresNoLineups;
+    }
+
+    public double[] getFeaturesNoLineupsWithoutResult() {
+        double[] dArr = new double[featuresNoLineups.size()-1];
+        for (int i = 1; i<featuresNoLineups.size(); i++) {
+            dArr[i-1] = featuresNoLineups.get(i);
+        }
+        return dArr;
+    }
+
     public void setFeatures(ArrayList<Double> features) {
         this.features = features;
     }

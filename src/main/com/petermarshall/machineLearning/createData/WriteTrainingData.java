@@ -20,6 +20,8 @@ public class WriteTrainingData {
 
         writeFeaturesToCsv(trainingDataSet, trainFileName);
         writeFeaturesToCsv(testingDataSet, testFileName);
+        writeNoLineupsFeaturesToCsv(trainingDataSet, "noLineups_"+trainFileName);
+        writeNoLineupsFeaturesToCsv(testingDataSet, "noLineups_"+testFileName);
     }
 
     public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
@@ -32,6 +34,26 @@ public class WriteTrainingData {
             for (int i = 0; i < trainingData.size(); i++) {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeatures();
+                String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                featuresWriter.append(csv);
+                String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
+                oddsWriter.append(odds);
+                if (i != trainingData.size()-1) {
+                    featuresWriter.append("\n");
+                    oddsWriter.append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeNoLineupsFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {
+        try (FileWriter featuresWriter = new FileWriter(fileName);
+             FileWriter oddsWriter = new FileWriter("odds"+fileName)) {
+            for (int i = 0; i < trainingData.size(); i++) {
+                TrainingMatch match = trainingData.get(i);
+                ArrayList<Double> features = match.getFeaturesNoLineups();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
                 featuresWriter.append(csv);
                 String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
