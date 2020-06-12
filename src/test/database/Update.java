@@ -41,8 +41,7 @@ public class Update {
         Season season = getSeasonWithGames(league);
         Match match = season.getAllMatches().get(0);
         String playerInMatch = match.getHomePlayerRatings().values().iterator().next().getName();
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             ResultSet rs = s.executeQuery("SELECT " + MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                     MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColDrawOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getColFirstScorer() +
                     " FROM " + PlayerRatingTable.getTableName() +

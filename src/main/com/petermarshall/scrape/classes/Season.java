@@ -48,4 +48,8 @@ public class Season {
     }
 
     public boolean hasMatches() {return matches.size() > 0;}
+
+    public static String getSeasonKeyFromYearStart(int yearStart) {
+        return yearStart + "-" + (yearStart+1);
+    }
 }

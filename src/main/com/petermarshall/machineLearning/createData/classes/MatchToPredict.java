@@ -19,6 +19,7 @@ public class MatchToPredict {
     private ArrayList<Double> features; //will be set with bias parameter included as first entry
     private ArrayList<Double> featuresNoLineups;
     private double[] ourPredictions;
+    private double[] ourPredictionsNoLineups;
     private LinkedHashMap<String, double[]> bookiesOdds;
     //ids here to make it quicker to update the db with the bet if we decide to make a bet, and sofascore to quickly get scraping data.
     private final int database_id;
@@ -80,6 +81,18 @@ public class MatchToPredict {
 
     public void setOurPredictions(double[] ourPredictions) {
         this.ourPredictions = ourPredictions;
+    }
+
+    public double[] getOurPredictionsNoLineups() {
+        return ourPredictionsNoLineups;
+    }
+
+    public void setOurPredictionsNoLineups(double[] ourPredictionsNoLineups) {
+        this.ourPredictionsNoLineups = ourPredictionsNoLineups;
+    }
+
+    public boolean hasPredictionsWithLineups() {
+        return ourPredictions != null;
     }
 
     public HashMap<String, double[]> getBookiesOdds() {

@@ -3,12 +3,14 @@ package com.petermarshall.database.datasource;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.tables.*;
 import com.petermarshall.logging.MatchLog;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.petermarshall.database.datasource.DS_Get.getTeamId;
@@ -185,6 +187,36 @@ public class DS_Insert {
             ids.put(key, id);
         });
         return ids;
+    }
+
+    public static void addPredictionsToDb(ArrayList<MatchToPredict> mtps) {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+
+            for (MatchToPredict mtp: mtps) {
+                boolean hasLineupPredictions = mtp.hasPredictionsWithLineups();
+                double[] predictions = hasLineupPredictions ? mtp.getOurPredictions() : mtp.getOurPredictionsNoLineups();
+                boolean hasBookieOdds = mtp.getBookiesOdds().keySet().size() > 0;
+                String bookieInsertionStr = "null, -1, -1, -1";
+                if (hasBookieOdds) {
+                    String bookie = mtp.getBookiesOdds().keySet().iterator().next();
+                    double[] bookieOdds = mtp.getBookiesOdds().get(bookie);
+                    bookieInsertionStr = bookie + ", " + bookieOdds[0] + ", " + bookieOdds[1] + ", " + bookieOdds[2];
+                }
+
+                statement.addBatch("INSERT INTO " + PredictionTable.getTableName() +
+                        " (" + PredictionTable.getColDate() + ", " + PredictionTable.getColWithLineups() + ", " +
+                        PredictionTable.getColHomePred() + ", " + PredictionTable.getColDrawPred() + ", " + PredictionTable.getColAwayPred() + ", " +
+                        PredictionTable.getColBookieName() + ", " + PredictionTable.getColHOdds() + ", " + PredictionTable.getColDOdds() + ", " +
+                        PredictionTable.getColAOdds() + ", " + PredictionTable.getColMatchId() + ") " +
+                        " VALUES (" + DateHelper.getSqlDate(new Date()) + ", " + hasLineupPredictions + ", " + predictions[0] + ", " +
+                        predictions[1] + ", " + predictions[2] + ", " + bookieInsertionStr + ", " + mtp.getDatabase_id() + ")");
+            }
+
+            statement.executeBatch();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

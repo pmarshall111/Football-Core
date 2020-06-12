@@ -8,8 +8,10 @@ import com.petermarshall.database.tables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
+import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.Season;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,6 +53,7 @@ public class DS_Get {
             return -9999;
         }
     }
+
     public static int getLeagueId(League league) {
         return getLeagueId(league.getName());
     }
@@ -93,7 +96,6 @@ public class DS_Get {
             return null;
         }
     }
-
 
     public static ArrayList<MatchToPredict> getMatchesToPredict(java.util.Date earliestKickoff, java.util.Date latestKickoff) {
         ArrayList<MatchToPredict> matches = new ArrayList<>();
@@ -141,8 +143,8 @@ public class DS_Get {
         HashSet<BetResult> betResults = new HashSet<>();
         BetResultsTotalled totalledResults = new BetResultsTotalled();
 
-        String EARLIEST = DateHelper.getSqlDate( lowerLimit == null ? new Date(0) : lowerLimit);
-        String LATEST = DateHelper.getSqlDate( upperLimit == null ? new Date() : lowerLimit);
+        String EARLIEST = DateHelper.getSqlDate(lowerLimit == null ? new Date(0) : lowerLimit);
+        String LATEST = DateHelper.getSqlDate(upperLimit == null ? new Date() : lowerLimit);
 
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet gamesBetOn = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
@@ -156,7 +158,7 @@ public class DS_Get {
                     " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColPredictedLive() + " = " + whenGameWasPredicted.getSqlIntCode() +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " >= '" + EARLIEST + "'" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " <= '" + LATEST + "'"
-                    );
+            );
 
             while (gamesBetOn.next()) {
                 String homeTeamName = gamesBetOn.getString(1);
@@ -183,7 +185,7 @@ public class DS_Get {
         return totalledResults;
     }
 
-    private static int calculateResult (int homeScore, int awayScore) {
+    private static int calculateResult(int homeScore, int awayScore) {
         if (homeScore > awayScore) return 0;
         else if (homeScore == awayScore) return 1;
         else return 2;
@@ -197,10 +199,9 @@ public class DS_Get {
     public static ArrayList<PlayerMatchDbData> getLeagueData(LeagueSeasonIds leagueSeasonIds) {
         return getLeagueData(leagueSeasonIds.name(), -1);
     }
+
     public static ArrayList<PlayerMatchDbData> getLeagueData(String leagueName, int seasonYearStart) {
-        try {
-            //no try with resources here as we're going to be passing resultset outside of this method
-            Statement statement = DS_Main.connection.createStatement();
+        try (Statement statement = DS_Main.connection.createStatement()) {
             String PLAYERS_TEAM = "players_team";
 
             //used to allow method to get out just 1 season
@@ -259,20 +260,18 @@ public class DS_Get {
     //So this method is used to reduce the data we need to get from the DB
     public static ArrayList<HistoricMatchDbData> getMatchesBetweenTeams(String leagueName, ArrayList<MatchToPredict> matches, int numbSeasonsPrior) {
         int currSeasonStart = DateHelper.getStartYearForCurrentSeason();
-        int earliestSeason = currSeasonStart-numbSeasonsPrior;
+        int earliestSeason = currSeasonStart - numbSeasonsPrior;
 
-        try {
-            Statement statement = DS_Main.connection.createStatement();
-
+        try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                                        MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "."+ MatchTable.getColAwayScore() +
-                                        MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", " +
-                                        " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
-                                        " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
-                                        " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-                                        getConditions(matches) +
-                                        " AND " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + leagueName + "' " +
-                                        " ORDER BY " + MatchTable.getTableName() + "." + MatchTable.getColDate());
+                    MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() +
+                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", " +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
+                    getConditions(matches) +
+                    " AND " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + leagueName + "' " +
+                    " ORDER BY " + MatchTable.getTableName() + "." + MatchTable.getColDate());
 
             ArrayList<HistoricMatchDbData> previousMatches = new ArrayList<>();
             while (rs.next()) {
@@ -289,18 +288,60 @@ public class DS_Get {
 
     private static String getConditions(ArrayList<MatchToPredict> matches) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i<matches.size(); i++) {
+        for (int i = 0; i < matches.size(); i++) {
             MatchToPredict currMatch = matches.get(i);
-            sb.append( i == 0 ? " WHERE (" : " OR (");
-            sb.append(HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getHomeTeamName() + "' ");
-            sb.append(" AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getAwayTeamName() + "' ");
-            sb.append(") OR (");
-            sb.append(HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getAwayTeamName() + "' ");
-            sb.append(" AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getHomeTeamName() + "' ");
-            sb.append(")");
+            sb.append(i == 0 ? " WHERE (" : " OR (")
+                    .append(HOMETEAM + ".")
+                    .append(TeamTable.getColTeamName()).append(" = '").append(currMatch.getHomeTeamName()).append("' ")
+                    .append(" AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getAwayTeamName() + "' ")
+                    .append(") OR (")
+                    .append(HOMETEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getAwayTeamName() + "' ")
+                    .append(" AND " + AWAYTEAM + "." + TeamTable.getColTeamName() + " = '" + currMatch.getHomeTeamName() + "' ")
+                    .append(")");
         }
         return sb.toString();
     }
 
+    //method will get out matches from the database where it is both teams next match and has not already been predicted on
+    public static ArrayList<MatchToPredict> getMatchesToPredict() {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+            String ids = "idsWithFuturePredictions";
+            String currDate = DateHelper.getSqlDate(new Date());
+            ResultSet rs = statement.executeQuery("WITH " + ids + " AS (" +
+                    "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +
+                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getColMatchId() + " = _id " +
+                    " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " > " + currDate + ") " +
+                    " SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " + MatchTable.getColSeasonYearStart() + ", " +
+                    LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " +
+                    MatchTable.getColSofascoreId() + " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " WHERE " + MatchTable.getTableName() + "._id NOT IN " +
+                    " (SELECT " + PredictionTable.getColMatchId() + " FROM " + PredictionTable.getTableName() + ")" +
+                    " AND " + MatchTable.getColDate() + " > " + currDate +
+                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
+                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
+                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
+                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")");
 
+            ArrayList<MatchToPredict> mtps = new ArrayList<>();
+            while (rs.next()) {
+                String homeTeamName = rs.getString(1);
+                String awayTeamName = rs.getString(2);
+                int seasonYearStart = rs.getInt(3);
+                String leagueName = rs.getString(4);
+                String gameDate = rs.getString(5);
+                int dbId = rs.getInt(6);
+                int sofascoreId = rs.getInt(7);
+                mtps.add(new MatchToPredict(homeTeamName, awayTeamName, Season.getSeasonKeyFromYearStart(seasonYearStart), leagueName,
+                        gameDate, dbId, sofascoreId));
+            }
+            return mtps;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

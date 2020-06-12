@@ -1,15 +1,29 @@
 package com.petermarshall.machineLearning;
 
+import com.petermarshall.database.datasource.DS_Main;
+import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.WriteTrainingData;
+import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
     public static void trainModels() {
         try {
+            System.out.println("Getting matches from db and writing to files\n\n");
+            DS_Main.openProductionConnection();
+            ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
+            WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, "train.csv", "eval.csv");
+            DS_Main.closeConnection();
+
+            System.out.println("Training models...\nNo Lineups first\n\n");
             ModelTrain.trainNoLineups();
+            System.out.println("\n\nTraining With lineups...\n\n");
             ModelTrain.trainWithLineups();
-            System.out.println("Now calculating performance with NO lineups...");
+            System.out.println("\n\nCalculating performance with NO lineups...\n\n");
             ModelPerformance.performanceNoLineups();
-            System.out.println("Now calculating performance WITH lineups...");
+            System.out.println("\n\nCalculating performance WITH lineups...\n\n");
             ModelPerformance.performanceWithLineups();
         } catch (Exception e) {
             e.printStackTrace();

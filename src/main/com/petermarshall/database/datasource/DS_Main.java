@@ -1,6 +1,7 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.database.tables.*;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.Player;
 import com.petermarshall.scrape.classes.Team;
 
@@ -14,7 +15,7 @@ public class DS_Main {
     static final String HOMETEAM = "hometeam";
     static final String AWAYTEAM = "awayteam";
 
-//    private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
+    //    private static final String CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesREFACTOR.db";
 //public static final String TEST_CONNECTION_NAME = "jdbc:sqlite:C:\\Databases\\footballMatchesTEST.db";
     private static final String CONNECTION_NAME = "jdbc:mysql://localhost/footballtest2?serverTimezone=UTC";
     public static final String TEST_CONNECTION_NAME = "jdbc:mysql://localhost/testfootballtest?serverTimezone=UTC";
@@ -23,7 +24,7 @@ public class DS_Main {
     public static boolean isOpen() {
         try {
             return connection == null || !connection.isClosed();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             return false;
         }
     }
@@ -42,6 +43,7 @@ public class DS_Main {
             return false;
         }
     }
+
     public static boolean openTestConnection() {
         try {
             connection = DriverManager.getConnection(TEST_CONNECTION_NAME, Keys.user, Keys.password);
@@ -51,6 +53,7 @@ public class DS_Main {
             return false;
         }
     }
+
     public static boolean closeConnection() {
         try {
             connection.close();
@@ -70,19 +73,19 @@ public class DS_Main {
     public static void initDB() {
         try (Statement statement = connection.createStatement()) {
 
-                        statement.execute("CREATE TABLE IF NOT EXISTS " + LeagueTable.getTableName() +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + LeagueTable.getTableName() +
                     " (" + LeagueTable.getColName() + " text NOT NULL," + " _id int NOT NULL, PRIMARY KEY(_id), " +
-                                "UNIQUE KEY unique_id (_id)," +
-                                "UNIQUE KEY unique_league (" + LeagueTable.getColName() + "(50)))");
+                    "UNIQUE KEY unique_id (_id)," +
+                    "UNIQUE KEY unique_league (" + LeagueTable.getColName() + "(50)))");
 
-                        statement.execute("CREATE TABLE IF NOT EXISTS " + TeamTable.getTableName() + "" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + TeamTable.getTableName() + "" +
                     " (" + TeamTable.getColTeamName() + " text NOT NULL, " + TeamTable.getColLeagueId() + " int NOT NULL, "
                     + "_id int NOT NULL, " +
-                                " PRIMARY KEY(_id), " +
-                                " UNIQUE KEY unique_team (" + TeamTable.getColTeamName() + "(50), " + TeamTable.getColLeagueId() + ")," +
-                                " KEY league_id_idx (" + TeamTable.getColLeagueId() +"), " +
-                                " CONSTRAINT league_id FOREIGN KEY (" + TeamTable.getColLeagueId() + ") REFERENCES " + LeagueTable.getTableName() + " (_id))");
-                        
+                    " PRIMARY KEY(_id), " +
+                    " UNIQUE KEY unique_team (" + TeamTable.getColTeamName() + "(50), " + TeamTable.getColLeagueId() + ")," +
+                    " KEY league_id_idx (" + TeamTable.getColLeagueId() + "), " +
+                    " CONSTRAINT league_id FOREIGN KEY (" + TeamTable.getColLeagueId() + ") REFERENCES " + LeagueTable.getTableName() + " (_id))");
+
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + MatchTable.getTableName() + " (" +
                     MatchTable.getColHomeScore() + " int DEFAULT NULL, " + MatchTable.getColAwayScore() + " int DEFAULT NULL, " +
@@ -95,38 +98,46 @@ public class DS_Main {
                     MatchTable.getColPredictedLive() + " int DEFAULT NULL, " +
                     MatchTable.getColSofascoreId() + " int DEFAULT NULL, " +
                     "PRIMARY KEY(_id), " +
-                    "UNIQUE ("+MatchTable.getColHometeamId()+","+MatchTable.getColAwayteamId()+","+MatchTable.getColSeasonYearStart() + "), " +
+                    "UNIQUE (" + MatchTable.getColHometeamId() + "," + MatchTable.getColAwayteamId() + "," + MatchTable.getColSeasonYearStart() + "), " +
                     "FOREIGN KEY (" + MatchTable.getColAwayteamId() + ") REFERENCES " + TeamTable.getTableName() + "(_id), " +
                     "FOREIGN KEY (" + MatchTable.getColHometeamId() + ") REFERENCES " + TeamTable.getTableName() + "(_id))"
-                    );
+            );
 
-                    statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingTable.getTableName() + " (" +
-                        PlayerRatingTable.getColMins() + " int NOT NULL, " +
-                        PlayerRatingTable.getColRating() + " double NOT NULL, " +
-                        PlayerRatingTable.getColMatchId() + " int NOT NULL, " + PlayerRatingTable.getColTeamId() + " int NOT NULL, " +
-                        PlayerRatingTable.getColPlayerName() + " text NOT NULL, " +
-                        "UNIQUE KEY unique_player_rating ("+PlayerRatingTable.getColMatchId()+","+PlayerRatingTable.getColPlayerName()+"(50),"+ PlayerRatingTable.getColTeamId()+")," +
-                        "KEY match_id_idx (" + PlayerRatingTable.getColMatchId() + "), " +
-                        "KEY team_id_idx (" + PlayerRatingTable.getColTeamId() + "), " +
-                        "CONSTRAINT match_id_played_in FOREIGN KEY (" + PlayerRatingTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + " (_id), " +
-                        "CONSTRAINT team_id FOREIGN KEY (" + PlayerRatingTable.getColTeamId() + ") REFERENCES " + TeamTable.getTableName() + " (_id), " +
-                        "CONSTRAINT mins_in_range CHECK (((" + PlayerRatingTable.getColMins() + " <= 90) and (" + PlayerRatingTable.getColMins() + " >= 0))), " +
-                        "CONSTRAINT rating_in_range CHECK (((" + PlayerRatingTable.getColRating() + " <= 10) and (" + PlayerRatingTable.getColRating() + " >= 0))))");
+            statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingTable.getTableName() + " (" +
+                    PlayerRatingTable.getColMins() + " int NOT NULL, " +
+                    PlayerRatingTable.getColRating() + " double NOT NULL, " +
+                    PlayerRatingTable.getColMatchId() + " int NOT NULL, " + PlayerRatingTable.getColTeamId() + " int NOT NULL, " +
+                    PlayerRatingTable.getColPlayerName() + " text NOT NULL, " +
+                    "UNIQUE KEY unique_player_rating (" + PlayerRatingTable.getColMatchId() + "," + PlayerRatingTable.getColPlayerName() + "(50)," + PlayerRatingTable.getColTeamId() + ")," +
+                    "KEY match_id_idx (" + PlayerRatingTable.getColMatchId() + "), " +
+                    "KEY team_id_idx (" + PlayerRatingTable.getColTeamId() + "), " +
+                    "CONSTRAINT match_id_played_in FOREIGN KEY (" + PlayerRatingTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + " (_id), " +
+                    "CONSTRAINT team_id FOREIGN KEY (" + PlayerRatingTable.getColTeamId() + ") REFERENCES " + TeamTable.getTableName() + " (_id), " +
+                    "CONSTRAINT mins_in_range CHECK (((" + PlayerRatingTable.getColMins() + " <= 90) and (" + PlayerRatingTable.getColMins() + " >= 0))), " +
+                    "CONSTRAINT rating_in_range CHECK (((" + PlayerRatingTable.getColRating() + " <= 10) and (" + PlayerRatingTable.getColRating() + " >= 0))))");
 
 
-                    statement.execute("CREATE TABLE IF NOT EXISTS " + BetTable.getTableName() + " (" +
-                        BetTable.getColResultBetOn() + " int NOT NULL, " +
-                        BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
-                        BetTable.getColMatchId() + " int NOT NULL, " + BetTable.getColBetPlacedWith() + " text, " +
-                        " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
-                        " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
-                            "CONSTRAINT result_in_range CHECK (((" +BetTable.getColResultBetOn() + " >= 1) and (" + BetTable.getColResultBetOn() + " <= 3)))" +
-                            ")");
+            statement.execute("CREATE TABLE IF NOT EXISTS " + BetTable.getTableName() + " (" +
+                    BetTable.getColResultBetOn() + " int NOT NULL, " +
+                    BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
+                    BetTable.getColMatchId() + " int NOT NULL, " + BetTable.getColBetPlacedWith() + " text, " +
+                    " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
+                    " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
+                    "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= 1) and (" + BetTable.getColResultBetOn() + " <= 3)))" +
+                    ")");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS " + PredictionTable.getTableName() + " (" +
+                    PredictionTable.getColDate() + " text NOT NULL, " + PredictionTable.getColWithLineups() + " tinyint(1) NOT NULL, " +
+                    PredictionTable.getColHomePred() + " double NOT NULL, " + PredictionTable.getColDrawPred() + " double NOT NULL, " +
+                    PredictionTable.getColAwayPred() + " double NOT NULL, " + PredictionTable.getColBookieName() + " text, " +
+                    PredictionTable.getColHOdds() + " double DEFAULT -1, " + PredictionTable.getColDOdds() + " double DEFAULT -1, " +
+                    PredictionTable.getColAOdds() + " double DEFAULT -1, " + PredictionTable.getColMatchId() + " int NOT NULL, " +
+                    " KEY match_id_idx (" + PredictionTable.getColMatchId() + "), " +
+                    " CONSTRAINT match_id_f_key FOREIGN KEY (" + PredictionTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id))");
 
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + LogTable.getTableName() + " (" +
                     LogTable.getColDatetime() + " text, " + LogTable.getColInfo() + " text)");
-
 
 
             //TODO: note, these statements are only commented to test the mysql connection before spending the effort to change these. Currently configured for sqlite

@@ -1,5 +1,6 @@
 /out/
 *.csv
+*.zip
 /lib/
 /target
 /src/main/com/petermarshall/database/datasource/Keys.java

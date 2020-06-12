@@ -1,5 +1,6 @@
 package database;
 
+import com.petermarshall.DateHelper;
 import com.petermarshall.database.ResultBetOn;
 import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.database.datasource.DS_Insert;
@@ -322,6 +323,84 @@ public class Write {
                 Assert.assertEquals(bookieUsed, rsBet.getString(4));
             }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void canAddPredictionToDb() {
+        //needs a single game in db and then create a prediction and see if prediction is there and added correctly.
+        League l = new League(LeagueSeasonIds.EPL);
+        Season s = l.getSeason(20);
+        Date date = DateHelper.subtractXDaysFromDate(new Date(),5);
+        Match m1 = s.addNewMatch(new Match(new Team("home1"), new Team("away1"), date));
+        Match m2 = s.addNewMatch(new Match(new Team("home2"), new Team("away2"), date));
+        DS_Insert.writeLeagueToDb(l);
+
+        MatchToPredict withLineupPredictions = new MatchToPredict(m1.getHomeTeam().getTeamName(), m1.getAwayTeam().getTeamName(), "20-21",
+                l.getName(), DateHelper.getSqlDate(date), 1, -1);
+        MatchToPredict noLineupPredictions = new MatchToPredict(m2.getHomeTeam().getTeamName(), m2.getAwayTeam().getTeamName(), "20-21",
+                l.getName(), DateHelper.getSqlDate(date), 2, -1);
+        withLineupPredictions.setOurPredictions(new double[]{1.1,2.2,3.3});
+        noLineupPredictions.setOurPredictions(new double[]{1.5,2.5,3.5});
+        LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
+        String expectedBookie = "BettingIsForFools";
+        double[] bookieOddsArr = new double[]{0.1,0.2,0.3};
+        bookiesOdds.put(expectedBookie, bookieOddsArr);
+        withLineupPredictions.setBookiesOdds(bookiesOdds);
+        noLineupPredictions.setBookiesOdds(bookiesOdds);
+        ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(withLineupPredictions, noLineupPredictions));
+        DS_Insert.addPredictionsToDb(mtps);
+
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT " + PredictionTable.getColDate() + ", " + PredictionTable.getColWithLineups() + ", " +
+                    PredictionTable.getColHomePred() + ", " + PredictionTable.getColDrawPred() + ", " + PredictionTable.getColAwayPred() + ", " +
+                    PredictionTable.getColBookieName() + ", " + PredictionTable.getColHOdds() + ", " + PredictionTable.getColDOdds() + ", " +
+                    PredictionTable.getColAOdds() + ", " + PredictionTable.getColMatchId() + " FROM " + PredictionTable.getTableName());
+
+            int count = 0;
+            while (rs.next()) {
+                String predDate = rs.getString(1);
+                boolean withLineups = rs.getBoolean(2);
+                double homePred = rs.getDouble(3);
+                double drawPred = rs.getDouble(4);
+                double awayPred = rs.getDouble(5);
+                String bookie = rs.getString(6);
+                double homeOdds = rs.getDouble(7);
+                double drawOdds = rs.getDouble(8);
+                double awayOdds = rs.getDouble(9);
+                int matchId = rs.getInt(10);
+
+                if (count == 0) {
+                    //we'll test for withLineups
+                    Assert.assertNotEquals(DateHelper.getSqlDate(date), predDate);
+                    Assert.assertTrue(withLineups);
+                    Assert.assertEquals(homePred, withLineupPredictions.getOurPredictions()[0], 0.01);
+                    Assert.assertEquals(drawPred, withLineupPredictions.getOurPredictions()[1], 0.01);
+                    Assert.assertEquals(awayPred, withLineupPredictions.getOurPredictions()[2], 0.01);
+                    Assert.assertEquals(expectedBookie, bookie);
+                    Assert.assertEquals(bookieOddsArr[0], homeOdds, 0.01);
+                    Assert.assertEquals(bookieOddsArr[1], drawOdds, 0.01);
+                    Assert.assertEquals(bookieOddsArr[2], awayOdds, 0.01);
+                    Assert.assertEquals(1, matchId);
+                } else {
+                    //looking at without lineups
+                    Assert.assertNotEquals(DateHelper.getSqlDate(date), predDate);
+                    Assert.assertFalse(withLineups);
+                    Assert.assertEquals(homePred, noLineupPredictions.getOurPredictionsNoLineups()[0], 0.01);
+                    Assert.assertEquals(drawPred, noLineupPredictions.getOurPredictionsNoLineups()[1], 0.01);
+                    Assert.assertEquals(awayPred, noLineupPredictions.getOurPredictionsNoLineups()[2], 0.01);
+                    Assert.assertEquals(expectedBookie, bookie);
+                    Assert.assertEquals(bookieOddsArr[0], homeOdds, 0.01);
+                    Assert.assertEquals(bookieOddsArr[1], drawOdds, 0.01);
+                    Assert.assertEquals(bookieOddsArr[2], awayOdds, 0.01);
+                    Assert.assertEquals(1, matchId);
+                }
+                count++;
+            }
+            Assert.assertNotEquals(0, count);
         } catch (SQLException e) {
             e.printStackTrace();
             fail();
