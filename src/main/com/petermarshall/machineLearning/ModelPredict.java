@@ -21,7 +21,7 @@ public class ModelPredict {
                 double homePred = predicted.getRow(0).getDouble(0);
                 double drawPred = predicted.getRow(0).getDouble(1);
                 double awayPred = predicted.getRow(0).getDouble(2);
-                mtp.setOurPredictions(new double[]{homePred, drawPred, awayPred});
+                mtp.setOurPredictions(new double[]{homePred, drawPred, awayPred}, true);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +37,7 @@ public class ModelPredict {
                 double homePred = predicted.getRow(0).getDouble(0);
                 double drawPred = predicted.getRow(0).getDouble(1);
                 double awayPred = predicted.getRow(0).getDouble(2);
-                mtp.setOurPredictions(new double[]{homePred, drawPred, awayPred});
+                mtp.setOurPredictions(new double[]{homePred, drawPred, awayPred}, false);
             }
         } catch (IOException e) {
             e.printStackTrace();

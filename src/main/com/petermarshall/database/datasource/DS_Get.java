@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -307,35 +308,41 @@ public class DS_Get {
         try (Statement statement = DS_Main.connection.createStatement()) {
             String ids = "idsWithFuturePredictions";
             String currDate = DateHelper.getSqlDate(new Date());
+            //statement gets out the next home game of all teams that do not already have a prediction
             ResultSet rs = statement.executeQuery("WITH " + ids + " AS (" +
-                    "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +
-                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getColMatchId() + " = _id " +
-                    " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " > " + currDate + ") " +
+                        "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +
+                        " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getColMatchId() + " = _id " +
+                        " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " > '" + currDate + "') " +
                     " SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " + MatchTable.getColSeasonYearStart() + ", " +
-                    LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " +
-                    MatchTable.getColSofascoreId() + " FROM " + MatchTable.getTableName() +
+                    LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
+                    MatchTable.getTableName() + "._id, " + MatchTable.getColSofascoreId() + " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
-                    " WHERE " + MatchTable.getTableName() + "._id NOT IN " +
-                    " (SELECT " + PredictionTable.getColMatchId() + " FROM " + PredictionTable.getTableName() + ")" +
-                    " AND " + MatchTable.getColDate() + " > " + currDate +
+                    " WHERE " + MatchTable.getColDate() + " > '" + currDate + "'" +
                     " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
                     " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
                     " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
-                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")");
+                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
+                    " GROUP BY " + MatchTable.getColHometeamId() +
+                    " ORDER BY " + MatchTable.getColDate());
 
+            //filtering out responses so that teams are only included once - we want to only predict a teams next match
             ArrayList<MatchToPredict> mtps = new ArrayList<>();
+            HashSet<String> teamsWithNextMatchFound = new HashSet<>();
             while (rs.next()) {
                 String homeTeamName = rs.getString(1);
                 String awayTeamName = rs.getString(2);
-                int seasonYearStart = rs.getInt(3);
-                String leagueName = rs.getString(4);
-                String gameDate = rs.getString(5);
-                int dbId = rs.getInt(6);
-                int sofascoreId = rs.getInt(7);
-                mtps.add(new MatchToPredict(homeTeamName, awayTeamName, Season.getSeasonKeyFromYearStart(seasonYearStart), leagueName,
-                        gameDate, dbId, sofascoreId));
+                if (!teamsWithNextMatchFound.contains(homeTeamName) && !teamsWithNextMatchFound.contains(awayTeamName)) {
+                    int seasonYearStart = rs.getInt(3);
+                    String leagueName = rs.getString(4);
+                    String gameDate = rs.getString(5);
+                    int dbId = rs.getInt(6);
+                    int sofascoreId = rs.getInt(7);
+                    mtps.add(new MatchToPredict(homeTeamName, awayTeamName, Season.getSeasonKeyFromYearStart(seasonYearStart), leagueName,
+                            gameDate, dbId, sofascoreId));
+                    teamsWithNextMatchFound.addAll(Arrays.asList(homeTeamName, awayTeamName));
+                }
             }
             return mtps;
         } catch (SQLException e) {

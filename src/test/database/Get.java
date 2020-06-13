@@ -102,17 +102,20 @@ public class Get {
     public void canGetOutNewMatchesToPredict() {
         //testing that only games in the future that are the first game for both teams are got out
         League l = new League(LeagueSeasonIds.EPL);
-        Season s = l.getSeason(20);
+        Season s = l.getSeason(19);
         Team t1 = s.addNewTeam(new Team("team1")), t2 = s.addNewTeam(new Team("team2")),
                 t3 = s.addNewTeam(new Team("team3")), t4 = s.addNewTeam(new Team("team4")),
-                t5 = s.addNewTeam(new Team("team5"));
+                t5 = s.addNewTeam(new Team("team5")), t6 = s.addNewTeam(new Team("team6")),
+                t7 = s.addNewTeam(new Team("team7"));
 
-        Match inPast = s.addNewMatch(new Match(t1,t2, DateHelper.subtractXDaysFromDate(new Date(), 10)));
+        Match inPast = s.addNewMatch(new Match(t2,t1, DateHelper.subtractXDaysFromDate(new Date(), 10)));
+        Match pastWithPrediction = s.addNewMatch(new Match(t6, t7, DateHelper.subtractXDaysFromDate(new Date(), 5)));
         //future games
         Match fAlreadyPredicted = s.addNewMatch(new Match(t1,t2, DateHelper.addDaysToDate(new Date(),2)));
-        Match fNotPredicted = s.addNewMatch(new Match(t3,t4, DateHelper.addDaysToDate(new Date(), 3)));
-        Match fIncludesTeamsWithGamesToPlay = s.addNewMatch(new Match(t4,t3, DateHelper.addDaysToDate(new Date(),4)));
-        Match fOneTeamWithNoGamesToPlay = s.addNewMatch(new Match(t5,t1, DateHelper.addDaysToDate(new Date(),4)));
+        Match fNotPredicted = s.addNewMatch(new Match(t3,t4, DateHelper.addDaysToDate(new Date(), 3)));             //THIS ONE TO BE RETURNED
+        Match fNotPredReverseFixture = s.addNewMatch(new Match(t4,t3, DateHelper.addDaysToDate(new Date(),4)));
+        Match fOneTeamWithGamesToPlay = s.addNewMatch(new Match(t5,t1, DateHelper.addDaysToDate(new Date(),5)));
+        Match fTwoTeamsWithGamesToPlay = s.addNewMatch(new Match(t2,t5, DateHelper.addDaysToDate(new Date(),6)));
 
         //add demo data to DB
         DS_Insert.writeLeagueToDb(l);
@@ -120,23 +123,39 @@ public class Get {
         //add a prediction for match already predicted
         try (Statement stmt = connection.createStatement()) {
             String home = "home", away = "away";
-            ResultSet rs = stmt.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + MatchTable.getColDate() + " FROM " + MatchTable.getTableName() +
+            ResultSet rs = stmt.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + MatchTable.getColDate() + ", " +
+                    home + "." + TeamTable.getColTeamName() + " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getColHometeamId() + " = " + home + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + away + " ON " + MatchTable.getColAwayteamId() + " = " + away + "._id" +
-                    " WHERE " + home + "." + TeamTable.getColTeamName() + " = '" + fAlreadyPredicted.getHomeTeam().getTeamName() + "'" +
-                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + fAlreadyPredicted.getAwayTeam().getTeamName() + "'");
+                    " WHERE (" + home + "." + TeamTable.getColTeamName() + " = '" + fAlreadyPredicted.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + fAlreadyPredicted.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + pastWithPrediction.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + pastWithPrediction.getAwayTeam().getTeamName() + "')");
 
-            int dbId = -1;
-            String sqlMatchDate = "null";
+            int dbIdPast = -1;
+            int dbIdFuture = -1;
+            String sqlMatchDatePast = "null";
+            String sqlMatchDateFuture = "null";
             while (rs.next()) {
-                dbId = rs.getInt(1);
-                sqlMatchDate = rs.getString(2);
+                String homeTeamName = rs.getString(3);
+                if (homeTeamName.equals(pastWithPrediction.getHomeTeam().getTeamName())) {
+                    dbIdPast = rs.getInt(1);
+                    sqlMatchDatePast = rs.getString(2);
+                } else {
+                    dbIdFuture = rs.getInt(1);
+                    sqlMatchDateFuture = rs.getString(2);
+                }
             }
-            Assert.assertNotEquals(-1, dbId);
+            Assert.assertNotEquals(-1, dbIdFuture);
+            Assert.assertNotEquals(-1, dbIdPast);
 
-            MatchToPredict mtp = new MatchToPredict(fAlreadyPredicted.getHomeTeam().getTeamName(), fAlreadyPredicted.getAwayTeam().getTeamName(),
-                    s.getSeasonKey(), l.getName(), sqlMatchDate, dbId, -1);
-            ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtp));
+            MatchToPredict mtpFuture = new MatchToPredict(fAlreadyPredicted.getHomeTeam().getTeamName(), fAlreadyPredicted.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDateFuture, dbIdFuture, -1);
+            MatchToPredict mtpPast = new MatchToPredict(pastWithPrediction.getHomeTeam().getTeamName(), pastWithPrediction.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDatePast, dbIdPast, -1);
+            mtpFuture.setOurPredictions(new double[]{1337, 117, 23456}, false);
+            mtpPast.setOurPredictions(new double[]{1.1, 3.8, 21.3}, false);
+            ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtpPast, mtpFuture));
             DS_Insert.addPredictionsToDb(mtps);
 
             //test that only 1 game given back

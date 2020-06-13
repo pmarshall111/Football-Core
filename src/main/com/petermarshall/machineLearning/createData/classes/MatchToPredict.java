@@ -75,24 +75,24 @@ public class MatchToPredict {
         return awayTeamPlayers;
     }
 
-    public double[] getOurPredictions() {
-        return ourPredictions;
+    public double[] getOurPredictions(boolean withLineups) {
+        return withLineups ? ourPredictions : ourPredictionsNoLineups;
     }
 
-    public void setOurPredictions(double[] ourPredictions) {
-        this.ourPredictions = ourPredictions;
-    }
-
-    public double[] getOurPredictionsNoLineups() {
-        return ourPredictionsNoLineups;
-    }
-
-    public void setOurPredictionsNoLineups(double[] ourPredictionsNoLineups) {
-        this.ourPredictionsNoLineups = ourPredictionsNoLineups;
+    public void setOurPredictions(double[] ourPredictions, boolean withLineups) {
+        if (withLineups) {
+            this.ourPredictions = ourPredictions;
+        } else {
+            this.ourPredictionsNoLineups = ourPredictions;
+        }
     }
 
     public boolean hasPredictionsWithLineups() {
-        return ourPredictions != null;
+        return ourPredictions != null && ourPredictions.length == 3;
+    }
+
+    public boolean hasAnyPredictions() {
+        return hasPredictionsWithLineups() || (ourPredictionsNoLineups != null && ourPredictionsNoLineups.length == 3);
     }
 
     public HashMap<String, double[]> getBookiesOdds() {

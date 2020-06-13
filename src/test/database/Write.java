@@ -333,18 +333,18 @@ public class Write {
     public void canAddPredictionToDb() {
         //needs a single game in db and then create a prediction and see if prediction is there and added correctly.
         League l = new League(LeagueSeasonIds.EPL);
-        Season s = l.getSeason(20);
+        Season s = l.getSeason(19);
         Date date = DateHelper.subtractXDaysFromDate(new Date(),5);
         Match m1 = s.addNewMatch(new Match(new Team("home1"), new Team("away1"), date));
         Match m2 = s.addNewMatch(new Match(new Team("home2"), new Team("away2"), date));
         DS_Insert.writeLeagueToDb(l);
 
-        MatchToPredict withLineupPredictions = new MatchToPredict(m1.getHomeTeam().getTeamName(), m1.getAwayTeam().getTeamName(), "20-21",
+        MatchToPredict withLineupPredictions = new MatchToPredict(m1.getHomeTeam().getTeamName(), m1.getAwayTeam().getTeamName(), s.getSeasonKey(),
                 l.getName(), DateHelper.getSqlDate(date), 1, -1);
-        MatchToPredict noLineupPredictions = new MatchToPredict(m2.getHomeTeam().getTeamName(), m2.getAwayTeam().getTeamName(), "20-21",
+        MatchToPredict noLineupPredictions = new MatchToPredict(m2.getHomeTeam().getTeamName(), m2.getAwayTeam().getTeamName(), s.getSeasonKey(),
                 l.getName(), DateHelper.getSqlDate(date), 2, -1);
-        withLineupPredictions.setOurPredictions(new double[]{1.1,2.2,3.3});
-        noLineupPredictions.setOurPredictions(new double[]{1.5,2.5,3.5});
+        withLineupPredictions.setOurPredictions(new double[]{1.1,2.2,3.3}, true);
+        noLineupPredictions.setOurPredictions(new double[]{1.5,2.5,3.5}, false);
         LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
         String expectedBookie = "BettingIsForFools";
         double[] bookieOddsArr = new double[]{0.1,0.2,0.3};
@@ -377,9 +377,9 @@ public class Write {
                     //we'll test for withLineups
                     Assert.assertNotEquals(DateHelper.getSqlDate(date), predDate);
                     Assert.assertTrue(withLineups);
-                    Assert.assertEquals(homePred, withLineupPredictions.getOurPredictions()[0], 0.01);
-                    Assert.assertEquals(drawPred, withLineupPredictions.getOurPredictions()[1], 0.01);
-                    Assert.assertEquals(awayPred, withLineupPredictions.getOurPredictions()[2], 0.01);
+                    Assert.assertEquals(homePred, withLineupPredictions.getOurPredictions(true)[0], 0.01);
+                    Assert.assertEquals(drawPred, withLineupPredictions.getOurPredictions(true)[1], 0.01);
+                    Assert.assertEquals(awayPred, withLineupPredictions.getOurPredictions(true)[2], 0.01);
                     Assert.assertEquals(expectedBookie, bookie);
                     Assert.assertEquals(bookieOddsArr[0], homeOdds, 0.01);
                     Assert.assertEquals(bookieOddsArr[1], drawOdds, 0.01);
@@ -389,14 +389,14 @@ public class Write {
                     //looking at without lineups
                     Assert.assertNotEquals(DateHelper.getSqlDate(date), predDate);
                     Assert.assertFalse(withLineups);
-                    Assert.assertEquals(homePred, noLineupPredictions.getOurPredictionsNoLineups()[0], 0.01);
-                    Assert.assertEquals(drawPred, noLineupPredictions.getOurPredictionsNoLineups()[1], 0.01);
-                    Assert.assertEquals(awayPred, noLineupPredictions.getOurPredictionsNoLineups()[2], 0.01);
+                    Assert.assertEquals(homePred, noLineupPredictions.getOurPredictions(false)[0], 0.01);
+                    Assert.assertEquals(drawPred, noLineupPredictions.getOurPredictions(false)[1], 0.01);
+                    Assert.assertEquals(awayPred, noLineupPredictions.getOurPredictions(false)[2], 0.01);
                     Assert.assertEquals(expectedBookie, bookie);
                     Assert.assertEquals(bookieOddsArr[0], homeOdds, 0.01);
                     Assert.assertEquals(bookieOddsArr[1], drawOdds, 0.01);
                     Assert.assertEquals(bookieOddsArr[2], awayOdds, 0.01);
-                    Assert.assertEquals(1, matchId);
+                    Assert.assertEquals(2, matchId);
                 }
                 count++;
             }

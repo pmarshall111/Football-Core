@@ -193,23 +193,24 @@ public class DS_Insert {
         try (Statement statement = DS_Main.connection.createStatement()) {
 
             for (MatchToPredict mtp: mtps) {
-                boolean hasLineupPredictions = mtp.hasPredictionsWithLineups();
-                double[] predictions = hasLineupPredictions ? mtp.getOurPredictions() : mtp.getOurPredictionsNoLineups();
-                boolean hasBookieOdds = mtp.getBookiesOdds().keySet().size() > 0;
-                String bookieInsertionStr = "null, -1, -1, -1";
-                if (hasBookieOdds) {
-                    String bookie = mtp.getBookiesOdds().keySet().iterator().next();
-                    double[] bookieOdds = mtp.getBookiesOdds().get(bookie);
-                    bookieInsertionStr = bookie + ", " + bookieOdds[0] + ", " + bookieOdds[1] + ", " + bookieOdds[2];
+                if (mtp.hasAnyPredictions()) {
+                    boolean hasLineupPredictions = mtp.hasPredictionsWithLineups();
+                    double[] predictions = mtp.getOurPredictions(hasLineupPredictions);
+                    boolean hasBookieOdds = mtp.getBookiesOdds() != null && mtp.getBookiesOdds().keySet().size() > 0;
+                    String bookieInsertionStr = "null, -1, -1, -1";
+                    if (hasBookieOdds) {
+                        String bookie = mtp.getBookiesOdds().keySet().iterator().next();
+                        double[] bookieOdds = mtp.getBookiesOdds().get(bookie);
+                        bookieInsertionStr = "'" + bookie + "', " + bookieOdds[0] + ", " + bookieOdds[1] + ", " + bookieOdds[2];
+                    }
+                    statement.addBatch("INSERT INTO " + PredictionTable.getTableName() +
+                            " (" + PredictionTable.getColDate() + ", " + PredictionTable.getColWithLineups() + ", " +
+                            PredictionTable.getColHomePred() + ", " + PredictionTable.getColDrawPred() + ", " + PredictionTable.getColAwayPred() + ", " +
+                            PredictionTable.getColBookieName() + ", " + PredictionTable.getColHOdds() + ", " + PredictionTable.getColDOdds() + ", " +
+                            PredictionTable.getColAOdds() + ", " + PredictionTable.getColMatchId() + ") " +
+                            " VALUES ('" + DateHelper.getSqlDate(new Date()) + "', " + hasLineupPredictions + ", " + predictions[0] + ", " +
+                            predictions[1] + ", " + predictions[2] + ", " + bookieInsertionStr + ", " + mtp.getDatabase_id() + ")");
                 }
-
-                statement.addBatch("INSERT INTO " + PredictionTable.getTableName() +
-                        " (" + PredictionTable.getColDate() + ", " + PredictionTable.getColWithLineups() + ", " +
-                        PredictionTable.getColHomePred() + ", " + PredictionTable.getColDrawPred() + ", " + PredictionTable.getColAwayPred() + ", " +
-                        PredictionTable.getColBookieName() + ", " + PredictionTable.getColHOdds() + ", " + PredictionTable.getColDOdds() + ", " +
-                        PredictionTable.getColAOdds() + ", " + PredictionTable.getColMatchId() + ") " +
-                        " VALUES (" + DateHelper.getSqlDate(new Date()) + ", " + hasLineupPredictions + ", " + predictions[0] + ", " +
-                        predictions[1] + ", " + predictions[2] + ", " + bookieInsertionStr + ", " + mtp.getDatabase_id() + ")");
             }
 
             statement.executeBatch();

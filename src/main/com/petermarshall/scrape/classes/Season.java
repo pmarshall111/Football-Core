@@ -17,6 +17,10 @@ public class Season {
 
     public Match addNewMatch(Match match) {
         this.matches.add(match);
+        Team homeTeam = match.getHomeTeam();
+        Team awayTeam = match.getAwayTeam();
+        this.teams.putIfAbsent(homeTeam.getTeamName(), homeTeam);
+        this.teams.putIfAbsent(awayTeam.getTeamName(), awayTeam);
         return match;
     }
 

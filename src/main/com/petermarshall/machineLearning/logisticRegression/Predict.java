@@ -123,7 +123,7 @@ public class Predict {
 
                 double[] ourPredictions = predictForMatch(thetas, matchFeatures); //should be length 3 with percentage for win/draw/loss
                 if (ourPredictions.length != 3) throw new RuntimeException("Not all predictions have been added to our double array");
-                else match.setOurPredictions(ourPredictions);
+//                else match.setOurPredictions(ourPredictions);
             }
 
         } catch (IOException e) {
@@ -214,7 +214,7 @@ public class Predict {
      * Used to calculate whether we have a good bet for both current games and also missed games, so we only need to change this function for both.
      */
     private static void calculateIfGoodBetAndAddToTreeSet(MatchToPredict match, HashSet<String> allowedBookies, TreeSet<String> homeWin, TreeSet<String> awayWin) {
-        double[] ourPredictions = match.getOurPredictions();
+        double[] ourPredictions = match.getOurPredictions(true);
         if (ourPredictions.length != 3) throw new RuntimeException("We haven't calculated our predictions properly.");
 
         int biggestIndex = -1;
