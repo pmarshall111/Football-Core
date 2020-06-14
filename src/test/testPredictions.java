@@ -26,7 +26,7 @@ public class testPredictions {
 
         DS_Main.openProductionConnection();
 //        ArrayList<MatchToPredict> matches = DataSource.getBaseMatchesToPredict(earliestGame, latestGame);
-        ArrayList<MatchToPredict> matches = DS_Get.getMatchesToPredict(earliestGame, latestGame);
+        ArrayList<MatchToPredict> matches = DS_Get.getMatchesToPredictByDates(earliestGame, latestGame);
         DS_Main.closeConnection();
 
         SofaScore.addLineupsToGamesAboutToStart(matches);
@@ -40,10 +40,10 @@ public class testPredictions {
 //
 //
         HashSet<String> bookiesWeveSignedUpFor = new HashSet<>();
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BET365.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.SKYBET.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BETVICTOR.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getBookie());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BET365.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.SKYBET.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BETVICTOR.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getName());
 
         //method can be called without last argument, to assume that we've signed up for all bookies.
         boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, bookiesWeveSignedUpFor);

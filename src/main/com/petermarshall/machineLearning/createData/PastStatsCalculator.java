@@ -3,7 +3,7 @@ package com.petermarshall.machineLearning.createData;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.machineLearning.createData.classes.*;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +17,9 @@ public class PastStatsCalculator {
 
     //will do it for all leagues in db.
     public static ArrayList<TrainingMatch> getAllTrainingMatches() {
-        LeagueSeasonIds[] leagues = LeagueSeasonIds.values();
+        LeagueIdsAndData[] leagues = LeagueIdsAndData.values();
         ArrayList<TrainingMatch> allMatches = new ArrayList<>();
-        for (LeagueSeasonIds league : leagues) {
+        for (LeagueIdsAndData league : leagues) {
             ArrayList<PlayerMatchDbData> pmdbData = DS_Get.getLeagueData(league);
             allMatches.addAll(createLeaguesMatches(pmdbData, new HashMap<>()));
         }

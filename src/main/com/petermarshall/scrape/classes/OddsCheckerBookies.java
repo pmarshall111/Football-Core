@@ -1,6 +1,5 @@
 package com.petermarshall.scrape.classes;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 /*
@@ -39,34 +38,34 @@ public enum OddsCheckerBookies {
     
     private static HashSet<String> allBookies = new HashSet<>();
     static {
-        allBookies.add(BET365.getBookie());
-        allBookies.add(SKYBET.getBookie());
-        allBookies.add(LADBROKES.getBookie());
-        allBookies.add(WILLIAM_HILL.getBookie());
-        allBookies.add(MARATHON_BET.getBookie());
-        allBookies.add(BETFAIR_SPORTSBOOK.getBookie());
-        allBookies.add(BETVICTOR.getBookie());
-        allBookies.add(PADDY_POWER.getBookie());
-        allBookies.add(UNIBET.getBookie());
-        allBookies.add(CORAL.getBookie());
-        allBookies.add(BETFRED.getBookie());
-        allBookies.add(BOYLE_SPORTS.getBookie());
-        allBookies.add(BLACK_TYPE.getBookie());
-        allBookies.add(REDZONE.getBookie());
-        allBookies.add(BETWAY.getBookie());
-        allBookies.add(BETBRIGHT.getBookie());
-        allBookies.add(TEN_BET.getBookie());
-        allBookies.add(SPORTINGBET.getBookie());
-        allBookies.add(ONE_EIGHT_EIGHT_BET.getBookie());
-        allBookies.add(EIGHT_EIGHT_EIGHT_SPORT.getBookie());
-        allBookies.add(SPORTPESA.getBookie());
-        allBookies.add(SPREADEX.getBookie());
-        allBookies.add(ROYAL_PANDA.getBookie());
-        allBookies.add(SPORT_NATION.getBookie());
-        allBookies.add(BETFAIR.getBookie());
-        allBookies.add(BETDAQ.getBookie());
-        allBookies.add(MATCHBOOK.getBookie());
-        allBookies.add(SMARKETS.getBookie());
+        allBookies.add(BET365.getName());
+        allBookies.add(SKYBET.getName());
+        allBookies.add(LADBROKES.getName());
+        allBookies.add(WILLIAM_HILL.getName());
+        allBookies.add(MARATHON_BET.getName());
+        allBookies.add(BETFAIR_SPORTSBOOK.getName());
+        allBookies.add(BETVICTOR.getName());
+        allBookies.add(PADDY_POWER.getName());
+        allBookies.add(UNIBET.getName());
+        allBookies.add(CORAL.getName());
+        allBookies.add(BETFRED.getName());
+        allBookies.add(BOYLE_SPORTS.getName());
+        allBookies.add(BLACK_TYPE.getName());
+        allBookies.add(REDZONE.getName());
+        allBookies.add(BETWAY.getName());
+        allBookies.add(BETBRIGHT.getName());
+        allBookies.add(TEN_BET.getName());
+        allBookies.add(SPORTINGBET.getName());
+        allBookies.add(ONE_EIGHT_EIGHT_BET.getName());
+        allBookies.add(EIGHT_EIGHT_EIGHT_SPORT.getName());
+        allBookies.add(SPORTPESA.getName());
+        allBookies.add(SPREADEX.getName());
+        allBookies.add(ROYAL_PANDA.getName());
+        allBookies.add(SPORT_NATION.getName());
+        allBookies.add(BETFAIR.getName());
+        allBookies.add(BETDAQ.getName());
+        allBookies.add(MATCHBOOK.getName());
+        allBookies.add(SMARKETS.getName());
     }
     
     private final String bookie;
@@ -75,7 +74,7 @@ public enum OddsCheckerBookies {
         this.bookie = bookie;
     }
 
-    public String getBookie() {
+    public String getName() {
         return bookie;
     }
 

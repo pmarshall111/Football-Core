@@ -2,7 +2,6 @@ package database;
 
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.scrape.classes.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -123,8 +122,8 @@ public class GenerateData {
     }
 
     private void generateLeagues() {
-        League epl = new League(LeagueSeasonIds.EPL);
-        League la_liga = new League(LeagueSeasonIds.LA_LIGA);
+        League epl = new League(LeagueIdsAndData.EPL);
+        League la_liga = new League(LeagueIdsAndData.LA_LIGA);
         leagues.add(epl);
         leagues.add(la_liga);
     }

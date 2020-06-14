@@ -15,21 +15,21 @@ import java.util.*;
 public class League {
     private final String name;
     private HashMap<String, Season> seasons;
-    private LeagueSeasonIds seasonIds;
+    private LeagueIdsAndData seasonIds;
 
     public static void main(String[] args) {
-        League epl = new League(LeagueSeasonIds.EPL);
+        League epl = new League(LeagueIdsAndData.EPL);
         epl.scrapeOneSeason(19);
         System.out.println("hi");
     }
 
     //constructor will create a league with a bunch of blank seasons from the leagueSeasonIds.
-    public League(LeagueSeasonIds leagueSeasonIds) {
-        this.name = leagueSeasonIds.name();
+    public League(LeagueIdsAndData leagueIdsAndData) {
+        this.name = leagueIdsAndData.name();
         this.seasons = new HashMap<>();
-        this.seasonIds = leagueSeasonIds;
+        this.seasonIds = leagueIdsAndData;
 
-        Iterator seasonKeys = leagueSeasonIds.getSeasonIds().keySet().iterator();
+        Iterator seasonKeys = leagueIdsAndData.getSeasonIds().keySet().iterator();
         while (seasonKeys.hasNext()) {
             String seasonYear = (String) seasonKeys.next();
             this.seasons.put(seasonYear, new Season(seasonYear));
@@ -131,7 +131,7 @@ public class League {
         return new ArrayList<>(seasons.values());
     }
 
-    public LeagueSeasonIds getSeasonIds() {
+    public LeagueIdsAndData getSeasonIds() {
         return seasonIds;
     }
 

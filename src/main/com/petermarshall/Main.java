@@ -1,7 +1,7 @@
 package com.petermarshall;
 
 import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import org.apache.commons.logging.LogFactory;
 
 public class Main {
@@ -101,7 +101,7 @@ public class Main {
 //            System.out.println(v.name());
 //        }
 
-        League league = new League(LeagueSeasonIds.EPL);
+        League league = new League(LeagueIdsAndData.EPL);
         league.scrapeAndSavePlayedGames();
 
         System.out.println("pausing here");

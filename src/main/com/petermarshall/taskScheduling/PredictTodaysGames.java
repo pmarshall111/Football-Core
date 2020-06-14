@@ -41,10 +41,10 @@ public class PredictTodaysGames {
         Timer timer = new Timer();
 
         HashSet<String> bookiesWeveSignedUpFor = new HashSet<>();
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BET365.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.SKYBET.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BETVICTOR.getBookie());
-        bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getBookie());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BET365.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.SKYBET.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.BETVICTOR.getName());
+        bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getName());
 
 
         for (Date scrapeTime: scrapingTimes) {
@@ -80,7 +80,7 @@ public class PredictTodaysGames {
 
 
         DS_Main.openProductionConnection();
-        ArrayList<MatchToPredict> matchesHappeningNow = DS_Get.getMatchesToPredict(earliestGame, latestGame);
+        ArrayList<MatchToPredict> matchesHappeningNow = DS_Get.getMatchesToPredictByDates(earliestGame, latestGame);
         DS_Main.closeConnection();
 
 

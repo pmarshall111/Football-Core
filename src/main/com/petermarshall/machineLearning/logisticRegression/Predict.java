@@ -318,7 +318,7 @@ public class Predict {
     //do we really want to look at missed bets?
     public static void missedGamesBetDecisionAndLog(ArrayList<MatchToPredict> matches) {
         HashSet<String> allowedBookies = new HashSet<>();
-        allowedBookies.add(OddsCheckerBookies.BET365.getBookie());
+        allowedBookies.add(OddsCheckerBookies.BET365.getName());
 
 //        DS_Main.openConnection();
 

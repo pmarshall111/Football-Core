@@ -1,14 +1,8 @@
 package com.petermarshall.taskScheduling;
 
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.DataSource;
-import com.petermarshall.scrape.SofaScore;
-import com.petermarshall.scrape.Understat;
 import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
 import com.petermarshall.scrape.classes.Season;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /*

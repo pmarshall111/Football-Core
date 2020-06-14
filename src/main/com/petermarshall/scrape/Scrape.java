@@ -3,7 +3,7 @@ package com.petermarshall.scrape;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 
 public class Scrape {
     /*
@@ -11,14 +11,14 @@ public class Scrape {
      * Gets all stats and adds them to the database.
      */
     public static void scrapeRecentlyPlayedMatches() {
-        for (LeagueSeasonIds leagueSeasonIds: LeagueSeasonIds.values()) {
-            League league = new League(leagueSeasonIds);
+        for (LeagueIdsAndData leagueIdsAndData : LeagueIdsAndData.values()) {
+            League league = new League(leagueIdsAndData);
             league.scrapeAndSavePlayedGames();
         }
     }
 
     public static void scrapeEverythingIntoDbFirstTime() {
-        LeagueSeasonIds[] leagueIds = LeagueSeasonIds.values();
+        LeagueIdsAndData[] leagueIds = LeagueIdsAndData.values();
         for (int i = 0; i<leagueIds.length; i++) {
             League league = new League(leagueIds[i]);
             System.out.println("Starting to scrape league " + (i+1) + " out of " + leagueIds.length + ". Current league: " + league.getName());
@@ -28,15 +28,15 @@ public class Scrape {
     }
 
     public static void scrapeInOneSeason(int seasonYearStart) {
-        for (LeagueSeasonIds leagueSeasonIds: LeagueSeasonIds.values()) {
-            League league = new League(leagueSeasonIds);
+        for (LeagueIdsAndData leagueIdsAndData : LeagueIdsAndData.values()) {
+            League league = new League(leagueIdsAndData);
             league.scrapeOneSeason(seasonYearStart);
             writeToDb(league);
         }
     }
 
-    public static void scrapeOneSeasonOfOneLeague(int seasonYearStart, LeagueSeasonIds leagueSeasonIds) {
-        League league = new League(leagueSeasonIds);
+    public static void scrapeOneSeasonOfOneLeague(int seasonYearStart, LeagueIdsAndData leagueIdsAndData) {
+        League league = new League(leagueIdsAndData);
         league.scrapeOneSeason(seasonYearStart);
         writeToDb(league);
     }
@@ -56,7 +56,7 @@ public class Scrape {
 //        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.SERIE_A);
 //        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.LIGUE_1);
 //        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.BUNDESLIGA);
-        scrapeOneSeasonOfOneLeague(18, LeagueSeasonIds.RUSSIA);
+        scrapeOneSeasonOfOneLeague(18, LeagueIdsAndData.RUSSIA);
 
 
         //NOTE: COULD NOT GET ANY DATA FOR RUSSIA!

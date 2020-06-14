@@ -24,6 +24,7 @@ public class MatchToPredict {
     //ids here to make it quicker to update the db with the bet if we decide to make a bet, and sofascore to quickly get scraping data.
     private final int database_id;
     private final int sofascore_id;
+    private final ArrayList<BetDecision> goodBets;
 
     public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueName, String sqlDateString, int database_id, int sofascore_id) {
         this.homeTeamName = homeTeamName;
@@ -33,6 +34,7 @@ public class MatchToPredict {
         this.sqlDateString = sqlDateString;
         this.database_id = database_id;
         this.sofascore_id = sofascore_id;
+        this.goodBets = new ArrayList<>();
     }
 
     public int getSofascore_id() {
@@ -99,16 +101,6 @@ public class MatchToPredict {
         return bookiesOdds;
     }
 
-    public double getHomeOdds() {
-        return bookiesOdds.get(0)[0];
-    }
-    public double getDrawOdds() {
-        return bookiesOdds.get(0)[1];
-    }
-    public double getAwayOdds() {
-        return bookiesOdds.get(0)[2];
-    }
-
     public void setBookiesOdds(LinkedHashMap<String, double[]> bookiesOdds) {
         this.bookiesOdds = bookiesOdds;
     }
@@ -153,4 +145,11 @@ public class MatchToPredict {
         return database_id;
     }
 
+    public ArrayList<BetDecision> getGoodBets() {
+        return goodBets;
+    }
+
+    public void addGoodBet(BetDecision goodBet) {
+        goodBets.add(goodBet);
+    }
 }

@@ -7,7 +7,7 @@ import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.PastStatsCalculator;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,9 +31,9 @@ public class TrainingMatch {
         //will get out all data from the whole league (as that is what the model will be trained on), and also get the data from the seaason along with the historic data as that
         //is how the data will be predicted on
         DS_Main.openProductionConnection();
-        epl2018Data = DS_Get.getLeagueData(LeagueSeasonIds.EPL.name(), 18);
-        pre2018EplMatchHistory = DS_Get.getMatchesBetweenTeams(LeagueSeasonIds.EPL.name(), createMatchesToGetAllTeamsHistoryOut(), 2);
-        allEplData = DS_Get.getLeagueData(LeagueSeasonIds.EPL);
+        epl2018Data = DS_Get.getLeagueData(LeagueIdsAndData.EPL.name(), 18);
+        pre2018EplMatchHistory = DS_Get.getMatchesBetweenTeams(LeagueIdsAndData.EPL.name(), createMatchesToGetAllTeamsHistoryOut(), 2);
+        allEplData = DS_Get.getLeagueData(LeagueIdsAndData.EPL);
         DS_Main.closeConnection();
 
         ArrayList<MatchToPredict> matches = new ArrayList<>();
@@ -48,7 +48,7 @@ public class TrainingMatch {
         for (int i = 0; i<teamsInEpl2018.length; i+=2) {
             String t1 = teamsInEpl2018[i];
             String t2 = teamsInEpl2018[i+1];
-            MatchToPredict mtp = new MatchToPredict(t1,t2,"18-19", LeagueSeasonIds.EPL.name(),
+            MatchToPredict mtp = new MatchToPredict(t1,t2,"18-19", LeagueIdsAndData.EPL.name(),
                     DateHelper.getSqlDate(DateHelper.createDateyyyyMMdd("2018", "06","01")),-1, -1);
             matchesWithAllTeams.add(mtp);
         }

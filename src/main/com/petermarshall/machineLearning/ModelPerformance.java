@@ -154,7 +154,7 @@ public class ModelPerformance {
 //        }
     }
 
-    private static double calcProbabilityFromOdds(double odds) {
+    public static double calcProbabilityFromOdds(double odds) {
         return 1/odds;
     }
 }

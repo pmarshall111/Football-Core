@@ -2,7 +2,6 @@ package scrape;
 
 import com.petermarshall.scrape.classes.*;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,7 +14,7 @@ public class Understat {
 
     @BeforeClass
     public static void scrapeGames() {
-        Understat.epl = new League(LeagueSeasonIds.EPL);
+        Understat.epl = new League(LeagueIdsAndData.EPL);
         com.petermarshall.scrape.Understat.addLeaguesGames(epl);
     }
 

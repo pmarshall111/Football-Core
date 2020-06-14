@@ -101,7 +101,7 @@ public class Get {
     @Test
     public void canGetOutNewMatchesToPredict() {
         //testing that only games in the future that are the first game for both teams are got out
-        League l = new League(LeagueSeasonIds.EPL);
+        League l = new League(LeagueIdsAndData.EPL);
         Season s = l.getSeason(19);
         Team t1 = s.addNewTeam(new Team("team1")), t2 = s.addNewTeam(new Team("team2")),
                 t3 = s.addNewTeam(new Team("team3")), t4 = s.addNewTeam(new Team("team4")),

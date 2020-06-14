@@ -8,9 +8,8 @@ import com.petermarshall.database.tables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
-import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.Season;
 
 import java.sql.ResultSet;
@@ -86,8 +85,7 @@ public class DS_Get {
                     " LIMIT " + "1");
 
             while (dateStringRS.next()) {
-                String dateString = dateStringRS.getString(1);
-                return dateString;
+                return dateStringRS.getString(1);
             }
             //otherwise there are no played games in the db.
             return DateHelper.getSqlDate(new Date(0));
@@ -98,7 +96,7 @@ public class DS_Get {
         }
     }
 
-    public static ArrayList<MatchToPredict> getMatchesToPredict(java.util.Date earliestKickoff, java.util.Date latestKickoff) {
+    public static ArrayList<MatchToPredict> getMatchesToPredictByDates(java.util.Date earliestKickoff, java.util.Date latestKickoff) {
         ArrayList<MatchToPredict> matches = new ArrayList<>();
 
         try (Statement statement = DS_Main.connection.createStatement()) {
@@ -197,8 +195,8 @@ public class DS_Get {
      * Teams, Matches, leagues.
      * From here we can calculate our training data and save into it's own database or file so we can recall whenever we want.
      */
-    public static ArrayList<PlayerMatchDbData> getLeagueData(LeagueSeasonIds leagueSeasonIds) {
-        return getLeagueData(leagueSeasonIds.name(), -1);
+    public static ArrayList<PlayerMatchDbData> getLeagueData(LeagueIdsAndData leagueIdsAndData) {
+        return getLeagueData(leagueIdsAndData.name(), -1);
     }
 
     public static ArrayList<PlayerMatchDbData> getLeagueData(String leagueName, int seasonYearStart) {
@@ -348,7 +346,11 @@ public class DS_Get {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
+
+//    public static boolean needToScrapeResults() {
+//
+//    }
 }

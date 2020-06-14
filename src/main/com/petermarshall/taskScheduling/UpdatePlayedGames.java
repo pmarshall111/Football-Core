@@ -2,7 +2,7 @@ package com.petermarshall.taskScheduling;
 
 import com.petermarshall.scrape.Scrape;
 import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueSeasonIds;
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 
 public class UpdatePlayedGames {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class UpdatePlayedGames {
     }
 
     public static void scrapeEPL() {
-        League EPL = new League(LeagueSeasonIds.EPL);
+        League EPL = new League(LeagueIdsAndData.EPL);
         EPL.scrapeAndSavePlayedGames();
     }
 }

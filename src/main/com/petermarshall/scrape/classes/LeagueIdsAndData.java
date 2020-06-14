@@ -12,7 +12,7 @@ import java.util.HashMap;
  * corresponds to that season. Later season id's follow.
  * NOTE: once added new season Ids here, the seasons must be scraped to the database by creating a call to Scrape.scrapeOneSeason();
  */
-public enum LeagueSeasonIds {
+public enum LeagueIdsAndData {
     EPL("EPL", "Premier League", "England", 17, new int[]{-1, 10356, 11733, 13380, 17359, 23776}),
     LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{-1, 10495, 11906, 13662, 18020, 24127}),
     BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, -1, 11818, 13477, 17597, 23538}),
@@ -33,7 +33,7 @@ public enum LeagueSeasonIds {
     private final String sofaScoreLeagueName;
     private final String sofaScoreCountryName;
 
-    LeagueSeasonIds(String understatUrl, String sofaScoreLeagueName, String sofaScoreCountryName, int LeagueId, int[] ids) {
+    LeagueIdsAndData(String understatUrl, String sofaScoreLeagueName, String sofaScoreCountryName, int LeagueId, int[] ids) {
         this.understatUrl = understatUrl;
         this.sofaScoreLeagueName = sofaScoreLeagueName;
         this.leagueId = LeagueId;

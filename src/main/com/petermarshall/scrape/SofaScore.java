@@ -398,7 +398,7 @@ public class SofaScore {
      */
     public static ArrayList<Date> updateTodaysKickoffTimes() {
         ArrayList<League> leagues = new ArrayList<>();
-        for (LeagueSeasonIds ids :LeagueSeasonIds.values()) {
+        for (LeagueIdsAndData ids : LeagueIdsAndData.values()) {
             leagues.add(new League(ids));
         }
 

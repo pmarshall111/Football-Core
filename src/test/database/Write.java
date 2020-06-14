@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -332,7 +331,7 @@ public class Write {
     @Test
     public void canAddPredictionToDb() {
         //needs a single game in db and then create a prediction and see if prediction is there and added correctly.
-        League l = new League(LeagueSeasonIds.EPL);
+        League l = new League(LeagueIdsAndData.EPL);
         Season s = l.getSeason(19);
         Date date = DateHelper.subtractXDaysFromDate(new Date(),5);
         Match m1 = s.addNewMatch(new Match(new Team("home1"), new Team("away1"), date));

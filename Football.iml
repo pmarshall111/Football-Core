@@ -9,6 +9,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
+    <content url="file://$USER_HOME$/IdeaProjects/Bet365/src">
+      <sourceFolder url="file://$USER_HOME$/IdeaProjects/Bet365/src" isTestSource="false" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
@@ -255,5 +258,7 @@
     <orderEntry type="library" name="org.datavec:datavec-api:1.0.0-beta6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" name="org.seleniumhq.selenium:selenium-java:3.141.59" level="project" />
+    <orderEntry type="module" module-name="Bet365Scraper" />
   </component>
 </module>
