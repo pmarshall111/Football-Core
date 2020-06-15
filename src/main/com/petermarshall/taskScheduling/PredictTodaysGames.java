@@ -86,7 +86,7 @@ public class PredictTodaysGames {
 
 
         SofaScore.addLineupsToGamesAboutToStart(matchesHappeningNow);
-        PastStatsCalculator.addFeaturesToPredict(matchesHappeningNow);
+        PastStatsCalculator.addFeaturesToPredict(matchesHappeningNow, false);
         //for each team from all the games in the database.
         OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
         Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);

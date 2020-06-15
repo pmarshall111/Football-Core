@@ -60,14 +60,14 @@ public class Get {
         MatchToPredict mtp = new MatchToPredict(home.getTeamName(), away.getTeamName(), seasonKey, l.getName(), DateHelper.getSqlDate(new Date()), 1, 1);
         ArrayList<MatchToPredict> matches = new ArrayList<>(Arrays.asList(mtp));
         //default matches from GenerateData should be 1 per pair of teams
-        ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches,5);
+        ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches);
         Assert.assertEquals(1, pastMatches.size());
         //add new match with the home team now playing away (vice versa). Should now have 2 games total, but only 1 venue specific
         s.addNewMatch(new Match(away, home, new Date()));
         DS_Insert.writeLeagueToDb(l);
-        pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches,5);
+        pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches);
         Assert.assertEquals(2, pastMatches.size());
-        pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches,5);
+        pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches);
         Assert.assertEquals(1, pastMatches.size());
     }
 

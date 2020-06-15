@@ -21,14 +21,14 @@ public class PastStatsCalculator {
         ArrayList<TrainingMatch> allMatches = new ArrayList<>();
         for (LeagueIdsAndData league : leagues) {
             ArrayList<PlayerMatchDbData> pmdbData = DS_Get.getLeagueData(league);
-            allMatches.addAll(createLeaguesMatches(pmdbData, new HashMap<>()));
+            allMatches.addAll(createLeaguesMatches(pmdbData, new HashMap<>(), true));
         }
         return allMatches;
     }
 
     //func will be given the leagues for which the season must be calculated and also the historic results
     //TODO: will need tests for this. Can get historic matches out correctly etc
-    public static void addFeaturesToPredict(ArrayList<MatchToPredict> matches) {
+    public static void addFeaturesToPredict(ArrayList<MatchToPredict> matches, boolean isRunInTestSuite) {
         //first need to get an idea of what leagues we need
         HashMap<String, ArrayList<MatchToPredict>> leagueMatches = new HashMap<>();
         for (MatchToPredict m : matches) {
@@ -39,29 +39,31 @@ public class PastStatsCalculator {
         //gets the current seasons matches to create stats for each teams season thus far
         //also gets previous matches in past seasons from the database
         leagueMatches.forEach((league, toPredicts) -> {
-            ArrayList<PlayerMatchDbData> playerRatings = DS_Get.getLeagueData(league, DateHelper.getStartYearForCurrentSeason());
-            ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(league, matches, NUMB_SEASONS_HISTORY);
+            ArrayList<PlayerMatchDbData> playerRatings = DS_Get.getLeagueData(league, matches.get(0).getSeasonYearStart());
+            ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(league, matches);
             HashMap<String, TrainingTeam> teamsInLeague = createHistoricMatchups(pastMatches);
-            //don't care about return value here. the func will go through and update all teams seasons to the most up to date vals
-            createLeaguesMatches(playerRatings, teamsInLeague);
+            boolean saveLastMatch = isRunInTestSuite ? false : true;
+            createLeaguesMatches(playerRatings, teamsInLeague, saveLastMatch);
             toPredicts.forEach(mtp -> {
-                int currSeason = DateHelper.getStartYearForCurrentSeason();
+                int currSeason = mtp.getSeasonYearStart();
                 TrainingTeam homeTeam = teamsInLeague.get(mtp.getHomeTeamName());
                 TrainingTeam awayTeam = teamsInLeague.get(mtp.getAwayTeamName());
                 TrainingTeamsSeason homeSeason = homeTeam.getTeamsSeason(currSeason);
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
-                ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                        mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                                                                        currSeason,-1);
+                if (mtp.getHomeTeamPlayers() != null && mtp.getAwayTeamPlayers() != null) {
+                    ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
+                            mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
+                            currSeason, -1);
+                    mtp.setFeatures(features);
+                }
                 ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                                         currSeason,-1);
-                mtp.setFeatures(features);
                 mtp.setFeaturesNoLineups(featuresNoLineups);
             });
         });
     }
 
-    private static ArrayList<TrainingMatch> createLeaguesMatches(ArrayList<PlayerMatchDbData> playerRatings, HashMap<String, TrainingTeam> teamsInLeague) {
+    private static ArrayList<TrainingMatch> createLeaguesMatches(ArrayList<PlayerMatchDbData> playerRatings, HashMap<String, TrainingTeam> teamsInLeague, boolean saveLastMatch) {
         int lastMatchId = -1; //to be used to see if we come across a new match
         TrainingTeam homeTeam = null;
         TrainingTeamsSeason homeSeason = null;
@@ -102,7 +104,7 @@ public class PastStatsCalculator {
             lastRecordData = data;
         }
         //saving 1 last time to save the final record.
-        if (data != null) {
+        if (data != null && saveLastMatch) {
             saveData(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup, data, matches);
         }
         return matches;
@@ -124,19 +126,6 @@ public class PastStatsCalculator {
         }
         return teamsInLeague;
     }
-
-//    private static void storeSeasonStats(Collection<TrainingTeam> teams) {
-//        HashSet<TrainingTeamsSeason> recentSeasons = new HashSet<>();
-//        int seasonYearStart = DateHelper.getStartYearForCurrentSeason();
-//        teams.forEach(team -> {
-//            TrainingTeamsSeason season = team.getTeamsSeason(seasonYearStart);
-//            if (season != null) {
-//                recentSeasons.add(season);
-//            }
-//        });
-//
-//        DS_Insert.storeSeasonStats(recentSeasons);
-//    }
 
     //NOTE: need to create the training match first before saving the games stats. We want to train on the state of the team before the game.
     private static void saveData(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason, TrainingTeam awayTeam, TrainingTeamsSeason awaySeason, HashMap<String, Player> homeLineup, HashMap<String, Player> awayLineup,
@@ -166,13 +155,11 @@ public class PastStatsCalculator {
         }
     }
 
-    private static HashMap<String,Player> getStartingXI(HashMap<String,Player> allPlayers) {
+    public static HashMap<String,Player> getStartingXI(HashMap<String,Player> allPlayers) {
         if (allPlayers.size() == 11) return allPlayers;
         HashMap<String,Player> startingXI = new HashMap<>();
         ArrayList<Player> players = new ArrayList<>(allPlayers.values());
-        players.sort((p1,p2) -> {
-            return p2.getOvrMins() - p1.getOvrMins();
-        });
+        players.sort((p1,p2) -> p2.getOvrMins() - p1.getOvrMins());
         for (int i = 0; i<11; i++) {
             Player p = players.get(i);
             startingXI.put(p.getPlayerName(), p);

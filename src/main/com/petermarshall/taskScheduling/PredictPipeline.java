@@ -31,7 +31,9 @@ public class PredictPipeline {
 
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
-            PastStatsCalculator.addFeaturesToPredict(mtps);
+            //matches need lineups for this func!
+            //need to edit such that if there are no players involved we only create a non-lineup prediction
+            PastStatsCalculator.addFeaturesToPredict(mtps, false);
             ModelPredict.addBasePredictions(mtps);
             OddsChecker.addBookiesOddsForGames(mtps);
             DS_Insert.addPredictionsToDb(mtps);

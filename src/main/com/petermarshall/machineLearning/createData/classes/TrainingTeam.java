@@ -64,11 +64,11 @@ public class TrainingTeam {
 
             for (TrainingMatch match: previousMatches) {
                 if (match.isInOrAfterSeasonYearStart(seasonYearStart)) {
-                    if (gamesSelector.getSetting() != 2) {
+                    if (!gamesSelector.equals(GamesSelector.ONLY_AWAY_GAMES) && match.isHomeTeam(this.teamName)) {
                         points += match.getPoints(this.teamName);
                         matches++;
                     }
-                    else if (gamesSelector.getSetting() != 1) {
+                    else if (!gamesSelector.equals(GamesSelector.ONLY_HOME_GAMES) && !match.isHomeTeam(this.teamName)) {
                         points += match.getPoints(this.teamName);
                         matches++;
                     }

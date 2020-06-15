@@ -30,7 +30,7 @@ public class testPredictions {
         DS_Main.closeConnection();
 
         SofaScore.addLineupsToGamesAboutToStart(matches);
-        PastStatsCalculator.addFeaturesToPredict(matches);
+        PastStatsCalculator.addFeaturesToPredict(matches, true);
         OddsChecker.addBookiesOddsForGames(matches);
         Predict.addOurProbabilitiesToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
 

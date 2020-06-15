@@ -32,12 +32,12 @@ public class TrainingMatch {
         //is how the data will be predicted on
         DS_Main.openProductionConnection();
         epl2018Data = DS_Get.getLeagueData(LeagueIdsAndData.EPL.name(), 18);
-        pre2018EplMatchHistory = DS_Get.getMatchesBetweenTeams(LeagueIdsAndData.EPL.name(), createMatchesToGetAllTeamsHistoryOut(), 2);
+        pre2018EplMatchHistory = DS_Get.getMatchesBetweenTeams(LeagueIdsAndData.EPL.name(), createMatchesToGetAllTeamsHistoryOut());
         allEplData = DS_Get.getLeagueData(LeagueIdsAndData.EPL);
         DS_Main.closeConnection();
 
         ArrayList<MatchToPredict> matches = new ArrayList<>();
-        PastStatsCalculator.addFeaturesToPredict(matches);
+        PastStatsCalculator.addFeaturesToPredict(matches, true);
     }
 
     private ArrayList<MatchToPredict> createMatchesToGetAllTeamsHistoryOut() {

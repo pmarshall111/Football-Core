@@ -258,13 +258,12 @@ public class DS_Get {
 
     //Used when predicting matches just in 1 season. Here, the player ratings for previous seasons are not needed, but the results between teams are.
     //So this method is used to reduce the data we need to get from the DB
-    public static ArrayList<HistoricMatchDbData> getMatchesBetweenTeams(String leagueName, ArrayList<MatchToPredict> matches, int numbSeasonsPrior) {
+    public static ArrayList<HistoricMatchDbData> getMatchesBetweenTeams(String leagueName, ArrayList<MatchToPredict> matches) {
         int currSeasonStart = DateHelper.getStartYearForCurrentSeason();
-        int earliestSeason = currSeasonStart - numbSeasonsPrior;
 
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() +
+                    MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
