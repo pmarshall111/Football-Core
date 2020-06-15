@@ -1,6 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.Result;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -396,12 +397,11 @@ public class TrainingMatch {
 
     /*
      * To be used when creating csv file.
-     * 1 represents home win. 2 is draw, 3 is away win
      */
     public int getResult() {
-        if (homeScore == awayScore) return 2;
-        else if (homeScore > awayScore) return 1;
-        else return 3;
+        if (homeScore == awayScore) return Result.DRAW.getSqlIntCode();
+        else if (homeScore > awayScore) return Result.HOME_WIN.getSqlIntCode();
+        else return Result.AWAY_WIN.getSqlIntCode();
     }
 
     public boolean isHomeTeam(String teamName) {

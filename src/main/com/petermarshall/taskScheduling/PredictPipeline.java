@@ -1,8 +1,7 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.BetPlaced;
-import com.petermarshall.Winner;
-import com.petermarshall.database.WhenGameWasPredicted;
+import com.petermarshall.database.Result;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
@@ -39,6 +38,7 @@ public class PredictPipeline {
             DecideBet.addDecision(mtps);
             mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
             if (mtps.size() > 0) {
+                //not a problem to go through individually as not expecting to have many bets at the same time.
                 for (MatchToPredict mtp: mtps) {
                     String leagueName = translateLeagueName(mtp.getLeagueName());
                     String homeTeam = mtp.getHomeTeamName();
@@ -47,7 +47,8 @@ public class PredictPipeline {
                         if (bd.getBookie().equals(OddsCheckerBookies.BET365)) {
                             BetPlaced bet = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSetting(), 5, bd.getMinOdds());
                             if (bet.isBetSuccessful()) {
-                                DS_Insert.logBetPlaced(new MatchLog(mtp, bd.getWinner(), bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
+                                DS_Insert.logBetPlaced(
+                                        new MatchLog(mtp, Result.convertFromWinnerToRbOn(bd.getWinner()), bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
                             }
                         }
                     }

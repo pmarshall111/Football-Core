@@ -1,11 +1,10 @@
 package database;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.ResultBetOn;
-import com.petermarshall.database.WhenGameWasPredicted;
+import com.petermarshall.database.Result;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.tables.*;
+import com.petermarshall.database.dbTables.*;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
@@ -300,11 +299,11 @@ public class Write {
             MatchToPredict mtp = new MatchToPredict(m.getHomeTeam().getTeamName(), m.getAwayTeam().getTeamName(), s.getSeasonKey(),
                     l.getName(), sqlMatchDate, dbId,m.getSofaScoreGameId());
 
-            ResultBetOn rbOn = ResultBetOn.HOME_WIN;
+            Result rbOn = Result.HOME_WIN;
             String bookieUsed = "BettingIsForFools";
             double odds = 1.22;
             int stake = 5;
-            DS_Insert.logBetPlaced(new MatchLog(mtp, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME, rbOn, bookieUsed, odds, stake));
+            DS_Insert.logBetPlaced(new MatchLog(mtp, rbOn, bookieUsed, odds, stake));
 
             ResultSet rsBet = stmt.executeQuery("SELECT COUNT(*) FROM " + BetTable.getTableName());
             while (rsBet.next()) {

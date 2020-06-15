@@ -1,21 +1,5 @@
 package com.petermarshall.database.datasource;
 
-import com.petermarshall.*;
-import com.petermarshall.database.BetResult;
-import com.petermarshall.database.BetResultsTotalled;
-import com.petermarshall.database.WhenGameWasPredicted;
-import com.petermarshall.logging.MatchLog;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.database.tables.*;
-import com.petermarshall.mail.UptimeData;
-import com.petermarshall.scrape.classes.*;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-
 //TODO: Test DB initialisation via Java code is the same as in SQL.
 
 /*

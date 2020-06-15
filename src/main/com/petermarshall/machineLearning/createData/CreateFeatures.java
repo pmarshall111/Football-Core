@@ -15,7 +15,7 @@ public class CreateFeatures {
                                                 ArrayList<String> homePlayersNames, ArrayList<String> awayPlayersNames,
                                                 int seasonYearStart, int result) {
         ArrayList<Double> features = new ArrayList<>();
-        features.add((double) result-1);
+        features.add((double) result);
 
         //adding bias parameter of 1
         features.add(1d);
@@ -99,7 +99,7 @@ public class CreateFeatures {
                                                 TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
                                                 int seasonYearStart, int result) {
         ArrayList<Double> features = new ArrayList<>();
-        features.add((double) result-1);
+        features.add((double) result);
 
         //adding bias parameter of 1
         features.add(1d);

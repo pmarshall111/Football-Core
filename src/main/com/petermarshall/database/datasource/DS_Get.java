@@ -3,8 +3,9 @@ package com.petermarshall.database.datasource;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.BetResult;
 import com.petermarshall.database.BetResultsTotalled;
+import com.petermarshall.database.Result;
 import com.petermarshall.database.WhenGameWasPredicted;
-import com.petermarshall.database.tables.*;
+import com.petermarshall.database.dbTables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
@@ -185,9 +186,9 @@ public class DS_Get {
     }
 
     private static int calculateResult(int homeScore, int awayScore) {
-        if (homeScore > awayScore) return 0;
-        else if (homeScore == awayScore) return 1;
-        else return 2;
+        if (homeScore > awayScore) return Result.HOME_WIN.getSqlIntCode();
+        else if (homeScore == awayScore) return Result.DRAW.getSqlIntCode();
+        else return Result.AWAY_WIN.getSqlIntCode();
     }
 
     /*
@@ -264,7 +265,7 @@ public class DS_Get {
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() +
-                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +

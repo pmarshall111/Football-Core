@@ -4,7 +4,7 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
-import com.petermarshall.database.tables.*;
+import com.petermarshall.database.dbTables.*;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.Match;
 import com.petermarshall.scrape.classes.Season;

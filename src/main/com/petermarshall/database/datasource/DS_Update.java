@@ -1,7 +1,7 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.tables.MatchTable;
+import com.petermarshall.database.dbTables.MatchTable;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.SQLException;

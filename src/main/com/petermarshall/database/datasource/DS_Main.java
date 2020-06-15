@@ -1,9 +1,6 @@
 package com.petermarshall.database.datasource;
 
-import com.petermarshall.database.tables.*;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.classes.Player;
-import com.petermarshall.scrape.classes.Team;
+import com.petermarshall.database.dbTables.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

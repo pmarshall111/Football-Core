@@ -1,7 +1,6 @@
 package com.petermarshall.machineLearning.createData.classes;
 
 import com.petermarshall.Winner;
-import com.petermarshall.database.ResultBetOn;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 public class BetDecision {

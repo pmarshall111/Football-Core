@@ -1,5 +1,7 @@
 package com.petermarshall.machineLearning.createData;
 
+import com.petermarshall.database.Result;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -121,9 +123,9 @@ public class PlayerMatchDbData {
     }
 
     public int getResult() {
-        if (homeScore == awayScore) return 2;
-        else if (homeScore > awayScore) return 1;
-        else return 3;
+        if (homeScore == awayScore) return Result.DRAW.getSqlIntCode();
+        else if (homeScore > awayScore) return Result.HOME_WIN.getSqlIntCode();
+        else return Result.AWAY_WIN.getSqlIntCode();
     }
 
     //used for testing only

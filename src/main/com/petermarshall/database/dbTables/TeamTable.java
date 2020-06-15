@@ -1,4 +1,4 @@
-package com.petermarshall.database.tables;
+package com.petermarshall.database.dbTables;
 
 public class TeamTable {
     private TeamTable() {}

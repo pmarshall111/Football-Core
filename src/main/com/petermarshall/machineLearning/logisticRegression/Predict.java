@@ -1,10 +1,8 @@
 package com.petermarshall.machineLearning.logisticRegression;
 
 import com.petermarshall.ConvertOdds;
-import com.petermarshall.database.ResultBetOn;
+import com.petermarshall.database.Result;
 import com.petermarshall.database.WhenGameWasPredicted;
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
@@ -184,11 +182,11 @@ public class Predict {
             //and only 1 spot for storage in the database). However this will not happen as the model is designed to only predict on the 1 most likely outcome.
             if (homeWinTreeSet.size()>0) {
                 matchStringBuilder.append("\nHome win: ");
-                logGoodBetsAndAddToBuilder(matchStringBuilder, homeWinTreeSet, match, ResultBetOn.HOME_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
+                logGoodBetsAndAddToBuilder(matchStringBuilder, homeWinTreeSet, match, Result.HOME_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
             }
             if (awayWinTreeSet.size() > 0) {
                 matchStringBuilder.append("\nAway win: ");
-                logGoodBetsAndAddToBuilder(matchStringBuilder, awayWinTreeSet, match, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
+                logGoodBetsAndAddToBuilder(matchStringBuilder, awayWinTreeSet, match, Result.AWAY_WIN, WhenGameWasPredicted.PREDICTED_ON_IN_REAL_TIME);
             }
             matchStringBuilder.append("\n\n");
 
@@ -280,7 +278,7 @@ public class Predict {
     private final static double ZERO_STAKE = 0;
 
     private static void logGoodBetsAndAddToBuilder(StringBuilder stringBuilder, TreeSet<String> goodBets, MatchToPredict match,
-                                                   ResultBetOn resultBetOn, WhenGameWasPredicted whenPredicted) {
+                                                   Result result, WhenGameWasPredicted whenPredicted) {
         //adding best results to StringBuilder. TreeSet is already sorted so we can just add the first X records.
         int NUMB_BOOKIES_WE_WANT_IN_EMAIL = 3;
 
@@ -298,10 +296,10 @@ public class Predict {
 
 //                DataSource.legacyLogBetPlaced(match.getHomeTeamName(), match.getAwayTeamName(), match.getSeasonKey(), HOME_WIN, odds, BASE_STAKE); //TODO: refactor this function.
 
-                    MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, "placeholder", odds, BASE_STAKE);
-                    DS_Main.openProductionConnection();
-                    DS_Insert.logBetPlaced(matchLog);
-                    DS_Main.closeConnection();
+//                    MatchLog matchLog = new MatchLog(match, whenPredicted, resultBetOn, "placeholder", odds, BASE_STAKE);
+//                    DS_Main.openProductionConnection();
+//                    DS_Insert.logBetPlaced(matchLog);
+//                    DS_Main.closeConnection();
                 }
 
 
@@ -338,23 +336,23 @@ public class Predict {
     private static MatchLog getMatchLogForMissedPredictionGame(MatchToPredict match, TreeSet<String> homeWin, TreeSet<String> awayWin) {
         //note: we will never decide to bet on both a home win and away win because we only try to bet on the single most likely outcome.
         if (homeWin.size() > 0) {
-            return createMatchLogWhenGoodBetFound(match, homeWin, ResultBetOn.HOME_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
+            return createMatchLogWhenGoodBetFound(match, homeWin, Result.HOME_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
         } else if(awayWin.size() > 0) {
-            return createMatchLogWhenGoodBetFound(match, awayWin, ResultBetOn.AWAY_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
+            return createMatchLogWhenGoodBetFound(match, awayWin, Result.AWAY_WIN, WhenGameWasPredicted.PREDICTED_LATER_ON);
         } else {
-            return new MatchLog(match, WhenGameWasPredicted.PREDICTED_LATER_ON, ResultBetOn.NOT_BET_ON, "null", -1, ZERO_STAKE);
+            return new MatchLog(match, Result.NOT_BET_ON, "null", -1, ZERO_STAKE);
         }
 
     }
 
-    private static MatchLog createMatchLogWhenGoodBetFound(MatchToPredict match, TreeSet<String> betSet, ResultBetOn resultBetOn, WhenGameWasPredicted whenGameWasPredicted) {
+    private static MatchLog createMatchLogWhenGoodBetFound(MatchToPredict match, TreeSet<String> betSet, Result result, WhenGameWasPredicted whenGameWasPredicted) {
         if (betSet.size() == 0) throw new RuntimeException("Trying to create match log for bet found when we didn't have any good bets");
 
         String oddsDescriptor = betSet.last(); //using last here as TreeSet is by default in ascending order and we want to store the best possible odds in db
         String[] descriptorParts = oddsDescriptor.split(" ");
         double odds = Double.parseDouble(descriptorParts[0]);
 
-        return new MatchLog(match, whenGameWasPredicted, resultBetOn, "placeholder", odds, BASE_STAKE);
+        return new MatchLog(match, result, "placeholder", odds, BASE_STAKE);
     }
 
 
