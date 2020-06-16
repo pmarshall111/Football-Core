@@ -18,7 +18,7 @@ public enum Result {
         return sqlIntCode;
     }
 
-    public static Result convertFromWinnerToRbOn(Winner w) {
+    public static Result convertFromWinnerToRes(Winner w) {
         if (w.equals(Winner.HOME)) {
             return Result.HOME_WIN;
         } else if (w.equals(Winner.DRAW)) {

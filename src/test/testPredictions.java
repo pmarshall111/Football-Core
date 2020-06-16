@@ -3,8 +3,8 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
-import com.petermarshall.machineLearning.logisticRegression.Predict;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
+//import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
@@ -30,9 +30,9 @@ public class testPredictions {
         DS_Main.closeConnection();
 
         SofaScore.addLineupsToGamesAboutToStart(matches);
-        PastStatsCalculator.addFeaturesToPredict(matches, true);
+        CalculatePastStats.addFeaturesToPredict(matches, true);
         OddsChecker.addBookiesOddsForGames(matches);
-        Predict.addOurProbabilitiesToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
+//        Predict.addOurProbabilitiesToGames(matches, "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\testThetas.csv");
 
         StringBuilder emailBody = new StringBuilder();
         emailBody.append("Dear app user,\n\n We currently suggest placing the following bets: \n\n");
@@ -46,12 +46,12 @@ public class testPredictions {
         bookiesWeveSignedUpFor.add(OddsCheckerBookies.LADBROKES.getName());
 
         //method can be called without last argument, to assume that we've signed up for all bookies.
-        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, bookiesWeveSignedUpFor);
-        if (gamesToEmail) {
-            SendEmail.sendOutEmail("New bet", emailBody.toString());
-            System.out.println("We found a good bet!");
-        } else {
-            System.out.println("No current good bets.");
-        }
+//        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matches, emailBody, bookiesWeveSignedUpFor);
+//        if (gamesToEmail) {
+//            SendEmail.sendOutEmail("New bet", emailBody.toString());
+//            System.out.println("We found a good bet!");
+//        } else {
+//            System.out.println("No current good bets.");
+//        }
     }
 }

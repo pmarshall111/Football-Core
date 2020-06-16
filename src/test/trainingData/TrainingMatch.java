@@ -5,7 +5,7 @@ import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ public class TrainingMatch {
         DS_Main.closeConnection();
 
         ArrayList<MatchToPredict> matches = new ArrayList<>();
-        PastStatsCalculator.addFeaturesToPredict(matches, true);
+        CalculatePastStats.addFeaturesToPredict(matches, true);
     }
 
     private ArrayList<MatchToPredict> createMatchesToGetAllTeamsHistoryOut() {

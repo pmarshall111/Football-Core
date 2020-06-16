@@ -16,10 +16,7 @@ import com.petermarshall.scrape.classes.Season;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 import static com.petermarshall.database.datasource.DS_Main.AWAYTEAM;
 import static com.petermarshall.database.datasource.DS_Main.HOMETEAM;
@@ -344,13 +341,45 @@ public class DS_Get {
             }
             return mtps;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-//    public static boolean needToScrapeResults() {
-//
-//    }
+    public static HashMap<League, String> getLeaguesToUpdate() {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+
+            ResultSet rs = statement.executeQuery("SELECT " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", "  + 
+                    MatchTable.getColDate() + " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " WHERE " + MatchTable.getColHomeScore() + " = -1" +
+                    " AND " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(new Date(), 200)) + "'" +
+                    " AND " + MatchTable.getColSeasonYearStart() + " = " + DateHelper.getStartYearForCurrentSeason() +
+                    " GROUP BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName());
+
+            HashMap<League, String> leaguesAndEarliestDate = new HashMap<>();
+            while (rs.next()) {
+                String leagueName = rs.getString(1);
+                String earliestGameWithNoScore = rs.getString(2);
+                if (leagueName.equals(LeagueIdsAndData.EPL.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.EPL), earliestGameWithNoScore);
+                } else if (leagueName.equals(LeagueIdsAndData.LA_LIGA.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.LA_LIGA), earliestGameWithNoScore);
+                } else if (leagueName.equals(LeagueIdsAndData.BUNDESLIGA.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.BUNDESLIGA), earliestGameWithNoScore);
+                } else if (leagueName.equals(LeagueIdsAndData.SERIE_A.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.SERIE_A), earliestGameWithNoScore);
+                } else if (leagueName.equals(LeagueIdsAndData.LIGUE_1.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.LIGUE_1), earliestGameWithNoScore);
+                } else if (leagueName.equals(LeagueIdsAndData.RUSSIA.name())) {
+                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.RUSSIA), earliestGameWithNoScore);
+                }
+            }
+            return leaguesAndEarliestDate;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
 }

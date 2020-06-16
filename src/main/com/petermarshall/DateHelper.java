@@ -192,13 +192,13 @@ public class DateHelper {
         }
     }
 
-    public static Date subtract5minsFromDate(Date date) {
+    public static Date subtractXminsFromDate(Date date, int mins) {
         SimpleDateFormat fmt = new SimpleDateFormat("MMM-dd-yyyy HH:mm:ss");
         String[] partsOfDate = date.toString().split(" ");
         String[] partsOfTime = partsOfDate[3].split(":");
 
         try {
-            return fmt.parse(partsOfDate[1] + "-" + partsOfDate[2] + "-" + partsOfDate[5] + " " + partsOfTime[0] + ":" + (Integer.parseInt(partsOfTime[1])-5) + ":" + partsOfTime[2]);
+            return fmt.parse(partsOfDate[1] + "-" + partsOfDate[2] + "-" + partsOfDate[5] + " " + partsOfTime[0] + ":" + (Integer.parseInt(partsOfTime[1])-mins) + ":" + partsOfTime[2]);
         } catch (ParseException e) {
             return null;
         }

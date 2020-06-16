@@ -53,12 +53,14 @@ public class SofaScore {
      * Takes a leagueId and seasonId (unique to each league) from the LeagueSeasonIds ENUM. Scrapes SofaScore
      * and returns a set of all the Id's of the games in that season.
      *
+     * Also updates matches to have the latest kickoff date and sofascore id.
+     *
      * Called from League class which loops through all it's seasons and calls this method.
      * When it finds an ID from that correlates to match in the season argument, it will add the ID to that match.
      */
     public static Set<Integer> getGamesOfLeaguesSeason(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate, Season season ) {
         String url = getSeasonStatsUrl(leagueId, seasonId);
-        Set<Integer> allGameIds = new HashSet<>();
+        Set<Integer> gameIds = new HashSet<>();
         try {
             String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
@@ -81,6 +83,9 @@ public class SofaScore {
                         JSONObject awayTeam = (JSONObject) game.get("awayTeam");
                         String awayTeamName = (String) awayTeam.get("name");
                         String matchStatus = game.get("statusDescription").toString();
+                        String formattedStartDate = game.get("formatedStartDate").toString();
+                        String[] partsOfDate = formattedStartDate.split("\\.");
+                        Date gameDate = DateHelper.createDateyyyyMMdd(partsOfDate[2], partsOfDate[1], partsOfDate[0]);
 
                         if (!matchStatus.equals("Postponed") && !matchStatus.equals("Canceled")) {
                             int id = Integer.parseInt(game.get("id").toString());
@@ -91,18 +96,15 @@ public class SofaScore {
                                     Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
                                     if (thisMatch != null) {
                                         thisMatch.setSofaScoreGameId(id);
+                                        thisMatch.setKickoffTime(gameDate);
                                     }
                                 }
                             }
 
-                            if (earliestDate == null && latestDate == null) allGameIds.add(id);
-                            else {
-                                String formattedStartDate = game.get("formatedStartDate").toString();
-                                String[] partsOfDate = formattedStartDate.split("\\.");
-                                Date gameDate = DateHelper.createDateyyyyMMdd(partsOfDate[2], partsOfDate[1], partsOfDate[0]);
-                                if (gameDate.before(latestDate) && (gameDate.after(earliestDate) || gameDate.equals(earliestDate))) {
-                                    allGameIds.add(id);
-                                }
+                            if (earliestDate == null && latestDate == null) {
+                                gameIds.add(id);
+                            } else if (gameDate.before(latestDate) && (gameDate.after(earliestDate) || gameDate.equals(earliestDate))) {
+                                    gameIds.add(id);
                             }
                         }
                     }
@@ -113,7 +115,7 @@ public class SofaScore {
             e.printStackTrace();
             return null;
         }
-        return allGameIds;
+        return gameIds;
     }
 
     /*

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 //class to be used to create csv files to learn from and update cache in db for past seasons.
-public class PastStatsCalculator {
+public class CalculatePastStats {
     //constants to use when calculating a teams form
     public static final int NUMB_SEASONS_HISTORY = 2;
     public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7;

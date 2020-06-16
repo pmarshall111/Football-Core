@@ -10,34 +10,40 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class DS_Update {
-    public static void updateGamesInDB(League league, Season season) {
+    public static void updateGamesInDB(League league, Season season, Date onlyUpdateGamesAfter) {
         try (Statement batchStatement = DS_Main.connection.createStatement()) {
-            Date lastMatchInDb = DateHelper.createDateFromSQL(DS_Get.getLastCompletedMatchInLeague(league));
-            Date matchLimit = DateHelper.subtractXDaysFromDate(lastMatchInDb, 7);
-
             int leagueId = DS_Get.getLeagueId(league);
             int seasonYearStart = season.getSeasonYearStart();
             HashMap<String, Integer> teamIds = DS_Insert.getTeamIds(season.getAllTeams(), leagueId);
             season.getAllMatches().forEach(match -> {
-                if (match.getKickoffTime().after(matchLimit)) {
+                if (match.getKickoffTime().after(onlyUpdateGamesAfter)) {
                     int homeTeamId = teamIds.get(match.getHomeTeam().getTeamName());
                     int awayTeamId = teamIds.get(match.getAwayTeam().getTeamName());
-                    int matchId = DS_Get.getMatchId(homeTeamId, awayTeamId, seasonYearStart);
-
                     try {
-                        batchStatement.addBatch("UPDATE " + MatchTable.getTableName() +
-                                " SET " + MatchTable.getColHomeXg() + " = " + match.getHomeXGF() + ", " + MatchTable.getColAwayXg() + " = " + match.getAwayXGF() + ", " +
-                                MatchTable.getColHomeScore() + " = " + match.getHomeScore() + ", " + MatchTable.getColAwayScore() + " = " + match.getAwayScore() + ", " +
-                                MatchTable.getColHomeWinOdds() + " = " + match.getHomeOdds() + ", " + MatchTable.getColDrawOdds() + " = " + match.getDrawOdds() + ", " +
-                                MatchTable.getColAwayWinOdds() + " = " + match.getAwayOdds() + ", " + MatchTable.getColFirstScorer() + " = " + match.getFirstScorer() + ", " +
-                                MatchTable.getColDate() + " = '" + match.getKickoffTime() + "'" +
-                                " WHERE _id = " + matchId);
+                        if (match.getHomeScore() > -1) {
+                            //updating games with full stats and player ratings
+                            int matchId = DS_Get.getMatchId(homeTeamId, awayTeamId, seasonYearStart);
+                            batchStatement.addBatch("UPDATE " + MatchTable.getTableName() +
+                                    " SET " + MatchTable.getColHomeXg() + " = " + match.getHomeXGF() + ", " + MatchTable.getColAwayXg() + " = " + match.getAwayXGF() + ", " +
+                                    MatchTable.getColHomeScore() + " = " + match.getHomeScore() + ", " + MatchTable.getColAwayScore() + " = " + match.getAwayScore() + ", " +
+                                    MatchTable.getColHomeWinOdds() + " = " + match.getHomeOdds() + ", " + MatchTable.getColDrawOdds() + " = " + match.getDrawOdds() + ", " +
+                                    MatchTable.getColAwayWinOdds() + " = " + match.getAwayOdds() + ", " + MatchTable.getColFirstScorer() + " = " + match.getFirstScorer() + ", " +
+                                    MatchTable.getColDate() + " = '" + match.getKickoffTime() + "'" +
+                                    " WHERE _id = " + matchId);
+                            DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getHomePlayerRatings(), matchId, homeTeamId);
+                            DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);
+                        } else {
+                            //just updating the kickoff time
+                            batchStatement.addBatch("UPDATE " + MatchTable.getTableName() +
+                                    " SET " + MatchTable.getColDate() + " = '" + match.getKickoffTime() + ", " +
+                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() +
+                                    "' WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
+                                    " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
+                                    " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
+                        }
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-                    DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getHomePlayerRatings(), matchId, homeTeamId);
-                    DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);
                 }
             });
             batchStatement.executeBatch();

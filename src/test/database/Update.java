@@ -76,7 +76,7 @@ public class Update {
             homeDrawAwayOdds.add(AWAYODDS);
             match.setHomeDrawAwayOdds(homeDrawAwayOdds);
             match.setFirstScorer(FIRSTSCORER);
-            DS_Update.updateGamesInDB(league, season);
+            DS_Update.updateGamesInDB(league, season, DateHelper.subtractXDaysFromDate(new Date(), 100)); //this could be a possible cause of test failing.
             //checking after update
             ResultSet rsAfterUpdate = s.executeQuery("SELECT " + MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                     MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColDrawOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " + MatchTable.getColFirstScorer() +

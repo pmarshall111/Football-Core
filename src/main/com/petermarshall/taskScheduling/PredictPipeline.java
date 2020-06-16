@@ -8,14 +8,17 @@ import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.logging.MatchLog;
 import com.petermarshall.machineLearning.DecideBet;
 import com.petermarshall.machineLearning.ModelPredict;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
 import com.petermarshall.machineLearning.createData.classes.BetDecision;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
+import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
+import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.petermarshall.AutomateBet.placeBet;
 
@@ -24,21 +27,23 @@ public class PredictPipeline {
     public static void predictGames() {
         //maybe first do a check that all games are updated.
         DS_Main.openProductionConnection();
-//        if (DS_Get.needToScrapeResults()) {
-//            //TODO: update the results
-//            //think do we really need this? It would be good actually because then we can only have to schedule 1 function to run each day
-//        }
+        HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
+        if (leaguesToUpdate.keySet().size() > 0) {
+            UpdatePipeline.updateGames(leaguesToUpdate);
+        }
 
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
             //matches need lineups for this func!
             //need to edit such that if there are no players involved we only create a non-lineup prediction
-            PastStatsCalculator.addFeaturesToPredict(mtps, false);
+            CalculatePastStats.addFeaturesToPredict(mtps, false);
             ModelPredict.addBasePredictions(mtps);
             OddsChecker.addBookiesOddsForGames(mtps);
             DS_Insert.addPredictionsToDb(mtps);
             DecideBet.addDecision(mtps);
             mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
+            StringBuilder sb = new StringBuilder();
+            int betsPlaced = 0;
             if (mtps.size() > 0) {
                 //not a problem to go through individually as not expecting to have many bets at the same time.
                 for (MatchToPredict mtp: mtps) {
@@ -49,12 +54,20 @@ public class PredictPipeline {
                         if (bd.getBookie().equals(OddsCheckerBookies.BET365)) {
                             BetPlaced bet = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSetting(), 5, bd.getMinOdds());
                             if (bet.isBetSuccessful()) {
-                                DS_Insert.logBetPlaced(
-                                        new MatchLog(mtp, Result.convertFromWinnerToRbOn(bd.getWinner()), bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
+                                Result res = Result.convertFromWinnerToRes(bd.getWinner());
+                                DS_Insert.logBetPlaced(new MatchLog(mtp, res, bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
+                                sb.append(homeTeam + " vs " + awayTeam + ": Bet £5 on " + res.name() + " at odds of " +
+                                        bet.getOddsOffered() + ". Potential return: " + (5*bet.getOddsOffered()));
+                                betsPlaced++;
                             }
                         }
                     }
                 }
+            }
+            if (betsPlaced > 0) {
+                //add in email capabilities only for when we go ahead and actually bet on something.
+                sb.insert(0, "Hello,\nWe have placed " + betsPlaced + " automated bets for you:\n\n");
+                SendEmail.sendOutEmail("New bets placed!", sb.toString());
             }
         }
     }

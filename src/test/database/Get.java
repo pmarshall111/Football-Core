@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 import static com.petermarshall.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
@@ -169,5 +170,33 @@ public class Get {
             e.printStackTrace();
             fail();
         }
+    }
+    
+    @Test
+    public void canGetLeaguesThatNeedUpdating() {
+        League pastWithoutScore = new League(LeagueIdsAndData.EPL);
+        League pastWithScore = new League(LeagueIdsAndData.LA_LIGA);
+        
+        Season s1 = pastWithoutScore.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team s1t1 = s1.addNewTeam(new Team("s1t1"));
+        Team s1t2 = s1.addNewTeam(new Team("s1t2"));
+        Date dateOfEarliestGame = DateHelper.subtractXDaysFromDate(new Date(), 4);
+        s1.addNewMatch(new Match(s1t1, s1t2, dateOfEarliestGame));
+        s1.addNewMatch(new Match(s1t2, s1t1, DateHelper.subtractXDaysFromDate(new Date(), 2))); //2 games with no score, but should only return league one time
+        
+        Season s2 = pastWithScore.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team s2t1 = s2.addNewTeam(new Team("s2t1"));
+        Team s2t2 = s2.addNewTeam(new Team("s2t2"));
+        s2.addNewMatch(new Match(s2t1, s2t2, DateHelper.subtractXDaysFromDate(new Date(), 2), 2,1));
+        s2.addNewMatch(new Match(s2t2, s2t1, DateHelper.addDaysToDate(new Date(), 3))); //game with score in past, game no score in future.
+
+        DS_Insert.writeLeagueToDb(pastWithoutScore);
+        DS_Insert.writeLeagueToDb(pastWithScore);
+
+        HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
+        Assert.assertEquals(1, leaguesToUpdate.keySet().size());
+        League firstLeague = leaguesToUpdate.keySet().iterator().next();
+        Assert.assertEquals(pastWithoutScore.getName(), firstLeague.getName());
+        Assert.assertEquals(DateHelper.getSqlDate(dateOfEarliestGame), leaguesToUpdate.get(firstLeague));
     }
 }

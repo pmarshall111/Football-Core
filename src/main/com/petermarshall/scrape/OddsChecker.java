@@ -255,7 +255,6 @@ public class OddsChecker {
                 potentialMatch.put("matched", true);
                 return potentialMatch;
             } else {
-
                 int totalConsec = getLongestCharSequence(teamNames[0], homeTeamName) + getLongestCharSequence(teamNames[1], awayTeamName);
                 double totalRatio = getSimilarCharsRatio(teamNames[0], homeTeamName) + getSimilarCharsRatio(teamNames[1], awayTeamName);
                 if (totalConsec > maxConsecChars || (totalConsec == maxConsecChars && totalRatio > similarCharsRatio)) {

@@ -5,13 +5,10 @@ import com.petermarshall.database.dbTables.LeagueTable;
 import com.petermarshall.database.dbTables.MatchTable;
 import com.petermarshall.database.dbTables.PlayerRatingTable;
 import com.petermarshall.database.dbTables.TeamTable;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.Player;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
-import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.Match;
 import com.petermarshall.scrape.classes.Season;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +28,7 @@ public class FeatureConsistency {
     @Test
     public void nonLineupFeaturesAreTheSame() {
         DS_Main.openProductionConnection();
-        ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
+        ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
 
         //has to be the last match as the predict function calculates team stats for all played games so far.
         //The last match is then not saved
@@ -61,7 +58,7 @@ public class FeatureConsistency {
             MatchToPredict mtp = new MatchToPredict(tMatch.getHomeTeamName(), tMatch.getAwayTeamName(), matchSeasonKey, leagueName, sqlDate, dbId, sofascoreId);
             addLineupsToMatch(mtp, sqlDate, stmt);
             ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtp));
-            PastStatsCalculator.addFeaturesToPredict(mtps, true);
+            CalculatePastStats.addFeaturesToPredict(mtps, true);
 
             ArrayList<Double> trainingFeaturesNL = tMatch.getFeaturesNoLineups();
             ArrayList<Double> trainingFeatures = tMatch.getFeatures();
@@ -123,8 +120,8 @@ public class FeatureConsistency {
         Assert.assertNotEquals(0, homePlayers.size());
         Assert.assertNotEquals(0, awayPlayers.size());
 
-        ArrayList<String> homeStartingXI = new ArrayList<>(PastStatsCalculator.getStartingXI(homePlayers).keySet());
-        ArrayList<String> awayStartingXI = new ArrayList<>(PastStatsCalculator.getStartingXI(awayPlayers).keySet());
+        ArrayList<String> homeStartingXI = new ArrayList<>(CalculatePastStats.getStartingXI(homePlayers).keySet());
+        ArrayList<String> awayStartingXI = new ArrayList<>(CalculatePastStats.getStartingXI(awayPlayers).keySet());
         mtp.setHomeTeamPlayers(homeStartingXI);
         mtp.setAwayTeamPlayers(awayStartingXI);
     }

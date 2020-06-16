@@ -4,8 +4,8 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
-import com.petermarshall.machineLearning.logisticRegression.Predict;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
+//import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
@@ -86,10 +86,10 @@ public class PredictTodaysGames {
 
 
         SofaScore.addLineupsToGamesAboutToStart(matchesHappeningNow);
-        PastStatsCalculator.addFeaturesToPredict(matchesHappeningNow, false);
+        CalculatePastStats.addFeaturesToPredict(matchesHappeningNow, false);
         //for each team from all the games in the database.
         OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
-        Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);
+//        Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);
 
 
 
@@ -98,13 +98,13 @@ public class PredictTodaysGames {
 
 
         //method can be called without last argument, to assume that we've signed up for all bookies.
-        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matchesHappeningNow, emailBody, bookiesWeveSignedUpFor);
-        if (gamesToEmail) {
-            SendEmail.sendOutEmail("New bet", emailBody.toString());
-            System.out.println("We found a good bet!");
-        } else {
-            System.out.println("No good bets found this time.");
-        }
+//        boolean gamesToEmail = Predict.calcBetsForCurrentGamesAndAddToBuilder(matchesHappeningNow, emailBody, bookiesWeveSignedUpFor);
+//        if (gamesToEmail) {
+//            SendEmail.sendOutEmail("New bet", emailBody.toString());
+//            System.out.println("We found a good bet!");
+//        } else {
+//            System.out.println("No good bets found this time.");
+//        }
     }
 
     /*

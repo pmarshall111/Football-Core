@@ -105,7 +105,7 @@ public class League {
         allGameIds.forEach(gameId -> {
             SofaScore.addInfoToGame(currSeason, gameId);
         });
-        DS_Update.updateGamesInDB(this, currSeason);
+        DS_Update.updateGamesInDB(this, currSeason, beginningOfLastMatchDate);
         DS_Main.closeConnection();
     }
 

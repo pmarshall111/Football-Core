@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.petermarshall.machineLearning.createData.PastStatsCalculator.COMPARE_LAST_N_GAMES;
-import static com.petermarshall.machineLearning.createData.PastStatsCalculator.NUMB_SEASONS_HISTORY;
+import static com.petermarshall.machineLearning.createData.CalculatePastStats.COMPARE_LAST_N_GAMES;
+import static com.petermarshall.machineLearning.createData.CalculatePastStats.NUMB_SEASONS_HISTORY;
 
 //Purpose of training match is to hold all data that we have for a match, to make it easier to change which features we
 //use for our ML model.

@@ -1,11 +1,10 @@
 package com.petermarshall.machineLearning;
 
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.createData.PastStatsCalculator;
+import com.petermarshall.machineLearning.createData.CalculatePastStats;
 import com.petermarshall.machineLearning.createData.WriteTrainingData;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
@@ -13,7 +12,7 @@ public class Main {
         try {
             System.out.println("Getting matches from db and writing to files\n\n");
             DS_Main.openProductionConnection();
-            ArrayList<TrainingMatch> trainingMatches = PastStatsCalculator.getAllTrainingMatches();
+            ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
             WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, "train.csv", "eval.csv");
             DS_Main.closeConnection();
 
