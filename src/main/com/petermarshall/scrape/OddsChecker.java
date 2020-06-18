@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OddsChecker {
-
     public static final String BASE_URL = "https://www.oddschecker.com";
     public static final String PL_URL = "https://www.oddschecker.com/football/english/premier-league";
     public static final String BUNDESLIGA_URL = "https://www.oddschecker.com/football/germany/bundesliga";
@@ -60,68 +59,48 @@ public class OddsChecker {
             }
         }
 
-        if (PL.size() > 0) addBettersOddsForLeague(PL, PL_URL);
-        if (LA_LIGA.size() > 0) addBettersOddsForLeague(LA_LIGA, LA_LIGA_URL);
-        if (LIGUE_1.size() > 0) addBettersOddsForLeague(LIGUE_1, LIGUE_1_URL);
-        if (BUNDESLIGA.size() > 0) addBettersOddsForLeague(BUNDESLIGA, BUNDESLIGA_URL);
-        if (SERIE_A.size() > 0) addBettersOddsForLeague(SERIE_A, SERIE_A_URL);
-        if (RUSSIA.size() > 0) addBettersOddsForLeague(RUSSIA, RUSSIA_URL);
+        if (PL.size() > 0) addOddsForLeague(PL, PL_URL);
+        if (LA_LIGA.size() > 0) addOddsForLeague(LA_LIGA, LA_LIGA_URL);
+        if (LIGUE_1.size() > 0) addOddsForLeague(LIGUE_1, LIGUE_1_URL);
+        if (BUNDESLIGA.size() > 0) addOddsForLeague(BUNDESLIGA, BUNDESLIGA_URL);
+        if (SERIE_A.size() > 0) addOddsForLeague(SERIE_A, SERIE_A_URL);
+        if (RUSSIA.size() > 0) addOddsForLeague(RUSSIA, RUSSIA_URL);
     }
 
 
     /*
      * Method will search through the various CDATA tags from the Oddschecker website, and when it finds the one with the fixtures, will grab
      */
-    private static void addBettersOddsForLeague(ArrayList<MatchToPredict> matches, String url) { //ArrayList<MatchToPredict> matches
-
+    private static void addOddsForLeague(ArrayList<MatchToPredict> matches, String url) {
         try (final WebClient webClient = new WebClient()) {
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
-
             final HtmlPage page = webClient.getPage(url);
-
             ArrayList<JSONObject> matchUrls = new ArrayList<>();
-
-//            int LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE = 56; //means we will get an error if the kickoff times do not match up as we're only allowing to look at games 56 mins in the future. This is because there may be games tomorrow etc that we're not interested in.
-//            Date maxDateOfMatches = DateHelper.addMinsToDate(new Date(), LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE);
-            Date maxDateOfMatches = DateHelper.addDaysToDate(new Date(), 21);
+            Date maxDateOfMatches = DateHelper.addXDaysToDate(new Date(), 21);
             String oddsCheckerDate = DateHelper.changeDateToOddsChecker(maxDateOfMatches);
-
-            System.out.println(page.asXml());
             Matcher dates = Pattern.compile("CDATA\\[([^]]+)").matcher(page.asXml());
             while (dates.find()) {
-//                System.out.println(dates.group(1));
                 JSONObject gameInfo = turnToJson(dates.group(1).substring(0,dates.group(1).length()-2)); //-2 here as the JSONString we're reading in ends in }}}, so we get rid of 2 closing curly braces.
-
                 if (gameInfo == null || !gameInfo.get("@type").toString().equals("SportsEvent")) continue;
-                else if (gameInfo.get("startDate").toString().compareTo(oddsCheckerDate) == 1) break; //do not include games that are further ahead in time than LOOK_AT_GAMES_MAX_N_MINS_IN_FUTURE
-
+                else if (gameInfo.get("startDate").toString().compareTo(oddsCheckerDate) == 1) break; //do not include games that are toop far ahead in time
                 String H2H = gameInfo.get("name").toString();
                 System.out.println(H2H);
                 matchUrls.add(gameInfo);
             }
 
-
             for (MatchToPredict match: matches) {
-                String kickoffTime = DateHelper.changeSqlDateToOddschecker( match.getSqlDateString() );
-
-
                 //need to also remove a match if it's already been picked.
                 ArrayList<JSONObject> potentialMatches = new ArrayList<>(matchUrls);
-                potentialMatches.removeIf(new Predicate<JSONObject>() {
-                    @Override
-                    public boolean test(JSONObject jsonObject) {
-                        return jsonObject.containsKey("matched"); //we add this key in findCorrectMatch() if we've already connected a game from our app to oddschecker.
-                    }
+                potentialMatches.removeIf(jsonObject -> {
+                    return jsonObject.containsKey("matched"); //we add this key in findCorrectMatch() if we've already connected a game from our app to oddschecker.
                 });
 
                 JSONObject correctMatch = findCorrectMatch(potentialMatches, match);
-
                 String matchTitle = correctMatch.get("name").toString();
                 String[] teamNames = getTeamNamesFromMatchup(matchTitle);
                 String homeTeam = teamNames[0];
                 String awayTeam = teamNames[1];
-
                 addOdds(correctMatch.get("url").toString(), match, homeTeam, awayTeam);
             }
         } catch (Exception e) {
@@ -129,19 +108,11 @@ public class OddsChecker {
         }
     }
 
-    /*
-     * Note that OddsChecker does not sort it's odds in order of home draw away, they just decide to put the main team first. So we need a way of checking which team is at home.
-     *
-     * Plan is to get the match title at the top and compare the names used there to those in the row. Then we know which is which.
-     */
     private static void addOdds (String matchUrl, MatchToPredict match, String oddsCheckerHomeTeamName, String oddsCheckerAwayTeamName) {
         try (final WebClient webClient = new WebClient()) {
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
-
-            //currently assuming only PL games. will have to possibly sort the original matches into blocks of each league before doing this.
             final HtmlPage page = webClient.getPage(matchUrl);
-
             HtmlElement body = page.getBody();
 
             ArrayList<DomNode> bookies = new ArrayList<>(body.querySelectorAll("a.bk-logo-click")); //gets the bookie names in order
@@ -161,9 +132,7 @@ public class OddsChecker {
                 for (int j = 0; j<odds.size(); j++) {
                     oddsArrays.get(j)[arrayPosition] = Double.parseDouble(odds.get(j).getAttributes().getNamedItem("data-odig").getNodeValue());
                 }
-
             }
-
             match.setBookiesOdds(bookiesOdds);
         }
         catch (Exception e) {
@@ -182,8 +151,7 @@ public class OddsChecker {
 
         boolean isHome = h.find(), isDraw = d.find(), isAway = a.find();
 
-        if ((isHome && (isDraw || isAway)) ||
-                (isDraw && isAway)) {
+        if ((isHome && (isDraw || isAway)) || (isDraw && isAway)) {
             throw new RuntimeException("We've matched twice or more on getting the team from the selection. Selection is " + selectionName + ". Home is " + homeTeamName +
                     ". Draw is " + drawName + ". Away is " + awayTeamName);
         }
@@ -194,49 +162,8 @@ public class OddsChecker {
                     ". Draw is " + drawName + ". Away is " + awayTeamName);
     }
 
-
-
-
-    //TESTING
-//    private static void addOdds (String matchUrl) {
-//        try (final WebClient webClient = new WebClient()) {
-//            webClient.getOptions().setCssEnabled(false);
-//            webClient.getOptions().setJavaScriptEnabled(false);
-//
-//            //currently assuming only PL games. will have to possibly sort the original matches into blocks of each league before doing this.
-//            final HtmlPage page = webClient.getPage(matchUrl);
-//
-////            System.out.println(page.asXml());
-//
-//            HtmlElement body = page.getBody();
-//
-//            ArrayList<DomNode> bookies = new ArrayList<>(body.querySelectorAll("a.b90med"));
-//            LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
-//            for (DomNode elem: bookies) {
-//                bookiesOdds.put(elem.getAttributes().getNamedItem("title").getNodeValue(), new double[]{-1,-1,-1});
-//            }
-//
-//            ArrayList<DomNode> oddsRows = new ArrayList<>(body.querySelectorAll(".diff-row.evTabRow.bc"));
-//            for (int i = 0; i<oddsRows.size(); i++) {
-//
-//                ArrayList<DomNode> odds = new ArrayList<>(oddsRows.get(i).querySelectorAll("td.bc.bs"));
-//                ArrayList<double[]> oddsArrays = new ArrayList<>(bookiesOdds.values());
-//                for (int j = 0; j<odds.size(); j++) {
-//                    oddsArrays.get(j)[i] = Double.parseDouble(odds.get(j).getAttributes().getNamedItem("data-odig").getNodeValue());
-//                }
-//
-//            }
-//
-//
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     /*
-     * Will first go through looking for either 1 of the 2 teams to be correct. This is ok because the method will only be called with games going on at
-     * the same time, so there will only be 1 instance of each team.
+     * Will first go through looking for either 1 of the 2 teams to be correct.
      *
      * If both are not perfect matches, will go through and pick the one where we have the most consecutive characters correct. If we then have 2 equal there, we will
      * pick the match with highest ratio of correct characters.
@@ -244,13 +171,10 @@ public class OddsChecker {
     private static JSONObject findCorrectMatch (ArrayList<JSONObject> potentialMatches, MatchToPredict match) {
         int maxConsecChars = -1; double similarCharsRatio = -1;
         JSONObject currMostLikely = null;
-
         for (JSONObject potentialMatch: potentialMatches) {
-
             String[] teamNames = getTeamNamesFromMatchup( potentialMatch.get("name").toString() );
             String homeTeamName = match.getHomeTeamName();
             String awayTeamName = match.getAwayTeamName();
-
             if (homeTeamName.equals(teamNames[0]) || awayTeamName.equals(teamNames[1])) {
                 potentialMatch.put("matched", true);
                 return potentialMatch;
@@ -335,7 +259,7 @@ public class OddsChecker {
         mtps.add(new MatchToPredict("Aston Villa", "Sheffield United", "19-20", "EPL", "17/06/20",-1,-1));
         mtps.add(new MatchToPredict("Everton", "Liverpool", "19-20", "EPL", "21/06/20",-1,-1));
 
-        addBettersOddsForLeague(mtps, "https://www.oddschecker.com/football/english/premier-league");
+        addOddsForLeague(mtps, "https://www.oddschecker.com/football/english/premier-league");
 
         System.out.println("hi");
 
@@ -352,13 +276,12 @@ public class OddsChecker {
 
     private static JSONObject turnToJson (String string) {
         if (string == null) throw new RuntimeException("turnToJson given null argument");
-
         JSONParser parser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(string);
             return jsonObject;
         } catch (ParseException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }

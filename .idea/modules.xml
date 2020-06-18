@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$USER_HOME$/IdeaProjects/Bet365Scraper/Bet365Scraper.iml" filepath="$USER_HOME$/IdeaProjects/Bet365Scraper/Bet365Scraper.iml" />
       <module fileurl="file://$PROJECT_DIR$/Football.iml" filepath="$PROJECT_DIR$/Football.iml" />
+      <module fileurl="file://$USER_HOME$/IdeaProjects/UnibetPlaceBet/UnibetPlaceBet.iml" filepath="$USER_HOME$/IdeaProjects/UnibetPlaceBet/UnibetPlaceBet.iml" />
     </modules>
   </component>
 </project>

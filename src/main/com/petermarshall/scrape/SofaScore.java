@@ -15,7 +15,7 @@ import java.util.*;
 
 
 /*
- * To be called after scraping from Understat, using Understat class.
+ * To be called after scraping from Understat
  */
 public class SofaScore {
     public static final String BASE_URL = "https://www.sofascore.com";
@@ -28,13 +28,9 @@ public class SofaScore {
     static final String ALTERNATE_BASE_URL = "https://api.sofascore.com/api/v1";
     static final String ALTERNATE_ODDS_ADD_ON = "/odds/1/all";
 
-    //TESTING PURPOSES ONLY
-    public static HashMap<String, Integer> numbBettingAdded = new HashMap<>();
-    public static HashMap<String, Integer> gotToStartOfOdds = new HashMap<>();
-    public static HashMap<String, Integer> retrievedJsonData = new HashMap<>();
-    public static HashMap<String, Integer> functionCalled = new HashMap<>();
-    ///////
-
+    /*
+     * Creating scraping URLs
+     */
     private static String getSeasonStatsUrl(int LeagueId, int SeasonId) {
         return BASE_URL + TOURNAMENT_ADD_ON + LeagueId + SEASON_ADD_ON + SeasonId + EVENTS_ADD_ON + JSON_ENDING;
     }
@@ -53,7 +49,7 @@ public class SofaScore {
      * Takes a leagueId and seasonId (unique to each league) from the LeagueSeasonIds ENUM. Scrapes SofaScore
      * and returns a set of all the Id's of the games in that season.
      *
-     * Also updates matches to have the latest kickoff date and sofascore id.
+     * Also updates matches in league to have the latest kickoff date and sofascore id.
      *
      * Called from League class which loops through all it's seasons and calls this method.
      * When it finds an ID from that correlates to match in the season argument, it will add the ID to that match.
@@ -85,11 +81,13 @@ public class SofaScore {
                         String matchStatus = game.get("statusDescription").toString();
                         String formattedStartDate = game.get("formatedStartDate").toString();
                         String[] partsOfDate = formattedStartDate.split("\\.");
+                        String startTime = game.get("startTime").toString();
+                        String[] partsOfTime = startTime.split(":");
                         Date gameDate = DateHelper.createDateyyyyMMdd(partsOfDate[2], partsOfDate[1], partsOfDate[0]);
+                        gameDate = DateHelper.setTimeOfDate(gameDate, Integer.parseInt(partsOfTime[0]), Integer.parseInt(partsOfTime[1]), 0);
 
                         if (!matchStatus.equals("Postponed") && !matchStatus.equals("Canceled")) {
                             int id = Integer.parseInt(game.get("id").toString());
-
                             if (season != null) {
                                 Team hTeam = season.getTeam(homeTeamName);
                                 if (hTeam != null) {
@@ -100,7 +98,6 @@ public class SofaScore {
                                     }
                                 }
                             }
-
                             if (earliestDate == null && latestDate == null) {
                                 gameIds.add(id);
                             } else if (gameDate.before(latestDate) && (gameDate.after(earliestDate) || gameDate.equals(earliestDate))) {
@@ -126,9 +123,6 @@ public class SofaScore {
      * betting odds to it. Then if it is full time, we call addPlayerRatingsToGame, and also addFirstScorer.
      */
     public static void addInfoToGame(Season season, int gameId) {
-        //debugging
-        functionCalled.put(season.getSeasonKey(), functionCalled.getOrDefault(season.getSeasonKey(), 0) + 1);
-
         //SofaScore does not have data for this game (Ligue 1. Bastia vs Lyon 16-17). Return early to avoid error.
         if (gameId == 7080222) return;
 
@@ -137,13 +131,11 @@ public class SofaScore {
             String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
-            if (json.size() > 0) {
-                retrievedJsonData.put(season.getSeasonKey(), retrievedJsonData.getOrDefault(season.getSeasonKey(), 0) + 1);
-            }
             JSONObject event = (JSONObject) json.get("event");
             Boolean confirmedLineups = (Boolean) event.get("confirmedLineups");
             if (!confirmedLineups) {
-                //game is not within 1 hour played. no point getting in betting info, or player ratings/full time score as our algorithm needs confirmed lineups to work.
+                //game is not within 1 hour to the future. no point getting in betting info, or player ratings/full time
+                // score as our algorithm needs confirmed lineups to work.
                 return;
             }
 
@@ -160,16 +152,6 @@ public class SofaScore {
             }
             Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
-                //debugging used for Team.makeTeamsCompatible
-                System.out.println(hTeam.getAllMatches().size());
-                hTeam.getAllMatches().keySet().forEach(x -> {
-                    System.out.println(
-                            x + " :" +
-                            hTeam.getAllMatches().get(x).getHomeTeam().getTeamName()      + " vs " +
-                            hTeam.getAllMatches().get(x).getAwayTeam().getTeamName()
-                    );
-                });
-
                 if (homeTeamName.equals("Genoa") && awayTeamName.equals("Fiorentina") && gameDate.equals("11.09.2016.")) {
                     //we have encountered a bug in SofaScore's data where they haven't changed a match's status to postponed. Instead there are 2 records of this game
                     //with the same score, but one is on the wrong date.
@@ -177,12 +159,9 @@ public class SofaScore {
                 }
                 else throw new RuntimeException("could not find match with date " + dateKey + " from team " + homeTeamName + " against " + awayTeamName);
             }
-
             match.setSofaScoreGameId(gameId);
-
             JSONArray oddsArray = (JSONArray) json.get("odds");
             ArrayList<Double> homeDrawAway = oddsArray != null ? getOdds(oddsArray) : getOddsAlternate(gameId);
-
             match.setHomeDrawAwayOdds(homeDrawAway);
             Boolean isFullTime = ((String) event.get("statusDescription")).equals("FT");
             if (isFullTime) {
@@ -211,7 +190,6 @@ public class SofaScore {
                     JSONObject oddsObject = (JSONObject) oddsIterator.next();
                     String choice = oddsObject.get("choice").toString();
                     double decimalOdds = Double.parseDouble(oddsObject.get("decimalValue").toString());
-
                     switch (choice) {
                         case "1":
                             homeOdds = decimalOdds;
@@ -297,7 +275,6 @@ public class SofaScore {
             JSONObject json = (JSONObject) parser.parse(jsonString);
             JSONObject homeTeam =(JSONObject) json.get("homeTeam");
             JSONObject awayTeam =(JSONObject) json.get("awayTeam");
-            //NOTE: passing in gameId just for debugging purposes.
             HashMap<String, PlayerRating> homeRatings = getRatingsFromJson(homeTeam, gameId);
             HashMap<String, PlayerRating> awayRatings = getRatingsFromJson(awayTeam, gameId);
             if (homeRatings != null && awayRatings != null) {
@@ -326,7 +303,6 @@ public class SofaScore {
         HashMap<String, PlayerRating> players = new HashMap<>();
         JSONArray lineups = (JSONArray) jsonObject.get("lineupsSorted");
         Iterator playersIterator = lineups.iterator();
-
         while (playersIterator.hasNext()) {
             JSONObject playerObj = (JSONObject) playersIterator.next();
             String playerName = (String) ((JSONObject) playerObj.get("player")).get("name");
@@ -409,8 +385,8 @@ public class SofaScore {
         HashMap<String, String> leagueNames = new HashMap<>();
         HashMap<String, String> sofaScoreNameToDbName = new HashMap<>();
         for (League league: leagues) {
-            leagueNames.put(league.getSeasonIds().getSofaScoreLeagueName(), league.getSeasonIds().getSofaScoreCountryName());
-            sofaScoreNameToDbName.put(league.getSeasonIds().getSofaScoreLeagueName(), league.getSeasonIds().name());
+            leagueNames.put(league.getIdsAndData().getSofaScoreLeagueName(), league.getIdsAndData().getSofaScoreCountryName());
+            sofaScoreNameToDbName.put(league.getIdsAndData().getSofaScoreLeagueName(), league.getIdsAndData().name());
         }
 
         ArrayList<Date> dates = new ArrayList<>();
@@ -502,17 +478,5 @@ public class SofaScore {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    public static void main(String[] args) {
-        Season season = new Season("18-19");
-        Team homeTeam = new Team("Burnley");
-        Team awayTeam = new Team("Newcastle United");
-        homeTeam.addMatch(new Match(homeTeam, awayTeam, DateHelper.createDateFromSQL("2018-11-26 20:30:00"), 1, 2));
-        season.addNewTeam(homeTeam);
-        season.addNewTeam(awayTeam);
-        addInfoToGame(season, 7827995);
-        System.out.println("hello");
     }
 }

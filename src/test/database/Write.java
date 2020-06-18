@@ -5,7 +5,7 @@ import com.petermarshall.database.Result;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.dbTables.*;
-import com.petermarshall.logging.MatchLog;
+import com.petermarshall.database.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 import org.junit.After;

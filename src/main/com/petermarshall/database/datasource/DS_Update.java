@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class DS_Update {
+    /*
+     * Updates all stats of game to that in league. Scores, dates, player ratings.
+     */
     public static void updateGamesInDB(League league, Season season, Date onlyUpdateGamesAfter) {
         try (Statement batchStatement = DS_Main.connection.createStatement()) {
             int leagueId = DS_Get.getLeagueId(league);
@@ -49,21 +52,18 @@ public class DS_Update {
             batchStatement.executeBatch();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("It's possible that our query to the database didn't return a result and therefore the resultset closes automatically, throwing this exception.");
             e.printStackTrace();
         }
     }
 
     /*
-     * Needed because understat (who we created our dates from) sometimes have incorrect start dates and times - called from SofaScore file.
+     * Needed because understat (who we created our dates from) sometimes have incorrect start dates and times.
      * Will also be used to change postponed matches in the database.
-     * Should only be called for todays games. will not be going through the whole seasons games calling this func.
      */
     public static void updateKickoffTime(int seasonYearStart, String homeTeamName, String awayTeamName, String startDate, int leagueId) {
         try (Statement statement = DS_Main.connection.createStatement()) {
             int homeTeamId = DS_Get.getTeamId(homeTeamName, leagueId);
             int awayTeamId = DS_Get.getTeamId(awayTeamName, leagueId);
-
             statement.execute("UPDATE " + MatchTable.getTableName() +
                     " SET " + MatchTable.getColDate() + " = '" + startDate +
                     "' WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +

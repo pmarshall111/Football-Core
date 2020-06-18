@@ -112,11 +112,11 @@ public class Get {
         Match inPast = s.addNewMatch(new Match(t2,t1, DateHelper.subtractXDaysFromDate(new Date(), 10)));
         Match pastWithPrediction = s.addNewMatch(new Match(t6, t7, DateHelper.subtractXDaysFromDate(new Date(), 5)));
         //future games
-        Match fAlreadyPredicted = s.addNewMatch(new Match(t1,t2, DateHelper.addDaysToDate(new Date(),2)));
-        Match fNotPredicted = s.addNewMatch(new Match(t3,t4, DateHelper.addDaysToDate(new Date(), 3)));             //THIS ONE TO BE RETURNED
-        Match fNotPredReverseFixture = s.addNewMatch(new Match(t4,t3, DateHelper.addDaysToDate(new Date(),4)));
-        Match fOneTeamWithGamesToPlay = s.addNewMatch(new Match(t5,t1, DateHelper.addDaysToDate(new Date(),5)));
-        Match fTwoTeamsWithGamesToPlay = s.addNewMatch(new Match(t2,t5, DateHelper.addDaysToDate(new Date(),6)));
+        Match fAlreadyPredicted = s.addNewMatch(new Match(t1,t2, DateHelper.addXDaysToDate(new Date(),2)));
+        Match fNotPredicted = s.addNewMatch(new Match(t3,t4, DateHelper.addXDaysToDate(new Date(), 3)));             //THIS ONE TO BE RETURNED
+        Match fNotPredReverseFixture = s.addNewMatch(new Match(t4,t3, DateHelper.addXDaysToDate(new Date(),4)));
+        Match fOneTeamWithGamesToPlay = s.addNewMatch(new Match(t5,t1, DateHelper.addXDaysToDate(new Date(),5)));
+        Match fTwoTeamsWithGamesToPlay = s.addNewMatch(new Match(t2,t5, DateHelper.addXDaysToDate(new Date(),6)));
 
         //add demo data to DB
         DS_Insert.writeLeagueToDb(l);
@@ -188,7 +188,7 @@ public class Get {
         Team s2t1 = s2.addNewTeam(new Team("s2t1"));
         Team s2t2 = s2.addNewTeam(new Team("s2t2"));
         s2.addNewMatch(new Match(s2t1, s2t2, DateHelper.subtractXDaysFromDate(new Date(), 2), 2,1));
-        s2.addNewMatch(new Match(s2t2, s2t1, DateHelper.addDaysToDate(new Date(), 3))); //game with score in past, game no score in future.
+        s2.addNewMatch(new Match(s2t2, s2t1, DateHelper.addXDaysToDate(new Date(), 3))); //game with score in past, game no score in future.
 
         DS_Insert.writeLeagueToDb(pastWithoutScore);
         DS_Insert.writeLeagueToDb(pastWithScore);

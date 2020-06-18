@@ -47,11 +47,11 @@ public class Season {
         return teams;
     }
 
+    public boolean hasMatches() {return matches.size() > 0;}
+
     public ArrayList<Match> getAllMatches() {
         return matches;
     }
-
-    public boolean hasMatches() {return matches.size() > 0;}
 
     public static String getSeasonKeyFromYearStart(int yearStart) {
         return yearStart + "-" + (yearStart+1);

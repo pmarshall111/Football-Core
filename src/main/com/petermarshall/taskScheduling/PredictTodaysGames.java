@@ -6,7 +6,6 @@ import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.CalculatePastStats;
 //import com.petermarshall.machineLearning.logisticRegression.Predict;
-import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
@@ -75,8 +74,8 @@ public class PredictTodaysGames {
         System.out.println("Predicting games...");
 
         //earliest
-        Date earliestGame = DateHelper.addMinsToDate(scrapeTime, minsBeforeKickoff);
-        Date latestGame = DateHelper.addMinsToDate(scrapeTime, 60 - minsAfterLineupsAnnouned);
+        Date earliestGame = DateHelper.addXMinsToDate(scrapeTime, minsBeforeKickoff);
+        Date latestGame = DateHelper.addXMinsToDate(scrapeTime, 60 - minsAfterLineupsAnnouned);
 
 
         DS_Main.openProductionConnection();
@@ -128,8 +127,8 @@ public class PredictTodaysGames {
 
         //we want to scrape 15mins after lineups are announced and place bet 5mins before game starts. so we have 40min window for each game.
         for (Date kickOffTime: todaysKickoffs) {
-            Date earliestCanScrape = DateHelper.addMinsToDate(kickOffTime, -60 + minsAfterLineups);
-            Date latestCanScrape = DateHelper.addMinsToDate(kickOffTime, -minsBeforeKickoff);
+            Date earliestCanScrape = DateHelper.addXMinsToDate(kickOffTime, -60 + minsAfterLineups);
+            Date latestCanScrape = DateHelper.addXMinsToDate(kickOffTime, -minsBeforeKickoff);
 
             if (timesToScrape.size() > 0) {
                 Date lastScrape = timesToScrape.get(timesToScrape.size()-1);
@@ -145,13 +144,13 @@ public class PredictTodaysGames {
     }
 
     private static void decideWhetherToScrapeInPlayedGames() {
-        Calendar rightNow = Calendar.getInstance();
-        int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
-        boolean evenDay = dayOfMonth % 2 == 0;
-
-        //no need to update played games every day as teams play at MOST once every 2 games (usually once every 3 is minimum).
-        if (evenDay || dayOfMonth == 1) { //added if dayOfMonth is 1 because some months will end in 31, with the next day being 1, so we wouldn't scrape for 3 days which might miss a teams last game.
-            UpdatePlayedGames.main(new String[]{});
-        }
+//        Calendar rightNow = Calendar.getInstance();
+//        int dayOfMonth = rightNow.get(Calendar.DAY_OF_MONTH);
+//        boolean evenDay = dayOfMonth % 2 == 0;
+//
+//        //no need to update played games every day as teams play at MOST once every 2 games (usually once every 3 is minimum).
+//        if (evenDay || dayOfMonth == 1) { //added if dayOfMonth is 1 because some months will end in 31, with the next day being 1, so we wouldn't scrape for 3 days which might miss a teams last game.
+//            UpdatePlayedGames.main(new String[]{});
+//        }
     }
 }

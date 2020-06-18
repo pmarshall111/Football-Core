@@ -1,11 +1,12 @@
 package com.petermarshall.taskScheduling;
 
+import com.petermarshall.AutomateBetUniBet;
 import com.petermarshall.BetPlaced;
-import com.petermarshall.database.Result;
+import com.petermarshall.BetPlacedUniBet;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.logging.MatchLog;
+import com.petermarshall.database.MatchLog;
 import com.petermarshall.machineLearning.DecideBet;
 import com.petermarshall.machineLearning.ModelPredict;
 import com.petermarshall.machineLearning.createData.CalculatePastStats;
@@ -24,6 +25,7 @@ import static com.petermarshall.AutomateBet.placeBet;
 
 public class PredictPipeline {
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
+    //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
     public static void predictGames() {
         //maybe first do a check that all games are updated.
         DS_Main.openProductionConnection();
@@ -47,18 +49,27 @@ public class PredictPipeline {
             if (mtps.size() > 0) {
                 //not a problem to go through individually as not expecting to have many bets at the same time.
                 for (MatchToPredict mtp: mtps) {
-                    String leagueName = translateLeagueName(mtp.getLeagueName());
+                    String leagueName = translateLeagueNameBet365(mtp.getLeagueName());
                     String homeTeam = mtp.getHomeTeamName();
                     String awayTeam = mtp.getAwayTeamName();
                     for (BetDecision bd: mtp.getGoodBets()) {
                         if (bd.getBookie().equals(OddsCheckerBookies.BET365)) {
-                            BetPlaced bet = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSetting(), 5, bd.getMinOdds());
+                            BetPlaced bet = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), 5, bd.getMinOdds());
                             if (bet.isBetSuccessful()) {
-                                Result res = Result.convertFromWinnerToRes(bd.getWinner());
-                                DS_Insert.logBetPlaced(new MatchLog(mtp, res, bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
-                                sb.append(homeTeam + " vs " + awayTeam + ": Bet £5 on " + res.name() + " at odds of " +
+                                DS_Insert.logBetPlaced(new MatchLog(mtp, bd.getWinner(), bd.getBookie().getName(), bet.getOddsOffered(), bet.getStake()));
+                                sb.append(homeTeam + " vs " + awayTeam + ": Bet £5 on " + bd.getWinner().name() + " at odds of " +
                                         bet.getOddsOffered() + ". Potential return: " + (5*bet.getOddsOffered()));
                                 betsPlaced++;
+                            } else {
+                                String country = getCountryFromLeagueName(leagueName);
+                                //TODO: Alter unibet to get games in future rather than just todays games.
+                                BetPlacedUniBet bet2 = AutomateBetUniBet.placeBet(country, "wont work", homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), 5, bd.getMinOdds());
+                                if (bet2.isBetSuccessful()) {
+                                    DS_Insert.logBetPlaced(new MatchLog(mtp, bd.getWinner(), bd.getBookie().getName(), bet2.getOddsOffered(), bet2.getStake()));
+                                    sb.append(homeTeam + " vs " + awayTeam + ": Bet £5 on " + bd.getWinner().name() + " at odds of " +
+                                            bet2.getOddsOffered() + ". Potential return: " + (5*bet2.getOddsOffered()));
+                                    betsPlaced++;
+                                }
                             }
                         }
                     }
@@ -72,7 +83,7 @@ public class PredictPipeline {
         }
     }
 
-    private static String translateLeagueName(String leagueName) {
+    private static String translateLeagueNameBet365(String leagueName) {
         if (leagueName.equals(LeagueIdsAndData.EPL.name())) {
             return "England Premier League";
         } else if (leagueName.equals(LeagueIdsAndData.LA_LIGA.name())) {
@@ -85,6 +96,24 @@ public class PredictPipeline {
             return "France Ligue 1"; //TODO: since league has been cancelled, not showing on site. NEEDS CHECKING
         } else if (leagueName.equals(LeagueIdsAndData.RUSSIA.name())) {
             return "Russia Premier League";
+        }
+        return null;
+    }
+
+
+    private static String getCountryFromLeagueName(String leagueName) {
+        if (leagueName.equals(LeagueIdsAndData.EPL.name())) {
+            return "England";
+        } else if (leagueName.equals(LeagueIdsAndData.LA_LIGA.name())) {
+            return "Spain";
+        } else if (leagueName.equals(LeagueIdsAndData.BUNDESLIGA.name())) {
+            return "Germany";
+        } else if (leagueName.equals(LeagueIdsAndData.SERIE_A.name())) {
+            return "Italy";
+        } else if (leagueName.equals(LeagueIdsAndData.LIGUE_1.name())) {
+            return "France";
+        } else if (leagueName.equals(LeagueIdsAndData.RUSSIA.name())) {
+            return "Russia";
         }
         return null;
     }

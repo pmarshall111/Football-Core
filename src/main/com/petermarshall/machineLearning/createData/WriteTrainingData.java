@@ -24,10 +24,6 @@ public class WriteTrainingData {
         writeNoLineupsFeaturesToCsv(testingDataSet, "noLineups_"+testFileName);
     }
 
-    public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
-        writeFeaturesToCsv(trainingData, fileName);
-    }
-
     public static void writeFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {
         try (FileWriter featuresWriter = new FileWriter(fileName);
              FileWriter oddsWriter = new FileWriter("odds"+fileName)) {
@@ -67,6 +63,14 @@ public class WriteTrainingData {
             e.printStackTrace();
         }
     }
+
+    public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
+        writeFeaturesToCsv(trainingData, fileName);
+    }
+
+
+
+    //legacy below
 
 
 

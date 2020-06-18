@@ -1,5 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
+import static com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason.AVG_RATING_PER_GAME;
+
 //Decision taken in this class to have separate fields for home and away instead of having all the data in 1 ratings array and filtering
 //every time we want home/away. Choice taken for speed as we will be sorting through a teams players for each match, so performance wise
 //it's better to not have to calculate these things each time.
@@ -32,7 +34,6 @@ public class Player {
         this.totalGames++;
         this.totalOvrRating += rating;
         this.weightedOvrRating += mins * rating;
-
         if (homeTeam) {
             this.homeMins += mins;
             this.homeGames++;
@@ -60,24 +61,24 @@ public class Player {
         return awayMins;
     }
 
-    public double getWeightedOvrRating() {
+    public double getSummedWeightedOvrRating() {
         return weightedOvrRating;
     }
-    public double getWeightedHomeRating() {
+    public double getSummedWeightedHomeRating() {
         return weightedHomeRating;
     }
-    public double getWeightedAwayRating() {
+    public double getSummedWeightedAwayRating() {
         return weightedAwayRating;
     }
 
     //if we have no data on the player yet, give the default rating of 6.
     public double getAvgOvrRating() {
-        return this.totalGames == 0 ? 6 : this.totalOvrRating/this.totalGames;
+        return this.totalGames == 0 ? AVG_RATING_PER_GAME : this.totalOvrRating/this.totalGames;
     }
     public double getAvgHomeRating() {
-        return this.homeGames == 0 ? 6 : this.totalHomeRating/this.homeGames;
+        return this.homeGames == 0 ? AVG_RATING_PER_GAME : this.totalHomeRating/this.homeGames;
     }
     public double getAvgAwayRating() {
-        return this.awayGames == 0 ? 6 : this.totalAwayRating/this.awayGames;
+        return this.awayGames == 0 ? AVG_RATING_PER_GAME : this.totalAwayRating/this.awayGames;
     }
 }

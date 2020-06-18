@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-/*
- * Class will get created from DataSource.getBaseMatchesToPredict().
- * Lineups, features, bookiePredictions and our predictions will be added through setters.
- */
 public class MatchToPredict {
     private final String sqlDateString; //will be stored as an SQL type datestring e.g. 2018-12-21 20:00:00
     private final String homeTeamName;
@@ -16,7 +12,7 @@ public class MatchToPredict {
     private final String leagueName;
     private ArrayList<String> homeTeamPlayers;
     private ArrayList<String> awayTeamPlayers;
-    private ArrayList<Double> features; //will be set with bias parameter included as first entry
+    private ArrayList<Double> features; //will be set with result as 1st entry and bias parameter as 2nd entry
     private ArrayList<Double> featuresNoLineups;
     private double[] ourPredictions;
     private double[] ourPredictionsNoLineups;
@@ -109,20 +105,12 @@ public class MatchToPredict {
         return sqlDateString;
     }
 
-    public ArrayList<Double> getFeatures() {
-        return features;
-    }
-
     public double[] getFeaturesWithoutResult() {
         double[] dArr = new double[features.size()-1];
         for (int i = 1; i<features.size(); i++) {
             dArr[i-1] = features.get(i);
         }
         return dArr;
-    }
-
-    public ArrayList<Double> getFeaturesNoLineups() {
-        return featuresNoLineups;
     }
 
     public double[] getFeaturesNoLineupsWithoutResult() {

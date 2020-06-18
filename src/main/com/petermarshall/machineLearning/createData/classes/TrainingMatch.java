@@ -389,7 +389,6 @@ public class TrainingMatch {
 
     public int getPoints(String teamName) {
         boolean homeTeam = isHomeTeam(teamName);
-
         if (homeScore == awayScore) return 1;
         else if (homeScore > awayScore) return homeTeam ? 3 : 0;
         else return homeTeam ? 0 : 3;
@@ -411,8 +410,7 @@ public class TrainingMatch {
     }
 
     public boolean isInOrAfterSeasonYearStart(int seasonYearStart) {
-        if (this.seasonYearStart >= seasonYearStart) return true;
-        else return false;
+        return this.seasonYearStart >= seasonYearStart;
     }
 
     public String getHomeTeamName() {

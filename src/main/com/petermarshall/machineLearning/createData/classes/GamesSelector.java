@@ -1,7 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
 /*
- * Used within TrainingTeam and TrainingTeamsSeason to specify whether we want a teams stats for home ganes, away games or both.
+ * Used within TrainingTeam and TrainingTeamsSeason to specify whether we want a teams stats for home games, away games or both.
  */
 public enum GamesSelector {
     ONLY_HOME_GAMES(1),

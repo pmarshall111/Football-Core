@@ -1,10 +1,9 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.BetResult;
-import com.petermarshall.database.BetResultsTotalled;
+import com.petermarshall.database.BetReflection;
+import com.petermarshall.database.BetReflectionsTotalled;
 import com.petermarshall.database.Result;
-import com.petermarshall.database.WhenGameWasPredicted;
 import com.petermarshall.database.dbTables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
@@ -18,26 +17,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-import static com.petermarshall.database.datasource.DS_Main.AWAYTEAM;
-import static com.petermarshall.database.datasource.DS_Main.HOMETEAM;
+import static com.petermarshall.database.datasource.DS_Main.*;
 
 public class DS_Get {
-    static int getMatchId(int homeTeamId, int awayTeamId, int seasonYearStart) {
-        try (Statement statement = DS_Main.connection.createStatement()) {
-            ResultSet rs = statement.executeQuery("SELECT _id FROM " + MatchTable.getTableName() +
-                    " WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
-                    " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
-                    " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
-            while (rs.next()) {
-                return rs.getInt(1);
-            }
-            return -9999;
-        } catch (SQLException e) {
-            System.out.println(e);
-            return -9999;
-        }
-    }
-
     public static int getLeagueId(String name) {
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT _id FROM " + LeagueTable.getTableName() +
@@ -54,6 +36,22 @@ public class DS_Get {
 
     public static int getLeagueId(League league) {
         return getLeagueId(league.getName());
+    }
+
+    static int getMatchId(int homeTeamId, int awayTeamId, int seasonYearStart) {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+            ResultSet rs = statement.executeQuery("SELECT _id FROM " + MatchTable.getTableName() +
+                    " WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
+                    " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
+                    " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+            return -9999;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return -9999;
+        }
     }
 
     static int getTeamId(String teamName, int leagueId) {
@@ -126,7 +124,6 @@ public class DS_Get {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return matches;
     }
 
@@ -135,10 +132,9 @@ public class DS_Get {
      * Method will return a set of games our database decided to bet on.
      * It will also total these bets up as it adds these and this result can be obtained by looking at the BetResultsTotalled class.
      */
-    public static BetResultsTotalled getResultsOfPredictions(Date lowerLimit, Date upperLimit,
-                                                             WhenGameWasPredicted whenGameWasPredicted) {
-        HashSet<BetResult> betResults = new HashSet<>();
-        BetResultsTotalled totalledResults = new BetResultsTotalled();
+    public static BetReflectionsTotalled getResultsOfPredictions(Date lowerLimit, Date upperLimit) {
+        HashSet<BetReflection> betResults = new HashSet<>();
+        BetReflectionsTotalled totalledResults = new BetReflectionsTotalled();
 
         String EARLIEST = DateHelper.getSqlDate(lowerLimit == null ? new Date(0) : lowerLimit);
         String LATEST = DateHelper.getSqlDate(upperLimit == null ? new Date() : lowerLimit);
@@ -152,8 +148,7 @@ public class DS_Get {
                     " INNER JOIN " + MatchTable.getTableName() + " ON " + BetTable.getTableName() + "." + BetTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
-                    " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColPredictedLive() + " = " + whenGameWasPredicted.getSqlIntCode() +
-                    " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " >= '" + EARLIEST + "'" +
+                    " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " >= '" + EARLIEST + "'" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " <= '" + LATEST + "'"
             );
 
@@ -170,7 +165,7 @@ public class DS_Get {
 
                 Date date = DateHelper.createDateFromSQL(dateString);
 
-                BetResult betResult = new BetResult(date, homeTeamName, awayTeamName, stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
+                BetReflection betResult = new BetReflection(date, homeTeamName, awayTeamName, stakeOnBet, oddsWhenBetPlaced, resultBetOn, result);
                 betResults.add(betResult);
 
                 //double moneyOut, double odds, int resultBetOn, int result
@@ -199,7 +194,6 @@ public class DS_Get {
 
     public static ArrayList<PlayerMatchDbData> getLeagueData(String leagueName, int seasonYearStart) {
         try (Statement statement = DS_Main.connection.createStatement()) {
-            String PLAYERS_TEAM = "players_team";
 
             //used to allow method to get out just 1 season
             int earliestSeason = -1;
@@ -256,8 +250,6 @@ public class DS_Get {
     //Used when predicting matches just in 1 season. Here, the player ratings for previous seasons are not needed, but the results between teams are.
     //So this method is used to reduce the data we need to get from the DB
     public static ArrayList<HistoricMatchDbData> getMatchesBetweenTeams(String leagueName, ArrayList<MatchToPredict> matches) {
-        int currSeasonStart = DateHelper.getStartYearForCurrentSeason();
-
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() + ", " +

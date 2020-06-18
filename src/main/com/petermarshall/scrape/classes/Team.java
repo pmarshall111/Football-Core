@@ -14,6 +14,14 @@ public class Team {
         this.matchMap = new HashMap<>();
     }
 
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public HashMap<Date, Match> getAllMatches() {
+        return matchMap;
+    }
+
     public boolean addMatch(Match match) {
         Date date = match.getKickoffTime();
         Date dateKey = DateHelper.removeTimeFromDate(date);
@@ -35,7 +43,7 @@ public class Team {
     /*
      * Method called from SofaScore & Understat scraping methods. Initially tries to get a match with the day SofaScore has in their
      * database. However, Understat has some matches where the days played are not the same as those according to SofaScore.
-     * To allow for this, if the exact day match fails we look for the match 2 days either side of the date this method is
+     * To allow for this, if the exact day match fails we look for the match 3 days either side of the date this method is
      * called with. If method still cannot find the match, we will return null.
      * Required instead of just finding the match from the opponents team name as Understat data does not store opposition team names,
      * but instead just gives the match dates and then the data.
@@ -43,10 +51,8 @@ public class Team {
     public Match getMatchFromDate(Date date) {
         Date dateKey = DateHelper.removeTimeFromDate(date);
         Match match = matchMap.getOrDefault(dateKey, null);
-
         if (match == null) {
             Date[] dates = getPotentialDates(dateKey);
-
             for (Date d: dates) {
                 match = matchMap.getOrDefault(d, null);
                 if (match != null) {
@@ -54,32 +60,23 @@ public class Team {
                 }
             }
         }
-
         return match;
     }
 
     private Date[] getPotentialDates(Date dateKey) {
         //order is important as we want to have dates closest to target date first.
         return new Date[]{
-                DateHelper.addDaysToDate(dateKey, 1),
-                DateHelper.addDaysToDate(dateKey, -1),
-                DateHelper.addDaysToDate(dateKey, 2),
-                DateHelper.addDaysToDate(dateKey, -2),
-                DateHelper.addDaysToDate(dateKey, 3),
-                DateHelper.addDaysToDate(dateKey, -3),
+                DateHelper.addXDaysToDate(dateKey, 1),
+                DateHelper.addXDaysToDate(dateKey, -1),
+                DateHelper.addXDaysToDate(dateKey, 2),
+                DateHelper.addXDaysToDate(dateKey, -2),
+                DateHelper.addXDaysToDate(dateKey, 3),
+                DateHelper.addXDaysToDate(dateKey, -3),
         };
     }
 
-    public HashMap<Date, Match> getAllMatches() {
-        return matchMap;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
     /*
-     * Used to convert SofaScore team names to those used in Understat. This way round because teams are first created into
+     * Converting SofaScore team names to those used in Understat. This way round because teams are first created into
      * memory from Understat.
      */
     public static String makeTeamNamesCompatible(String teamName) {

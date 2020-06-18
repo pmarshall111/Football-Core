@@ -21,8 +21,6 @@ public class Match {
      * Constructor will be initialised by Understat scraper, which will first look at the dates source so we can get the team names + kickoff times.
      * Then the understat scraper can set the xG info later with setter functions.
      * Info from understat comes from 2 different sources which is why setting info is partly in constructor and partly using setters.
-     *
-     * Also can be created from DataSource if we have games in database without complete data.
      */
     public Match(Team homeTeam, Team awayTeam, Date kickoffTime) {
         this(homeTeam, awayTeam, kickoffTime, -1, -1);

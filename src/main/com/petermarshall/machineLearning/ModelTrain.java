@@ -51,11 +51,6 @@ public class ModelTrain {
         rr.initialize(new FileSplit(new File(trainCsv)));
         DataSetIterator trainIter = new RecordReaderDataSetIterator(rr,batchSize,0,3);
 
-//        //Load the test/evaluation data:
-//        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
-//        rrTest.initialize(new FileSplit(new File(evalCsv)));
-//        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
-
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .weightInit(WeightInit.XAVIER)
@@ -75,19 +70,6 @@ public class ModelTrain {
 
         model.fit(trainIter, nEpochs);
         model.save(new File(saveModelTo));
-
-//        System.out.println("Evaluate model....");
-//        Evaluation eval = new Evaluation(numOutputs);
-//        while(testIter.hasNext()){
-//            DataSet t = testIter.next();
-//            INDArray features = t.getFeatures();
-//            INDArray labels = t.getLabels();
-//            INDArray predicted = model.output(features,false);
-//            eval.eval(labels, predicted);
-//        }
-//
-//        //Print the evaluation statistics
-//        System.out.println(eval.stats());
     }
 
     public static void trainNoLineups() throws Exception {
@@ -95,11 +77,6 @@ public class ModelTrain {
         RecordReader rr = new CSVRecordReader(csvLinesToSkip);
         rr.initialize(new FileSplit(new File(trainNoLineupsCsv)));
         DataSetIterator trainIter = new RecordReaderDataSetIterator(rr,batchSize,0,3);
-
-//        //Load the test/evaluation data:
-//        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
-//        rrTest.initialize(new FileSplit(new File(evalNoLineupsCsv)));
-//        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
@@ -120,18 +97,5 @@ public class ModelTrain {
 
         model.fit(trainIter, nEpochs);
         model.save(new File(saveNoLineupsModelTo));
-
-//        System.out.println("Evaluate model....");
-//        Evaluation eval = new Evaluation(numOutputs);
-//        while(testIter.hasNext()){
-//            DataSet t = testIter.next();
-//            INDArray features = t.getFeatures();
-//            INDArray labels = t.getLabels();
-//            INDArray predicted = model.output(features,false);
-//            eval.eval(labels, predicted);
-//        }
-//
-//        //Print the evaluation statistics
-//        System.out.println(eval.stats());
     }
 }

@@ -2,7 +2,7 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.dbTables.*;
-import com.petermarshall.logging.MatchLog;
+import com.petermarshall.database.MatchLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 
@@ -45,16 +45,13 @@ public class DS_Insert {
             }
             return true;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
     /*
-     * To be called after first scrape. Puts all data from a league into db. Cannot be called again once league is in database
-     * as league table in sqlite has a unique name constraint. To add more data, we must either update existing records or add
-     * a new season.
+     * To be called after first scrape. Puts all data from a league into db. Can also be used when adding new seasons.
      */
     public static void writeLeagueToDb(League league) {
         if (DS_Main.connection == null) {
@@ -86,18 +83,32 @@ public class DS_Insert {
                 writeMatchesToDb(season.getAllMatches(), teamIds, season.getSeasonYearStart());
             });
 
+            //resetting LEAGUE_ID in case an existing league is used with this method, followed by a new league. new league needs fresh id
+            getNextIds();
         } catch (SQLException e) {
-            //TODO: INTRODUCE LOGGING HERE
-            System.out.println(e.getMessage());
             System.out.println("ERROR writing league " + league.getName() + " to db");
-
             System.out.println("Error. Primary key now: " + LEAGUE_ID);
             e.printStackTrace();
         }
     }
 
+    /*
+     * Located in DS_Insert rather than DS_Get because method will cause unknown teams to be inserted into db
+     */
+    static HashMap<String, Integer> getTeamIds(HashMap<String, Team> teams, int leagueId) {
+        HashMap<String, Integer> ids = new HashMap<>();
+        teams.keySet().forEach(key -> {
+            int id = getTeamId(key, leagueId);
+            if (id < 0) {
+                //then we could not find a team of that name in db
+                id = writeTeamToDb(teams.get(key));
+            }
+            ids.put(key, id);
+        });
+        return ids;
+    }
 
-    static int writeTeamToDb(Team t) {
+    private static int writeTeamToDb(Team t) {
         if (TEAM_ID == -1) {
             getNextIds();
         }
@@ -106,21 +117,16 @@ public class DS_Insert {
                     "VALUES ( '" + t.getTeamName() + "', " + LEAGUE_ID + ", " + ++TEAM_ID + " )");
             return TEAM_ID;
         }  catch (SQLException e) {
-            //TODO: add log
-            System.out.println(e);
             e.printStackTrace();
             return -99999;
         }
     }
 
     private static void writeMatchesToDb(ArrayList<Match> matches, HashMap<String, Integer> teamIds, int seasonYearStart) {
-        //need to add to the batch both the player ratings and also the matches. need to add matches first as the player ratings need
-        //the matchId
         if (MATCH_ID == -1) {
             getNextIds();
         }
         try (Statement statement = DS_Main.connection.createStatement()) {
-
           matches.forEach(match -> {
               int homeTeamId = teamIds.get(match.getHomeTeam().getTeamName());
               int awayTeamId = teamIds.get(match.getAwayTeam().getTeamName());
@@ -143,8 +149,6 @@ public class DS_Insert {
           });
           statement.executeBatch();
         } catch (SQLException e) {
-            //TODO: add log
-            System.out.println(e);
             e.printStackTrace();
         }
     }
@@ -175,23 +179,8 @@ public class DS_Insert {
         }
     }
 
-    static HashMap<String, Integer> getTeamIds(HashMap<String, Team> teams, int leagueId) {
-        HashMap<String, Integer> ids = new HashMap<>();
-        teams.keySet().forEach(key -> {
-            //getting team id
-            int id = getTeamId(key, leagueId);
-            if (id < 0) {
-                //then we could not find a team of that name in db
-                id = writeTeamToDb(teams.get(key));
-            }
-            ids.put(key, id);
-        });
-        return ids;
-    }
-
     public static void addPredictionsToDb(ArrayList<MatchToPredict> mtps) {
         try (Statement statement = DS_Main.connection.createStatement()) {
-
             for (MatchToPredict mtp: mtps) {
                 if (mtp.hasAnyPredictions()) {
                     boolean hasLineupPredictions = mtp.hasPredictionsWithLineups();
@@ -212,12 +201,9 @@ public class DS_Insert {
                             predictions[1] + ", " + predictions[2] + ", " + bookieInsertionStr + ", " + mtp.getDatabase_id() + ")");
                 }
             }
-
             statement.executeBatch();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

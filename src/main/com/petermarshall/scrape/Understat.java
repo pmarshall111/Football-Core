@@ -2,7 +2,6 @@ package com.petermarshall.scrape;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.classes.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
@@ -12,13 +11,11 @@ import org.json.simple.parser.ParseException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Understat {
-
     private static final String UNDERSTAT_SITE = "https://understat.com/";
 
     public static void addLeaguesGames(League league) {
@@ -132,22 +129,12 @@ public class Understat {
         }
     }
 
-    //updates the kickoff time in the match, and also must update the entry in each teams' matchmap
-    private static void updateMatchKickoffTime(Match match, JSONObject matchObj) {
-        //updating date info to make 100% sure we can find correct match when finding xG (xG data has no awayteam names, just dates.)
-        //NOTE: don't even need to do this anyway because Understat have different dates between their own data for the same game! fantastic!
-        String date = matchObj.get("datetime").toString();
-        Date understatKOTime = DateHelper.getDateFromUnderstatDateString(date);
-        match.setKickoffTime(understatKOTime);
-
-    }
-
     private static UnderstatData getSeasonsData(League league, int seasonStartYear) {
         try (final WebClient webClient = new WebClient()) {
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
 
-            final HtmlPage page = webClient.getPage(UNDERSTAT_SITE + "league/" + league.getSeasonIds().getUnderstatUrl() + "/20" + seasonStartYear);
+            final HtmlPage page = webClient.getPage(UNDERSTAT_SITE + "league/" + league.getIdsAndData().getUnderstatUrl() + "/20" + seasonStartYear);
 
             //dates will give us all basic information about the game.
             //teams will give us an array of 38 matches for each team, with the non-penalty expected goals. no info about which team they played though.

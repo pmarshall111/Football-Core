@@ -1,9 +1,7 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.BetResultsTotalled;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.DataSource;
+import com.petermarshall.database.BetReflectionsTotalled;
 import com.petermarshall.mail.UptimeData;
 
 import java.util.Date;
@@ -46,7 +44,7 @@ public class EmailModelPerformance {
 //        SendEmail.sendOutEmail("Betting app performance review", stringBuilder.toString());
     }
 
-    private static void addTotalledDataToBuilder(StringBuilder stringBuilder, BetResultsTotalled totalledData) {
+    private static void addTotalledDataToBuilder(StringBuilder stringBuilder, BetReflectionsTotalled totalledData) {
 
         stringBuilder.append("\n\nTotal Model Performance:\n");
         stringBuilder.append("In total, as of ");
@@ -60,23 +58,23 @@ public class EmailModelPerformance {
                 "_______________________________");
     }
 
-    private static void addRecentModelDataToBuilder(StringBuilder stringBuilder, Date lastChangeOfModel, BetResultsTotalled recentData) {
+    private static void addRecentModelDataToBuilder(StringBuilder stringBuilder, Date lastChangeOfModel, BetReflectionsTotalled recentData) {
         stringBuilder.append("\n\nRecent Model Performance:\n");
         stringBuilder.append("Since the database was last changed on ");
         addBaseDataToBuilder(stringBuilder, recentData, lastChangeOfModel);
     }
     
-    private static void addBaseDataToBuilder(StringBuilder builder, BetResultsTotalled betResultsTotalled, Date date) {
+    private static void addBaseDataToBuilder(StringBuilder builder, BetReflectionsTotalled betReflectionsTotalled, Date date) {
 
         builder.append(DateHelper.turnDateToddMMyyyyString(date));
         builder.append(", the database has spent £");
-        builder.append(String.format("%.2f", betResultsTotalled.getTotalMoneyOut()));
+        builder.append(String.format("%.2f", betReflectionsTotalled.getTotalMoneyOut()));
         builder.append(" on ");
-        builder.append(betResultsTotalled.getNumbBetsPlaced());
+        builder.append(betReflectionsTotalled.getNumbBetsPlaced());
         builder.append(" bets, making £");
-        builder.append(String.format("%.2f", betResultsTotalled.getRealProfit()));
+        builder.append(String.format("%.2f", betReflectionsTotalled.getRealProfit()));
         builder.append(" profit. This equates to a percentage profit of about ");
-        builder.append(String.format("%.0f", betResultsTotalled.getPercentageProfit()));
+        builder.append(String.format("%.0f", betReflectionsTotalled.getPercentageProfit()));
         builder.append("%.");
         
     }

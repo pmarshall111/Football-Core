@@ -1,6 +1,5 @@
 package com.petermarshall.machineLearning.createData;
 
-import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.machineLearning.createData.classes.*;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
@@ -26,16 +25,22 @@ public class CalculatePastStats {
         return allMatches;
     }
 
-    //func will be given the leagues for which the season must be calculated and also the historic results
-    //TODO: will need tests for this. Can get historic matches out correctly etc
+    /*
+     * Adds features in a slightly different way to those added to TrainingMatches to reduce computation time.
+     * For the TrainingMatches, all the data from the league including historic seasons is used from the database, but
+     * for predicting games, only the current season is useful along with a record of historic results between the 2 teams.
+     *
+     * If run in test suite, it doesn't save the results of the last match to the team stats, so a prediction can be made
+     * with the team stats the way they were before the match happened.
+     */
     public static void addFeaturesToPredict(ArrayList<MatchToPredict> matches, boolean isRunInTestSuite) {
-        //first need to get an idea of what leagues we need
+        //first need to know which leagues we need data for
         HashMap<String, ArrayList<MatchToPredict>> leagueMatches = new HashMap<>();
         for (MatchToPredict m : matches) {
             leagueMatches.putIfAbsent(m.getLeagueName(), new ArrayList<>());
             leagueMatches.get(m.getLeagueName()).add(m);
         }
-        //now can go through leagueNames updating the matchesToPredict with features.
+
         //gets the current seasons matches to create stats for each teams season thus far
         //also gets previous matches in past seasons from the database
         leagueMatches.forEach((league, toPredicts) -> {
@@ -63,6 +68,31 @@ public class CalculatePastStats {
         });
     }
 
+    private static HashMap<String, TrainingTeam> createHistoricMatchups(ArrayList<HistoricMatchDbData> matches) {
+        HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
+        if (matches == null) {
+            return teamsInLeague;
+        }
+        for (HistoricMatchDbData data: matches) {
+            teamsInLeague.putIfAbsent(data.getHomeTeam(), new TrainingTeam(data.getHomeTeam()));
+            teamsInLeague.putIfAbsent(data.getAwayTeam(), new TrainingTeam(data.getAwayTeam()));
+            TrainingTeam homeTeam = teamsInLeague.get(data.getHomeTeam());
+            TrainingTeam awayTeam = teamsInLeague.get(data.getAwayTeam());
+            TrainingMatch match = new TrainingMatch(homeTeam, awayTeam, data.getHomeScore(), data.getAwayScore(), data.getSeasonYearStart());
+            homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
+            awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
+        }
+        return teamsInLeague;
+    }
+
+    /*
+     * Method uses all historic matches in the database for a league and updates each teams stats as it comes across new games.
+     * Uses all player rating records, which also contain match data, then when the match data changes to a new match it saves the
+     * current stats to the old teams.
+     *
+     * saveLastMatch added in for testing purposes so that Team stats can be updated to the point right before the final match takes
+     * place - to allow us to create features for a prediction and check they are the same as those used for training.
+     */
     private static ArrayList<TrainingMatch> createLeaguesMatches(ArrayList<PlayerMatchDbData> playerRatings, HashMap<String, TrainingTeam> teamsInLeague, boolean saveLastMatch) {
         int lastMatchId = -1; //to be used to see if we come across a new match
         TrainingTeam homeTeam = null;
@@ -72,7 +102,7 @@ public class CalculatePastStats {
         HashMap<String, Player> homeLineup = new HashMap<>();
         HashMap<String, Player> awayLineup = new HashMap<>();
         ArrayList<TrainingMatch> matches = new ArrayList<>();
-        PlayerMatchDbData lastRecordData = null; //we only save a game once we get to data from a new match so need access to last record
+        PlayerMatchDbData lastRecordData = null; //we only save a game once we get to data from a new match so need access to the last record
         PlayerMatchDbData data = null;
 
         //need to go through, and collect data for the current team
@@ -108,23 +138,6 @@ public class CalculatePastStats {
             saveData(homeTeam, homeSeason, awayTeam, awaySeason, homeLineup, awayLineup, data, matches);
         }
         return matches;
-    }
-
-    private static HashMap<String, TrainingTeam> createHistoricMatchups(ArrayList<HistoricMatchDbData> matches) {
-        HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
-        if (matches == null) {
-            return teamsInLeague;
-        }
-        for (HistoricMatchDbData data: matches) {
-            teamsInLeague.putIfAbsent(data.getHomeTeam(), new TrainingTeam(data.getHomeTeam()));
-            teamsInLeague.putIfAbsent(data.getAwayTeam(), new TrainingTeam(data.getAwayTeam()));
-            TrainingTeam homeTeam = teamsInLeague.get(data.getHomeTeam());
-            TrainingTeam awayTeam = teamsInLeague.get(data.getAwayTeam());
-            TrainingMatch match = new TrainingMatch(homeTeam, awayTeam, data.getHomeScore(), data.getAwayScore(), data.getSeasonYearStart());
-            homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
-            awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
-        }
-        return teamsInLeague;
     }
 
     //NOTE: need to create the training match first before saving the games stats. We want to train on the state of the team before the game.
@@ -182,6 +195,10 @@ public class CalculatePastStats {
         double homeWeightedTotalXGA = homeSeason.getWeightedAvgXGA(GamesSelector.ALL_GAMES);
         double homeWeightedHomeXGF = homeSeason.getWeightedAvgXGF(GamesSelector.ONLY_HOME_GAMES);
         double homeWeightedHomeXGA = homeSeason.getWeightedAvgXGA(GamesSelector.ONLY_HOME_GAMES);
+        double homeTotalPPG = homeSeason.getAvgPoints(GamesSelector.ALL_GAMES);
+        double homeHomePPG = homeSeason.getAvgPoints(GamesSelector.ONLY_HOME_GAMES);
+        double homeLast5TotalPPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
+        double homeLast5HomePPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_HOME_GAMES, COMPARE_LAST_N_GAMES);
 
         double awayTotalAvgGoalsFor = awaySeason.getAvgGoalsFor(GamesSelector.ALL_GAMES);
         double awayTotalAvgGoalsAgainst = awaySeason.getAvgGoalsAgainst(GamesSelector.ALL_GAMES);
@@ -195,13 +212,6 @@ public class CalculatePastStats {
         double awayWeightedTotalXGA = awaySeason.getWeightedAvgXGA(GamesSelector.ALL_GAMES);
         double awayWeightedAwayXGF = awaySeason.getWeightedAvgXGF(GamesSelector.ONLY_AWAY_GAMES);
         double awayWeightedAwayXGA = awaySeason.getWeightedAvgXGA(GamesSelector.ONLY_AWAY_GAMES);
-
-        //added in later
-        double homeTotalPPG = homeSeason.getAvgPoints(GamesSelector.ALL_GAMES);
-        double homeHomePPG = homeSeason.getAvgPoints(GamesSelector.ONLY_HOME_GAMES);
-        double homeLast5TotalPPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
-        double homeLast5HomePPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_HOME_GAMES, COMPARE_LAST_N_GAMES);
-
         double awayTotalPPG = awaySeason.getAvgPoints(GamesSelector.ALL_GAMES);
         double awayAwayPPG = awaySeason.getAvgPoints(GamesSelector.ONLY_AWAY_GAMES);
         double awayLast5TotalPPG = awaySeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);

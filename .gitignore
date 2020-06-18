@@ -3,4 +3,5 @@
 *.zip
 /lib/
 /target
+/.idea
 /src/main/com/petermarshall/database/datasource/Keys.java

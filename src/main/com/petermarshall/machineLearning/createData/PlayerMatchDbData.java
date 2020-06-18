@@ -5,6 +5,9 @@ import com.petermarshall.database.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*
+ * Class is used to pass data from the database to CalculatePastStats.
+ */
 public class PlayerMatchDbData {
     private String name;
     private int mins;

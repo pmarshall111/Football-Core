@@ -1,14 +1,14 @@
 package com.petermarshall.machineLearning.createData.classes;
 
-import com.petermarshall.Winner;
+import com.petermarshall.database.Result;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 public class BetDecision {
     private OddsCheckerBookies bookie;
-    private Winner winner;
+    private Result winner;
     private double minOdds;
 
-    public BetDecision(OddsCheckerBookies bookie, Winner winner, double minOdds) {
+    public BetDecision(OddsCheckerBookies bookie, Result winner, double minOdds) {
         this.bookie = bookie;
         this.winner = winner;
         this.minOdds = minOdds;
@@ -18,7 +18,7 @@ public class BetDecision {
         return bookie;
     }
 
-    public Winner getWinner() {
+    public Result getWinner() {
         return winner;
     }
 

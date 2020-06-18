@@ -1,10 +1,7 @@
 package com.petermarshall.scrape.classes;
 
-import java.util.HashSet;
-
 /*
  * Enum used in taskScheduling/PredictTodaysGames to specify which bookies we've signed up for.
- * TODO: needs a test from within OddsChecker scraper to see if any of the bookies have been removed or had their name changed.
  */
 public enum OddsCheckerBookies {
     BET365("Bet365"),
@@ -36,38 +33,6 @@ public enum OddsCheckerBookies {
     MATCHBOOK("Matchbook"), 
     SMARKETS("Smarkets");
     
-    private static HashSet<String> allBookies = new HashSet<>();
-    static {
-        allBookies.add(BET365.getName());
-        allBookies.add(SKYBET.getName());
-        allBookies.add(LADBROKES.getName());
-        allBookies.add(WILLIAM_HILL.getName());
-        allBookies.add(MARATHON_BET.getName());
-        allBookies.add(BETFAIR_SPORTSBOOK.getName());
-        allBookies.add(BETVICTOR.getName());
-        allBookies.add(PADDY_POWER.getName());
-        allBookies.add(UNIBET.getName());
-        allBookies.add(CORAL.getName());
-        allBookies.add(BETFRED.getName());
-        allBookies.add(BOYLE_SPORTS.getName());
-        allBookies.add(BLACK_TYPE.getName());
-        allBookies.add(REDZONE.getName());
-        allBookies.add(BETWAY.getName());
-        allBookies.add(BETBRIGHT.getName());
-        allBookies.add(TEN_BET.getName());
-        allBookies.add(SPORTINGBET.getName());
-        allBookies.add(ONE_EIGHT_EIGHT_BET.getName());
-        allBookies.add(EIGHT_EIGHT_EIGHT_SPORT.getName());
-        allBookies.add(SPORTPESA.getName());
-        allBookies.add(SPREADEX.getName());
-        allBookies.add(ROYAL_PANDA.getName());
-        allBookies.add(SPORT_NATION.getName());
-        allBookies.add(BETFAIR.getName());
-        allBookies.add(BETDAQ.getName());
-        allBookies.add(MATCHBOOK.getName());
-        allBookies.add(SMARKETS.getName());
-    }
-    
     private final String bookie;
 
     OddsCheckerBookies(String bookie) {
@@ -76,9 +41,5 @@ public enum OddsCheckerBookies {
 
     public String getName() {
         return bookie;
-    }
-
-    public static HashSet<String> getAllBookies() {
-        return allBookies;
     }
 }
