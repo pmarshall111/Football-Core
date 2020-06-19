@@ -4,18 +4,18 @@ import com.petermarshall.database.Result;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 public class BetDecision {
-    private OddsCheckerBookies bookie;
+    private OddsCheckerBookies[] bookiePriority;
     private Result winner;
     private double minOdds;
 
-    public BetDecision(OddsCheckerBookies bookie, Result winner, double minOdds) {
-        this.bookie = bookie;
+    public BetDecision(OddsCheckerBookies[] bookiePriority, Result winner, double minOdds) {
+        this.bookiePriority = bookiePriority;
         this.winner = winner;
         this.minOdds = minOdds;
     }
 
-    public OddsCheckerBookies getBookie() {
-        return bookie;
+    public OddsCheckerBookies[] getBookiePriority() {
+        return bookiePriority;
     }
 
     public Result getWinner() {

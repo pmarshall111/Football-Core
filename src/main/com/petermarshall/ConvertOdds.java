@@ -20,4 +20,12 @@ public class ConvertOdds {
         return probabilities;
     }
 
+    public static double fromProbabilityToOdds(double probability) {
+        return 1/probability;
+    }
+
+    public static double fromOddsToProbability(double odds) {
+        return 1/odds;
+    }
+
 }
