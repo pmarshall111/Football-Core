@@ -1,5 +1,6 @@
 package database;
 
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.scrape.classes.*;
 
@@ -13,6 +14,7 @@ import static com.petermarshall.database.datasource.DS_Main.connection;
 
 //for 1 league: 2 seasons, 8 teams per season, 4 matches per season,  22 players per match
 //totals: 2 leagues, 4 seasons, 32 teams, 16 matches, 352 players
+//tests rely on there being 1 match between each team
 public class GenerateData {
     private ArrayList<League> leagues;
     private ArrayList<Team> teams;
@@ -93,7 +95,7 @@ public class GenerateData {
         m.setAwayScore(AWAYSCORE);
         m.setHomeXGF(HOMEXG);
         m.setAwayXGF(AWAYXG);
-        m.setFirstScorer(1);
+        m.setFirstScorer(FirstScorer.HOME_FIRST);
         m.setSofaScoreGameId(matches.size());
         ArrayList<Double> odds = new ArrayList<>();
         odds.add(HOMEODDS);
@@ -102,7 +104,7 @@ public class GenerateData {
         m.setHomeDrawAwayOdds(odds);
     }
 
-    private void addPlayerRatingsToMatch(Match m, int seasonYear, int matchNumb, String leagueName) {
+    void addPlayerRatingsToMatch(Match m, int seasonYear, int matchNumb, String leagueName) {
         HashMap<String, PlayerRating> homeRatings = new HashMap<>();
         HashMap<String, PlayerRating> awayRatings = new HashMap<>();
         for (int j = 0; j<NUMB_PLAYERS_PER_MATCH; j++) {

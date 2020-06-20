@@ -1,6 +1,7 @@
 package database;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
@@ -68,8 +69,6 @@ public class Get {
         DS_Insert.writeLeagueToDb(l);
         pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches);
         Assert.assertEquals(2, pastMatches.size());
-        pastMatches = DS_Get.getMatchesBetweenTeams(l.getName(), matches);
-        Assert.assertEquals(1, pastMatches.size());
     }
 
     @Test
@@ -97,6 +96,58 @@ public class Get {
             Assert.assertNotNull(pmdbData.getName());
         }
         Assert.assertEquals(s.getAllMatches().size()*NUMB_PLAYERS_PER_MATCH*2, pmdbDataArr.size());
+    }
+
+    @Test
+    public void doesNotGetOutGamesWithoutProperStats() {
+        //do not want to train on games that do not have scores, xg, firstscorer data
+        //create data
+        GenerateData dataHelper = new GenerateData(false);
+        League l = new League(LeagueIdsAndData.EPL);
+        int season = 19;
+        Season s = l.getSeason(season);
+        Team t1 = s.addNewTeam(new Team("team1")), t2 = s.addNewTeam(new Team("team2")),
+                t3 = s.addNewTeam(new Team("team3")), t4 = s.addNewTeam(new Team("team4"));
+        Match normal = s.addNewMatch(new Match(t1,t2, DateHelper.subtractXDaysFromDate(new Date(), 5), 0, 0));
+        double homeOdds = 2.3, drawOdds = 3.4, awayOdds = 4.5;
+        normal.setHomeDrawAwayOdds(new ArrayList<>(Arrays.asList(homeOdds, drawOdds, awayOdds)));
+        normal.setHomeXGF(2.2);
+        normal.setAwayXGF(1.1);
+        normal.setFirstScorer(FirstScorer.NO_FIRST_SCORER);
+        dataHelper.addPlayerRatingsToMatch(normal, season, 1, "epl");
+
+        Match noXg = s.addNewMatch(new Match(t3,t4, DateHelper.subtractXDaysFromDate(new Date(), 5), 4, 0));
+        noXg.setHomeDrawAwayOdds(new ArrayList<>(Arrays.asList(2.9,3.1,4.6)));
+        noXg.setFirstScorer(FirstScorer.HOME_FIRST);
+        dataHelper.addPlayerRatingsToMatch(noXg, season, 2, "epl");
+
+        Match noFirstScorer = s.addNewMatch(new Match(t2,t3, DateHelper.subtractXDaysFromDate(new Date(), 3), 1, 3));
+        noFirstScorer.setHomeDrawAwayOdds(new ArrayList<>(Arrays.asList(2.3,3.8,4.5)));
+        noFirstScorer.setHomeXGF(3.2);
+        noFirstScorer.setAwayXGF(6.1);
+        dataHelper.addPlayerRatingsToMatch(noFirstScorer, season, 4, "epl");
+        //test
+        DS_Insert.writeLeagueToDb(l);
+        ArrayList<PlayerMatchDbData> pmdbDataArr = DS_Get.getLeagueData(l.getName(), season);
+        if (pmdbDataArr == null) {
+            fail();
+        }
+        Assert.assertEquals(normal.getHomePlayerRatings().size() + normal.getAwayPlayerRatings().size(), pmdbDataArr.size());
+        for (PlayerMatchDbData pmdbData: pmdbDataArr) {
+            //match stats
+            Assert.assertEquals(normal.getHomeScore(), pmdbData.getHomeScore());
+            Assert.assertEquals(normal.getAwayScore(), pmdbData.getAwayScore());
+            Assert.assertEquals(normal.getHomeXGF(), pmdbData.getHomeXGF(), 0.001);
+            Assert.assertEquals(normal.getAwayXGF(), pmdbData.getAwayXGF(), 0.001);
+            Assert.assertEquals(homeOdds, pmdbData.getHomeOdds(), 0.001);
+            Assert.assertEquals(drawOdds, pmdbData.getDrawOdds(), 0.001);
+            Assert.assertEquals(awayOdds, pmdbData.getAwayOdds(), 0.001);
+            Assert.assertEquals(normal.getFirstScorer().getSqlIntCode(), pmdbData.getFirstScorer());
+            //player stats
+            Assert.assertEquals(MINUTES, pmdbData.getMins());
+            Assert.assertEquals(RATING, pmdbData.getRating(), 0.001);
+            Assert.assertNotNull(pmdbData.getName());
+        }
     }
 
     @Test

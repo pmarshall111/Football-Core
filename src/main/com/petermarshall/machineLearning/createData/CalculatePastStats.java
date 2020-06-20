@@ -68,7 +68,7 @@ public class CalculatePastStats {
         });
     }
 
-    private static HashMap<String, TrainingTeam> createHistoricMatchups(ArrayList<HistoricMatchDbData> matches) {
+    public static HashMap<String, TrainingTeam> createHistoricMatchups(ArrayList<HistoricMatchDbData> matches) {
         HashMap<String, TrainingTeam> teamsInLeague = new HashMap<>();
         if (matches == null) {
             return teamsInLeague;

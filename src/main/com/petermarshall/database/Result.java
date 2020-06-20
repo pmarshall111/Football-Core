@@ -1,7 +1,6 @@
 package com.petermarshall.database;
 
 public enum Result {
-    NOT_BET_ON(-1),
     HOME_WIN(0),
     DRAW(1),
     AWAY_WIN(2);

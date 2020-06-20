@@ -1,5 +1,6 @@
 package scrape;
 
+import com.petermarshall.DateHelper;
 import com.petermarshall.scrape.classes.*;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -55,10 +56,10 @@ public class Understat {
 
     @Test
     public void matchInPastHasXGAndScore() {
+        //currently fails due to the coronavirus with matches not being rearranged.
         ArrayList<Season> seasons = epl.getAllSeasons();
-        seasons.forEach(season -> {
-            HashMap<String, Team> allTeams = season.getAllTeams();
-            ArrayList<Match> matches = season.getAllMatches();
+        for (Season s: seasons) {
+            ArrayList<Match> matches = s.getAllMatches();
             for (Match match : matches) {
                 if (match.getKickoffTime().after(new Date())) {
                     break;
@@ -68,7 +69,7 @@ public class Understat {
                 Assert.assertTrue(match.getHomeXGF() >= 0);
                 Assert.assertTrue(match.getAwayXGF() >= 0);
             }
-        });
+        }
     }
 
     @Test

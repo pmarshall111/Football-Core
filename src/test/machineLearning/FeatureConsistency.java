@@ -71,13 +71,13 @@ public class FeatureConsistency {
             Assert.assertEquals(trainingFeaturesNL.size(), predictFeaturesNL.length);
             Assert.assertEquals(trainingFeatures.size(), predictFeatures.length);
             for (int i = 0; i<trainingFeaturesNL.size(); i++) {
-                if (i != 24 && i != 56) {
+                if (i != 25 && i != 56) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
                     Assert.assertEquals("Index failed at: " + i, trainingFeaturesNL.get(i), predictFeaturesNL[i], 0.0001);
                 }
             }
             for (int i = 0; i<trainingFeatures.size(); i++) {
-                if (i != 24 && i != 59) {
+                if (i != 25 && i != 59) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
                     Assert.assertEquals("Index failed at: " + i, trainingFeatures.get(i), predictFeatures[i], 0.0001);
                 }

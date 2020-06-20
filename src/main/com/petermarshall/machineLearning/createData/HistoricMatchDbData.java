@@ -4,11 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class HistoricMatchDbData {
-    private String homeTeam;
-    private String awayTeam;
-    private int homeScore;
-    private int awayScore;
-    private int seasonYearStart;
+    private final String homeTeam;
+    private final String awayTeam;
+    private final int homeScore;
+    private final int awayScore;
+    private final int seasonYearStart;
 
     public HistoricMatchDbData(ResultSet rs) throws SQLException {
         this.homeTeam = rs.getString(1);
@@ -16,6 +16,15 @@ public class HistoricMatchDbData {
         this.homeScore = rs.getInt(3);
         this.awayScore = rs.getInt(4);
         this.seasonYearStart = rs.getInt(5);
+    }
+
+    //NOTE: used for testing purposes only
+    public HistoricMatchDbData(String homeTeam, String awayTeam, int homeScore, int awayScore, int seasonYearStart) {
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+        this.seasonYearStart = seasonYearStart;
     }
 
     public String getHomeTeam() {

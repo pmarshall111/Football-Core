@@ -1,6 +1,7 @@
 package database;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.dbTables.LeagueTable;
 import com.petermarshall.database.dbTables.MatchTable;
@@ -28,8 +29,7 @@ public class Integrity {
 
     @Test
     public void noMatchHasMoreThan14PlayersOnOneTeam() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             String totalPlayers = "totalplayers";
             ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + totalPlayers + " FROM " + PlayerRatingTable.getTableName() +
                                                 " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
@@ -46,8 +46,7 @@ public class Integrity {
 
     @Test
     public void noMatchHasLessThan11PlayersOnOneTeam() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             String totalPlayers = "totalplayers";
             ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + totalPlayers + " FROM " + PlayerRatingTable.getTableName() +
                                             " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
@@ -64,8 +63,7 @@ public class Integrity {
 
     @Test
     public void noDuplicatePlayers() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             String timesAddedToGame = "timesAddedToGame";
             ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + timesAddedToGame + " FROM " + PlayerRatingTable.getTableName() +
                     " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", " + PlayerRatingTable.getColPlayerName() +
@@ -82,8 +80,9 @@ public class Integrity {
 
     @Test
     public void matchesWithNoRatings() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        int knownCases = 1;
+        //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory with no player ratings given
+        try (Statement s = DS_Main.connection.createStatement()) {
             //need to include the date in query as the database will also have future games that have not yet been played.
             String currDate = DateHelper.getSqlDate(new Date());
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
@@ -92,7 +91,7 @@ public class Integrity {
                                                 " AND " + MatchTable.getColDate() + " < '" + currDate + "'");
             while (rs.next()) {
                 int count = rs.getInt(1);
-                Assert.assertEquals(0, count);
+                Assert.assertEquals(knownCases, count);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -102,8 +101,7 @@ public class Integrity {
 
     @Test
     public void noMissedGames() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             String currDate = DateHelper.getSqlDate(new Date());
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
                                             " WHERE " + MatchTable.getColDate() + " < '" + currDate + "'" +
@@ -120,8 +118,7 @@ public class Integrity {
 
     @Test
     public void noPartiallyCompletedGames() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
                                             " WHERE (" + MatchTable.getColAwayScore() + " = -1" +
                                                 " OR " + MatchTable.getColHomeScore() + " = -1" +
@@ -169,8 +166,7 @@ public class Integrity {
 
     @Test
     public void leaguesHaveSameNumberOfGamesForEachSeason() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             ResultSet rs = s.executeQuery("SELECT " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", COUNT(*)" +
                     " FROM " + MatchTable.getTableName() +
@@ -193,8 +189,7 @@ public class Integrity {
 
     @Test
     public void teamsAreGivenTheRightLeagueId() {
-        try {
-            Statement s = DS_Main.connection.createStatement();
+        try (Statement s = DS_Main.connection.createStatement()) {
             String home = "home", away = "away";
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + home + "._id" +
@@ -203,6 +198,33 @@ public class Integrity {
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(0, count);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void noGameMoreThan3DaysAgoWithoutStats() {
+        int knownCases = 1;
+        //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory. no player ratings for this also
+        try (Statement s = DS_Main.connection.createStatement()) {
+
+            ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
+                    " WHERE " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3)) + "'" +
+                    " AND (" + MatchTable.getColHomeScore() + " = -1" +
+                        " OR " + MatchTable.getColAwayScore() + " = -1" +
+                        " OR " + MatchTable.getColHomeXg() + " = -1" +
+                        " OR " + MatchTable.getColAwayXg() + " = -1" +
+                        " OR " + MatchTable.getColHomeWinOdds() + " = -1" +
+                        " OR " + MatchTable.getColDrawOdds() + " = -1" +
+                        " OR " + MatchTable.getColAwayWinOdds() + " = -1" +
+                        " OR (" + MatchTable.getColFirstScorer() + " = -1 AND (" + MatchTable.getColHomeScore() + " >0 OR " + MatchTable.getColAwayScore() + " >0)))");
+
+            while (rs.next()) {
+                int count = rs.getInt(1);
+                Assert.assertEquals(knownCases, count);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

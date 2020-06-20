@@ -3,6 +3,7 @@ package com.petermarshall.database.datasource;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.BetReflection;
 import com.petermarshall.database.BetReflectionsTotalled;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.Result;
 import com.petermarshall.database.dbTables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
@@ -232,6 +233,12 @@ public class DS_Get {
                     " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " = '" + leagueName + "'" +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + " >= " + earliestSeason +
                     " AND " + MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + " <= " + latestSeason +
+                    " AND " + MatchTable.getColHomeScore() + " != -1" +
+                    " AND " + MatchTable.getColAwayScore() + " != -1" +
+                    " AND " + MatchTable.getColHomeXg() + " != -1" +
+                    " AND " + MatchTable.getColAwayXg() + " != -1" +
+                    " AND ( (" + MatchTable.getColFirstScorer() + " = -1" + " AND " + MatchTable.getColHomeScore() + " = 0 AND " + MatchTable.getColAwayScore() + " = 0)" +
+                        " OR " + MatchTable.getColFirstScorer() + " != " + FirstScorer.NO_FIRST_SCORER.getSqlIntCode() + ")" +
                     " ORDER BY " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " + PLAYERS_TEAM + ", " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMins() + " DESC");
 
             ArrayList<PlayerMatchDbData> dbData = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.petermarshall.database.datasource;
 
+import com.petermarshall.database.Result;
 import com.petermarshall.database.dbTables.*;
 
 import java.sql.Connection;
@@ -119,7 +120,8 @@ public class DS_Main {
                     BetTable.getColMatchId() + " int NOT NULL, " + BetTable.getColBetPlacedWith() + " text, " +
                     " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
                     " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
-                    "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= 1) and (" + BetTable.getColResultBetOn() + " <= 3)))" +
+                    "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= " + Result.HOME_WIN.getSqlIntCode() +
+                        ") and (" + BetTable.getColResultBetOn() + " <= " + Result.AWAY_WIN.getSqlIntCode() + ")))" +
                     ")");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + PredictionTable.getTableName() + " (" +

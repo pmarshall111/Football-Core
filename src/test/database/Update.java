@@ -1,6 +1,7 @@
 package database;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
@@ -75,7 +76,7 @@ public class Update {
             homeDrawAwayOdds.add(DRAWODDS);
             homeDrawAwayOdds.add(AWAYODDS);
             match.setHomeDrawAwayOdds(homeDrawAwayOdds);
-            match.setFirstScorer(FIRSTSCORER);
+            match.setFirstScorer(FirstScorer.getFirstScoreFromSql(FIRSTSCORER));
             DS_Update.updateGamesInDB(league, season, DateHelper.subtractXDaysFromDate(new Date(), 100)); //this could be a possible cause of test failing.
             //checking after update
             ResultSet rsAfterUpdate = s.executeQuery("SELECT " + MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +

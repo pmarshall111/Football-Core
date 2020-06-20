@@ -1,6 +1,7 @@
 package com.petermarshall.scrape;
 
 import com.petermarshall.*;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
@@ -123,7 +124,7 @@ public class SofaScore {
      * betting odds to it. Then if it is full time, we call addPlayerRatingsToGame, and also addFirstScorer.
      */
     public static void addInfoToGame(Season season, int gameId) {
-        //SofaScore does not have data for this game (Ligue 1. Bastia vs Lyon 16-17). Return early to avoid error.
+        //SofaScore does not have data for this game (Ligue 1. Bastia vs Lyon 16-17 - abandoned early due to crowd trouble). Return early to avoid error.
         if (gameId == 7080222) return;
 
         String url = getGameInfoUrl(gameId);
@@ -361,8 +362,8 @@ public class SofaScore {
             if (typeOfIncident.equals("goal")) {
                 String homeScore = incident.get("homeScore").toString();
                 String awayScore = incident.get("awayScore").toString();
-                if (homeScore.equals("1") && awayScore.equals("0")) match.setFirstScorer(1);
-                else if (homeScore.equals("0") && awayScore.equals("1")) match.setFirstScorer(2);
+                if (homeScore.equals("1") && awayScore.equals("0")) match.setFirstScorer(FirstScorer.HOME_FIRST);
+                else if (homeScore.equals("0") && awayScore.equals("1")) match.setFirstScorer(FirstScorer.AWAY_FIRST);
             }
         }
     }
@@ -379,7 +380,6 @@ public class SofaScore {
         for (LeagueIdsAndData ids : LeagueIdsAndData.values()) {
             leagues.add(new League(ids));
         }
-
         String today = DateHelper.turnDateToyyyyMMddString(new Date());
         String url = "https://www.sofascore.com/football//" + today + "/json";
         HashMap<String, String> leagueNames = new HashMap<>();

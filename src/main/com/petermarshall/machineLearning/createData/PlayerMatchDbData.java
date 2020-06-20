@@ -23,7 +23,7 @@ public class PlayerMatchDbData {
     private double homeOdds;
     private double drawOdds;
     private double awayOdds;
-    private int firstScorer; //1 = hometeam, 2=awayteam
+    private int firstScorer; //1 = hometeam, 2=awayteam. See FirstScorer enum
     private int matchId;
     private int seasonYearStart;
     private String leagueName;

@@ -67,10 +67,10 @@ public class DecideBet {
         double awayPrediction = predictionRow.getDouble(2);
 
         //DECISION LOGIC
-        if (homePrediction-btb > bookieHomePred) {
+        if (homePrediction-btb > bookieHomePred && bookieHomePred != -1) { //-1 check in case we get data from db without odds. still want to train on it, but not for money calcs
             higherThanBookies.addBet(5, oddsRow.getDouble(0), labelsRow.getDouble(0) == 1);
         }
-        if (awayPrediction-btb > bookieAwayPred) {
+        if (awayPrediction-btb > bookieAwayPred && bookieAwayPred != -1) {
             higherThanBookies.addBet(5, oddsRow.getDouble(2), labelsRow.getDouble(2) == 1);
         }
     }

@@ -1,5 +1,7 @@
 package com.petermarshall.scrape.classes;
 
+import com.petermarshall.database.FirstScorer;
+
 import java.util.*;
 
 public class Match {
@@ -9,7 +11,7 @@ public class Match {
     private double awayXGF;
     private int homeScore;
     private int awayScore;
-    private int firstScorer; //1 means hometeam, 2 means awayteam
+    private FirstScorer firstScorer;
     private Date kickoffTime;
     //player ratings data will come from sofascore scraper
     private HashMap<String, PlayerRating> homePlayerRatings;
@@ -31,7 +33,7 @@ public class Match {
         this.kickoffTime = kickoffTime;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
-        this.firstScorer = -1;
+        this.firstScorer = FirstScorer.NO_FIRST_SCORER;
         this.homeXGF = -1;
         this.awayXGF = -1;
         this.homePlayerRatings = new HashMap<>();
@@ -95,15 +97,14 @@ public class Match {
         this.awayScore = awayScore;
     }
 
-    public int getFirstScorer() {
+    public FirstScorer getFirstScorer() {
         return firstScorer;
     }
-    public void setFirstScorer(int firstScorer) {
+    public void setFirstScorer(FirstScorer firstScorer) {
         if (this.homeScore == -1 || this.awayScore == -1) throw new RuntimeException("Error trying to setFirstScorer for match " +
                 this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName() + ". Cannot set firstScorer because scores have not been set.");
-        else if (this.homeScore == 0 && this.awayScore == 0 && firstScorer != 0) throw new RuntimeException("Error trying to setFirstScorer for match " +
+        else if (this.homeScore == 0 && this.awayScore == 0 && !firstScorer.equals(FirstScorer.NO_FIRST_SCORER)) throw new RuntimeException("Error trying to setFirstScorer for match " +
                 this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName() + ". Cannot set firstScorer to value other than 0 (no first scorer) when scores are 0-0.");
-
         this.firstScorer = firstScorer;
     }
 

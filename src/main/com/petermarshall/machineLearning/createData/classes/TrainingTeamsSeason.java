@@ -1,6 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 //contains metrics that can be used to create the features for a match to predict.
@@ -206,11 +207,11 @@ public class TrainingTeamsSeason {
     }
 
     public double getAvgGoalsFor(GamesSelector gamesSelector) {
-        return calcHomeAway(this.goalsFor, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
+        return calcHomeAwayAvg(this.goalsFor, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
     }
 
     public double getAvgGoalsAgainst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.goalsAgainst, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
+        return calcHomeAwayAvg(this.goalsAgainst, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
     }
 
     public double getAvgNumberOfCleanSheets(GamesSelector gamesSelector) {
@@ -241,11 +242,11 @@ public class TrainingTeamsSeason {
     }
 
     public double getAvgXGF(GamesSelector gamesSelector) {
-        return calcHomeAway(this.xGF, gamesSelector.getSetting(), AVG_XG_PER_GAME);
+        return calcHomeAwayAvg(this.xGF, gamesSelector.getSetting(), AVG_XG_PER_GAME);
     }
 
     public double getAvgXGA(GamesSelector gamesSelector) {
-        return calcHomeAway(this.xGA, gamesSelector.getSetting(), AVG_XG_PER_GAME);
+        return calcHomeAwayAvg(this.xGA, gamesSelector.getSetting(), AVG_XG_PER_GAME);
     }
 
     public double getWeightedAvgXGF (GamesSelector gamesSelector) {
@@ -298,41 +299,41 @@ public class TrainingTeamsSeason {
 
 
     public double getAvgFormGoalsFor(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormGoalsForHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormGoalsForHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
         //default value for how many more xGF they got than expected... 0.
     }
 
     public double getAvgFormGoalsAgainst(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormGoalsAgainstHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormGoalsAgainstHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
     }
 
     public double getAvgFormXGF(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormXGFHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormXGFHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
     }
 
     public double getAvgFormXGA(GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormXGAHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormXGAHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
     }
 
     public double getAvgFormWeightedXGF (GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormWeightedXGFHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormWeightedXGFHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
     }
 
     public double getAvgFormWeightedXGA (GamesSelector gamesSelector, int removeFirstNGames) {
-        return calcHomeAway(removeFirstNRecordsOfGroup(this.totalFormWeightedXGAHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormWeightedXGAHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
     }
 
     public double getFormXGFOverLastNGames(GamesSelector gamesSelector, int numbPreviousGames) {
         ArrayList<HomeAwayWrapper> lastNGamesXGF = this.getLastNRecords(gamesSelector, this.totalFormXGFHistory, numbPreviousGames);
-        return calcHomeAway(lastNGamesXGF, gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(lastNGamesXGF, gamesSelector.getSetting(), 0);
     }
 
     public double getFormXGAOverLastNGames(GamesSelector gamesSelector, int numbPreviousGames) {
         ArrayList<HomeAwayWrapper> lastNGamesXGA = this.getLastNRecords(gamesSelector, this.totalFormXGAHistory, numbPreviousGames);
-        return calcHomeAway(lastNGamesXGA, gamesSelector.getSetting(), 0);
+        return calcHomeAwayAvg(lastNGamesXGA, gamesSelector.getSetting(), 0);
     }
 
-    private ArrayList<HomeAwayWrapper> getLastNRecords(GamesSelector gamesSelector, ArrayList<HomeAwayWrapper> source, int numbPreviousGames) {
+    public ArrayList<HomeAwayWrapper> getLastNRecords(GamesSelector gamesSelector, ArrayList<HomeAwayWrapper> source, int numbPreviousGames) {
         ArrayList<HomeAwayWrapper> lastNRecords = new ArrayList<>();
         for (int i = source.size() - 1, count = 0; i >= 0 && count < numbPreviousGames; i--) {
             HomeAwayWrapper currRecord = source.get(i);
@@ -343,61 +344,62 @@ public class TrainingTeamsSeason {
                 count++;
             }
         }
+        Collections.reverse(lastNRecords);
         return lastNRecords;
     }
 
 
-    private ArrayList<HomeAwayWrapper> removeFirstNRecordsOfGroup (ArrayList<HomeAwayWrapper> source, int startGamesIgnored) {
+    public ArrayList<HomeAwayWrapper> removeFirstNRecordsOfGroup (ArrayList<HomeAwayWrapper> source, int startGamesIgnored) {
         return new ArrayList<>(source.subList(Math.min(startGamesIgnored, source.size()), source.size()));
     }
 
     public double getAvgPoints(GamesSelector gamesSelector) {
-        return calcHomeAway(this.points, gamesSelector.getSetting(), AVG_PPG);
+        return calcHomeAwayAvg(this.points, gamesSelector.getSetting(), AVG_PPG);
     }
 
     public double getAvgPointsOverLastXGames(GamesSelector gamesSelector, int numbPreviousGames) {
         ArrayList<HomeAwayWrapper> lastXPoints = getLastNRecords(gamesSelector, this.points, numbPreviousGames);
-        return calcHomeAway(lastXPoints,gamesSelector.getSetting(), AVG_PPG);
+        return calcHomeAwayAvg(lastXPoints,gamesSelector.getSetting(), AVG_PPG);
     }
 
     public double getAvgPointsWhenScoredFirst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.pointsScoredFirst, gamesSelector.getSetting(), AVG_PPG);
+        return calcHomeAwayAvg(this.pointsScoredFirst, gamesSelector.getSetting(), AVG_PPG);
     }
 
     public double getAvgPointsWhenConceededFirst(GamesSelector gamesSelector) {
-        return calcHomeAway(this.pointsConceededFirst, gamesSelector.getSetting(), AVG_PPG);
+        return calcHomeAwayAvg(this.pointsConceededFirst, gamesSelector.getSetting(), AVG_PPG);
     }
 
     public double getAvgPointsOfAllOpponentsGamesWholeSeason (GamesSelector gamesSelector) {
-        return calcHomeAway(this.totalPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(this.totalPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsGamesWholeSeason (GamesSelector gamesSelector, int lastNRecords) {
         ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.totalPointsPerGameOfOpponentsWholeSeason, lastNRecords);
-        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
     public double getAvgPointsOfAllOpponentsHomeAwayGamesWholeSeason (GamesSelector gamesSelector) {
-        return calcHomeAway(this.homeAwayPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(this.homeAwayPointsPerGameOfOpponentsWholeSeason, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsHomeAwayGamesWholeSeason (GamesSelector gamesSelector, int lastNRecords) {
         ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.homeAwayPointsPerGameOfOpponentsWholeSeason, lastNRecords);
-        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
     public double getAvgPointsOfAllOpponentsLast5Games (GamesSelector gamesSelector) {
-        return calcHomeAway(this.totalPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(this.totalPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsLast5Games (GamesSelector gamesSelector, int lastNRecords) {
         ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.totalPointsPerGameOfOpponentsLast5 , lastNRecords);
-        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
     public double getAvgPointsOfAllOpponentsHomeAwayLast5Games (GamesSelector gamesSelector) {
-        return calcHomeAway(this.homeAwayPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(this.homeAwayPointsPerGameOfOpponentsLast5, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
     public double getAvgPointsOfLastXOpponentsHomeAwayLast5Games (GamesSelector gamesSelector, int lastNRecords) {
         ArrayList<HomeAwayWrapper> ppgOfOpponentsLast5Games = getLastNRecords(gamesSelector, this.homeAwayPointsPerGameOfOpponentsLast5 , lastNRecords);
-        return calcHomeAway(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
 
@@ -507,7 +509,7 @@ public class TrainingTeamsSeason {
      * MakeLengthUpTo parameter is used to help with matches at the start of the season. We don't want to be training with games where
      * there's only 2 valid games for an average, so we add in the default value until we have reached the numb in makeLengthUpTo.
      */
-    private double calcHomeAway (ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue, int makeLengthUpTo) {
+    public double calcHomeAwayAvg(ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue, int makeLengthUpTo) {
         if (doubleArray == null) throw new RuntimeException();
 
         int matchesCounted = 0;
@@ -530,8 +532,8 @@ public class TrainingTeamsSeason {
         return matchesCounted == 0 ? defaultValue : dNumb/matchesCounted;
     }
 
-    private double calcHomeAway (ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue) {
-        return calcHomeAway(doubleArray, homeAwaySetting, defaultValue, -1);
+    private double calcHomeAwayAvg(ArrayList<HomeAwayWrapper> doubleArray, int homeAwaySetting, double defaultValue) {
+        return calcHomeAwayAvg(doubleArray, homeAwaySetting, defaultValue, -1);
     }
 
     public static double calcExponWeightedAvg(double currAvg, double newEntry) {
