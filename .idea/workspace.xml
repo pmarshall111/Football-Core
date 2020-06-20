@@ -7,27 +7,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/FirstScorer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/machineLearning/CalculatePastStatsTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/DateHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/DateHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/DataSource.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/database/DataSource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/SofaScore.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/League.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/scrape/classes/League.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/ScrapeGamesMissingData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/UpdatePlayedGames.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Football/com/petermarshall/taskScheduling/UpdatePlayedGames.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/Result.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/DecideBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/DecideBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalculatePastStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalculatePastStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/HistoricMatchDbData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/HistoricMatchDbData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/PlayerMatchDbData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/PlayerMatchDbData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/GenerateData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/GenerateData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/FeatureConsistency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/FeatureConsistency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/scrape/Understat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/Understat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/trainingData/TrainingMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/trainingData/TrainingMatch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java" afterDir="false" />
+      <change beforePath="$USER_HOME$/IdeaProjects/UnibetPlaceBet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$USER_HOME$/IdeaProjects/UnibetPlaceBet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,163 +39,6 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Football$Main.ic" NAME="Main Coverage Results" MODIFIED="1539898610747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-  </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Main.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="372">
-                    <caret line="30" column="42" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-                    <folding>
-                      <element signature="e#2684#2685#0" expanded="true" />
-                      <element signature="e#2741#2742#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-969427246">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="49" />
-          <entry key="project.open.time.10" value="1" />
-          <entry key="project.open.time.103" value="1" />
-          <entry key="project.open.time.11" value="3" />
-          <entry key="project.open.time.125" value="1" />
-          <entry key="project.open.time.13" value="2" />
-          <entry key="project.open.time.136" value="1" />
-          <entry key="project.open.time.166" value="1" />
-          <entry key="project.open.time.18" value="1" />
-          <entry key="project.open.time.21" value="1" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.31" value="1" />
-          <entry key="project.open.time.34" value="1" />
-          <entry key="project.open.time.37" value="1" />
-          <entry key="project.open.time.38" value="1" />
-          <entry key="project.open.time.48" value="1" />
-          <entry key="project.open.time.49" value="2" />
-          <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.53" value="1" />
-          <entry key="project.open.time.57" value="1" />
-          <entry key="project.open.time.58" value="4" />
-          <entry key="project.open.time.6" value="1" />
-          <entry key="project.open.time.60" value="3" />
-          <entry key="project.open.time.61" value="1" />
-          <entry key="project.open.time.62" value="1" />
-          <entry key="project.open.time.64" value="1" />
-          <entry key="project.open.time.67" value="1" />
-          <entry key="project.open.time.68" value="1" />
-          <entry key="project.open.time.7" value="2" />
-          <entry key="project.open.time.70" value="1" />
-          <entry key="project.open.time.72" value="1" />
-          <entry key="project.open.time.73" value="3" />
-          <entry key="project.open.time.74" value="1" />
-          <entry key="project.open.time.76" value="1" />
-          <entry key="project.open.time.79" value="2" />
-          <entry key="project.open.time.8" value="2" />
-          <entry key="project.open.time.80" value="1" />
-          <entry key="project.open.time.81" value="1" />
-          <entry key="project.open.time.86" value="1" />
-          <entry key="project.open.time.88" value="2" />
-          <entry key="project.open.time.91" value="1" />
-          <entry key="project.open.time.92" value="1" />
-          <entry key="project.open.time.97" value="2" />
-          <entry key="project.opened" value="59" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="arff" value="22" />
-          <entry key="dummy" value="52" />
-          <entry key="gitignore" value="23" />
-          <entry key="java" value="246419" />
-          <entry key="txt" value="18570" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Groovy" value="24" />
-          <entry key="JAVA" value="266299" />
-          <entry key="PLAIN_TEXT" value="18678" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="MF" value="2" />
-          <entry key="arff" value="12" />
-          <entry key="class" value="13" />
-          <entry key="csv" value="15" />
-          <entry key="gitignore" value="1" />
-          <entry key="iml" value="1" />
-          <entry key="java" value="422" />
-          <entry key="txt" value="39" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="CLASS" value="13" />
-          <entry key="Groovy" value="1" />
-          <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="534" />
-          <entry key="Manifest" value="2" />
-          <entry key="PLAIN_TEXT" value="76" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5321">
-              <caret line="326" column="100" selection-start-line="326" selection-start-column="100" selection-end-line="326" selection-end-column="100" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/GamesWithMissedPredictions.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="16" column="40" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1700">
-              <caret line="117" column="34" selection-start-line="117" selection-start-column="34" selection-end-line="117" selection-end-column="34" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/LastPredicted.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="517">
-              <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -201,258 +48,39 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>homeSeason</find>
-      <find>(\d+)</find>
-      <find>place&quot;</find>
-      <find>update</find>
-      <find>MatchTab</find>
-      <find>psvm</find>
-      <find>set</find>
-      <find>partsOfT</find>
-      <find>CDA</find>
-      <find>CDATA</find>
-      <find>Home</find>
-      <find>awayLast5AwayOpponentsWholeSeasonPPG</find>
-      <find>writeAll</find>
-      <find>\* \w+</find>
-      <find>System.out</find>
-      <find>&quot; INNER JOIN &quot; +</find>
-      <find>MatchToPre</find>
-      <find>logB</find>
-      <find>new Match</find>
-      <find>recentData</find>
-      <find>BASE_ST</find>
-      <find>addI</find>
-      <find>could not find game for</find>
-      <find>odds</find>
-      <find>jso</find>
-      <find>&quot;We</find>
-      <find>addMiss</find>
-      <find>main</find>
-      <find>we have an</find>
-      <find>SQL</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>away</replace>
-      <replace>delimiter</replace>
-      <replace>ratioMoneyIn</replace>
-      <replace>\($1.getBookie()</replace>
-      <replace>prediction</replace>
-      <replace>Loss</replace>
-      <replace>ourPredictions[i]</replace>
-      <replace>Against</replace>
-      <replace>Home</replace>
-      <replace>= ;</replace>
-      <replace>pow</replace>
-      <replace>(Math.pow($1,2)</replace>
-      <replace>Subtracted</replace>
-      <replace>mForm</replace>
-      <replace>Form</replace>
-      <replace>() + delimiter)</replace>
-      <replace>$1History</replace>
-      <replace>= new ArrayList&lt;&gt;();</replace>
-      <replace>awayForm</replace>
-      <replace>AWAY_GAMES</replace>
-      <replace>TeamAway</replace>
-      <replace>0</replace>
-      <replace>, IGNORE_FIRST_N_GAMES)</replace>
-      <replace>(Math.pow($1, pow)</replace>
-      <replace>awaySeason</replace>
-      <replace>&quot;$1&quot;</replace>
-      <replace>0$1</replace>
-      <replace>Away</replace>
-      <replace>awayLast5AwayOpponentsLast5PPG</replace>
-      <replace>betResultsTotalled</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/com/petermarshall/model/DataSource.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/RetrainPredictor.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/OddsChecker.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/WriteTrainingData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/test.java" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/dateLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/dateWhenLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/LogGamesWithMissedPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/ResultBetOn.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/tables/MatchTable.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/GamePredictedOn.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/WhenGameWasPredicted.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/MatchLog.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/GamesWithMissedPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/testPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/missedGamePredictions.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/LastPredicted.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/notes.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/BetResultsTotalled.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/MissedMatch.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/UnderstatData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesWithoutData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertBets.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/mail/UptimeData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/test/PredictTest.groovy" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/DateHelper.java" />
-        <option value="$PROJECT_DIR$/src/ntoes.txt" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java" />
-        <option value="$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java" />
-      </list>
-    </option>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/test/database/Integrity.java" root0="FORCE_HIGHLIGHTING" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="744" />
-  </component>
+  <component name="ProjectId" id="1aoUIZvJuiTnTAofBYFiagsxfq4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="database" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="logging" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-              <item name="createData" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="machineLearning" type="462c0819:PsiDirectoryNode" />
-              <item name="logisticRegression" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="mail" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="taskScheduling" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Football" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="petermarshall" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Football" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Football" type="616d4139:PackageViewModuleNode" />
-            </path>
-            <path>
-              <item name="Football" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Football" type="616d4139:PackageViewModuleNode" />
-              <item name="com" type="1f31426a:PackageElementNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="Downloaded.Files.Path.Enabled" value="true" />
+    <property name="Repository.Attach.Annotations" value="false" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573481514833" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575646977338" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/com/petermarshall/logging" />
+    <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/IdeaProjects/UnibetPlaceBet" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -465,9 +93,11 @@
       <recent name="groovy.util.GroovyTestCase" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib\ext" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main\com" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall\logging" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.petermarshall.test" />
@@ -477,43 +107,19 @@
       <recent name="com.petermarshall.scrape" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.UpdatePlayedGames">
-    <configuration name="EmailModelPerformance" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.EmailModelPerformance" />
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.Write.canLogBetPlaced">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.createData.Main" />
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.Main" />
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.machineLearning.createData.*" />
+          <option name="PATTERN" value="com.petermarshall.machineLearning.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -521,59 +127,100 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PredictMissedGames" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.PredictMissedGames" />
+    <configuration name="FeatureConsistency.nonLineupFeaturesAreTheSame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="PATTERN" value="machineLearning.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="machineLearning" />
+      <option name="MAIN_CLASS_NAME" value="machineLearning.FeatureConsistency" />
+      <option name="METHOD_NAME" value="nonLineupFeaturesAreTheSame" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ScrapeGamesMissingData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.ScrapeGamesMissingData" />
+    <configuration name="Get.canGetPreviousMatchesBetweenTeams" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="PATTERN" value="database.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Get" />
+      <option name="METHOD_NAME" value="canGetPreviousMatchesBetweenTeams" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UpdatePlayedGames" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.UpdatePlayedGames" />
+    <configuration name="TrainingTeamsSeasonTest.canGetFormGoalsFor" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="PATTERN" value="trainingData.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="trainingData" />
+      <option name="MAIN_CLASS_NAME" value="trainingData.TrainingTeamsSeasonTest" />
+      <option name="METHOD_NAME" value="canGetFormGoalsFor" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Understat.matchInPastHasXGAndScore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.Understat" />
+      <option name="METHOD_NAME" value="matchInPastHasXGAndScore" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Write.canLogBetPlaced" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="database.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Write" />
+      <option name="METHOD_NAME" value="canLogBetPlaced" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.EmailModelPerformance" />
-      <item itemvalue="Application.PredictMissedGames" />
-      <item itemvalue="Application.ScrapeGamesMissingData" />
-      <item itemvalue="Application.Main" />
-      <item itemvalue="Application.UpdatePlayedGames" />
+      <item itemvalue="JUnit.Understat.matchInPastHasXGAndScore" />
+      <item itemvalue="JUnit.FeatureConsistency.nonLineupFeaturesAreTheSame" />
+      <item itemvalue="JUnit.TrainingTeamsSeasonTest.canGetFormGoalsFor" />
+      <item itemvalue="JUnit.Get.canGetPreviousMatchesBetweenTeams" />
+      <item itemvalue="JUnit.Write.canLogBetPlaced" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.UpdatePlayedGames" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="Application.EmailModelPerformance" />
-        <item itemvalue="Application.PredictMissedGames" />
-        <item itemvalue="Application.ScrapeGamesMissingData" />
+        <item itemvalue="JUnit.Write.canLogBetPlaced" />
+        <item itemvalue="JUnit.Get.canGetPreviousMatchesBetweenTeams" />
+        <item itemvalue="JUnit.TrainingTeamsSeasonTest.canGetFormGoalsFor" />
+        <item itemvalue="JUnit.FeatureConsistency.nonLineupFeaturesAreTheSame" />
+        <item itemvalue="JUnit.Understat.matchInPastHasXGAndScore" />
       </list>
     </recent_temporary>
   </component>
@@ -587,6 +234,46 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1539852151403</updated>
+      <workItem from="1587401455481" duration="1936000" />
+      <workItem from="1587542748232" duration="14994000" />
+      <workItem from="1587582160279" duration="4283000" />
+      <workItem from="1587632712354" duration="26020000" />
+      <workItem from="1587690789303" duration="203000" />
+      <workItem from="1587691547308" duration="38000" />
+      <workItem from="1587734931075" duration="6993000" />
+      <workItem from="1587823430037" duration="14214000" />
+      <workItem from="1587985266287" duration="25052000" />
+      <workItem from="1588081645341" duration="190000" />
+      <workItem from="1589014371916" duration="881000" />
+      <workItem from="1589210398590" duration="1208000" />
+      <workItem from="1589354290610" duration="2436000" />
+      <workItem from="1589966370124" duration="638000" />
+      <workItem from="1590080889333" duration="4736000" />
+      <workItem from="1590103423944" duration="3676000" />
+      <workItem from="1590141904899" duration="12931000" />
+      <workItem from="1590225667572" duration="7813000" />
+      <workItem from="1590484231783" duration="4827000" />
+      <workItem from="1590652934527" duration="514000" />
+      <workItem from="1590655233820" duration="1212000" />
+      <workItem from="1591083214060" duration="2239000" />
+      <workItem from="1591104657268" duration="3255000" />
+      <workItem from="1591176116677" duration="10327000" />
+      <workItem from="1591253608060" duration="8476000" />
+      <workItem from="1591345627663" duration="6961000" />
+      <workItem from="1591434720884" duration="21767000" />
+      <workItem from="1591521753524" duration="14159000" />
+      <workItem from="1591608047237" duration="5201000" />
+      <workItem from="1591692728373" duration="13401000" />
+      <workItem from="1591772992951" duration="14935000" />
+      <workItem from="1591859858151" duration="15762000" />
+      <workItem from="1591946452857" duration="16657000" />
+      <workItem from="1592032278544" duration="12364000" />
+      <workItem from="1592047160260" duration="312000" />
+      <workItem from="1592124704750" duration="6684000" />
+      <workItem from="1592200810328" duration="17294000" />
+      <workItem from="1592288093011" duration="17325000" />
+      <workItem from="1592468088153" duration="9966000" />
+      <workItem from="1592546292781" duration="20136000" />
     </task>
     <servers />
   </component>
@@ -599,149 +286,250 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19062027" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3286334" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.40238613" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.40347072" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.329718" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50053304" side_tool="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.329718" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="Maven Projects" order="7" />
-    </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.32995737" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.45119306" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50053304" side_tool="true" weight="0.30260304" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.329718" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="Maven Projects" order="7" />
-    </layout-to-restore>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="349" y="381" key="#SQL_Dialects.inPresentationMode" timestamp="1589014884702">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="349" y="381" key="#SQL_Dialects.inPresentationMode/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589014884702" />
+    <state x="-1506" y="184" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591718903645">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="552" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog.inPresentationMode" timestamp="1589014975897">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog.inPresentationMode/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589014975897" />
+    <state x="-1506" y="184" key="#com.intellij.execution.impl.EditConfigurationsDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591718903645" />
+    <state x="414" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590102631717" />
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1592557049586">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1828" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592213952456" />
+    <state x="-1828" y="98" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592291885292" />
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592557049586" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser" timestamp="1592558211328">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587546490486" />
+    <state x="-1235" y="101" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592042357088" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587846898567" />
+    <state x="-1235" y="107" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592126317181" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592558211328" />
+    <state x="1293" y="353" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1587634132845">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1293" y="353" key="#com.intellij.ide.util.TreeClassChooserDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587634132845" />
+    <state x="440" y="80" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1587581903677">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="312" y="56" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576527165" />
+    <state x="440" y="80" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587581903677" />
+    <state x="720" y="388" width="479" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1592555310265">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="720" y="388" width="479" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592555310265" />
+    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1592557274717">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1920" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592204234021" />
+    <state x="-1920" y="6" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592477517478" />
+    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592557274717" />
+    <state x="-732" y="320" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592303906643">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="410" y="114" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587543591545" />
+    <state x="-732" y="320" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592303906643" />
+    <state x="-1415" y="274" key="#org.jetbrains.debugger.memory.view.InstancesWindow" timestamp="1592212419167">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1415" y="274" key="#org.jetbrains.debugger.memory.view.InstancesWindow/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592212419167" />
+    <state x="-1828" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1592212591415">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1828" y="92" width="1736" height="856" key="DiffContextDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592212591415" />
+    <state x="-1180" y="284" key="FileChooserDialogImpl" timestamp="1592468221612">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1180" y="278" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045510066" />
+    <state x="-1180" y="284" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468221612" />
+    <state x="740" y="278" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590103884061" />
+    <state width="1877" height="312" key="GridCell.Tab.0.bottom" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="260" key="GridCell.Tab.0.bottom/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424434" />
+    <state width="1877" height="264" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
+    <state width="1877" height="311" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.0.center" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="260" key="GridCell.Tab.0.center/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424433" />
+    <state width="1877" height="264" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
+    <state width="1877" height="311" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.0.left" timestamp="1592657907698">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="260" key="GridCell.Tab.0.left/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424432" />
+    <state width="1877" height="264" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
+    <state width="1877" height="311" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907698" />
+    <state width="1877" height="312" key="GridCell.Tab.0.right" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="260" key="GridCell.Tab.0.right/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424433" />
+    <state width="1877" height="264" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
+    <state width="1877" height="311" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.1.bottom" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="311" key="GridCell.Tab.1.bottom/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424391" />
+    <state width="1877" height="311" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815163" />
+    <state width="1877" height="311" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.1.center" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="311" key="GridCell.Tab.1.center/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424388" />
+    <state width="1877" height="311" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815160" />
+    <state width="1877" height="311" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.1.left" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="311" key="GridCell.Tab.1.left/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424387" />
+    <state width="1877" height="311" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815159" />
+    <state width="1877" height="311" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.1.right" timestamp="1592657907700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="312" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
+    <state width="1877" height="311" key="GridCell.Tab.1.right/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424389" />
+    <state width="1877" height="311" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815162" />
+    <state width="1877" height="311" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
+    <state width="1877" height="312" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state x="-971" y="188" key="Maven.ArtifactSearchDialog" timestamp="1591718639878">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-971" y="188" key="Maven.ArtifactSearchDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591718639878" />
+    <state x="-1072" y="212" key="NewModule_or_Project.wizard" timestamp="1592468240881">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1072" y="206" key="NewModule_or_Project.wizard/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592044890038" />
+    <state x="-1072" y="212" key="NewModule_or_Project.wizard/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468240881" />
+    <state x="-1694" y="6" key="SettingsEditor" timestamp="1592468258582">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1920" y="6" key="SettingsEditor.inPresentationMode" timestamp="1589014841447">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1920" y="6" key="SettingsEditor.inPresentationMode/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589014841447" />
+    <state x="160" y="0" key="SettingsEditor/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576491837" />
+    <state x="-1257" y="76" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045535442" />
+    <state x="-1694" y="6" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468258582" />
+    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590106144953" />
+    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587583035610" />
+    <state x="-1239" y="267" width="570" height="524" key="StructurePopup" timestamp="1592474503722">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1239" y="267" width="570" height="524" key="StructurePopup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592474503722" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog" timestamp="1587690781236">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="388" y="191" key="com.intellij.ide.util.TipDialog/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587542744993" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587690781236" />
+    <state x="548" y="273" key="com.intellij.ide.util.TipDialog/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587582150100" />
+    <state x="-1378" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1592045317728">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1378" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045317728" />
+    <state x="-1378" y="379" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591698786456" />
+    <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590106123885" />
+    <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587577089228" />
+    <state x="-1877" y="6" width="1893" height="1028" key="dock-window-1" timestamp="1592644998802">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="120" y="-19" width="1470" height="725" maximized="true" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592291583948" />
+    <state x="-1877" y="6" width="1893" height="1028" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592644998802" />
+    <state x="-1578" y="140" key="new project wizard" timestamp="1592045391022">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1578" y="140" key="new project wizard/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045391022" />
+    <state x="342" y="140" key="new project wizard/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590241299746" />
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1587681574616">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587681574616" />
+    <state x="-1297" y="231" width="672" height="678" key="search.everywhere.popup" timestamp="1592295620450">
+      <screen x="-1920" y="6" width="1920" height="1040" />
+    </state>
+    <state x="-1297" y="225" width="672" height="678" key="search.everywhere.popup/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592213364003" />
+    <state x="-1297" y="231" width="672" height="678" key="search.everywhere.popup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592295620450" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587686859968" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/Main.java</url>
-          <line>108</line>
-          <properties />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
-          <line>27</line>
-          <properties />
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java</url>
-          <line>39</line>
-          <properties />
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java</url>
-          <line>1182</line>
-          <properties />
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java</url>
-          <line>47</line>
-          <properties />
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java</url>
-          <line>46</line>
-          <properties />
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/EmailModelPerformance.java</url>
+          <line>43</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>49</line>
-          <properties />
-          <option name="timeStamp" value="49" />
+          <url>file://$PROJECT_DIR$/src/test/database/Update.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="86" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java</url>
-          <line>475</line>
-          <properties />
-          <option name="timeStamp" value="52" />
+          <url>file://$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java</url>
+          <line>271</line>
+          <option name="timeStamp" value="92" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>36</line>
-          <properties />
-          <option name="timeStamp" value="55" />
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/OddsChecker.java</url>
+          <line>263</line>
+          <option name="timeStamp" value="99" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java</url>
-          <line>223</line>
-          <properties />
-          <option name="timeStamp" value="58" />
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/OddsChecker.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="102" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java</url>
-          <line>34</line>
-          <properties />
-          <option name="timeStamp" value="62" />
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java</url>
+          <line>187</line>
+          <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java</url>
-          <line>42</line>
-          <properties />
-          <option name="timeStamp" value="65" />
+          <url>file://$PROJECT_DIR$/src/test/machineLearning/FeatureConsistency.java</url>
+          <line>71</line>
+          <option name="timeStamp" value="120" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java</url>
-          <line>105</line>
-          <properties />
-          <option name="timeStamp" value="71" />
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPerformance.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="121" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java</url>
+          <line>154</line>
+          <option name="timeStamp" value="124" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -751,458 +539,5 @@
         <watch expression="((HashMap.Node)league.seasons.entrySet().toArray()[2]).getValue()" custom="java.util.HashMap.Node" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/test/missedGamePredictions.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="90" selection-start-line="1" selection-start-column="90" selection-end-line="1" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/test/testMissedGamePredictions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/BetResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="27" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/notes.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="71" column="24" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="39" column="1" selection-start-line="39" selection-start-column="1" selection-end-line="39" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/test/testPredictions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="47" selection-start-line="47" selection-end-line="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/BetResultsTotalled.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/MissedMatch.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/Optional.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="132" column="13" selection-start-line="132" selection-start-column="13" selection-end-line="132" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/CalcPotentialMoneyMade.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2849">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/ConvertOdds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="29" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/GetJsonHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Enum.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="61" column="25" selection-start-line="61" selection-start-column="25" selection-end-line="61" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/sql/Statement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5559">
-          <caret line="350" column="18" selection-start-line="350" selection-start-column="18" selection-end-line="350" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Team.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="682">
-          <caret line="66" column="190" selection-start-line="66" selection-start-column="190" selection-end-line="66" selection-end-column="190" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/WhenGameWasPredicted.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/mail/UptimeData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="32" column="1" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testThetas.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/RetrainPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/EmailModelPerformance.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="74" column="31" selection-start-line="74" selection-start-column="31" selection-end-line="74" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/dateWhenLastPredictedMissedGames.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/test/PredictTest.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictMissedGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="32" column="78" selection-start-line="32" selection-start-column="78" selection-end-line="32" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/WriteTrainingData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="48" column="33" lean-forward="true" selection-start-line="48" selection-start-column="23" selection-end-line="48" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Match.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="88" column="77" lean-forward="true" selection-start-line="88" selection-start-column="77" selection-end-line="88" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="13" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gamesAfterModelWasMade.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ntoes.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/DateHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2448">
-          <caret line="146" column="24" selection-start-line="146" selection-start-column="24" selection-end-line="146" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/LeagueSeasonIds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/Season.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Understat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-168">
-          <caret line="38" column="23" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/UnderstatData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/ScrapeGamesMissingData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="46" column="72" selection-start-line="46" selection-start-column="72" selection-end-line="46" selection-end-column="72" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/UpdatePlayedGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="24" lean-forward="true" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/classes/League.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="77" column="58" selection-start-line="77" selection-start-column="58" selection-end-line="77" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/OddsChecker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="21" column="98" lean-forward="true" selection-start-line="21" selection-start-column="98" selection-end-line="21" selection-end-column="98" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/scrape/SofaScore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="190" column="61" lean-forward="true" selection-start-line="190" selection-start-column="61" selection-end-line="190" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/database/DataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1931">
-          <caret line="1030" column="134" lean-forward="true" selection-start-line="1030" selection-start-column="134" selection-end-line="1030" selection-end-column="134" />
-          <folding>
-            <element signature="e#20400#25766#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2720">
-          <caret line="173" column="33" selection-start-line="173" selection-start-column="33" selection-end-line="173" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="396" column="18" selection-start-line="396" selection-start-column="18" selection-end-line="396" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/createData/GetMatchesFromDb.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="584">
-          <caret line="126" column="67" selection-start-line="126" selection-start-column="67" selection-end-line="126" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#54155#54156#0" expanded="true" />
-            <element signature="e#54190#54191#0" expanded="true" />
-            <element signature="e#54491#54492#0" expanded="true" />
-            <element signature="e#54520#54521#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/MatchLog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Predict.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5321">
-          <caret line="326" column="100" selection-start-line="326" selection-start-column="100" selection-end-line="326" selection-end-column="100" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/GamesWithMissedPredictions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="16" column="40" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/taskScheduling/PredictTodaysGames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1700">
-          <caret line="117" column="34" selection-start-line="117" selection-start-column="34" selection-end-line="117" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/machineLearning/logisticRegression/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="30" column="42" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-          <folding>
-            <element signature="e#2684#2685#0" expanded="true" />
-            <element signature="e#2741#2742#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/petermarshall/logging/LastPredicted.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <last-edited>Football:jar</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-                <option value="0.5" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>Python 3.7 (venv) interpreter library</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>Python 3.7 (venv)</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>Football</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>org.simplejavamail:simple-java-mail:5.1.0</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.4275862" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>
