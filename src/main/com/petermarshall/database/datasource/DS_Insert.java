@@ -2,7 +2,7 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.dbTables.*;
-import com.petermarshall.database.MatchLog;
+import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 
@@ -167,13 +167,13 @@ public class DS_Insert {
         });
     }
 
-    public static void logBetPlaced(MatchLog matchLog) {
+    public static void logBetPlaced(BetLog betLog) {
         try (Statement statement = DS_Main.connection.createStatement()) {
             statement.execute("INSERT INTO " + BetTable.getTableName() +
                     " (" + BetTable.getColResultBetOn() + ", " + BetTable.getColOdds() + ", " + BetTable.getColStake() + ", " +
                     BetTable.getColMatchId() + ", " + BetTable.getColBetPlacedWith() + ") " +
-                    "VALUES (" + matchLog.getResultBetOn().getSqlIntCode() + ", " + matchLog.getOddsBetOn() + ", " +
-                    matchLog.getStake() + ", " + matchLog.getMatch().getDatabase_id() + ", '" + matchLog.getBookieUsed() + "')");
+                    "VALUES (" + betLog.getResultBetOn().getSqlIntCode() + ", " + betLog.getOddsBetOn() + ", " +
+                    betLog.getStake() + ", " + betLog.getMatch().getDatabase_id() + ", '" + betLog.getBookieUsed() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }

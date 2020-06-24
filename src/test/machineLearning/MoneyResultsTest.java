@@ -1,5 +1,6 @@
 package machineLearning;
 
+import com.petermarshall.database.Result;
 import com.petermarshall.machineLearning.MoneyResults;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class MoneyResultsTest {
         MoneyResults mr = new MoneyResults();
         int stake = 5;
         double odds = 1.22;
-        mr.addBet(stake, odds, true);
+        mr.addBet(stake, odds, true, Result.HOME_WIN);
         Assert.assertEquals(1, mr.getBetsMade());
         Assert.assertEquals(stake*odds, mr.getMoneyGotBack(), 0.01);
         Assert.assertEquals(stake, mr.getMoneySpent(), 0.01);
@@ -30,7 +31,7 @@ public class MoneyResultsTest {
         double moneyWonBack = 0;
 
         for (int i = 0; i<stake.length; i++) {
-            mr.addBet(stake[i],odds[i],betWon[i]);
+            mr.addBet(stake[i],odds[i],betWon[i], Result.HOME_WIN);
             totalSpent += stake[i];
             moneyWonBack += betWon[i] ? stake[i]*odds[i] : 0;
         }

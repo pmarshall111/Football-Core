@@ -6,12 +6,13 @@ import com.petermarshall.BetPlacedUniBet;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.MatchLog;
+import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.DecideBet;
-import com.petermarshall.machineLearning.ModelPredict;
 import com.petermarshall.machineLearning.createData.CalculatePastStats;
-import com.petermarshall.machineLearning.createData.classes.BetDecision;
+import com.petermarshall.machineLearning.BetDecision;
+import com.petermarshall.machineLearning.BookieBetInfo;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
+import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.classes.League;
@@ -25,7 +26,7 @@ import static com.petermarshall.AutomateBet.placeBet;
 
 public class PredictPipeline {
 
-    private static final double MIN_BALANCE_WARNING = 4.0;
+    private static final double MIN_BALANCE_WARNING = 20.0;
 
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
     //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
@@ -39,10 +40,8 @@ public class PredictPipeline {
 
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
-            //matches need lineups for this func!
-            //need to edit such that if there are no players involved we only create a non-lineup prediction
             CalculatePastStats.addFeaturesToPredict(mtps, false);
-            ModelPredict.addBasePredictions(mtps);
+            Predict.addOurProbabilitiesToGames(mtps);
             OddsChecker.addBookiesOddsForGames(mtps);
             DS_Insert.addPredictionsToDb(mtps);
             DecideBet.addDecisionRealMatches(mtps);
@@ -57,29 +56,31 @@ public class PredictPipeline {
                     String homeTeam = mtp.getHomeTeamName();
                     String awayTeam = mtp.getAwayTeamName();
                     for (BetDecision bd: mtp.getGoodBets()) {
-                        for (OddsCheckerBookies bookie: bd.getBookiePriority()) {
-                            if (bookie.equals(OddsCheckerBookies.BET365)) {
-                                BetPlaced bet365 = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), 5, bd.getMinOdds());
+                        for (BookieBetInfo bookieBetInfo : bd.getBookiePriority()) {
+                            if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.BET365)) {
+                                BetPlaced bet365 = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
                                 if (bet365.getBalance() > -1) {
                                     bet365Balance = bet365.getBalance();
                                 }
                                 if (bet365.isBetSuccessful()) {
-                                    DS_Insert.logBetPlaced(new MatchLog(mtp, bd.getWinner(), bookie.getName(), bet365.getOddsOffered(), bet365.getStake()));
-                                    sb.append(homeTeam + " vs " + awayTeam + ": Bet £5 on " + bd.getWinner().name() + " at odds of " +
+                                    DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(), bet365.getOddsOffered(), bet365.getStake()));
+                                    sb.append(homeTeam + " vs " + awayTeam + ": Bet £" + bet365.getStake() + " on " + bd.getWinner().name() + " at odds of " +
                                             bet365.getOddsOffered() + ". Potential return: " + (5*bet365.getOddsOffered()));
                                     betsPlaced++;
                                     break; //ensure we do not place bets on multiple sites for the same bet.
                                 }
-                            } else if (bookie.equals(OddsCheckerBookies.UNIBET)) {
+                            } else if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.UNIBET)) {
                                 String country = getCountryFromLeagueName(mtp.getLeagueName());
                                 String leagueNameUb = translateLeagueNameUnibet(mtp.getLeagueName());
-                                BetPlacedUniBet unibet = AutomateBetUniBet.placeBet(country, leagueNameUb, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), 5, bd.getMinOdds());
+                                BetPlacedUniBet unibet = AutomateBetUniBet.placeBet(country, leagueNameUb, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(),
+                                        bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
                                 if (unibet.getBalance() > -1) {
                                     unibetBalance = unibet.getBalance();
                                 }
                                 if (unibet.isBetSuccessful()) {
-                                    DS_Insert.logBetPlaced(new MatchLog(mtp, bd.getWinner(), bookie.getName(), unibet.getOddsOffered(), unibet.getStake()));
-                                    sb.append("- " + homeTeam + " vs " + awayTeam + ": Bet £5 on " + bd.getWinner().name() + " at odds of " +
+                                    DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(),
+                                            unibet.getOddsOffered(), unibet.getStake()));
+                                    sb.append("- " + homeTeam + " vs " + awayTeam + ": Bet £" + unibet.getStake() + " on " + bd.getWinner().name() + " at odds of " +
                                             unibet.getOddsOffered() + ". Potential return: " + (5*unibet.getOddsOffered()) + "\n");
                                     betsPlaced++;
                                     break;

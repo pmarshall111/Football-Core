@@ -1,10 +1,7 @@
 package com.petermarshall.machineLearning;
 
-import com.petermarshall.database.Result;
-import com.petermarshall.machineLearning.createData.classes.BetDecision;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.util.ArrayList;
 
@@ -13,9 +10,11 @@ import static com.petermarshall.ConvertOdds.fromProbabilityToOdds;
 import static com.petermarshall.database.Result.*;
 
 public class DecideBet {
+    public static final int INITIAL_BET = 5;
+
     //IMPORTANT: if changing decision logic, ensure to also change it for model performance (also in this class).
     public static void addDecisionRealMatches(ArrayList<MatchToPredict> mtps) {
-        double btb = 0.1; //better than betters
+        double btb = 0.15; //better than betters
         mtps.forEach(mtp -> {
             double bet365HomePred = 999, bet365DrawPred = 999, bet365AwayPred = 999;
             try {
@@ -44,36 +43,45 @@ public class DecideBet {
             double drawPrediction = ourPredictions[1];
             double awayPrediction = ourPredictions[2];
 
-            //DECISION LOGIC
-            double homeMinBet = homePrediction-btb, awayMinBet = awayPrediction-btb;
-            if (homeMinBet > bet365HomePred || homeMinBet > unibetHomePred) {
-                mtp.addGoodBet(new BetDecision(createBookiePriority(homeMinBet, bet365HomePred, unibetHomePred), HOME_WIN, fromProbabilityToOdds(homeMinBet)));
-            }
-            if (awayMinBet > bet365AwayPred || awayMinBet > unibetAwayPred) {
-                mtp.addGoodBet(new BetDecision(createBookiePriority(awayMinBet, bet365AwayPred, unibetAwayPred), AWAY_WIN, fromProbabilityToOdds(awayMinBet)));
+            //DECISION LOGIC - bet only on the highest prediction and adjust stake based on how much above their probability we are.
+            if (homePrediction > awayPrediction && homePrediction > drawPrediction) {
+                double bet365BetterBy = homePrediction - bet365HomePred - btb;
+                double unibetBetterBy = homePrediction - unibetHomePred - btb;
+                BetDecision bd = new BetDecision(HOME_WIN);
+                if (bet365BetterBy > 0) {
+                    double varStake = INITIAL_BET * (25*bet365BetterBy);
+                    varStake = roundToNearest50p(varStake);
+                    bd.addBookie(OddsCheckerBookies.BET365, varStake, fromProbabilityToOdds(bet365HomePred));
+                }
+                if (unibetBetterBy > 0) {
+                    double varStake = INITIAL_BET * (25*unibetBetterBy);
+                    varStake = roundToNearest50p(varStake);
+                    bd.addBookie(OddsCheckerBookies.UNIBET, varStake, fromProbabilityToOdds(unibetHomePred));
+                }
+                if (bd.getBookiePriority().size() > 0) {
+                    mtp.addGoodBet(bd);
+                }
+            } else if (awayPrediction > homePrediction && awayPrediction > drawPrediction) {
+                double bet365BetterBy = awayPrediction - bet365AwayPred - btb;
+                double unibetBetterBy = awayPrediction - unibetAwayPred - btb;
+                BetDecision bd = new BetDecision(AWAY_WIN);
+                if (bet365BetterBy > 0) {
+                    double varStake = INITIAL_BET * (25*bet365BetterBy);
+                    varStake = roundToNearest50p(varStake);
+                    bd.addBookie(OddsCheckerBookies.BET365, varStake, fromProbabilityToOdds(bet365HomePred));
+                }
+                if (unibetBetterBy > 0) {
+                    double varStake = INITIAL_BET * (25*unibetBetterBy);
+                    varStake = roundToNearest50p(varStake);
+                    bd.addBookie(OddsCheckerBookies.UNIBET, varStake, fromProbabilityToOdds(unibetHomePred));
+                }
+                if (bd.getBookiePriority().size() > 0) {
+                    mtp.addGoodBet(bd);
+                }
             }
         });
     }
 
-    //IMPORTANT: if changing decision logic, ensure to also change it for model performance (also in this class).
-    static void addDecisionModelPerf(INDArray oddsRow, INDArray predictionRow, INDArray labelsRow, MoneyResults higherThanBookies) {
-        double btb = 0.1; //better than bookies
-        double bookieHomePred = fromOddsToProbability(oddsRow.getDouble(0));
-        double bookieDrawPred = fromOddsToProbability(oddsRow.getDouble(1));
-        double bookieAwayPred = fromOddsToProbability(oddsRow.getDouble(2));
-
-        double homePrediction = predictionRow.getDouble(0);
-        double drawPrediction = predictionRow.getDouble(1);
-        double awayPrediction = predictionRow.getDouble(2);
-
-        //DECISION LOGIC
-        if (homePrediction-btb > bookieHomePred && bookieHomePred != -1) { //-1 check in case we get data from db without odds. still want to train on it, but not for money calcs
-            higherThanBookies.addBet(5, oddsRow.getDouble(0), labelsRow.getDouble(0) == 1);
-        }
-        if (awayPrediction-btb > bookieAwayPred && bookieAwayPred != -1) {
-            higherThanBookies.addBet(5, oddsRow.getDouble(2), labelsRow.getDouble(2) == 1);
-        }
-    }
 
     private static OddsCheckerBookies[] createBookiePriority(double hasToBeGreaterThan, double bet365Prob, double unibetProb) {
         if (bet365Prob > hasToBeGreaterThan && unibetProb > hasToBeGreaterThan) {
@@ -87,5 +95,9 @@ public class DecideBet {
         } else {
             return new OddsCheckerBookies[]{OddsCheckerBookies.UNIBET};
         }
+    }
+
+    private static double roundToNearest50p(double stake) {
+        return (double)(Math.round(stake*2))/2;
     }
 }

@@ -120,6 +120,8 @@ public class Team {
                 return "Malaga";
             case "Sporting Gijón":
                 return "Sporting Gijon";
+            case "RCD Mallorca":
+                return "Mallorca";
 
             //BUNDESLIGA
             case "Borussia M'gladbach":
@@ -146,6 +148,10 @@ public class Team {
                 return "FC Cologne";
             case "Darmstadt 98":
                 return "Darmstadt";
+            case "SC Paderborn 07":
+                return "Paderborn";
+            case "1. FC Union Berlin":
+                return "Union Berlin";
 
             //SERIE A
             case "Milan":
@@ -184,6 +190,8 @@ public class Team {
                 return "SC Bastia";
             case "FC Nantes":
                 return "Nantes";
+            case "Stade Brestois 29":
+                return "Brest";
 
             //RFPL (Russia)
             case "FK Krasnodar":
@@ -206,6 +214,10 @@ public class Team {
                 return "Tosno";
             case "Amkar Perm":
                 return "Amkar";
+            case "FC Sochi":
+                return "PFC Sochi";
+            case "Tambov":
+                return "FC Tambov";
 
             default:
                 return teamName;

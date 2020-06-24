@@ -19,12 +19,16 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
+import org.nd4j.linalg.learning.regularization.Regularization;
+import org.nd4j.linalg.learning.regularization.WeightDecay;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ModelTrain {
     private static final String trainCsv = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\train.csv";
@@ -38,9 +42,9 @@ public class ModelTrain {
     private static final int seed = 123;
     private static final double learningRate = 0.01;
     private static final int batchSize = 50;
-    private static final int nEpochs = 30;
+    private static final int nEpochs = 35;
     private static final int numInputsWithLineups = 69;
-    private static final int numInputsBase = 63;
+    private static final int numInputsBase = 79;
     private static final int numOutputs = 3;
     private static final int numHiddenNodes = 20;
     private static final int csvLinesToSkip = 0;
@@ -81,6 +85,7 @@ public class ModelTrain {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .weightInit(WeightInit.XAVIER)
+                .regularization(new ArrayList<Regularization>(Arrays.asList(new WeightDecay(0.3, true))))
                 .updater(new Nesterovs(learningRate, 0.9))
                 .list()
                 .layer(new DenseLayer.Builder().nIn(numInputsBase).nOut(numHiddenNodes)

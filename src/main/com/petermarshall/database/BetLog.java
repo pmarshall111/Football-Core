@@ -3,14 +3,14 @@ package com.petermarshall.database;
 import com.petermarshall.database.Result;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 
-public class MatchLog {
+public class BetLog {
     private final MatchToPredict match;
     private final Result rbOn;
     private final String bookieUsed;
     private final double oddsBetOn;
     private final double stake;
 
-    public MatchLog(MatchToPredict match, Result rbOn, String bookieUsed, double oddsBetOn, double stake) {
+    public BetLog(MatchToPredict match, Result rbOn, String bookieUsed, double oddsBetOn, double stake) {
         this.match = match;
         this.rbOn = rbOn;
         this.bookieUsed = bookieUsed;

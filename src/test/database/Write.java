@@ -5,7 +5,7 @@ import com.petermarshall.database.Result;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.dbTables.*;
-import com.petermarshall.database.MatchLog;
+import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 import org.junit.After;
@@ -303,7 +303,7 @@ public class Write {
             String bookieUsed = "BettingIsForFools";
             double odds = 1.22;
             int stake = 5;
-            DS_Insert.logBetPlaced(new MatchLog(mtp, rbOn, bookieUsed, odds, stake));
+            DS_Insert.logBetPlaced(new BetLog(mtp, rbOn, bookieUsed, odds, stake));
 
             ResultSet rsBet = stmt.executeQuery("SELECT COUNT(*) FROM " + BetTable.getTableName());
             while (rsBet.next()) {
