@@ -59,11 +59,11 @@ public class CalculatePastStats {
                     ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                             mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
                             currSeason, -1);
-                    mtp.setFeatures(features);
+                    mtp.setFeatures(features, true);
                 }
                 ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                                         currSeason,-1);
-                mtp.setFeaturesNoLineups(featuresNoLineups);
+                mtp.setFeatures(featuresNoLineups, false);
             });
         });
     }
@@ -153,7 +153,7 @@ public class CalculatePastStats {
         ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                 new ArrayList<>(homeStartingXI.keySet()), new ArrayList<>(awayStartingXI.keySet()),
                                                                 data.getSeasonYearStart(), data.getResult());
-        ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getResult());
+        ArrayList<Double> featuresNoLineups = CreateFeatures.getNewFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getResult());
         match.setFeatures(features);
         match.setFeaturesNoLineups(featuresNoLineups);
         if (homeSeason.getNumbGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
@@ -199,6 +199,10 @@ public class CalculatePastStats {
         double homeHomePPG = homeSeason.getAvgPoints(GamesSelector.ONLY_HOME_GAMES);
         double homeLast5TotalPPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
         double homeLast5HomePPG = homeSeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_HOME_GAMES, COMPARE_LAST_N_GAMES);
+        double homeWeightedTotalGoalsFor = homeSeason.getWeightedAvgGoalsFor(GamesSelector.ALL_GAMES);
+        double homeWeightedTotalGoalsAgainst = homeSeason.getWeightedAvgGoalsAgainst(GamesSelector.ALL_GAMES);
+        double homeWeightedHomeGoalsFor = homeSeason.getWeightedAvgGoalsFor(GamesSelector.ONLY_HOME_GAMES);
+        double homeWeightedHomeGoalsAgainst = homeSeason.getWeightedAvgGoalsAgainst(GamesSelector.ONLY_HOME_GAMES);
 
         double awayTotalAvgGoalsFor = awaySeason.getAvgGoalsFor(GamesSelector.ALL_GAMES);
         double awayTotalAvgGoalsAgainst = awaySeason.getAvgGoalsAgainst(GamesSelector.ALL_GAMES);
@@ -216,6 +220,10 @@ public class CalculatePastStats {
         double awayAwayPPG = awaySeason.getAvgPoints(GamesSelector.ONLY_AWAY_GAMES);
         double awayLast5TotalPPG = awaySeason.getAvgPointsOverLastXGames(GamesSelector.ALL_GAMES, COMPARE_LAST_N_GAMES);
         double awayLast5AwayPPG = awaySeason.getAvgPointsOverLastXGames(GamesSelector.ONLY_AWAY_GAMES, COMPARE_LAST_N_GAMES);
+        double awayWeightedTotalGoalsFor = awaySeason.getWeightedAvgGoalsFor(GamesSelector.ALL_GAMES);
+        double awayWeightedTotalGoalsAgainst = awaySeason.getWeightedAvgGoalsAgainst(GamesSelector.ALL_GAMES);
+        double awayWeightedAwayGoalsFor = awaySeason.getWeightedAvgGoalsFor(GamesSelector.ONLY_AWAY_GAMES);
+        double awayWeightedAwayGoalsAgainst = awaySeason.getWeightedAvgGoalsAgainst(GamesSelector.ONLY_AWAY_GAMES);
 
         homeSeason.addGameStats(data.getHomeScore(),
                 data.getAwayScore(),
@@ -239,7 +247,11 @@ public class CalculatePastStats {
                 awayTotalPPG,
                 awayAwayPPG,
                 awayLast5TotalPPG,
-                awayLast5AwayPPG);
+                awayLast5AwayPPG,
+                awayWeightedTotalGoalsFor,
+                awayWeightedTotalGoalsAgainst,
+                awayWeightedAwayGoalsFor,
+                awayWeightedAwayGoalsAgainst);
 
         ArrayList<Player> homePlayerRatings = new ArrayList<>(homeLineup.values());
         homePlayerRatings.forEach(player -> {
@@ -268,7 +280,11 @@ public class CalculatePastStats {
                 homeTotalPPG,
                 homeHomePPG,
                 homeLast5TotalPPG,
-                homeLast5HomePPG);
+                homeLast5HomePPG,
+                homeWeightedTotalGoalsFor,
+                homeWeightedTotalGoalsAgainst,
+                homeWeightedHomeGoalsFor,
+                homeWeightedHomeGoalsAgainst);
 
         ArrayList<Player> awayPlayerRatings = new ArrayList<>(awayLineup.values());
         awayPlayerRatings.forEach(player -> {

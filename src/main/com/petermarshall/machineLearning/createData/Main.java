@@ -1,5 +1,7 @@
 package com.petermarshall.machineLearning.createData;
 import com.petermarshall.database.datasource.DS_Main;
+import com.petermarshall.machineLearning.ModelPerformance;
+import com.petermarshall.machineLearning.ModelTrain;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 
 import java.util.ArrayList;
@@ -27,6 +29,12 @@ public class Main {
 //        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
 //        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
         createFilesForDl4j();
+//        try {
+//            ModelTrain.trainWithLineups();
+//            ModelPerformance.performanceWithLineups();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

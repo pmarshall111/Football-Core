@@ -7,29 +7,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/FirstScorer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/machineLearning/CalculatePastStatsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/BetDecision.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/BookieBetInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/logisticRegression/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/logisticRegression/Predict.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/machineLearning/BetDecisionTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/machineLearning/PredictTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/Result.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/MatchLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/BetLog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/DecideBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/DecideBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPerformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPerformance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPredict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPredict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelTrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelTrain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/MoneyResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/MoneyResults.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalculatePastStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalculatePastStats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/HistoricMatchDbData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/HistoricMatchDbData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/PlayerMatchDbData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/PlayerMatchDbData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CreateFeatures.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CreateFeatures.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/BetDecision.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingTeamsSeason.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/GenerateData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/GenerateData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Get.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/League.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Write.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Write.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/machineLearning/FeatureConsistency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/FeatureConsistency.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scrape/Understat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/Understat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/trainingData/TrainingMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/trainingData/TrainingMatch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/MoneyResultsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/MoneyResultsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trained_model.zip" beforeDir="false" afterPath="$PROJECT_DIR$/trained_model.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trained_no_lineups_model.zip" beforeDir="false" afterPath="$PROJECT_DIR$/trained_no_lineups_model.zip" afterDir="false" />
       <change beforePath="$USER_HOME$/IdeaProjects/UnibetPlaceBet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$USER_HOME$/IdeaProjects/UnibetPlaceBet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,8 +84,8 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/IdeaProjects/UnibetPlaceBet" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
@@ -92,13 +100,6 @@
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="groovy.util.GroovyTestCase" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib\ext" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main\com" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall\logging" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
-    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.petermarshall.test" />
       <recent name="com.petermarshall.machineLearning.createTrainingData.classes" />
@@ -107,19 +108,26 @@
       <recent name="com.petermarshall.scrape" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib\ext" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main\com" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall\logging" />
+      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
+    </key>
   </component>
-  <component name="RunManager" selected="JUnit.Write.canLogBetPlaced">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.Main" />
+  <component name="RunManager" selected="JUnit.PredictTest.predictTheSameForMatchToPredictVsMatrix">
+    <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.machineLearning.*" />
+          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -127,7 +135,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="FeatureConsistency.nonLineupFeaturesAreTheSame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.createData.Main" />
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.petermarshall.machineLearning.createData.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.logisticRegression.Main" />
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.petermarshall.machineLearning.logisticRegression.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BetDecisionTest.canGetBookiesInRightOrder" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
@@ -136,91 +170,43 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="machineLearning" />
-      <option name="MAIN_CLASS_NAME" value="machineLearning.FeatureConsistency" />
-      <option name="METHOD_NAME" value="nonLineupFeaturesAreTheSame" />
+      <option name="MAIN_CLASS_NAME" value="machineLearning.BetDecisionTest" />
+      <option name="METHOD_NAME" value="canGetBookiesInRightOrder" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Get.canGetPreviousMatchesBetweenTeams" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PredictTest.predictTheSameForMatchToPredictVsMatrix" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="database.*" />
+          <option name="PATTERN" value="machineLearning.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Get" />
-      <option name="METHOD_NAME" value="canGetPreviousMatchesBetweenTeams" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TrainingTeamsSeasonTest.canGetFormGoalsFor" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="trainingData.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="trainingData" />
-      <option name="MAIN_CLASS_NAME" value="trainingData.TrainingTeamsSeasonTest" />
-      <option name="METHOD_NAME" value="canGetFormGoalsFor" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Understat.matchInPastHasXGAndScore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="scrape.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.Understat" />
-      <option name="METHOD_NAME" value="matchInPastHasXGAndScore" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Write.canLogBetPlaced" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="database.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Write" />
-      <option name="METHOD_NAME" value="canLogBetPlaced" />
+      <option name="PACKAGE_NAME" value="machineLearning" />
+      <option name="MAIN_CLASS_NAME" value="machineLearning.PredictTest" />
+      <option name="METHOD_NAME" value="predictTheSameForMatchToPredictVsMatrix" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="JUnit.Understat.matchInPastHasXGAndScore" />
-      <item itemvalue="JUnit.FeatureConsistency.nonLineupFeaturesAreTheSame" />
-      <item itemvalue="JUnit.TrainingTeamsSeasonTest.canGetFormGoalsFor" />
-      <item itemvalue="JUnit.Get.canGetPreviousMatchesBetweenTeams" />
-      <item itemvalue="JUnit.Write.canLogBetPlaced" />
+      <item itemvalue="Application.Main (1)" />
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.AddNewSeason" />
+      <item itemvalue="JUnit.BetDecisionTest.canGetBookiesInRightOrder" />
+      <item itemvalue="JUnit.PredictTest.predictTheSameForMatchToPredictVsMatrix" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.Write.canLogBetPlaced" />
-        <item itemvalue="JUnit.Get.canGetPreviousMatchesBetweenTeams" />
-        <item itemvalue="JUnit.TrainingTeamsSeasonTest.canGetFormGoalsFor" />
-        <item itemvalue="JUnit.FeatureConsistency.nonLineupFeaturesAreTheSame" />
-        <item itemvalue="JUnit.Understat.matchInPastHasXGAndScore" />
+        <item itemvalue="JUnit.PredictTest.predictTheSameForMatchToPredictVsMatrix" />
+        <item itemvalue="JUnit.BetDecisionTest.canGetBookiesInRightOrder" />
+        <item itemvalue="Application.AddNewSeason" />
+        <item itemvalue="Application.Main (1)" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -273,7 +259,10 @@
       <workItem from="1592200810328" duration="17294000" />
       <workItem from="1592288093011" duration="17325000" />
       <workItem from="1592468088153" duration="9966000" />
-      <workItem from="1592546292781" duration="20136000" />
+      <workItem from="1592546292781" duration="20851000" />
+      <workItem from="1592723124793" duration="5269000" />
+      <workItem from="1592804336574" duration="35512000" />
+      <workItem from="1592978390093" duration="10103000" />
     </task>
     <servers />
   </component>
@@ -314,14 +303,14 @@
     <state x="-1828" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592213952456" />
     <state x="-1828" y="98" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592291885292" />
     <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592557049586" />
-    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser" timestamp="1592558211328">
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser" timestamp="1592985763607">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="485" y="71" key="#com.intellij.ide.util.MemberChooser/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587546490486" />
     <state x="-1235" y="101" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592042357088" />
     <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1587846898567" />
     <state x="-1235" y="107" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592126317181" />
-    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592558211328" />
+    <state x="685" y="101" key="#com.intellij.ide.util.MemberChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592985763607" />
     <state x="1293" y="353" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1587634132845">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -335,12 +324,12 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="720" y="388" width="479" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592555310265" />
-    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1592557274717">
+    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1592986538200">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1920" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592204234021" />
     <state x="-1920" y="6" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592477517478" />
-    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592557274717" />
+    <state x="251" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592986538200" />
     <state x="-732" y="320" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592303906643">
       <screen x="-1920" y="6" width="1920" height="1040" />
     </state>
@@ -360,70 +349,70 @@
     <state x="-1180" y="278" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045510066" />
     <state x="-1180" y="284" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468221612" />
     <state x="740" y="278" key="FileChooserDialogImpl/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590103884061" />
-    <state width="1877" height="312" key="GridCell.Tab.0.bottom" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.0.bottom" timestamp="1592988608999">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="260" key="GridCell.Tab.0.bottom/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424434" />
     <state width="1877" height="264" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
     <state width="1877" height="311" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.0.center" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.0.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988608999" />
+    <state width="1877" height="312" key="GridCell.Tab.0.center" timestamp="1592988608995">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="260" key="GridCell.Tab.0.center/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424433" />
     <state width="1877" height="264" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
     <state width="1877" height="311" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.0.left" timestamp="1592657907698">
+    <state width="1877" height="312" key="GridCell.Tab.0.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988608995" />
+    <state width="1877" height="312" key="GridCell.Tab.0.left" timestamp="1592988608994">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="260" key="GridCell.Tab.0.left/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424432" />
     <state width="1877" height="264" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
     <state width="1877" height="311" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907698" />
-    <state width="1877" height="312" key="GridCell.Tab.0.right" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.0.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988608994" />
+    <state width="1877" height="312" key="GridCell.Tab.0.right" timestamp="1592988608996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="260" key="GridCell.Tab.0.right/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424433" />
     <state width="1877" height="264" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592305698562" />
     <state width="1877" height="311" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.1.bottom" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.0.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988608996" />
+    <state width="1877" height="312" key="GridCell.Tab.1.bottom" timestamp="1592988609002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="311" key="GridCell.Tab.1.bottom/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424391" />
     <state width="1877" height="311" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815163" />
     <state width="1877" height="311" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.1.center" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.1.bottom/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988609002" />
+    <state width="1877" height="312" key="GridCell.Tab.1.center" timestamp="1592988609000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="311" key="GridCell.Tab.1.center/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424388" />
     <state width="1877" height="311" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815160" />
     <state width="1877" height="311" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.1.left" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.1.center/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988609000" />
+    <state width="1877" height="312" key="GridCell.Tab.1.left" timestamp="1592988609000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="311" key="GridCell.Tab.1.left/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424387" />
     <state width="1877" height="311" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815159" />
     <state width="1877" height="311" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
-    <state width="1877" height="312" key="GridCell.Tab.1.right" timestamp="1592657907700">
+    <state width="1877" height="312" key="GridCell.Tab.1.left/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988609000" />
+    <state width="1877" height="312" key="GridCell.Tab.1.right" timestamp="1592988609001">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="312" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592218431260" />
     <state width="1877" height="311" key="GridCell.Tab.1.right/-1920.6.1920.1040/0.0.1920.1040/-3286.309.1366.728@-1920.6.1920.1040" timestamp="1591820424389" />
     <state width="1877" height="311" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591732815162" />
     <state width="1877" height="311" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-3286.309.1366.728" timestamp="1591296949460" />
-    <state width="1877" height="312" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592657907700" />
+    <state width="1877" height="312" key="GridCell.Tab.1.right/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592988609001" />
     <state x="-971" y="188" key="Maven.ArtifactSearchDialog" timestamp="1591718639878">
       <screen x="-1920" y="6" width="1920" height="1040" />
     </state>
@@ -433,8 +422,8 @@
     </state>
     <state x="-1072" y="206" key="NewModule_or_Project.wizard/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592044890038" />
     <state x="-1072" y="212" key="NewModule_or_Project.wizard/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468240881" />
-    <state x="-1694" y="6" key="SettingsEditor" timestamp="1592468258582">
-      <screen x="-1920" y="6" width="1920" height="1040" />
+    <state x="226" y="0" key="SettingsEditor" timestamp="1592820747369">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1920" y="6" key="SettingsEditor.inPresentationMode" timestamp="1589014841447">
       <screen x="-1920" y="6" width="1920" height="1040" />
@@ -443,7 +432,7 @@
     <state x="160" y="0" key="SettingsEditor/-1366.0.1366.728/0.0.1360.728@0.0.1360.728" timestamp="1587576491837" />
     <state x="-1257" y="76" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1592045535442" />
     <state x="-1694" y="6" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592468258582" />
-    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590106144953" />
+    <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592820747369" />
     <state x="226" y="0" key="SettingsEditor/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587583035610" />
     <state x="-1239" y="267" width="570" height="524" key="StructurePopup" timestamp="1592474503722">
       <screen x="-1920" y="6" width="1920" height="1040" />
@@ -462,11 +451,15 @@
     <state x="-1378" y="379" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1591698786456" />
     <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590106123885" />
     <state x="542" y="373" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/-3286.309.1366.728/0.0.1920.1040/-1920.6.1920.1040@0.0.1920.1040" timestamp="1587577089228" />
-    <state x="-1877" y="6" width="1893" height="1028" key="dock-window-1" timestamp="1592644998802">
+    <state x="570" y="177" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592727026771">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="570" y="177" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592727026771" />
+    <state x="-1593" y="-10" width="1421" height="1028" maximized="true" key="dock-window-1" timestamp="1592980415157">
       <screen x="-1920" y="6" width="1920" height="1040" />
     </state>
     <state x="120" y="-19" width="1470" height="725" maximized="true" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@-1920.6.1920.1040" timestamp="1592291583948" />
-    <state x="-1877" y="6" width="1893" height="1028" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592644998802" />
+    <state x="-1593" y="-10" width="1421" height="1028" maximized="true" key="dock-window-1/-3286.309.1366.728/-1920.6.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592980415157" />
     <state x="-1578" y="140" key="new project wizard" timestamp="1592045391022">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
@@ -522,14 +515,19 @@
           <option name="timeStamp" value="120" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPerformance.java</url>
-          <line>103</line>
-          <option name="timeStamp" value="121" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/trainingData/TrainingTeamsSeasonTest.java</url>
           <line>154</line>
           <option name="timeStamp" value="124" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/ModelPerformance.java</url>
+          <line>60</line>
+          <option name="timeStamp" value="126" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/machineLearning/PredictTest.java</url>
+          <line>47</line>
+          <option name="timeStamp" value="130" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

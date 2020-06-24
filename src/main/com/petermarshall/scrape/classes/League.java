@@ -82,7 +82,6 @@ public class League {
             SofaScore.addInfoToGame(currSeason, id);
             System.out.println(added++);
         }
-
     }
 
     public static ArrayList<League> getAllLeagues() {

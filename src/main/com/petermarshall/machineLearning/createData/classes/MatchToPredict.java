@@ -1,5 +1,7 @@
 package com.petermarshall.machineLearning.createData.classes;
 
+import com.petermarshall.machineLearning.BetDecision;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -105,28 +107,21 @@ public class MatchToPredict {
         return sqlDateString;
     }
 
-    public double[] getFeaturesWithoutResult() {
-        double[] dArr = new double[features.size()-1];
-        for (int i = 1; i<features.size(); i++) {
-            dArr[i-1] = features.get(i);
+    public double[] getFeaturesWithoutResult(boolean withLineupFeatures) {
+        ArrayList<Double> featureArr = withLineupFeatures ? features : featuresNoLineups;
+        double[] dArr = new double[featureArr.size()-1];
+        for (int i = 1; i<featureArr.size(); i++) { //starts at 1 to remove the result at the start
+            dArr[i-1] = featureArr.get(i);
         }
         return dArr;
     }
 
-    public double[] getFeaturesNoLineupsWithoutResult() {
-        double[] dArr = new double[featuresNoLineups.size()-1];
-        for (int i = 1; i<featuresNoLineups.size(); i++) {
-            dArr[i-1] = featuresNoLineups.get(i);
+    public void setFeatures(ArrayList<Double> features, boolean withLineupFeatures) {
+        if (withLineupFeatures) {
+            this.features = features;
+        } else {
+            this.featuresNoLineups = features;
         }
-        return dArr;
-    }
-
-    public void setFeatures(ArrayList<Double> features) {
-        this.features = features;
-    }
-
-    public void setFeaturesNoLineups(ArrayList<Double> featuresNoLineups) {
-        this.featuresNoLineups = featuresNoLineups;
     }
 
     public int getDatabase_id() {

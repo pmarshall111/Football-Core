@@ -65,8 +65,8 @@ public class FeatureConsistency {
             trainingFeaturesNL.remove(0);
             trainingFeatures.remove(0);
 
-            double[] predictFeaturesNL = mtp.getFeaturesNoLineupsWithoutResult();
-            double[] predictFeatures = mtp.getFeaturesWithoutResult();
+            double[] predictFeaturesNL = mtp.getFeaturesWithoutResult(false);
+            double[] predictFeatures = mtp.getFeaturesWithoutResult(true);
 
             Assert.assertEquals(trainingFeaturesNL.size(), predictFeaturesNL.length);
             Assert.assertEquals(trainingFeatures.size(), predictFeatures.length);

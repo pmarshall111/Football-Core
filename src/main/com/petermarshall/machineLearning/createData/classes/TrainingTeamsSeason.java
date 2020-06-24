@@ -39,6 +39,17 @@ public class TrainingTeamsSeason {
     private double homeWeightedXGA = AVG_XG_PER_GAME;
     private double awayWeightedXGA = AVG_XG_PER_GAME;
 
+    //compares how many more xG were achieved against the oppositions xGA
+    //will be calculated by taking a teams actual xG and comparing against the oppositions average xGA to see how much they overperformed.
+    private double totalFormXGF = 0;
+    private double homeFormXGF = 0;
+    private double awayFormXGF = 0;
+    private double totalFormXGA = 0;
+    private double homeFormXGA = 0;
+    private double awayFormXGA = 0;
+    private ArrayList<HomeAwayWrapper> totalFormXGFHistory = new ArrayList<>();
+    private ArrayList<HomeAwayWrapper> totalFormXGAHistory = new ArrayList<>();
+
     //Form weighted says how many more xG the team got against what the opponents recent weighted xG suggested they should.
     //will be calculated by using a teams actual xGF and seeing how they performed against the oppositions weighted xGA.
     //initialised to be that each team scored/conceeded the exact amount of goals that the other team's stats expected them to conceede. (0 goals more than expected)
@@ -51,6 +62,14 @@ public class TrainingTeamsSeason {
     private ArrayList<HomeAwayWrapper> totalFormWeightedXGFHistory = new ArrayList<>(); //arrays so we can look at the last X amount of games as an average if needed.
     private ArrayList<HomeAwayWrapper> totalFormWeightedXGAHistory = new ArrayList<>();
 
+    //Exponential weighting placing more weight on recent results.
+    private double totalWeightedGoalsFor = AVG_GOALS_PER_GAME;
+    private double homeWeightedGoalsFor = AVG_GOALS_PER_GAME;
+    private double awayWeightedGoalsFor = AVG_GOALS_PER_GAME;
+    private double totalWeightedGoalsAgainst = AVG_GOALS_PER_GAME;
+    private double homeWeightedGoalsAgainst = AVG_GOALS_PER_GAME;
+    private double awayWeightedGoalsAgainst = AVG_GOALS_PER_GAME;
+
     //compares how many more goals were scored against the oppositions average goals against
     //will be calculated by taking a teams actual goals and comparing against the oppositions average goals conceeded to see how much they overperformed.
     private double totalFormGoalsFor = 0;
@@ -62,16 +81,18 @@ public class TrainingTeamsSeason {
     private ArrayList<HomeAwayWrapper> totalFormGoalsForHistory = new ArrayList<>();
     private ArrayList<HomeAwayWrapper> totalFormGoalsAgainstHistory = new ArrayList<>();
 
-    //compares how many more xG were achieved against the oppositions xGA
-    //will be calculated by taking a teams actual xG and comparing against the oppositions average xGA to see how much they overperformed.
-    private double totalFormXGF = 0;
-    private double homeFormXGF = 0;
-    private double awayFormXGF = 0;
-    private double totalFormXGA = 0;
-    private double homeFormXGA = 0;
-    private double awayFormXGA = 0;
-    private ArrayList<HomeAwayWrapper> totalFormXGFHistory = new ArrayList<>();
-    private ArrayList<HomeAwayWrapper> totalFormXGAHistory = new ArrayList<>();
+    //Form weighted says how many more xG the team got against what the opponents recent weighted xG suggested they should.
+    //will be calculated by using a teams actual xGF and seeing how they performed against the oppositions weighted xGA.
+    //initialised to be that each team scored/conceeded the exact amount of goals that the other team's stats expected them to conceede. (0 goals more than expected)
+    private double totalFormWeightedGoalsFor = 0;
+    private double homeFormWeightedGoalsFor = 0;
+    private double awayFormWeightedGoalsFor = 0;
+    private double totalFormWeightedGoalsAgainst = 0;
+    private double homeFormWeightedGoalsAgainst = 0;
+    private double awayFormWeightedGoalsAgainst = 0;
+    private ArrayList<HomeAwayWrapper> totalFormWeightedGoalsForHistory = new ArrayList<>(); //arrays so we can look at the last X amount of games as an average if needed.
+    private ArrayList<HomeAwayWrapper> totalFormWeightedGoalsAgainstHistory = new ArrayList<>();
+
 
     private HashMap<String, Player> playerStats; //kept as a hashmap to enable faster player updates - which will be most used operation.
 
@@ -109,22 +130,42 @@ public class TrainingTeamsSeason {
                              double oppositionAvgTotalGA, double oppositionAvgHomeAwayGF, double oppositionAvgHomeAwayGA, double oppositionAvgTotalXGF, double oppositionAvgTotalXGA,
                              double oppositionAvgHomeAwayXGF, double oppositionAvgHomeAwayXGA, double oppositionWeightedTotalXGF, double oppositionWeightedTotalXGA,
                              double oppositionWeightedHomeAwayXGF, double oppositionWeightedHomeAwayXGA, double opponentTotalWholeSeasonPPG, double opponentHomeAwayWholeSeasonPPG,
-                             double opponentTotalLast5PPG, double opponentHomeAwayLast5PPG) {
+                             double opponentTotalLast5PPG, double opponentHomeAwayLast5PPG, double oppositionWeightedTotalGF,
+                             double oppositionWeightedTotalGA, double oppositionWeightedHomeAwayGoalsFor, double oppositionWeightedHomeAwayGoalsAgainst) {
 
         if (goalsFor != -1 && goalsAgainst != -1) {
             //goals
             this.goalsFor.add(new HomeAwayWrapper(homeTeam, goalsFor));
             this.goalsAgainst.add(new HomeAwayWrapper(homeTeam, goalsAgainst));
+            this.totalWeightedGoalsFor = calcExponWeightedAvg(this.totalWeightedGoalsFor, goalsFor);
+            this.totalWeightedGoalsAgainst = calcExponWeightedAvg(this.totalWeightedGoalsAgainst, goalsAgainst);
+            if (homeTeam) {
+                this.homeWeightedGoalsFor = calcExponWeightedAvg(this.homeWeightedGoalsFor, goalsFor);
+                this.homeWeightedGoalsAgainst = calcExponWeightedAvg(this.homeWeightedGoalsAgainst, goalsAgainst);
+            } else {
+                this.awayWeightedGoalsFor = calcExponWeightedAvg(this.awayWeightedGoalsFor, goalsFor);
+                this.awayWeightedGoalsAgainst = calcExponWeightedAvg(this.awayWeightedGoalsAgainst, goalsAgainst);
+            }
+
             this.totalFormGoalsForHistory.add(new HomeAwayWrapper(homeTeam, goalsFor - oppositionAvgTotalGA));
             this.totalFormGoalsAgainstHistory.add(new HomeAwayWrapper(homeTeam, goalsAgainst - oppositionAvgTotalGF));
+            this.totalFormWeightedGoalsForHistory.add(new HomeAwayWrapper(homeTeam, goalsFor - oppositionWeightedTotalGA));
+            this.totalFormWeightedGoalsAgainstHistory.add(new HomeAwayWrapper(homeTeam, goalsAgainst - oppositionWeightedTotalGF));
+
             this.totalFormGoalsFor = calcExponWeightedAvg(this.totalFormGoalsFor, goalsFor - oppositionAvgTotalGA);
             this.totalFormGoalsAgainst = calcExponWeightedAvg(this.totalFormGoalsAgainst, goalsAgainst - oppositionAvgTotalGF);
+            this.totalFormWeightedGoalsFor = calcExponWeightedAvg(this.totalFormWeightedGoalsFor, goalsFor - oppositionWeightedTotalGA);
+            this.totalFormWeightedGoalsAgainst = calcExponWeightedAvg(this.totalFormWeightedGoalsAgainst, goalsAgainst - oppositionWeightedTotalGF);
             if (homeTeam) {
                 this.homeFormGoalsFor = calcExponWeightedAvg(this.homeFormGoalsFor, goalsFor - oppositionAvgHomeAwayGA);
                 this.homeFormGoalsAgainst = calcExponWeightedAvg(this.homeFormGoalsAgainst, goalsAgainst - oppositionAvgHomeAwayGF);
+                this.homeFormWeightedGoalsFor = calcExponWeightedAvg(this.homeFormWeightedGoalsFor, goalsFor - oppositionWeightedHomeAwayGoalsAgainst);
+                this.homeFormWeightedGoalsAgainst = calcExponWeightedAvg(this.homeFormWeightedGoalsAgainst, goalsAgainst - oppositionWeightedHomeAwayGoalsFor);
             } else {
                 this.awayFormGoalsFor = calcExponWeightedAvg(this.awayFormGoalsFor, goalsFor - oppositionAvgHomeAwayGA);
                 this.awayFormGoalsAgainst = calcExponWeightedAvg(this.awayFormGoalsAgainst, goalsAgainst - oppositionAvgHomeAwayGF);
+                this.awayFormWeightedGoalsFor = calcExponWeightedAvg(this.awayFormWeightedGoalsFor, goalsFor - oppositionWeightedHomeAwayGoalsAgainst);
+                this.awayFormWeightedGoalsAgainst = calcExponWeightedAvg(this.awayFormWeightedGoalsAgainst, goalsAgainst - oppositionWeightedHomeAwayGoalsFor);
             }
 
             //points
@@ -210,35 +251,30 @@ public class TrainingTeamsSeason {
         return calcHomeAwayAvg(this.goalsFor, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
     }
 
+    public double getAvgGoalsForLastXGames(GamesSelector gamesSelector, int lastXGames) {
+        ArrayList<HomeAwayWrapper> lastXGoalsFor = getLastNRecords(gamesSelector, this.goalsFor, lastXGames);
+        return calcHomeAwayAvg(lastXGoalsFor, gamesSelector.getSetting(), AVG_GOALS_PER_GAME, lastXGames);
+    }
+
     public double getAvgGoalsAgainst(GamesSelector gamesSelector) {
         return calcHomeAwayAvg(this.goalsAgainst, gamesSelector.getSetting(), AVG_GOALS_PER_GAME);
     }
 
-    public double getAvgNumberOfCleanSheets(GamesSelector gamesSelector) {
-        return calcCleanSheetsAvg(this.goalsAgainst, gamesSelector, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
-    }
-
-    public double getAvgNumberOfCleanSheetsLastXGames(GamesSelector gamesSelector, int lastXGames, boolean lengthenResultToSizeOfLastXGames) {
+    public double getAvgGoalsAgainstLastXGames(GamesSelector gamesSelector, int lastXGames) {
         ArrayList<HomeAwayWrapper> lastXGoalsAgainst = getLastNRecords(gamesSelector, this.goalsAgainst, lastXGames);
-        return calcCleanSheetsAvg(lastXGoalsAgainst, gamesSelector, lengthenResultToSizeOfLastXGames ? lastXGames : ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+        return calcHomeAwayAvg(lastXGoalsAgainst, gamesSelector.getSetting(), AVG_GOALS_PER_GAME, lastXGames);
     }
 
-    private double calcCleanSheetsAvg(ArrayList<HomeAwayWrapper> goalsAgainst, GamesSelector gamesSelector, int minLength) {
-        double numbGames = 0, cleanSheetCount = 0;
-        for (HomeAwayWrapper goalsAgainstRecord: goalsAgainst) {
-            if (gamesSelector.getSetting() == 3 ||
-                    gamesSelector.getSetting() == 1 && goalsAgainstRecord.isHome() ||
-                    gamesSelector.getSetting() == 2 && !goalsAgainstRecord.isHome()) {
-                numbGames++;
-                if (goalsAgainstRecord.getNumb() == 0) cleanSheetCount++;
-            }
-        }
-        while (numbGames < minLength) {
-            cleanSheetCount += AVG_CLEAN_SHEETS_PER_GAME;
-            numbGames++;
-        }
-        if (numbGames == 0) return AVG_CLEAN_SHEETS_PER_GAME;
-        else return cleanSheetCount / numbGames;
+    public double getWeightedAvgGoalsFor(GamesSelector gamesSelector) {
+        if (gamesSelector.getSetting() == 3) return this.totalWeightedGoalsFor;
+        else if (gamesSelector.getSetting() == 1) return this.homeWeightedGoalsFor;
+        else return this.awayWeightedGoalsFor;
+    }
+
+    public double getWeightedAvgGoalsAgainst(GamesSelector gamesSelector) {
+        if (gamesSelector.getSetting() == 3) return this.totalWeightedGoalsAgainst;
+        else if (gamesSelector.getSetting() == 1) return this.homeWeightedGoalsAgainst;
+        else return this.awayWeightedGoalsAgainst;
     }
 
     public double getAvgXGF(GamesSelector gamesSelector) {
@@ -297,6 +333,17 @@ public class TrainingTeamsSeason {
         else return this.awayFormWeightedXGA;
     }
 
+    public double getFormWeightedGoalsFor(GamesSelector gamesSelector) {
+        if (gamesSelector.getSetting() == 3) return this.totalFormWeightedGoalsFor;
+        else if (gamesSelector.getSetting() == 1) return this.homeFormWeightedGoalsFor;
+        else return this.awayFormWeightedGoalsFor;
+    }
+
+    public double getFormWeightedGoalsAgainst(GamesSelector gamesSelector) {
+        if (gamesSelector.getSetting() == 3) return this.totalFormWeightedGoalsAgainst;
+        else if (gamesSelector.getSetting() == 1) return this.homeFormWeightedGoalsAgainst;
+        else return this.awayFormWeightedGoalsAgainst;
+    }
 
     public double getAvgFormGoalsFor(GamesSelector gamesSelector, int removeFirstNGames) {
         return calcHomeAwayAvg(removeFirstNRecordsOfGroup(this.totalFormGoalsForHistory, removeFirstNGames), gamesSelector.getSetting(), 0);
@@ -351,6 +398,33 @@ public class TrainingTeamsSeason {
 
     public ArrayList<HomeAwayWrapper> removeFirstNRecordsOfGroup (ArrayList<HomeAwayWrapper> source, int startGamesIgnored) {
         return new ArrayList<>(source.subList(Math.min(startGamesIgnored, source.size()), source.size()));
+    }
+
+    public double getAvgNumberOfCleanSheets(GamesSelector gamesSelector) {
+        return calcCleanSheetsAvg(this.goalsAgainst, gamesSelector, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgNumberOfCleanSheetsLastXGames(GamesSelector gamesSelector, int lastXGames, boolean lengthenResultToSizeOfLastXGames) {
+        ArrayList<HomeAwayWrapper> lastXGoalsAgainst = getLastNRecords(gamesSelector, this.goalsAgainst, lastXGames);
+        return calcCleanSheetsAvg(lastXGoalsAgainst, gamesSelector, lengthenResultToSizeOfLastXGames ? lastXGames : ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    private double calcCleanSheetsAvg(ArrayList<HomeAwayWrapper> goalsAgainst, GamesSelector gamesSelector, int minLength) {
+        double numbGames = 0, cleanSheetCount = 0;
+        for (HomeAwayWrapper goalsAgainstRecord: goalsAgainst) {
+            if (gamesSelector.getSetting() == 3 ||
+                    gamesSelector.getSetting() == 1 && goalsAgainstRecord.isHome() ||
+                    gamesSelector.getSetting() == 2 && !goalsAgainstRecord.isHome()) {
+                numbGames++;
+                if (goalsAgainstRecord.getNumb() == 0) cleanSheetCount++;
+            }
+        }
+        while (numbGames < minLength) {
+            cleanSheetCount += AVG_CLEAN_SHEETS_PER_GAME;
+            numbGames++;
+        }
+        if (numbGames == 0) return AVG_CLEAN_SHEETS_PER_GAME;
+        else return cleanSheetCount / numbGames;
     }
 
     public double getAvgPoints(GamesSelector gamesSelector) {
@@ -494,6 +568,10 @@ public class TrainingTeamsSeason {
             }
         }
         return max11MinsInSquad > 0 ? (totalMinsInLineup / max11MinsInSquad) : 0;
+    }
+
+    public int getSeasonYearStart() {
+        return seasonYearStart;
     }
 
     /*

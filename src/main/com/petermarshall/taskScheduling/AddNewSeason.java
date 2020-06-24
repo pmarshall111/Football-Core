@@ -1,6 +1,8 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Insert;
+import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
@@ -17,9 +19,24 @@ public class AddNewSeason {
 
     //called only after new season ids have been added
     public static void addNewSeasons() {
+        DS_Main.openProductionConnection();
+        DS_Main.initDB();
         for (League l: League.getAllLeagues()) {
             //note: DateHelper method changes to new season at start of august.
             l.scrapeOneSeason(DateHelper.getStartYearForCurrentSeason());
+            System.out.println("Scraped everything for " + l.getName() + ". Commencing write to database...");
+            DS_Insert.writeLeagueToDb(l);
         }
+        DS_Main.closeConnection();
+    }
+
+    public static void main(String[] args) {
+        League l = new League(LeagueIdsAndData.LIGUE_1);
+        l.scrapeOneSeason(19);
+        DS_Main.openProductionConnection();
+        DS_Main.initDB();
+        System.out.println("Scraped everything for " + l.getName() + ". Commencing write to database...");
+        DS_Insert.writeLeagueToDb(l);
+        DS_Main.closeConnection();
     }
 }

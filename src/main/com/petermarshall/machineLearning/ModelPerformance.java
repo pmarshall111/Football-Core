@@ -12,7 +12,6 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 import java.io.File;
 
-import static com.petermarshall.machineLearning.DecideBet.addDecisionModelPerf;
 
 public class ModelPerformance {
     private static final String modelLocation = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\trained_model.zip";
@@ -32,87 +31,101 @@ public class ModelPerformance {
     }
 
     public static void performanceWithLineups() throws Exception {
-        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
-        rrTest.initialize(new FileSplit(new File(evalCsv)));
-        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
-
-        RecordReader rrTestOdds = new CSVRecordReader(csvLinesToSkip);
-        rrTestOdds.initialize(new FileSplit(new File(oddsEvalCsv)));
-        DataSetIterator testOddsIter = new RecordReaderDataSetIterator(rrTestOdds,batchSize);
-
-        MultiLayerNetwork model = MultiLayerNetwork.load(new File(modelLocation), false);
-        model.getLabels();
-
-        System.out.println("Evaluate model....");
-        MoneyResults mrHigherThanBookies = new MoneyResults();
-        MoneyResults mrHigherThanSecondHighest = new MoneyResults();
-        Evaluation eval = new Evaluation(numOutputs);
-        while(testIter.hasNext()){
-            DataSet t = testIter.next();
-            INDArray features = t.getFeatures();
-            INDArray labels = t.getLabels();
-            INDArray predicted = model.output(features,false);
-
-            INDArray odds = testOddsIter.next().getFeatures();
-            try {
-                for (int i = 0; i < batchSize; i++) {
-                    INDArray oddsRow = odds.getRow(i);
-                    INDArray predictionRow = predicted.getRow(i);
-                    INDArray labelsRow = labels.getRow(i);
-                    addDecisionModelPerf(oddsRow, predictionRow, labelsRow, mrHigherThanBookies);
-                }
-            } catch (Exception e) {
-                System.out.println("reached end of test items");
-            }
-            eval.eval(labels, predicted);
-        }
-
-        //Print the evaluation statistics
-        System.out.println(eval.stats());
-        mrHigherThanBookies.printResults();
-//        mrHigherThanSecondHighest.printResults();
+//        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
+//        rrTest.initialize(new FileSplit(new File(evalCsv)));
+//        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
+//
+//        RecordReader rrTestOdds = new CSVRecordReader(csvLinesToSkip);
+//        rrTestOdds.initialize(new FileSplit(new File(oddsEvalCsv)));
+//        DataSetIterator testOddsIter = new RecordReaderDataSetIterator(rrTestOdds,batchSize);
+//
+//        MultiLayerNetwork model = MultiLayerNetwork.load(new File(modelLocation), false);
+//        model.getLabels();
+//
+//        System.out.println("Evaluate model....");
+//        MoneyResults mrHigherThanBookies = new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPerc= new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPercNoHighBets = new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPercVarStake = new MoneyResults();
+//        MoneyResults mrLowHomeHighAway = new MoneyResults();
+//        Evaluation eval = new Evaluation(numOutputs);
+//        while(testIter.hasNext()){
+//            DataSet t = testIter.next();
+//            INDArray features = t.getFeatures();
+//            INDArray labels = t.getLabels();
+//            INDArray predicted = model.output(features,false);
+//
+//            INDArray odds = testOddsIter.next().getFeatures();
+//            try {
+//                for (int i = 0; i < batchSize; i++) {
+//                    INDArray oddsRow = odds.getRow(i);
+//                    INDArray predictionRow = predicted.getRow(i);
+//                    INDArray labelsRow = labels.getRow(i);
+//                    addDecisionModelPerf(oddsRow, predictionRow, labelsRow, mrHigherThanBookies, mrHigherThanBookiesPerc,
+//                            mrHigherThanBookiesPercNoHighBets, mrHigherThanBookiesPercVarStake, mrLowHomeHighAway);
+//                }
+//            } catch (Exception e) {
+//                System.out.println("reached end of test items");
+//            }
+//            eval.eval(labels, predicted);
+//        }
+//
+//        //Print the evaluation statistics
+//        System.out.println(eval.stats());
+//        mrHigherThanBookies.printResults();
+//        mrHigherThanBookiesPerc.printResults();
+//        mrHigherThanBookiesPercNoHighBets.printResults();
+//        mrHigherThanBookiesPercVarStake.printResults();
+//        mrLowHomeHighAway.printResults();
     }
 
     public static void performanceNoLineups() throws Exception {
-        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
-        rrTest.initialize(new FileSplit(new File(evalNoLineupsCsv)));
-        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
-
-        RecordReader rrTestOdds = new CSVRecordReader(csvLinesToSkip);
-        rrTestOdds.initialize(new FileSplit(new File(oddsEvalNoLineupsCsv)));
-        DataSetIterator testOddsIter = new RecordReaderDataSetIterator(rrTestOdds,batchSize);
-
-        MultiLayerNetwork model = MultiLayerNetwork.load(new File(noLineupsModelLocation), false);
-        model.getLabels();
-
-        System.out.println("Evaluate model....");
-        MoneyResults mrHigherThanBookies = new MoneyResults();
-        MoneyResults mrHigherThanSecondHighest = new MoneyResults();
-        Evaluation eval = new Evaluation(numOutputs);
-        while(testIter.hasNext()){
-            DataSet t = testIter.next();
-            INDArray features = t.getFeatures();
-            INDArray labels = t.getLabels();
-            INDArray predicted = model.output(features,false);
-
-            INDArray odds = testOddsIter.next().getFeatures();
-            try {
-                for (int i = 0; i < batchSize; i++) {
-                    INDArray oddsRow = odds.getRow(i);
-                    INDArray predictionRow = predicted.getRow(i);
-                    INDArray labelsRow = labels.getRow(i);
-                    addDecisionModelPerf(oddsRow, predictionRow, labelsRow, mrHigherThanBookies);
-                }
-            } catch (Exception e) {
-                System.out.println("reached end of test items");
-            }
-            eval.eval(labels, predicted);
-        }
-
-        //Print the evaluation statistics
-        System.out.println(eval.stats());
-        mrHigherThanBookies.printResults();
-//        mrHigherThanSecondHighest.printResults();
+//        RecordReader rrTest = new CSVRecordReader(csvLinesToSkip);
+//        rrTest.initialize(new FileSplit(new File(evalNoLineupsCsv)));
+//        DataSetIterator testIter = new RecordReaderDataSetIterator(rrTest,batchSize,0,3);
+//
+//        RecordReader rrTestOdds = new CSVRecordReader(csvLinesToSkip);
+//        rrTestOdds.initialize(new FileSplit(new File(oddsEvalNoLineupsCsv)));
+//        DataSetIterator testOddsIter = new RecordReaderDataSetIterator(rrTestOdds,batchSize);
+//
+//        MultiLayerNetwork model = MultiLayerNetwork.load(new File(noLineupsModelLocation), false);
+//        model.getLabels();
+//
+//        System.out.println("Evaluate model....");
+//        MoneyResults mrHigherThanBookies = new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPerc= new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPercNoHighBets = new MoneyResults();
+//        MoneyResults mrHigherThanBookiesPercVarStake = new MoneyResults();
+//        MoneyResults mrLowHomeHighAway = new MoneyResults();
+//        Evaluation eval = new Evaluation(numOutputs);
+//        while(testIter.hasNext()){
+//            DataSet t = testIter.next();
+//            INDArray features = t.getFeatures();
+//            INDArray labels = t.getLabels();
+//            INDArray predicted = model.output(features,false);
+//
+//            INDArray odds = testOddsIter.next().getFeatures();
+//            try {
+//                for (int i = 0; i < batchSize; i++) {
+//                    INDArray oddsRow = odds.getRow(i);
+//                    INDArray predictionRow = predicted.getRow(i);
+//                    INDArray labelsRow = labels.getRow(i);
+//                    addDecisionModelPerf(oddsRow, predictionRow, labelsRow, mrHigherThanBookies, mrHigherThanBookiesPerc,
+//                            mrHigherThanBookiesPercNoHighBets, mrHigherThanBookiesPercVarStake, mrLowHomeHighAway);
+//                }
+//            } catch (Exception e) {
+//                System.out.println("reached end of test items");
+//            }
+//            eval.eval(labels, predicted);
+//        }
+//
+//        //Print the evaluation statistics
+//        System.out.println(eval.stats());
+//        mrHigherThanBookies.printResults();
+//        mrHigherThanBookiesPerc.printResults();
+//        mrHigherThanBookiesPercNoHighBets.printResults();
+//        mrHigherThanBookiesPercVarStake.printResults();
+//        mrLowHomeHighAway.printResults();
     }
 
 }
