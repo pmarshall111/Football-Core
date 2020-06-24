@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,9 +32,13 @@ public class Integrity {
     public void noMatchHasMoreThan14PlayersOnOneTeam() {
         try (Statement s = DS_Main.connection.createStatement()) {
             String totalPlayers = "totalplayers";
+            //date conditions added to excuse coronavirus times, where 5 substitutes were allowed.
             ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + totalPlayers + " FROM " + PlayerRatingTable.getTableName() +
-                                                " GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
-                                                " HAVING " + totalPlayers + " > 14");
+                        " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                        " WHERE " + MatchTable.getColDate() + " > '" + DateHelper.getSqlDate(DateHelper.createDateyyyyMMdd("2020", "08", "03")) +
+                        "' AND " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.createDateyyyyMMdd("2020", "05", "16")) +
+                        "' GROUP BY " + PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() +
+                        " HAVING " + totalPlayers + " > 14");
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(0, count);
@@ -79,36 +84,19 @@ public class Integrity {
     }
 
     @Test
-    public void matchesWithNoRatings() {
+    public void matchesWithNoRatingsMoreThan3DaysAgo() {
         int knownCases = 1;
         //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory with no player ratings given
         try (Statement s = DS_Main.connection.createStatement()) {
             //need to include the date in query as the database will also have future games that have not yet been played.
-            String currDate = DateHelper.getSqlDate(new Date());
+            String threeDaysAgo = DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3));
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
                                                 " WHERE _id NOT IN " +
                                                 "( SELECT " + PlayerRatingTable.getColMatchId() + " FROM " + PlayerRatingTable.getTableName() + ")" +
-                                                " AND " + MatchTable.getColDate() + " < '" + currDate + "'");
+                                                " AND " + MatchTable.getColDate() + " < '" + threeDaysAgo + "'");
             while (rs.next()) {
                 int count = rs.getInt(1);
                 Assert.assertEquals(knownCases, count);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            fail();
-        }
-    }
-
-    @Test
-    public void noMissedGames() {
-        try (Statement s = DS_Main.connection.createStatement()) {
-            String currDate = DateHelper.getSqlDate(new Date());
-            ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
-                                            " WHERE " + MatchTable.getColDate() + " < '" + currDate + "'" +
-                                            " AND " + MatchTable.getColHomeScore() + " = -1");
-            while (rs.next()) {
-                int count = rs.getInt(1);
-                Assert.assertEquals(0, count);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -172,6 +160,8 @@ public class Integrity {
                     " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
+                    " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " != '" + LeagueIdsAndData.LIGUE_1.name() + "'" +
+                    " AND " + MatchTable.getColSeasonYearStart() + " != 19" +
                     " GROUP BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart());
             HashMap<String, Integer> leaguesGames = new HashMap<>();
             while (rs.next()) {
@@ -210,6 +200,17 @@ public class Integrity {
         int knownCases = 1;
         //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory. no player ratings for this also
         try (Statement s = DS_Main.connection.createStatement()) {
+
+            System.out.println("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
+                    " WHERE " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3)) + "'" +
+                    " AND (" + MatchTable.getColHomeScore() + " = -1" +
+                    " OR " + MatchTable.getColAwayScore() + " = -1" +
+                    " OR " + MatchTable.getColHomeXg() + " = -1" +
+                    " OR " + MatchTable.getColAwayXg() + " = -1" +
+                    " OR " + MatchTable.getColHomeWinOdds() + " = -1" +
+                    " OR " + MatchTable.getColDrawOdds() + " = -1" +
+                    " OR " + MatchTable.getColAwayWinOdds() + " = -1" +
+                    " OR (" + MatchTable.getColFirstScorer() + " = -1 AND (" + MatchTable.getColHomeScore() + " >0 OR " + MatchTable.getColAwayScore() + " >0)))");
 
             ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
                     " WHERE " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3)) + "'" +
