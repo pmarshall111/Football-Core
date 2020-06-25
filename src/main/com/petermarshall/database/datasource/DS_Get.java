@@ -19,6 +19,7 @@ import java.sql.Statement;
 import java.util.*;
 
 import static com.petermarshall.database.datasource.DS_Main.*;
+import static com.petermarshall.machineLearning.logisticRegression.Predict.DAYS_IN_FUTURE_TO_PREDICT;
 
 public class DS_Get {
     public static int getLeagueId(String name) {
@@ -307,7 +308,7 @@ public class DS_Get {
         try (Statement statement = DS_Main.connection.createStatement()) {
             String ids = "idsWithFuturePredictions";
             String currDate = DateHelper.getSqlDate(new Date());
-            String eightDaysInFuture = DateHelper.getSqlDate(DateHelper.addXDaysToDate(new Date(), 8));
+            String eightDaysInFuture = DateHelper.getSqlDate(DateHelper.addXDaysToDate(new Date(), DAYS_IN_FUTURE_TO_PREDICT));
             //statement gets out the games in the next 8 days that do not already have a prediction
             ResultSet rs = statement.executeQuery("WITH " + ids + " AS (" +
                         "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +

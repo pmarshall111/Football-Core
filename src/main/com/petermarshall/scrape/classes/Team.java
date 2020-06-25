@@ -33,7 +33,7 @@ public class Team {
     }
 
     public Match getMatchFromAwayTeamName(String teamName) {
-        teamName = Team.makeTeamNamesCompatible(teamName);
+        teamName = Team.matchTeamNamesSofaScoreToUnderstat(teamName);
         for (Match m: matchMap.values()) {
             if (m.isAwayTeam(teamName)) return m;
         }
@@ -79,7 +79,7 @@ public class Team {
      * Converting SofaScore team names to those used in Understat. This way round because teams are first created into
      * memory from Understat.
      */
-    public static String makeTeamNamesCompatible(String teamName) {
+    public static String matchTeamNamesSofaScoreToUnderstat(String teamName) {
         switch (teamName) {
             //EPL
             case "Wolverhampton":
@@ -218,6 +218,76 @@ public class Team {
                 return "PFC Sochi";
             case "Tambov":
                 return "FC Tambov";
+
+            default:
+                return teamName;
+        }
+    }
+
+    /*
+     * Converting Understat team names (those stored in the database) to those used in Oddschecker.
+     *
+     * NOTE: The France teamnames will have to be expanded as due to coronavirus times these were not available.
+     */
+    public static String matchTeamNamesUnderstatToOddsChecker(String teamName) {
+        switch (teamName) {
+            //EPL
+            case "Manchester City":
+                return "Man City";
+            case "Wolverhampton Wanderers":
+                return "Wolves";
+            case "Manchester United":
+                return "Man Utd";
+            case "Newcastle United":
+                return "Newcastle";
+            case "Sheffield United":
+                return "Sheffield Utd";
+            case "West Bromwich Albion":
+                return "West Brom";
+
+            //BUNDESLIGA
+            case "RassenBallsport Leipzig":
+                return "RB Leipzig";
+            case "Borussia M.Gladbach":
+                return "Borussia Monchengladbach";
+            case "FC Cologne":
+                return "FC Koln";
+            case "Hamburger SV":
+                return "Hamburg";
+            case "Hannover 96":
+                return "Hannover";
+            case "Nuernberg":
+                return "FC Nurnberg";
+
+            //LA LIGA
+            case "Real Valladolid":
+                return "Valladolid";
+            case "Athletic Club":
+                return "Athletic Bilbao";
+            case "Sporting Gijon":
+                return "Gijon";
+
+            //SERIE A
+            case "SPAL 2013":
+                return "Spal";
+            case "Parma Calcio 1913":
+                return "Parma";
+            case "Inter":
+                return "Inter Milan";
+
+            //LIGUE 1
+            case "Paris Saint Germain":
+                return "PSG";
+
+            //RUSSIA
+            case "FK Akhmat":
+                return "Terek Grozny";
+            case "Zenit St. Petersburg":
+                return "Zenit St Petersburg";
+            case "FC Krasnodar":
+                return "FK Krasnodar";
+            case "FC Tambov":
+                return "FK Tambov";
 
             default:
                 return teamName;

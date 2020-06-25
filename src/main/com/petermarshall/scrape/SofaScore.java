@@ -149,7 +149,7 @@ public class SofaScore {
             Date dateKey = DateHelper.createDateyyyyMMdd(dateInfo[2], dateInfo[1], dateInfo[0]);
             Team hTeam = season.getTeam(homeTeamName);
             if (hTeam == null) {
-                throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.makeTeamNamesCompatible(homeTeamName));
+                throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.matchTeamNamesSofaScoreToUnderstat(homeTeamName));
             }
             Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
@@ -416,8 +416,8 @@ public class SofaScore {
                         String homeTeam = ((JSONObject) event.get("homeTeam")).get("name").toString();
                         String awayTeam = ((JSONObject) event.get("awayTeam")).get("name").toString();
                         //altering team names to match those stored in db. i.e. Wolverhampton Wanderers might be stored as Wolves.
-                        homeTeam = Team.makeTeamNamesCompatible(homeTeam);
-                        awayTeam = Team.makeTeamNamesCompatible(awayTeam);
+                        homeTeam = Team.matchTeamNamesSofaScoreToUnderstat(homeTeam);
+                        awayTeam = Team.matchTeamNamesSofaScoreToUnderstat(awayTeam);
                         String startDate = event.get("formatedStartDate").toString();
                         String startTime = event.get("startTime").toString();
                         String[] startDateParts = startDate.split("\\.");

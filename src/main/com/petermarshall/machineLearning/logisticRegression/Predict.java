@@ -13,6 +13,7 @@ import static com.petermarshall.machineLearning.logisticRegression.Main.THETAS_L
 import static com.petermarshall.machineLearning.logisticRegression.Main.THETAS_NO_LINEUPS_PATH;
 
 public class Predict {
+    public static final int DAYS_IN_FUTURE_TO_PREDICT = 8;
     private static SimpleMatrix logitPredictions = null;
     private static SimpleMatrix resultPredictions = null;
 

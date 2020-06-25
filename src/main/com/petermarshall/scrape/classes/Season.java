@@ -39,7 +39,7 @@ public class Season {
 
     public Team getTeam(String teamName) {
         //compatible name needed to make the team names the same from sofascore to understat. teams in db use understat names.
-        String compatibleTeamName = Team.makeTeamNamesCompatible(teamName);
+        String compatibleTeamName = Team.matchTeamNamesSofaScoreToUnderstat(teamName);
         return this.teams.getOrDefault(compatibleTeamName, null);
     }
 
