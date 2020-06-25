@@ -9,6 +9,8 @@ import org.junit.Test;
 import java.util.TreeSet;
 
 import static com.petermarshall.database.Result.HOME_WIN;
+import static com.petermarshall.machineLearning.DecideBet.MAX_STAKE;
+import static com.petermarshall.machineLearning.DecideBet.MIN_STAKE;
 
 public class BetDecisionTest {
     @Test
@@ -32,5 +34,18 @@ public class BetDecisionTest {
                 Assert.assertEquals(OddsCheckerBookies.LADBROKES, bbi.getBookie());
             }
         }
+    }
+
+    @Test
+    public void doesNotAddBookiesOutsideLimits() {
+        BetDecision bd = new BetDecision(HOME_WIN);
+        bd.addBookie(OddsCheckerBookies.BET365, MAX_STAKE+1, 5.4);
+        bd.addBookie(OddsCheckerBookies.UNIBET, MIN_STAKE-0.2, 7.1);
+        bd.addBookie(OddsCheckerBookies.LADBROKES, MIN_STAKE+0.2, -1);
+        bd.addBookie(OddsCheckerBookies.PADDY_POWER, MIN_STAKE+0.2, 5); //within limits, should add.
+
+        Assert.assertEquals(1, bd.getBookiePriority().size());
+        BookieBetInfo bbi = bd.getBookiePriority().first();
+        Assert.assertEquals(OddsCheckerBookies.PADDY_POWER, bbi.getBookie());
     }
 }

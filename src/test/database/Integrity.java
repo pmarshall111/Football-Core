@@ -126,31 +126,40 @@ public class Integrity {
         }
     }
 
-    //Problem with this test is that some players have the same name - Juanfran 3 players in spain, Danilo 2 players, Éder 2 players...
-//    @Test
-//    public void playersOnlyPlayFor2ClubsInASeason() {
-//        try {
-//            Statement s = DS_Main.connection.createStatement();
-//            String CLUBS_IN_SEASON = "clubsPlayedForInSeason";
-//            ResultSet rs = s.executeQuery("SELECT COUNT(*) AS " + CLUBS_IN_SEASON + " FROM " +
-//                                    "(" +
-//                                    " SELECT " + PlayerRatingTable.getColPlayerName() + ", " + MatchTable.getColSeasonYearStart() + " FROM " + PlayerRatingTable.getTableName() +
-//                                    " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
-//                                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
-//                                    " GROUP BY " + MatchTable.getColSeasonYearStart() + ", " + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColTeamId() +
-//                                    " ORDER BY " + PlayerRatingTable.getColPlayerName() +
-//                                    ") AS PLAYERS_FOR_EACH_TEAM" +
-//                                " GROUP BY " + PlayerRatingTable.getColPlayerName() + ", " + MatchTable.getColSeasonYearStart() +
-//                                " HAVING " + CLUBS_IN_SEASON + " > 2");
-//            while (rs.next()) {
-//                int count = rs.getInt(1);
-//                Assert.assertEquals(0, count);
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//            fail();
-//        }
-//    }
+    //Problem with this test is that some players have the same name - Juanfran, Raul Garcia, Naldo, Danilo, Éder, Adama Traoré, Rafael. These have been checked
+    //to make sure there are multiple players in the 6 leagues with the same name.
+    @Test
+    public void playersOnlyPlayFor2ClubsInASeason() {
+        try {
+            Statement s = DS_Main.connection.createStatement();
+            String CLUBS_IN_SEASON = "clubsPlayedForInSeason";
+            ResultSet rs = s.executeQuery("SELECT " + PlayerRatingTable.getColPlayerName() + ", COUNT(*) AS " + CLUBS_IN_SEASON + " FROM " +
+                                    "(" +
+                                    " SELECT " + PlayerRatingTable.getColPlayerName() + ", " + MatchTable.getColSeasonYearStart() + " FROM " + PlayerRatingTable.getTableName() +
+                                    " INNER JOIN " + TeamTable.getTableName() + " ON " + PlayerRatingTable.getColTeamId() + " = " + TeamTable.getTableName() + "._id" +
+                                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                                    " WHERE " + PlayerRatingTable.getColPlayerName() + " != 'Juanfran'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Danilo'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Éder'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Raúl García'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Adama Traoré'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Rafael'" +
+                                    " AND " + PlayerRatingTable.getColPlayerName() + " != 'Naldo'" +
+                                    " GROUP BY " + MatchTable.getColSeasonYearStart() + ", " + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColTeamId() +
+                                    " ORDER BY " + PlayerRatingTable.getColPlayerName() +
+                                    ") AS PLAYERS_FOR_EACH_TEAM" +
+                                " GROUP BY " + PlayerRatingTable.getColPlayerName() + ", " + MatchTable.getColSeasonYearStart() +
+                                " HAVING " + CLUBS_IN_SEASON + " > 2");
+            while (rs.next()) {
+                String playerName = rs.getString(1);
+                int count = rs.getInt(2);
+                Assert.assertEquals("Failed for: " + playerName, 0, count);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            fail();
+        }
+    }
 
     @Test
     public void leaguesHaveSameNumberOfGamesForEachSeason() {

@@ -66,6 +66,7 @@ public class WriteTrainingData {
 
     public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
         writeFeaturesToCsv(trainingData, fileName);
+        writeNoLineupsFeaturesToCsv(trainingData, "nolineups_"+fileName);
     }
 
 

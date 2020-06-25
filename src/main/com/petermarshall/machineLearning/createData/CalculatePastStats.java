@@ -61,7 +61,7 @@ public class CalculatePastStats {
                             currSeason, -1);
                     mtp.setFeatures(features, true);
                 }
-                ArrayList<Double> featuresNoLineups = CreateFeatures.getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
+                ArrayList<Double> featuresNoLineups = CreateFeatures.getNewFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                                         currSeason,-1);
                 mtp.setFeatures(featuresNoLineups, false);
             });

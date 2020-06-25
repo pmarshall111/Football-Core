@@ -1,4 +1,5 @@
 package com.petermarshall.machineLearning.createData;
+import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.ModelPerformance;
 import com.petermarshall.machineLearning.ModelTrain;
@@ -20,21 +21,24 @@ public class Main {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
         trainingMatches.removeIf(tm -> tm.getKickoffTime().before(addMatchesAfter));
-        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, "");
+        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, "dataAfterModelWasTrained.csv");
         DS_Main.closeConnection();
     }
 
+    public static void createOneBigFileToTrainOn() {
+        DS_Main.openProductionConnection();
+        ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
+        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, "allData.csv");
+        DS_Main.closeConnection();
+    }
 
     public static void main(String[] args) {
-//        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","01", "05");
-//        createFileOfMatchesFromCertainDate("gamesAfterModelWasMade.csv", addOnlyAfter);
-        createFilesForDl4j();
-//        try {
-//            ModelTrain.trainWithLineups();
-//            ModelPerformance.performanceWithLineups();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+//        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","07", "05");
+//        createFileOfMatchesFromCertainDate(addOnlyAfter);
+
+//        createFilesForDl4j();
+
+        createOneBigFileToTrainOn();
     }
 
 }

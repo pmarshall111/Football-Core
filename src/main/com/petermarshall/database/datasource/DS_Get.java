@@ -297,12 +297,18 @@ public class DS_Get {
         return sb.toString();
     }
 
+    public static void main(String[] args) {
+        DS_Main.openProductionConnection();
+        getMatchesToPredict();
+    }
+
     //method will get out matches from the database where it is both teams next match and has not already been predicted on
     public static ArrayList<MatchToPredict> getMatchesToPredict() {
         try (Statement statement = DS_Main.connection.createStatement()) {
             String ids = "idsWithFuturePredictions";
             String currDate = DateHelper.getSqlDate(new Date());
-            //statement gets out the next home game of all teams that do not already have a prediction
+            String eightDaysInFuture = DateHelper.getSqlDate(DateHelper.addXDaysToDate(new Date(), 8));
+            //statement gets out the games in the next 8 days that do not already have a prediction
             ResultSet rs = statement.executeQuery("WITH " + ids + " AS (" +
                         "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +
                         " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getColMatchId() + " = _id " +
@@ -314,11 +320,11 @@ public class DS_Get {
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
                     " WHERE " + MatchTable.getColDate() + " > '" + currDate + "'" +
+                    " AND " + MatchTable.getColDate() + " < '" + eightDaysInFuture + "'" +
                     " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
                     " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
                     " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
                     " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
-                    " GROUP BY " + MatchTable.getColHometeamId() +
                     " ORDER BY " + MatchTable.getColDate());
 
             //filtering out responses so that teams are only included once - we want to only predict a teams next match

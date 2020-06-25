@@ -1,6 +1,6 @@
 package scrape;
 
-import com.petermarshall.DateHelper;
+import com.petermarshall.scrape.Understat;
 import com.petermarshall.scrape.classes.*;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Understat {
+public class UnderstatTest {
     private static League epl;
 
     @BeforeClass
     public static void scrapeGames() {
-        Understat.epl = new League(LeagueIdsAndData.EPL);
-        com.petermarshall.scrape.Understat.addLeaguesGames(epl);
+        UnderstatTest.epl = new League(LeagueIdsAndData.EPL);
+        Understat.addLeaguesGames(epl);
     }
 
     @Test

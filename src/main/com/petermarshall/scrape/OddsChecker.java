@@ -249,7 +249,6 @@ public class OddsChecker {
 
 
     public static void main(String[] args) {
-
         String oddsTN = "Atlitico Madrid";
         String ourTeamName = "Atletico Madrid";
         String ourTeamName2 = "Atletic Bilbao";

@@ -28,6 +28,10 @@ public class PredictPipeline {
 
     private static final double MIN_BALANCE_WARNING = 20.0;
 
+    public static void main(String[] args) {
+        predictGames();
+    }
+
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
     //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
     public static void predictGames() {
@@ -35,7 +39,7 @@ public class PredictPipeline {
         DS_Main.openProductionConnection();
         HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
         if (leaguesToUpdate.keySet().size() > 0) {
-            UpdatePipeline.updateGames(leaguesToUpdate);
+            UpdatePipeline.updateGames(leaguesToUpdate, false);
         }
 
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();

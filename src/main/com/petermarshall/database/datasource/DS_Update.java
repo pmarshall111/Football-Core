@@ -11,7 +11,9 @@ import java.util.HashMap;
 
 public class DS_Update {
     /*
-     * Updates all stats of game to that in league. Scores, dates, player ratings.
+     * Updates all stats of game to that in league. Scores, dates, sofascore id, player ratings.
+     *
+     * Note, if a game has scores but say does not have xG, and this method is called, any XG data in the db will be overwritten with -1.
      */
     public static void updateGamesInDB(League league, Season season, Date onlyUpdateGamesAfter) {
         try (Statement batchStatement = DS_Main.connection.createStatement()) {
@@ -31,16 +33,17 @@ public class DS_Update {
                                     MatchTable.getColHomeScore() + " = " + match.getHomeScore() + ", " + MatchTable.getColAwayScore() + " = " + match.getAwayScore() + ", " +
                                     MatchTable.getColHomeWinOdds() + " = " + match.getHomeOdds() + ", " + MatchTable.getColDrawOdds() + " = " + match.getDrawOdds() + ", " +
                                     MatchTable.getColAwayWinOdds() + " = " + match.getAwayOdds() + ", " + MatchTable.getColFirstScorer() + " = " + match.getFirstScorer().getSqlIntCode() + ", " +
-                                    MatchTable.getColDate() + " = '" + match.getKickoffTime() + "'" +
+                                    MatchTable.getColDate() + " = '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " +
+                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() +
                                     " WHERE _id = " + matchId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getHomePlayerRatings(), matchId, homeTeamId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);
                         } else {
                             //just updating the kickoff time
                             batchStatement.addBatch("UPDATE " + MatchTable.getTableName() +
-                                    " SET " + MatchTable.getColDate() + " = '" + match.getKickoffTime() + ", " +
+                                    " SET " + MatchTable.getColDate() + " = '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " +
                                     MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() +
-                                    "' WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
+                                    " WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
                                     " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
                                     " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
                         }

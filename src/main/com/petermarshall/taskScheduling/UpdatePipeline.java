@@ -17,7 +17,7 @@ public class UpdatePipeline {
     /*
      * NOTE: Will only update games that happened at least 4 hours ago.
      */
-    public static void updateGames(HashMap<League, String> leaguesToUpdate) {
+    public static void updateGames(HashMap<League, String> leaguesToUpdate, boolean closeConnection) {
         DS_Main.openProductionConnection();
         DS_Main.initDB();
         Iterator<League> iter = leaguesToUpdate.keySet().iterator();
@@ -38,6 +38,8 @@ public class UpdatePipeline {
             });
             DS_Update.updateGamesInDB(l, currSeason, earliestMatchWithBuffer);
         }
-        DS_Main.closeConnection();
+        if (closeConnection) {
+            DS_Main.closeConnection();
+        }
     }
 }

@@ -97,13 +97,13 @@ public class Predict {
                 }
             }
 
-            DMatrixRMaj dMatrixWithLineups = MatrixIO.loadCSV(THETAS_LINEUPS_PATH, 3, 85);
-            SimpleMatrix thetasWithLineups = SimpleMatrix.wrap(dMatrixWithLineups);
+//            DMatrixRMaj dMatrixWithLineups = MatrixIO.loadCSV(THETAS_LINEUPS_PATH, 3, 85);
+//            SimpleMatrix thetasWithLineups = SimpleMatrix.wrap(dMatrixWithLineups);
 
-            DMatrixRMaj dMatrixNoLineups = MatrixIO.loadCSV(THETAS_NO_LINEUPS_PATH, 3, 85);
+            DMatrixRMaj dMatrixNoLineups = MatrixIO.loadCSV(THETAS_NO_LINEUPS_PATH, 3, 49);
             SimpleMatrix thetasNoLineups = SimpleMatrix.wrap(dMatrixNoLineups);
 
-            addOurProbabilitiesToGames(matchesWithLineups, thetasWithLineups, true);
+//            addOurProbabilitiesToGames(matchesWithLineups, thetasWithLineups, true);
             addOurProbabilitiesToGames(matchesNoLineups, thetasNoLineups, false);
         } catch (IOException e) {
             e.printStackTrace();
