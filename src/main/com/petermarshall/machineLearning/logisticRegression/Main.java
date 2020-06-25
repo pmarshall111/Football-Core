@@ -13,8 +13,6 @@ public class Main {
     /*
      * Method loads in csv files for both the Test data and also the theta values for all 3 logistic regressions, trained outside of this app in octave.
      * Then calculates overall accuracy, which we can compare to what Octave gets with the same data to ensure all is working correctly.
-     *
-     * NOTE: values will be slightly different to those in Octave due to rounding differences. (Octave only takes 5dp.)
      */
     private static void predictMoneyFromOctaveThetasAndTestData() {
         try {
@@ -40,13 +38,6 @@ public class Main {
             System.out.println("Accuracy for these predictions were " + accuracyPercentage + "%.");
             calcProfits(testDataOdds, ourProbabilities, Y, 0.15, false);
             calcProfits(testDataOdds, ourProbabilities, Y, 0.15, true);
-
-//            ArrayList<CalcPotentialMoneyMade.Profits> predictions = CalcPotentialMoneyMade.calcMoneyMade(bookieProbabilities, ourProbabilities, resultData, 0.15, 0.15, 4, 5);
-//
-//            for (CalcPotentialMoneyMade.Profits profits: predictions) {
-//                System.out.println(profits.getOutput());
-//            }
-
 
         } catch (IOException e) {
             e.printStackTrace();

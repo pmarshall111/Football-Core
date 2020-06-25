@@ -27,6 +27,9 @@ import static org.junit.Assert.fail;
 public class FeatureConsistency {
     @Test
     public void nonLineupFeaturesAreTheSame() {
+        //Note: test can fail if features have been recently changed. This is because the historic games stat
+        //includes the match being played for Predicting, so the position of this feature needs to be
+        //identified and skipped when asserting.
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
 
@@ -71,13 +74,13 @@ public class FeatureConsistency {
             Assert.assertEquals(trainingFeaturesNL.size(), predictFeaturesNL.length);
             Assert.assertEquals(trainingFeatures.size(), predictFeatures.length);
             for (int i = 0; i<trainingFeaturesNL.size(); i++) {
-                if (i != 25 && i != 56) {
+                if (i != 19 && i != 43) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
                     Assert.assertEquals("Index failed at: " + i, trainingFeaturesNL.get(i), predictFeaturesNL[i], 0.0001);
                 }
             }
             for (int i = 0; i<trainingFeatures.size(); i++) {
-                if (i != 25 && i != 59) {
+                if (i != 19 && i != 45) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
                     Assert.assertEquals("Index failed at: " + i, trainingFeatures.get(i), predictFeatures[i], 0.0001);
                 }

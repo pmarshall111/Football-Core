@@ -147,10 +147,8 @@ public class CalculatePastStats {
         //creating match which we can create features on later
         HashMap<String, Player> homeStartingXI = getStartingXI(homeLineup);
         HashMap<String, Player> awayStartingXI = getStartingXI(awayLineup);
-        TrainingMatch match = new TrainingMatch(homeTeam, homeSeason, awayTeam, awaySeason, homeStartingXI, awayStartingXI,
-                data.getHomeOdds(), data.getDrawOdds(), data.getAwayOdds(),
-                data.getHomeScore(), data.getAwayScore(), data.getDate(),
-                data.getSeasonYearStart());
+        TrainingMatch match = new TrainingMatch(homeTeam, awayTeam, data.getHomeOdds(), data.getDrawOdds(), data.getAwayOdds(),
+                                                data.getHomeScore(), data.getAwayScore(), data.getDate(), data.getSeasonYearStart());
         ArrayList<Double> features = CreateFeatures.getNewFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                 new ArrayList<>(homeStartingXI.keySet()), new ArrayList<>(awayStartingXI.keySet()),
                                                                 data.getSeasonYearStart(), data.getResult());
