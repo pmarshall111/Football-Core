@@ -18,10 +18,10 @@ public class WriteTrainingData {
         ArrayList<TrainingMatch> trainingDataSet = new ArrayList<>(trainingData.subList(0, (int) (trainingData.size()*0.7)));
         ArrayList<TrainingMatch> testingDataSet = new ArrayList<>(trainingData.subList((int) (trainingData.size()*0.7), trainingData.size()));
 
-//        writeFeaturesToCsv(trainingDataSet, trainFileName);
-//        writeFeaturesToCsv(testingDataSet, testFileName);
-        writeNoLineupsFeaturesToCsv(trainingDataSet, "noLineups_"+trainFileName);
-        writeNoLineupsFeaturesToCsv(testingDataSet, "noLineups_"+testFileName);
+        writeFeaturesToCsv(trainingDataSet, trainFileName);
+        writeFeaturesToCsv(testingDataSet, testFileName);
+//        writeNoLineupsFeaturesToCsv(trainingDataSet, "noLineups_"+trainFileName);
+//        writeNoLineupsFeaturesToCsv(testingDataSet, "noLineups_"+testFileName);
     }
 
     public static void writeFeaturesToCsv(ArrayList<TrainingMatch> trainingData, String fileName) {

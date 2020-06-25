@@ -1,8 +1,10 @@
 package com.petermarshall.taskScheduling;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.petermarshall.AutomateBetUniBet;
 import com.petermarshall.BetPlaced;
 import com.petermarshall.BetPlacedUniBet;
+import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
@@ -15,11 +17,13 @@ import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
+import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.petermarshall.AutomateBet.placeBet;
@@ -35,13 +39,8 @@ public class PredictPipeline {
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
     //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
     public static void predictGames() {
-        //maybe first do a check that all games are updated.
-        DS_Main.openProductionConnection();
-        HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
-        if (leaguesToUpdate.keySet().size() > 0) {
-            UpdatePipeline.updateGames(leaguesToUpdate, false);
-        }
-
+        //first check that all games are updated.
+        UpdatePipeline.updateGames(false);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
             CalculatePastStats.addFeaturesToPredict(mtps, false);
@@ -50,59 +49,104 @@ public class PredictPipeline {
             DS_Insert.addPredictionsToDb(mtps);
             DecideBet.addDecisionRealMatches(mtps);
             mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
-            StringBuilder sb = new StringBuilder();
-            int betsPlaced = 0;
-            double bet365Balance = -1, unibetBalance = -1;
             if (mtps.size() > 0) {
-                //not a problem to go through individually as not expecting to have many bets at the same time.
-                for (MatchToPredict mtp: mtps) {
-                    String leagueName = translateLeagueNameBet365(mtp.getLeagueName());
-                    String homeTeam = mtp.getHomeTeamName();
-                    String awayTeam = mtp.getAwayTeamName();
-                    for (BetDecision bd: mtp.getGoodBets()) {
-                        for (BookieBetInfo bookieBetInfo : bd.getBookiePriority()) {
-                            if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.BET365)) {
-                                BetPlaced bet365 = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
-                                if (bet365.getBalance() > -1) {
-                                    bet365Balance = bet365.getBalance();
-                                }
-                                if (bet365.isBetSuccessful()) {
-                                    DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(), bet365.getOddsOffered(), bet365.getStake()));
-                                    sb.append(homeTeam + " vs " + awayTeam + ": Bet £" + bet365.getStake() + " on " + bd.getWinner().name() + " at odds of " +
-                                            bet365.getOddsOffered() + ". Potential return: " + (5*bet365.getOddsOffered()));
-                                    betsPlaced++;
-                                    break; //ensure we do not place bets on multiple sites for the same bet.
-                                }
-                            } else if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.UNIBET)) {
-                                String country = getCountryFromLeagueName(mtp.getLeagueName());
-                                String leagueNameUb = translateLeagueNameUnibet(mtp.getLeagueName());
-                                BetPlacedUniBet unibet = AutomateBetUniBet.placeBet(country, leagueNameUb, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(),
-                                        bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
-                                if (unibet.getBalance() > -1) {
-                                    unibetBalance = unibet.getBalance();
-                                }
-                                if (unibet.isBetSuccessful()) {
-                                    DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(),
-                                            unibet.getOddsOffered(), unibet.getStake()));
-                                    sb.append("- " + homeTeam + " vs " + awayTeam + ": Bet £" + unibet.getStake() + " on " + bd.getWinner().name() + " at odds of " +
-                                            unibet.getOddsOffered() + ". Potential return: " + (5*unibet.getOddsOffered()) + "\n");
-                                    betsPlaced++;
-                                    break;
-                                }
+                betOnMatches(mtps);
+            }
+        }
+    }
+
+    //Method to be called when predictions have been made for games, but at the time no odds were available.
+    //Goes through and tries to get odds and then potentially places a bet.
+    public static void finishPredictedGames() {
+        DS_Main.openProductionConnection();
+        ArrayList<MatchToPredict> matches = DS_Get.getMatchesWithPredictionsButNoOdds();
+        if (matches.size() > 0) {
+            OddsChecker.addBookiesOddsForGames(matches);
+            DecideBet.addDecisionRealMatches(matches);
+            matches.removeIf(mtp -> mtp.getGoodBets().size() == 0);
+            if (matches.size() > 0) {
+                betOnMatches(matches);
+            }
+        }
+    }
+
+    public static void predictGamesWithLineups() {
+        //first check that all games are updated.
+        UpdatePipeline.updateGames(false);
+        Date in5Mins = DateHelper.addXMinsToDate(new Date(), 5);
+        Date in55Mins = DateHelper.addXMinsToDate(new Date(), 55);
+        ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredictByDates(in5Mins, in55Mins);
+        //add lineups and remove game if couldn't get lineups.
+        if (mtps.size() > 0) {
+            SofaScore.addLineupsToGamesAboutToStart(mtps);
+            mtps.removeIf(mtp -> mtp.getHomeTeamPlayers().size() != 11 || mtp.getAwayTeamPlayers().size() != 11);
+            if (mtps.size() > 0) {
+                CalculatePastStats.addFeaturesToPredict(mtps, false);
+                Predict.addOurProbabilitiesToGames(mtps);
+                OddsChecker.addBookiesOddsForGames(mtps);
+                DS_Insert.addPredictionsToDb(mtps);
+                DecideBet.addDecisionRealMatches(mtps);
+                mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
+                if (mtps.size() > 0) {
+                    betOnMatches(mtps);
+                }
+            }
+        }
+    }
+
+    private static void betOnMatches(ArrayList<MatchToPredict> matches) {
+        StringBuilder sb = new StringBuilder();
+        int betsPlaced = 0;
+        double bet365Balance = -1, unibetBalance = -1;
+        if (matches.size() > 0) {
+            //not a problem to go through individually as not expecting to have many bets at the same time.
+            for (MatchToPredict mtp: matches) {
+                String leagueName = translateLeagueNameBet365(mtp.getLeagueName());
+                String homeTeam = mtp.getHomeTeamName();
+                String awayTeam = mtp.getAwayTeamName();
+                for (BetDecision bd: mtp.getGoodBets()) {
+                    for (BookieBetInfo bookieBetInfo : bd.getBookiePriority()) {
+                        if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.BET365)) {
+                            BetPlaced bet365 = placeBet(leagueName, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(), bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
+                            if (bet365.getBalance() > -1) {
+                                bet365Balance = bet365.getBalance();
+                            }
+                            if (bet365.isBetSuccessful()) {
+                                DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(), bet365.getOddsOffered(), bet365.getStake()));
+                                sb.append(homeTeam + " vs " + awayTeam + ": Bet £" + bet365.getStake() + " on " + bd.getWinner().name() + " at odds of " +
+                                        bet365.getOddsOffered() + ". Potential return: " + (5*bet365.getOddsOffered()));
+                                betsPlaced++;
+                                break; //ensure we do not place bets on multiple sites for the same bet.
+                            }
+                        } else if (bookieBetInfo.getBookie().equals(OddsCheckerBookies.UNIBET)) {
+                            String country = getCountryFromLeagueName(mtp.getLeagueName());
+                            String leagueNameUb = translateLeagueNameUnibet(mtp.getLeagueName());
+                            BetPlacedUniBet unibet = AutomateBetUniBet.placeBet(country, leagueNameUb, homeTeam, awayTeam, bd.getWinner().getSqlIntCode(),
+                                    bookieBetInfo.getStake(), bookieBetInfo.getMinOdds());
+                            if (unibet.getBalance() > -1) {
+                                unibetBalance = unibet.getBalance();
+                            }
+                            if (unibet.isBetSuccessful()) {
+                                DS_Insert.logBetPlaced(new BetLog(mtp, bd.getWinner(), bookieBetInfo.getBookie().getName(),
+                                        unibet.getOddsOffered(), unibet.getStake()));
+                                sb.append("- " + homeTeam + " vs " + awayTeam + ": Bet £" + unibet.getStake() + " on " + bd.getWinner().name() + " at odds of " +
+                                        unibet.getOddsOffered() + ". Potential return: " + (5*unibet.getOddsOffered()) + "\n");
+                                betsPlaced++;
+                                break;
                             }
                         }
                     }
                 }
             }
-            //emailing results
-            if (betsPlaced > 0) {
-                sb.insert(0, "Hello,\nWe have placed " + betsPlaced + " automated bets for you:\n\n");
-                addBalancesToBuilder(sb, bet365Balance, unibetBalance);
-                SendEmail.sendOutEmail("New bets placed!", sb.toString());
-            } else if (bet365Balance > -1 || unibetBalance > -1) {
-                sb.append("Hello, \nWe were unable to place bets this time. This could be because the odds weren't good enough, we were unable to find the odds on the" +
-                        " website, or because your balance is too low to place a bet.");
-            }
+        }
+        //emailing results
+        if (betsPlaced > 0) {
+            sb.insert(0, "Hello,\nWe have placed " + betsPlaced + " automated bets for you:\n\n");
+            addBalancesToBuilder(sb, bet365Balance, unibetBalance);
+            SendEmail.sendOutEmail("New bets placed!", sb.toString());
+        } else if (bet365Balance > -1 || unibetBalance > -1) {
+            sb.append("Hello, \nWe were unable to place bets this time. This could be because the odds weren't good enough, we were unable to find the odds on the" +
+                    " website, or because your balance is too low to place a bet.");
         }
     }
 

@@ -33,6 +33,8 @@ public class MatchToPredict {
         this.database_id = database_id;
         this.sofascore_id = sofascore_id;
         this.goodBets = new ArrayList<>();
+        this.homeTeamPlayers = new ArrayList<>();
+        this.awayTeamPlayers = new ArrayList<>();
     }
 
     public int getSofascore_id() {

@@ -364,7 +364,76 @@ public class CreateFeatures {
         return features;
     }
 
-    //did not work too well. -ve profit
+    public static ArrayList<Double> getNewFeatures(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
+                                                            TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
+                                                   ArrayList<String> homePlayersNames, ArrayList<String> awayPlayersNames,
+                                                            int seasonYearStart, int result) {
+        int LAST_5 = 5;
+        ArrayList<Double> features = new ArrayList<>();
+        features.add((double) result);
+
+        //adding bias parameter of 1
+        features.add(1d);
+
+        //home stats
+        features.add(homeSeason.getAvgGoalsForLastXGames(ALL_GAMES, LAST_5));
+        features.add(homeSeason.getWeightedAvgGoalsFor(ALL_GAMES));
+        features.add(homeSeason.getFormGoalsFor(ALL_GAMES));
+        features.add(homeSeason.getFormWeightedGoalsFor(ALL_GAMES));
+        features.add(homeSeason.getAvgGoalsAgainstLastXGames(ALL_GAMES, LAST_5));
+        features.add(homeSeason.getWeightedAvgGoalsAgainst(ALL_GAMES));
+        features.add(homeSeason.getFormGoalsAgainst(ALL_GAMES));
+        features.add(homeSeason.getFormWeightedGoalsAgainst(ALL_GAMES));
+        features.add(homeSeason.getAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getWeightedAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getFormXGF(ALL_GAMES));
+        features.add(homeSeason.getFormWeightedXGF(ALL_GAMES));
+        features.add(homeSeason.getAvgXGA(ALL_GAMES));
+        features.add(homeSeason.getWeightedAvgXGA(ALL_GAMES));
+        features.add(homeSeason.getFormXGA(ALL_GAMES));
+        features.add(homeSeason.getFormWeightedXGA(ALL_GAMES));
+        features.add(homeSeason.getAvgPoints(ALL_GAMES));
+        features.add(homeSeason.getAvgPoints(ONLY_HOME_GAMES));
+        features.add(homeTeam.getPointsOfLastMatchups(awayTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES));
+        features.add(homeSeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(ALL_GAMES, COMPARE_LAST_N_GAMES));
+        features.add(homeSeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES));
+        features.add(homeSeason.getAvgPointsOfLastXOpponentsLast5Games(ALL_GAMES, COMPARE_LAST_N_GAMES));
+        features.add(homeSeason.getAvgNumberOfCleanSheets(ALL_GAMES));
+        features.add(homeSeason.getGamesWeightedLineupRating(ALL_GAMES, homePlayersNames));
+        features.add(homeSeason.getLineupStrength(ALL_GAMES, homePlayersNames));
+
+        //away stats
+        features.add(awaySeason.getAvgGoalsForLastXGames(ALL_GAMES, LAST_5));
+        features.add(awaySeason.getWeightedAvgGoalsFor(ALL_GAMES));
+        features.add(awaySeason.getFormGoalsFor(ALL_GAMES));
+        features.add(awaySeason.getFormWeightedGoalsFor(ALL_GAMES));
+        features.add(awaySeason.getAvgGoalsAgainstLastXGames(ALL_GAMES, LAST_5));
+        features.add(awaySeason.getWeightedAvgGoalsAgainst(ALL_GAMES));
+        features.add(awaySeason.getFormGoalsAgainst(ALL_GAMES));
+        features.add(awaySeason.getFormWeightedGoalsAgainst(ALL_GAMES));
+        features.add(awaySeason.getAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getWeightedAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getFormXGF(ALL_GAMES));
+        features.add(awaySeason.getFormWeightedXGF(ALL_GAMES));
+        features.add(awaySeason.getAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getWeightedAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getFormXGA(ALL_GAMES));
+        features.add(awaySeason.getFormWeightedXGA(ALL_GAMES));
+        features.add(awaySeason.getAvgPoints(ALL_GAMES));
+        features.add(awaySeason.getAvgPoints(ONLY_AWAY_GAMES));
+        features.add(awayTeam.getPointsOfLastMatchups(homeTeam.getTeamName(), ALL_GAMES, seasonYearStart - NUMB_SEASONS_HISTORY));
+        features.add(awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES));
+        features.add(awaySeason.getAvgPointsOfLastXOpponentsGamesWholeSeason(ALL_GAMES, COMPARE_LAST_N_GAMES));
+        features.add(awaySeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES));
+        features.add(awaySeason.getAvgPointsOfLastXOpponentsLast5Games(ALL_GAMES, COMPARE_LAST_N_GAMES));
+        features.add(awaySeason.getAvgNumberOfCleanSheets(ALL_GAMES));
+        features.add(awaySeason.getGamesWeightedLineupRating(ALL_GAMES, awayPlayersNames));
+        features.add(awaySeason.getLineupStrength(ALL_GAMES, awayPlayersNames));
+
+        return features;
+    }
+
     public static ArrayList<Double> getNewFeaturesNoLineups(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
                                                             TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
                                                             int seasonYearStart, int result) {

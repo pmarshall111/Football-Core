@@ -55,8 +55,9 @@ public class CalculatePastStats {
                 TrainingTeam awayTeam = teamsInLeague.get(mtp.getAwayTeamName());
                 TrainingTeamsSeason homeSeason = homeTeam.getTeamsSeason(currSeason);
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
-                if (mtp.getHomeTeamPlayers() != null && mtp.getAwayTeamPlayers() != null) {
-                    ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
+                if (mtp.getHomeTeamPlayers() != null && mtp.getHomeTeamPlayers().size() == 11 &&
+                        mtp.getAwayTeamPlayers() != null && mtp.getAwayTeamPlayers().size() == 11) {
+                    ArrayList<Double> features = CreateFeatures.getNewFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                             mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
                             currSeason, -1);
                     mtp.setFeatures(features, true);
@@ -150,7 +151,7 @@ public class CalculatePastStats {
                 data.getHomeOdds(), data.getDrawOdds(), data.getAwayOdds(),
                 data.getHomeScore(), data.getAwayScore(), data.getDate(),
                 data.getSeasonYearStart());
-        ArrayList<Double> features = CreateFeatures.getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
+        ArrayList<Double> features = CreateFeatures.getNewFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                                                                 new ArrayList<>(homeStartingXI.keySet()), new ArrayList<>(awayStartingXI.keySet()),
                                                                 data.getSeasonYearStart(), data.getResult());
         ArrayList<Double> featuresNoLineups = CreateFeatures.getNewFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getResult());

@@ -1,44 +1,55 @@
 package com.petermarshall.machineLearning.createData;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.ModelPerformance;
-import com.petermarshall.machineLearning.ModelTrain;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Main {
-    public static void createFilesForDl4j() {
-        //last written out to train.csv with data up to end of 2018-19 - 11/06/20
+    public static void createTrainEval(Date onlyBefore, Date onlyAfter) {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
+        if (onlyBefore != null || onlyAfter != null) {
+            trainingMatches.removeIf(tm -> {
+                if (onlyBefore != null && onlyAfter != null) {
+                    return tm.getKickoffTime().before(onlyAfter) || tm.getKickoffTime().after(onlyBefore);
+                } else if (onlyBefore != null) {
+                    return tm.getKickoffTime().after(onlyBefore);
+                } else {
+                    return tm.getKickoffTime().before(onlyAfter);
+                }
+            });
+        }
         WriteTrainingData.writeDataOutToCsvFiles(trainingMatches, "train.csv", "eval.csv");
         DS_Main.closeConnection();
     }
 
-    public static void createFileOfMatchesFromCertainDate(Date addMatchesAfter) {
+    public static void createOneBigFile(Date onlyBefore, Date onlyAfter, String filename) {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
-        trainingMatches.removeIf(tm -> tm.getKickoffTime().before(addMatchesAfter));
-        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, "dataAfterModelWasTrained.csv");
-        DS_Main.closeConnection();
-    }
-
-    public static void createOneBigFileToTrainOn() {
-        DS_Main.openProductionConnection();
-        ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
-        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, "allData.csv");
+        if (onlyBefore != null || onlyAfter != null) {
+            trainingMatches.removeIf(tm -> {
+                if (onlyBefore != null && onlyAfter != null) {
+                    return tm.getKickoffTime().before(onlyAfter) || tm.getKickoffTime().after(onlyBefore);
+                } else if (onlyBefore != null) {
+                    return tm.getKickoffTime().after(onlyBefore);
+                } else {
+                    return tm.getKickoffTime().before(onlyAfter);
+                }
+            });
+        }
+        WriteTrainingData.writeAllDataOutToOneCsvFile(trainingMatches, filename);
         DS_Main.closeConnection();
     }
 
     public static void main(String[] args) {
-//        Date addOnlyAfter = DateHelper.createDateyyyyMMdd("2019","07", "05");
-//        createFileOfMatchesFromCertainDate(addOnlyAfter);
-
-//        createFilesForDl4j();
-
-        createOneBigFileToTrainOn();
+        Date onlyBefore = DateHelper.createDateyyyyMMdd("2019", "07", "05");
+        Date onlyAfter = null;
+//        createTrainEval(onlyBefore, null);
+//        createOneBigFile(onlyBefore, null, "trainPre2019.csv");
+//        createOneBigFile(null, onlyBefore, "eval2019.csv");
+        createOneBigFile(null, null, "allData.csv");
     }
 
 }

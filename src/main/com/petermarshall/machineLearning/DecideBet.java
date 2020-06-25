@@ -76,11 +76,11 @@ public class DecideBet {
                 BetDecision bd = new BetDecision(AWAY_WIN);
                 if (bet365ScrapeSuccess && bet365BetterBy > 0) {
                     double varStake = roundToLimits(getVariableStake(bet365BetterBy));
-                    bd.addBookie(OddsCheckerBookies.BET365, varStake, fromProbabilityToOdds(bet365HomePred));
+                    bd.addBookie(OddsCheckerBookies.BET365, varStake, fromProbabilityToOdds(bet365AwayPred));
                 }
                 if (unibetScrapeSuccess && unibetBetterBy > 0) {
                     double varStake = roundToLimits(getVariableStake(unibetBetterBy));
-                    bd.addBookie(OddsCheckerBookies.UNIBET, varStake, fromProbabilityToOdds(unibetHomePred));
+                    bd.addBookie(OddsCheckerBookies.UNIBET, varStake, fromProbabilityToOdds(unibetAwayPred));
                 }
                 if (bd.getBookiePriority().size() > 0) {
                     mtp.addGoodBet(bd);

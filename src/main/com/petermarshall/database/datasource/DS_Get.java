@@ -352,6 +352,46 @@ public class DS_Get {
         }
     }
 
+    public static ArrayList<MatchToPredict> getMatchesWithPredictionsButNoOdds() {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+            String sqlDatePlus1hour = DateHelper.getSqlDate(DateHelper.addXMinsToDate(new Date(), 60));
+            ResultSet rs = statement.executeQuery(" SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
+                    MatchTable.getColSeasonYearStart() + ", " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " + MatchTable.getTableName() + "._id, " + MatchTable.getColSofascoreId()  + ", " +
+                    PredictionTable.getColHomePred() + ", " + PredictionTable.getColDrawPred() + ", " + PredictionTable.getColAwayPred() +
+                    " FROM " + PredictionTable.getTableName() +
+                    " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getTableName() + "." + PredictionTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " WHERE " + PredictionTable.getColHomePred() + " > 0" +
+                    " AND " + PredictionTable.getTableName() + "." + PredictionTable.getColHOdds() + " = -1" +
+                    " AND " + PredictionTable.getColWithLineups() + " = false" +
+                    " AND " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " > '" + sqlDatePlus1hour + "'");
+
+            ArrayList<MatchToPredict> mtps = new ArrayList<>();
+            while (rs.next()) {
+                String homeTeam = rs.getString(1);
+                String awayTeam = rs.getString(2);
+                int seasonYearStart = rs.getInt(3);
+                String leagueName = rs.getString(4);
+                String kickoff = rs.getString(5);
+                int dbId = rs.getInt(6);
+                int sofascoreId = rs.getInt(7);
+                double homeProb = rs.getDouble(8);
+                double drawProb = rs.getDouble(9);
+                double awayProb = rs.getDouble(10);
+                MatchToPredict mtp = new MatchToPredict(homeTeam, awayTeam, Season.getSeasonKeyFromYearStart(seasonYearStart), leagueName, kickoff, dbId, sofascoreId);
+                mtp.setOurPredictions(new double[]{homeProb,drawProb,awayProb}, false);
+                mtps.add(mtp);
+            }
+            return mtps;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     public static HashMap<League, String> getLeaguesToUpdate() {
         try (Statement statement = DS_Main.connection.createStatement()) {
 

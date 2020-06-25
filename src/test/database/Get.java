@@ -19,10 +19,7 @@ import org.junit.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 import static com.petermarshall.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
@@ -172,7 +169,7 @@ public class Get {
         //add demo data to DB
         DS_Insert.writeLeagueToDb(l);
 
-        //add a prediction for match already predicted
+        //add a prediction for match already predicted. need to get out db id
         try (Statement stmt = connection.createStatement()) {
             String home = "home", away = "away";
             ResultSet rs = stmt.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + MatchTable.getColDate() + ", " +
@@ -217,6 +214,97 @@ public class Get {
             Assert.assertEquals(fNotPredicted.getHomeTeam().getTeamName(), mtpNotPredicted.getHomeTeamName());
             Assert.assertEquals(fNotPredicted.getAwayTeam().getTeamName(), mtpNotPredicted.getAwayTeamName());
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void canGetMatchesWithPredictionsButNoOdds() {
+        League l = new League(LeagueIdsAndData.EPL);
+        Season s = l.getSeason(19);
+        Team t1 = s.addNewTeam(new Team("team1")), t2 = s.addNewTeam(new Team("team2")),
+                t3 = s.addNewTeam(new Team("team3")), t4 = s.addNewTeam(new Team("team4")),
+                t5 = s.addNewTeam(new Team("team5")), t6 = s.addNewTeam(new Team("team6"));
+
+        Match pastWithPrediction = s.addNewMatch(new Match(t1, t4, DateHelper.subtractXDaysFromDate(new Date(), 5)));
+        Match futureWithPrediction = s.addNewMatch(new Match(t1, t2, DateHelper.addXDaysToDate(new Date(), 2))); //should get this one out
+        Match futureWithPredictionAndOdds = s.addNewMatch(new Match(t3, t4, DateHelper.addXDaysToDate(new Date(), 3)));
+        Match futureWithPredictionAndLineups = s.addNewMatch(new Match(t5, t6, DateHelper.addXDaysToDate(new Date(), 4)));
+        DS_Insert.writeLeagueToDb(l);
+
+        //add a prediction for match already predicted. need to get out db id
+        try (Statement stmt = connection.createStatement()) {
+            String home = "home", away = "away";
+            ResultSet rs = stmt.executeQuery("SELECT " + MatchTable.getTableName() + "._id, " + MatchTable.getColDate() + ", " +
+                    home + "." + TeamTable.getColTeamName() + ", " + away + "." + TeamTable.getColTeamName() +
+                    " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getColHometeamId() + " = " + home + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + away + " ON " + MatchTable.getColAwayteamId() + " = " + away + "._id" +
+                    " WHERE (" + home + "." + TeamTable.getColTeamName() + " = '" + pastWithPrediction.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + pastWithPrediction.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + futureWithPrediction.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + futureWithPrediction.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + futureWithPredictionAndOdds.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + futureWithPredictionAndOdds.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + futureWithPredictionAndLineups.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + futureWithPredictionAndLineups.getAwayTeam().getTeamName() + "')");
+
+            int dbIdPast = -1;
+            int dbIdFuture = -1;
+            int dbIdFutureWithOdds = -1;
+            int dbIdFutureWithLineups = -1;
+            String sqlMatchDatePast = "null";
+            String sqlMatchDateFuture = "null";
+            String sqlMatchDateFutureWithOdds = "null";
+            String sqlMatchDateFutureWithLineups = "null";
+            while (rs.next()) {
+                String homeTeamName = rs.getString(3);
+                String awayTeamName = rs.getString(4);
+                if (homeTeamName.equals(pastWithPrediction.getHomeTeam().getTeamName()) && awayTeamName.equals(pastWithPrediction.getAwayTeam().getTeamName())) {
+                    dbIdPast = rs.getInt(1);
+                    sqlMatchDatePast = rs.getString(2);
+                } else if (homeTeamName.equals(futureWithPrediction.getHomeTeam().getTeamName()) && awayTeamName.equals(futureWithPrediction.getAwayTeam().getTeamName())) {
+                    dbIdFuture = rs.getInt(1);
+                    sqlMatchDateFuture = rs.getString(2);
+                } else if (homeTeamName.equals(futureWithPredictionAndOdds.getHomeTeam().getTeamName()) &&
+                        awayTeamName.equals(futureWithPredictionAndOdds.getAwayTeam().getTeamName())) {
+                    dbIdFutureWithOdds = rs.getInt(1);
+                    sqlMatchDateFutureWithOdds = rs.getString(2);
+                } else {
+                    dbIdFutureWithLineups = rs.getInt(1);
+                    sqlMatchDateFutureWithLineups = rs.getString(2);
+                }
+            }
+            Assert.assertNotEquals(-1, dbIdPast);
+            Assert.assertNotEquals(-1, dbIdFuture);
+            Assert.assertNotEquals(-1, dbIdFutureWithOdds);
+            Assert.assertNotEquals(-1, dbIdFutureWithLineups);
+
+            MatchToPredict mtpPast = new MatchToPredict(pastWithPrediction.getHomeTeam().getTeamName(), pastWithPrediction.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDatePast, dbIdPast, -1);
+            mtpPast.setOurPredictions(new double[]{0.1, 0.8, 0.3}, false);
+            MatchToPredict mtpFuture = new MatchToPredict(futureWithPrediction.getHomeTeam().getTeamName(), futureWithPrediction.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDateFuture, dbIdFuture, -1);
+            mtpFuture.setOurPredictions(new double[]{1337, 117, 23456}, false);
+            MatchToPredict mtpFutureWithOdds = new MatchToPredict(futureWithPredictionAndOdds.getHomeTeam().getTeamName(), futureWithPredictionAndOdds.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDateFutureWithOdds, dbIdFutureWithOdds, -1);
+            mtpFutureWithOdds.setOurPredictions(new double[]{0.5,0.4,0.1}, false);
+            LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
+            bookiesOdds.put(OddsCheckerBookies.BET365.getName(), new double[]{1.25,1.7,20});
+            mtpFutureWithOdds.setBookiesOdds(bookiesOdds);
+            MatchToPredict mtpFutureWithLineups = new MatchToPredict(futureWithPredictionAndLineups.getHomeTeam().getTeamName(), futureWithPredictionAndLineups.getAwayTeam().getTeamName(),
+                    s.getSeasonKey(), l.getName(), sqlMatchDateFutureWithLineups, dbIdFutureWithLineups, -1);
+            mtpFutureWithLineups.setOurPredictions(new double[]{0.2,0.3,0.5}, true);
+            ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtpPast, mtpFuture));
+            DS_Insert.addPredictionsToDb(mtps);
+
+            //get out matches with predictions no odds & compare
+            ArrayList<MatchToPredict> matches = DS_Get.getMatchesWithPredictionsButNoOdds();
+            Assert.assertEquals(1, matches.size());
+            Assert.assertEquals(futureWithPrediction.getHomeTeam().getTeamName(), matches.get(0).getHomeTeamName());
+            Assert.assertEquals(futureWithPrediction.getAwayTeam().getTeamName(), matches.get(0).getAwayTeamName());
         } catch (SQLException e) {
             e.printStackTrace();
             fail();

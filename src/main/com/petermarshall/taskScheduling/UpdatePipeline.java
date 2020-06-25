@@ -1,6 +1,7 @@
 package com.petermarshall.taskScheduling;
 
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.scrape.SofaScore;
@@ -17,9 +18,13 @@ public class UpdatePipeline {
     /*
      * NOTE: Will only update games that happened at least 4 hours ago.
      */
-    public static void updateGames(HashMap<League, String> leaguesToUpdate, boolean closeConnection) {
+    public static void updateGames(boolean closeConnection) {
         DS_Main.openProductionConnection();
         DS_Main.initDB();
+        HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
+        if (leaguesToUpdate.keySet().size() == 0) {
+            return;
+        }
         Iterator<League> iter = leaguesToUpdate.keySet().iterator();
         while (iter.hasNext()) {
             League l = iter.next();

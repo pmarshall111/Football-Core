@@ -20,7 +20,7 @@ public class DS_Main {
 
     public static boolean isOpen() {
         try {
-            return connection == null || !connection.isClosed();
+            return connection != null && !connection.isClosed();
         } catch (SQLException e) {
             return false;
         }
@@ -31,6 +31,9 @@ public class DS_Main {
      * work has been completed.
      */
     public static boolean openProductionConnection() {
+        if (isOpen()) {
+            return true;
+        }
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(CONNECTION_NAME, Keys.USER, Keys.PASSWORD);

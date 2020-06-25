@@ -7,7 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 import java.io.IOException;
 
 public class Main {
-    public static final String THETAS_LINEUPS_PATH = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\allThetas_spaceDelim.csv";
+    public static final String THETAS_LINEUPS_PATH = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\finalThetasLineups_space.csv";
     public static final String THETAS_NO_LINEUPS_PATH = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\noLineup_finalThetas_space.csv";
 
     /*
