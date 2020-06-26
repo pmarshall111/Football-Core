@@ -13,9 +13,10 @@ public class DecideBet {
     public static final int INITIAL_BET = 5;
     public static final int MAX_STAKE = 35;
     public static final int MIN_STAKE = 1;
+    public static final double btb = 0.15; //Note: if changing btb, will need to change MULT_TO_GET_AVG_OF_1 as this was chosen to give avg bet of initial stake.
+    public static final double MULT_TO_GET_AVG_OF_1 = 25;
 
     public static void addDecisionRealMatches(ArrayList<MatchToPredict> mtps) {
-        double btb = 0.15; //better than betters
         mtps.forEach(mtp -> {
             double bet365HomePred = 999, bet365DrawPred = 999, bet365AwayPred = 999;
             boolean bet365ScrapeSuccess = false;
@@ -90,7 +91,7 @@ public class DecideBet {
     }
 
     public static double getVariableStake(double betterBy) {
-        return INITIAL_BET * (25*betterBy);
+        return INITIAL_BET * (MULT_TO_GET_AVG_OF_1*betterBy); //chosen to get average stake of INITIAL_BET
     }
 
     public static double roundToLimits(double stake) {

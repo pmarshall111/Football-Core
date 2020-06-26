@@ -51,11 +51,13 @@ public class GetJsonHelper {
             char firstChar = (""+respCode).charAt(0);
             if (firstChar == '5') {
                 //server error, try again.
+                System.out.println("Server error on JSON request. Trying again...");
                 sleep();
                 return jsonGetRequest(urlQueryString, timesCalled+1);
             } else if (respCode == 403) {
                 SendEmail.sendOutEmail("ATTN: Scraper banned",
                         "Tried connecting to '" + urlQueryString + "'\n" +connection.getResponseMessage());
+                throw new RuntimeException("403 forbidden response code received");
             }
             InputStream inStream = connection.getInputStream();
             json = streamToString(inStream); // input stream to string

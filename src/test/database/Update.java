@@ -3,11 +3,14 @@ package database;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Get;
+import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.database.dbTables.*;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.Match;
+import com.petermarshall.scrape.classes.OddsCheckerBookies;
 import com.petermarshall.scrape.classes.Season;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,7 +21,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import static com.petermarshall.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
@@ -196,5 +201,121 @@ public class Update {
             }
         }
         return null;
+    }
+
+    @Test
+    public void canUpdatePredictionToIncludeOdds() {
+        GenerateData data = addBulkData(false);
+        League league = data.getLeagues().get(0);
+        Season season = getSeasonWithGames(league);
+        Match startsWithOdds = season.getAllMatches().get(0);
+        Match noOdds = season.getAllMatches().get(1);
+        Match neverHasOdds = season.getAllMatches().get(2);
+
+        //need the db ids
+        try (Statement s = connection.createStatement()) {
+            String home = "home", away = "away";
+            ResultSet rs = s.executeQuery("SELECT " + home + "." + TeamTable.getColTeamName() + ", " +
+                        away + "." + TeamTable.getColTeamName() +  ", " + MatchTable.getTableName() + "._id FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getColHometeamId() + " = " + home + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + away + " ON " + MatchTable.getColAwayteamId() + " = " + away + "._id" +
+                    " WHERE (" + home + "." + TeamTable.getColTeamName() + " = '" + startsWithOdds.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + startsWithOdds.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + noOdds.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + noOdds.getAwayTeam().getTeamName() + "')" +
+                    " OR (" + home + "." + TeamTable.getColTeamName() + " = '" + neverHasOdds.getHomeTeam().getTeamName() + "'" +
+                    " AND " + away + "." + TeamTable.getColTeamName() + " = '" + neverHasOdds.getAwayTeam().getTeamName() + "')");
+
+            int dbIdOdds = -1, dbIdNoOdds = -1, dbIdNeverHaveOdds = -1;
+            while (rs.next()) {
+                String homeTeam = rs.getString(1);
+                String awayTeam = rs.getString(2);
+                if (homeTeam.equals(startsWithOdds.getHomeTeam().getTeamName()) && awayTeam.equals(startsWithOdds.getAwayTeam().getTeamName())) {
+                    dbIdOdds = rs.getInt(3);
+                } else if (homeTeam.equals(noOdds.getHomeTeam().getTeamName()) && awayTeam.equals(noOdds.getAwayTeam().getTeamName())) {
+                    dbIdNoOdds = rs.getInt(3);
+                } else {
+                    dbIdNeverHaveOdds = rs.getInt(3);
+                }
+            }
+
+            MatchToPredict withOdds = new MatchToPredict(startsWithOdds.getHomeTeam().getTeamName(), startsWithOdds.getAwayTeam().getTeamName(),
+                    Season.getSeasonKeyFromYearStart(19), "EPL", DateHelper.getSqlDate(new Date()), dbIdOdds, 2);
+            MatchToPredict noOddsYet = new MatchToPredict(noOdds.getHomeTeam().getTeamName(), noOdds.getAwayTeam().getTeamName(),
+                    Season.getSeasonKeyFromYearStart(19), "EPL", DateHelper.getSqlDate(new Date()), dbIdNoOdds, 2);
+            MatchToPredict neverHaveOdds = new MatchToPredict(neverHasOdds.getHomeTeam().getTeamName(), neverHasOdds.getAwayTeam().getTeamName(),
+                    Season.getSeasonKeyFromYearStart(19), "EPL", DateHelper.getSqlDate(new Date()), dbIdNeverHaveOdds, 2);
+            LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
+            double[] oddsAlreadyInDb = new double[]{1,3,5};
+            bookiesOdds.put(OddsCheckerBookies.BET365.getName(), oddsAlreadyInDb);
+            withOdds.setBookiesOdds(bookiesOdds);
+            double[] predictions = new double[]{0.2,0.3,0.5};
+            withOdds.setOurPredictions(predictions, false);
+            noOddsYet.setOurPredictions(predictions, false);
+            neverHaveOdds.setOurPredictions(predictions, false);
+
+            ArrayList<MatchToPredict> matches = new ArrayList<>(Arrays.asList(withOdds, noOddsYet, neverHaveOdds));
+            DS_Insert.addPredictionsToDb(matches);
+            //ensuring adding as expected.
+            rs = s.executeQuery("SELECT COUNT(*) FROM " + PredictionTable.getTableName());
+            while (rs.next()) {
+                Assert.assertEquals(matches.size(), rs.getInt(1));
+            }
+            rs = s.executeQuery("SELECT " + PredictionTable.getColMatchId() + ", " + PredictionTable.getColHOdds() + ", " +
+                    PredictionTable.getColDOdds() + ", " + PredictionTable.getColAOdds() + " FROM " + PredictionTable.getTableName());
+            while (rs.next()) {
+                int matchId = rs.getInt(1);
+                double hOdds = rs.getDouble(2);
+                double dOdds = rs.getDouble(3);
+                double aOdds = rs.getDouble(4);
+                if (matchId == withOdds.getDatabase_id()) {
+                    Assert.assertEquals(oddsAlreadyInDb[0], hOdds, 0.0001);
+                    Assert.assertEquals(oddsAlreadyInDb[1], dOdds, 0.0001);
+                    Assert.assertEquals(oddsAlreadyInDb[2], aOdds, 0.0001);
+                } else {
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                }
+            }
+
+            //now try to update
+            double[] newOdds = new double[]{6.2,9.1,2.2};
+            LinkedHashMap<String, double[]> newBookiesOdds = new LinkedHashMap<>();
+            newBookiesOdds.put(OddsCheckerBookies.BET365.getName(), newOdds);
+            noOddsYet.setBookiesOdds(newBookiesOdds);
+
+            DS_Update.updatePredictionToIncludeOdds(matches);
+
+            //check final db status.
+            rs = s.executeQuery("SELECT COUNT(*) FROM " + PredictionTable.getTableName());
+            while (rs.next()) {
+                Assert.assertEquals(matches.size(), rs.getInt(1));
+            }
+            rs = s.executeQuery("SELECT " + PredictionTable.getColMatchId() + ", " + PredictionTable.getColHOdds() + ", " +
+                    PredictionTable.getColDOdds() + ", " + PredictionTable.getColAOdds() + " FROM " + PredictionTable.getTableName());
+            while (rs.next()) {
+                int matchId = rs.getInt(1);
+                double hOdds = rs.getDouble(2);
+                double dOdds = rs.getDouble(3);
+                double aOdds = rs.getDouble(4);
+                if (matchId == withOdds.getDatabase_id()) {
+                    Assert.assertEquals(oddsAlreadyInDb[0], hOdds, 0.0001);
+                    Assert.assertEquals(oddsAlreadyInDb[1], dOdds, 0.0001);
+                    Assert.assertEquals(oddsAlreadyInDb[2], aOdds, 0.0001);
+                } else if (matchId == noOddsYet.getDatabase_id()) {
+                    Assert.assertEquals(newOdds[0], hOdds, 0.0001);
+                    Assert.assertEquals(newOdds[1], dOdds, 0.0001);
+                    Assert.assertEquals(newOdds[2], aOdds, 0.0001);
+                } else {
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                    Assert.assertEquals(-1, hOdds, 0.0001);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 }

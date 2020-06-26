@@ -2,10 +2,13 @@ package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.dbTables.MatchTable;
+import com.petermarshall.database.dbTables.PredictionTable;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -74,6 +77,26 @@ public class DS_Update {
                     " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePredictionToIncludeOdds(ArrayList<MatchToPredict> matches) {
+        try (Statement batchStatement = DS_Main.connection.createStatement()) {
+            for (MatchToPredict mtp : matches) {
+                boolean hasBookieOdds = mtp.getBookiesOdds() != null && mtp.getBookiesOdds().keySet().size() > 0;
+                if (hasBookieOdds) {
+                    String bookie = mtp.getBookiesOdds().keySet().iterator().next();
+                    double[] bookieOdds = mtp.getBookiesOdds().get(bookie);
+                    batchStatement.addBatch("UPDATE " + PredictionTable.getTableName() +
+                            " SET " + PredictionTable.getColHOdds() + " = " + bookieOdds[0] + ", " +
+                            PredictionTable.getColDOdds() + " = " + bookieOdds[1] + ", " +
+                            PredictionTable.getColAOdds() + " = " + bookieOdds[2] +
+                            " WHERE " + PredictionTable.getColMatchId() + " = " + mtp.getDatabase_id());
+                }
+            }
+            batchStatement.executeBatch();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
