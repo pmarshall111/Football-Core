@@ -1,18 +1,5 @@
 package trainingData;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.datasource.DS_Get;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
-import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
-import com.petermarshall.scrape.classes.LeagueIdsAndData;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.ArrayList;
-
 public class TrainingMatch {
 
 //    private ArrayList<PlayerMatchDbData> epl2018Data;

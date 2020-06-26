@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 //class to be used to create csv files to learn from and update cache in db for past seasons.
-public class CalculatePastStats {
+public class CalcPastStats {
     //constants to use when calculating a teams form
     public static final int NUMB_SEASONS_HISTORY = 2;
-    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7;
+    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
     public static final int COMPARE_LAST_N_GAMES = 5;
 
     //will do it for all leagues in db.

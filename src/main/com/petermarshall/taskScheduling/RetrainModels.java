@@ -1,12 +1,5 @@
 package com.petermarshall.taskScheduling;
 
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
-import com.petermarshall.machineLearning.createData.WriteTrainingData;
-import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-
-import java.util.ArrayList;
-
 public class RetrainModels {
     public static void trainModels() {
 //        try {

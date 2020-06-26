@@ -19,6 +19,8 @@ public class Season {
         this.matches.add(match);
         Team homeTeam = match.getHomeTeam();
         Team awayTeam = match.getAwayTeam();
+        homeTeam.addMatch(match);
+        awayTeam.addMatch(match);
         this.teams.putIfAbsent(homeTeam.getTeamName(), homeTeam);
         this.teams.putIfAbsent(awayTeam.getTeamName(), awayTeam);
         return match;

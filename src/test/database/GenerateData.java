@@ -83,8 +83,6 @@ public class GenerateData {
                     addPlayerRatingsToMatch(m, year, i, league.getName());
                     this.matches.add(m);
                     newSeason.addNewMatch(m);
-                    t1.addMatch(m);
-                    t2.addMatch(m);
                 }
             }
         });

@@ -48,4 +48,16 @@ public class BetDecisionTest {
         BookieBetInfo bbi = bd.getBookiePriority().first();
         Assert.assertEquals(OddsCheckerBookies.PADDY_POWER, bbi.getBookie());
     }
+
+    @Test
+    public void addsCorrectOddsAndStake() {
+        BetDecision bd = new BetDecision(HOME_WIN);
+        double stake = MAX_STAKE-0.2;
+        double odds = 5.4;
+        bd.addBookie(OddsCheckerBookies.BET365, stake, odds);
+        BookieBetInfo bbi = bd.getBookiePriority().first();
+        Assert.assertEquals(OddsCheckerBookies.BET365, bbi.getBookie());
+        Assert.assertEquals(stake, bbi.getStake(), 0.0001);
+        Assert.assertEquals(odds, bbi.getMinOdds(), 0.0001);
+    }
 }

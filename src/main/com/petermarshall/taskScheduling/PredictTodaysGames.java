@@ -4,7 +4,7 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
+import com.petermarshall.machineLearning.createData.CalcPastStats;
 //import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
@@ -85,7 +85,7 @@ public class PredictTodaysGames {
 
 
         SofaScore.addLineupsToGamesAboutToStart(matchesHappeningNow);
-        CalculatePastStats.addFeaturesToPredict(matchesHappeningNow, false);
+        CalcPastStats.addFeaturesToPredict(matchesHappeningNow, false);
         //for each team from all the games in the database.
         OddsChecker.addBookiesOddsForGames(matchesHappeningNow);
 //        Predict.addOurProbabilitiesToGames(matchesHappeningNow, trainedThetasPath);

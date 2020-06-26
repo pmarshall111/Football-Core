@@ -78,11 +78,7 @@ public class Understat {
             else {
                 match = new Match(homeTeam, awayTeam, date);
             }
-            season.addNewMatch(match);
-            //adding match to our hashmap in team so we can quickly find matches as well as having a collection of all of them.
-            //better to access quickly when updating scores. Don't want to loop through arrays of matches for every team.
-            homeTeam.addMatch(match);
-            awayTeam.addMatch(match);
+            season.addNewMatch(match); //method will also add match to both teams' hashmap for faster lookups.
         }
 
         Iterator teamsIterator = teamsData.values().iterator();

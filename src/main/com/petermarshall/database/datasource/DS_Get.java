@@ -19,6 +19,7 @@ import java.sql.Statement;
 import java.util.*;
 
 import static com.petermarshall.database.datasource.DS_Main.*;
+import static com.petermarshall.machineLearning.createData.CalcPastStats.NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA;
 import static com.petermarshall.machineLearning.logisticRegression.Predict.DAYS_IN_FUTURE_TO_PREDICT;
 
 public class DS_Get {
@@ -306,26 +307,50 @@ public class DS_Get {
     //method will get out matches from the database where it is both teams next match and has not already been predicted on
     public static ArrayList<MatchToPredict> getMatchesToPredict() {
         try (Statement statement = DS_Main.connection.createStatement()) {
-            String ids = "idsWithFuturePredictions";
+            String gameCountTable = "gameCountTable";
+            String awayCount = "awayGameCount";
+            String numbAway = "numbAwayGames";
+            String totalGamesPlayed = "totalGamesPlayed";
+            String homeTeamGameCount = "homeTeamGameCount";
+            String awayTeamGameCount = "awayTeamGameCount";
+            String teamId = "team_id";
+            String idsTable = "idsWithFuturePredictions";
+            int currSeason = DateHelper.getStartYearForCurrentSeason();
             String currDate = DateHelper.getSqlDate(new Date());
             String eightDaysInFuture = DateHelper.getSqlDate(DateHelper.addXDaysToDate(new Date(), DAYS_IN_FUTURE_TO_PREDICT));
             //statement gets out the games in the next 8 days that do not already have a prediction
-            ResultSet rs = statement.executeQuery("WITH " + ids + " AS (" +
+            ResultSet rs = statement.executeQuery("WITH " +
+                    gameCountTable + " AS (" +
+                        " WITH " + awayCount + " AS (" +
+                            " SELECT " + MatchTable.getColAwayteamId() + ", COUNT(*) AS " + numbAway + " FROM " + MatchTable.getTableName() +
+                            " WHERE " + MatchTable.getColSeasonYearStart() + " = " + currSeason +
+                            " AND " + MatchTable.getColHomeScore() + " > -1" +
+                            " GROUP BY " + MatchTable.getColAwayteamId() + ")" +
+                        " SELECT " + MatchTable.getColHometeamId() + " AS " + teamId + ", (COUNT(*)+"+numbAway+") AS " + totalGamesPlayed + " FROM " + MatchTable.getTableName() +
+                        " INNER JOIN " + awayCount + " ON " + MatchTable.getColHometeamId() + " = " + awayCount + "." + MatchTable.getColAwayteamId() +
+                        " WHERE " + MatchTable.getColSeasonYearStart() + " = " + currSeason +
+                        " AND " + MatchTable.getColHomeScore() + " > -1" +
+                        " GROUP BY " + MatchTable.getColHometeamId() + ")," +
+                    idsTable + " AS (" +
                         "SELECT " + MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + " FROM " + PredictionTable.getTableName() +
                         " INNER JOIN " + MatchTable.getTableName() + " ON " + PredictionTable.getColMatchId() + " = _id " +
                         " WHERE " + MatchTable.getTableName() + "." + MatchTable.getColDate() + " > '" + currDate + "') " +
                     " SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " + MatchTable.getColSeasonYearStart() + ", " +
                     LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColDate() + ", " +
                     MatchTable.getTableName() + "._id, " + MatchTable.getColSofascoreId() + " FROM " + MatchTable.getTableName() +
-                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " INNER JOIN " + gameCountTable + " AS " + homeTeamGameCount + " ON " + MatchTable.getColHometeamId() + " = " + homeTeamGameCount + "." + teamId +
+                    " INNER JOIN " + gameCountTable + " AS " + awayTeamGameCount + " ON " + MatchTable.getColAwayteamId() + " = " + awayTeamGameCount + "." + teamId +
                     " WHERE " + MatchTable.getColDate() + " > '" + currDate + "'" +
                     " AND " + MatchTable.getColDate() + " < '" + eightDaysInFuture + "'" +
-                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
-                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
-                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + ids + ")" +
-                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + ids + ")" +
+                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + idsTable + ")" +
+                    " AND " + MatchTable.getColHometeamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + idsTable + ")" +
+                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColHometeamId() + " FROM " + idsTable + ")" +
+                    " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + idsTable + ")" +
+                    " AND " + homeTeamGameCount + "." + totalGamesPlayed + " >= " + NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA +
+                    " AND " + awayTeamGameCount + "." + totalGamesPlayed + " >= " + NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA +
                     " ORDER BY " + MatchTable.getColDate());
 
             //filtering out responses so that teams are only included once - we want to only predict a teams next match

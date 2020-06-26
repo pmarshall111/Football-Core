@@ -5,8 +5,8 @@ import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
 
 import java.util.ArrayList;
 
-import static com.petermarshall.machineLearning.createData.CalculatePastStats.COMPARE_LAST_N_GAMES;
-import static com.petermarshall.machineLearning.createData.CalculatePastStats.NUMB_SEASONS_HISTORY;
+import static com.petermarshall.machineLearning.createData.CalcPastStats.COMPARE_LAST_N_GAMES;
+import static com.petermarshall.machineLearning.createData.CalcPastStats.NUMB_SEASONS_HISTORY;
 import static com.petermarshall.machineLearning.createData.classes.GamesSelector.*;
 
 public class CreateFeatures {

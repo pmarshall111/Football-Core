@@ -4,7 +4,7 @@ import com.petermarshall.machineLearning.createData.classes.GamesSelector;
 import com.petermarshall.machineLearning.createData.classes.HomeAwayWrapper;
 import com.petermarshall.machineLearning.createData.classes.Player;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
+import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,17 +42,17 @@ public class TrainingTeamsSeasonTest {
         createPlayerRatings(true);
         createPlayerRatings(false);
         //game1 team1 vs team2
-        CalculatePastStats.addStatsToTeamsSeasons(game1, team1, team2, HOMERATINGS[0], AWAYRATINGS[0]);
+        CalcPastStats.addStatsToTeamsSeasons(game1, team1, team2, HOMERATINGS[0], AWAYRATINGS[0]);
         //game2 team2 vs team1
-        CalculatePastStats.addStatsToTeamsSeasons(game2, team2, team1, HOMERATINGS[1], AWAYRATINGS[1]);
+        CalcPastStats.addStatsToTeamsSeasons(game2, team2, team1, HOMERATINGS[1], AWAYRATINGS[1]);
         //game3 team1 vs team2
-        CalculatePastStats.addStatsToTeamsSeasons(game3, team1, team2, HOMERATINGS[2], AWAYRATINGS[2]);
+        CalcPastStats.addStatsToTeamsSeasons(game3, team1, team2, HOMERATINGS[2], AWAYRATINGS[2]);
         //game4 team2 vs team1
-        CalculatePastStats.addStatsToTeamsSeasons(game4, team2, team1, HOMERATINGS[3], AWAYRATINGS[3]);
+        CalcPastStats.addStatsToTeamsSeasons(game4, team2, team1, HOMERATINGS[3], AWAYRATINGS[3]);
         //game5 team1 vs team2
-        CalculatePastStats.addStatsToTeamsSeasons(game5, team1, team2, HOMERATINGS[4], AWAYRATINGS[4]);
+        CalcPastStats.addStatsToTeamsSeasons(game5, team1, team2, HOMERATINGS[4], AWAYRATINGS[4]);
         //game6 team2 vs team1
-        CalculatePastStats.addStatsToTeamsSeasons(game6, team2, team1, HOMERATINGS[5], AWAYRATINGS[5]);
+        CalcPastStats.addStatsToTeamsSeasons(game6, team2, team1, HOMERATINGS[5], AWAYRATINGS[5]);
     }
 
     private void createPlayerRatings(boolean isHome) {

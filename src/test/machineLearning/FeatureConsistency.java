@@ -5,7 +5,7 @@ import com.petermarshall.database.dbTables.LeagueTable;
 import com.petermarshall.database.dbTables.MatchTable;
 import com.petermarshall.database.dbTables.PlayerRatingTable;
 import com.petermarshall.database.dbTables.TeamTable;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
+import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.Player;
 import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
@@ -31,7 +31,7 @@ public class FeatureConsistency {
         //includes the match being played for Predicting, so the position of this feature needs to be
         //identified and skipped when asserting.
         DS_Main.openProductionConnection();
-        ArrayList<TrainingMatch> trainingMatches = CalculatePastStats.getAllTrainingMatches();
+        ArrayList<TrainingMatch> trainingMatches = CalcPastStats.getAllTrainingMatches();
 
         //has to be the last match as the predict function calculates team stats for all played games so far.
         //The last match is then not saved
@@ -61,7 +61,7 @@ public class FeatureConsistency {
             MatchToPredict mtp = new MatchToPredict(tMatch.getHomeTeamName(), tMatch.getAwayTeamName(), matchSeasonKey, leagueName, sqlDate, dbId, sofascoreId);
             addLineupsToMatch(mtp, sqlDate, stmt);
             ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtp));
-            CalculatePastStats.addFeaturesToPredict(mtps, true);
+            CalcPastStats.addFeaturesToPredict(mtps, true);
 
             ArrayList<Double> trainingFeaturesNL = tMatch.getFeaturesNoLineups();
             ArrayList<Double> trainingFeatures = tMatch.getFeatures();
@@ -123,8 +123,8 @@ public class FeatureConsistency {
         Assert.assertNotEquals(0, homePlayers.size());
         Assert.assertNotEquals(0, awayPlayers.size());
 
-        ArrayList<String> homeStartingXI = new ArrayList<>(CalculatePastStats.getStartingXI(homePlayers).keySet());
-        ArrayList<String> awayStartingXI = new ArrayList<>(CalculatePastStats.getStartingXI(awayPlayers).keySet());
+        ArrayList<String> homeStartingXI = new ArrayList<>(CalcPastStats.getStartingXI(homePlayers).keySet());
+        ArrayList<String> awayStartingXI = new ArrayList<>(CalcPastStats.getStartingXI(awayPlayers).keySet());
         mtp.setHomeTeamPlayers(homeStartingXI);
         mtp.setAwayTeamPlayers(awayStartingXI);
     }

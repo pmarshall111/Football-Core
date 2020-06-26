@@ -1,6 +1,5 @@
 package com.petermarshall.taskScheduling;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.petermarshall.AutomateBetUniBet;
 import com.petermarshall.BetPlaced;
 import com.petermarshall.BetPlacedUniBet;
@@ -10,7 +9,7 @@ import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.DecideBet;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
+import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.BetDecision;
 import com.petermarshall.machineLearning.BookieBetInfo;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
@@ -18,13 +17,11 @@ import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
-import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import static com.petermarshall.AutomateBet.placeBet;
 
@@ -43,7 +40,7 @@ public class PredictPipeline {
         UpdatePipeline.updateGames(false);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
-            CalculatePastStats.addFeaturesToPredict(mtps, false);
+            CalcPastStats.addFeaturesToPredict(mtps, false);
             Predict.addOurProbabilitiesToGames(mtps);
             OddsChecker.addBookiesOddsForGames(mtps);
             DS_Insert.addPredictionsToDb(mtps);
@@ -81,7 +78,7 @@ public class PredictPipeline {
             SofaScore.addLineupsToGamesAboutToStart(mtps);
             mtps.removeIf(mtp -> mtp.getHomeTeamPlayers().size() != 11 || mtp.getAwayTeamPlayers().size() != 11);
             if (mtps.size() > 0) {
-                CalculatePastStats.addFeaturesToPredict(mtps, false);
+                CalcPastStats.addFeaturesToPredict(mtps, false);
                 Predict.addOurProbabilitiesToGames(mtps);
                 OddsChecker.addBookiesOddsForGames(mtps);
                 DS_Insert.addPredictionsToDb(mtps);

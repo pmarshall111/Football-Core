@@ -1,5 +1,7 @@
 package com.petermarshall.scrape;
 
+import com.petermarshall.mail.SendEmail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -41,7 +43,7 @@ public class GetJsonHelper {
             connection.setRequestProperty("Connection", "keep-alive");
             connection.setRequestProperty("Cookie", "_ga=GA1.2.1590148867.1581583494; _ga_6GDFR2Y61X=GS1.1.1592290450.69.1.1592290458.0; _ym_uid=1587632982108619512; _ym_d=1587632982; __gads=ID=54b755e2cc211c07:T=1587632985:S=ALNI_MYAGoctamRCDG2fcmQFVtEh3fwbiQ; __cfduid=d69838dbb1ac6fcb30a2a4eaca9a1b1db1590656860; standaloneuser=false; _gid=GA1.2.1425151592.1592904337; _ym_isad=1; _ym_visorc_54976246=w; _ym_visorc_55064218=w");
             connection.setRequestProperty("Host", "www.sofascore.com");
-            connection.setRequestProperty("Referer", "https://www.sofascore.com/tournament/football/france/ligue-1/34");
+            connection.setRequestProperty("Referer", "https://www.sofascore.com");
             connection.setRequestProperty("TE", "Trailers");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0");
             connection.connect();
@@ -51,6 +53,9 @@ public class GetJsonHelper {
                 //server error, try again.
                 sleep();
                 return jsonGetRequest(urlQueryString, timesCalled+1);
+            } else if (respCode == 403) {
+                SendEmail.sendOutEmail("ATTN: Scraper banned",
+                        "Tried connecting to '" + urlQueryString + "'\n" +connection.getResponseMessage());
             }
             InputStream inStream = connection.getInputStream();
             json = streamToString(inStream); // input stream to string

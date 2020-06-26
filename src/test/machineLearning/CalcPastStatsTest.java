@@ -1,14 +1,9 @@
 package machineLearning;
 
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.machineLearning.createData.CalculatePastStats;
+import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.classes.GamesSelector;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
-import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.LeagueIdsAndData;
-import com.petermarshall.scrape.classes.Season;
-import com.petermarshall.scrape.classes.Team;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class CalculatePastStatsTest {
+public class CalcPastStatsTest {
     @Test
     public void canSplitHistoricMatchesWithMultipleTeams() {
         String team1 = "team1", team2 = "team2", team3 = "team3";
@@ -39,7 +34,7 @@ public class CalculatePastStatsTest {
         ArrayList<HistoricMatchDbData> hmdbData = new ArrayList<>(Arrays.asList(t1vst2In2016, t3vst2In2016, t3vst1In2016, t2vst3In2016, t1vst3In2016, t2vst1In2016,
                 t3vst1In2017, t1vst3In2017, t2vst3In2017, t2vst1In2017, t1vst2In2017, t3vst2In2017));
 
-        HashMap<String, TrainingTeam> teams = CalculatePastStats.createHistoricMatchups(hmdbData);
+        HashMap<String, TrainingTeam> teams = CalcPastStats.createHistoricMatchups(hmdbData);
         TrainingTeam t1 = teams.get(team1);
         TrainingTeam t2 = teams.get(team2);
         TrainingTeam t3 = teams.get(team3);
