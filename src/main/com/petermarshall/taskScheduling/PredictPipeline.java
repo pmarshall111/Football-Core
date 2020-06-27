@@ -33,8 +33,8 @@ public class PredictPipeline {
     private static final double MIN_BALANCE_WARNING = 20.0;
 
     public static void main(String[] args) {
-//        predictGames();
-        finishPredictedGames();
+        predictGames();
+//        finishPredictedGames();
     }
 
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
@@ -63,7 +63,7 @@ public class PredictPipeline {
         ArrayList<MatchToPredict> matches = DS_Get.getMatchesWithPredictionsButNoOdds();
         if (matches.size() > 0) {
             OddsChecker.addBookiesOddsForGames(matches);
-            matches.removeIf(mtp -> mtp.getBookiesOdds().size() == 0);
+            matches.removeIf(mtp -> mtp.getBookiesOdds() == null || mtp.getBookiesOdds().size() == 0);
             DS_Update.updatePredictionToIncludeOdds(matches);
             DecideBet.addDecisionRealMatches(matches);
             matches.removeIf(mtp -> mtp.getGoodBets().size() == 0);
@@ -79,14 +79,14 @@ public class PredictPipeline {
         Date in5Mins = DateHelper.addXMinsToDate(new Date(), 5);
         Date in55Mins = DateHelper.addXMinsToDate(new Date(), 55);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredictByDates(in5Mins, in55Mins);
-        //add lineups and remove game if couldn't get lineups.
         if (mtps.size() > 0) {
-            SofaScore.addLineupsToGamesAboutToStart(mtps);
-            mtps.removeIf(mtp -> mtp.getHomeTeamPlayers().size() != 11 || mtp.getAwayTeamPlayers().size() != 11);
+            //add lineups & odds and remove game if couldn't get lineups or odds
+            addLineupsAndOddsConcurrently(mtps);
+            mtps.removeIf(mtp -> mtp.getHomeTeamPlayers().size() != 11 || mtp.getAwayTeamPlayers().size() != 11 ||
+                    mtp.getBookiesOdds() == null || mtp.getBookiesOdds().size() == 0);
             if (mtps.size() > 0) {
                 CalcPastStats.addFeaturesToPredict(mtps, false);
                 Predict.addOurProbabilitiesToGames(mtps);
-                OddsChecker.addBookiesOddsForGames(mtps);
                 DS_Insert.addPredictionsToDb(mtps);
                 DecideBet.addDecisionRealMatches(mtps);
                 mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
@@ -94,6 +94,17 @@ public class PredictPipeline {
                     betOnMatches(mtps);
                 }
             }
+        }
+    }
+
+    private static void addLineupsAndOddsConcurrently(ArrayList<MatchToPredict> mtps) {
+        try {
+            Thread addOdds = new Thread(new OddsChecker(mtps));
+            addOdds.start();
+            SofaScore.addLineupsToGamesAboutToStart(mtps);
+            addOdds.join(); //wait for completion of add odds thread
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

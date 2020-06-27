@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import static com.petermarshall.machineLearning.logisticRegression.Predict.DAYS_IN_FUTURE_TO_PREDICT;
 import static com.petermarshall.scrape.ScrapeTimeout.getRandomTimeoutMs;
 
-public class OddsChecker {
+public class OddsChecker implements Runnable {
     public static final String BASE_URL = "https://www.oddschecker.com";
     public static final String PL_URL = "https://www.oddschecker.com/football/english/premier-league";
     public static final String BUNDESLIGA_URL = "https://www.oddschecker.com/football/germany/bundesliga";
@@ -26,6 +26,17 @@ public class OddsChecker {
     public static final String SERIE_A_URL = "https://www.oddschecker.com/football/italy/serie-a";
     public static final String LA_LIGA_URL = "https://www.oddschecker.com/football/spain/la-liga-primera";
     public static final String RUSSIA_URL = "https://www.oddschecker.com/football/russia/premier-league";
+
+    private ArrayList<MatchToPredict> matches;
+
+    public OddsChecker(ArrayList<MatchToPredict> matches) {
+        this.matches = matches;
+    }
+
+    @Override
+    public void run() {
+        OddsChecker.addBookiesOddsForGames(matches);
+    }
 
     /*
      * Method will separate matches to predict into each league and then call addBettersOddsForLeague(). We do this because
@@ -101,15 +112,20 @@ public class OddsChecker {
             });
             //finding matches & adding odds
             for (MatchToPredict match: matches) {
-                JSONObject correctMatch = findCorrectMatch(matchUrls, match);
-                matchUrls.remove(correctMatch);
-                String matchTitle = correctMatch.get("name").toString();
-                String[] teamNames = getTeamNamesFromMatchup(matchTitle);
-                String homeNameOddsChecker = teamNames[0];
-                String awayNameOddsChecker = teamNames[1];
-                addOdds(correctMatch.get("url").toString(), match, homeNameOddsChecker, awayNameOddsChecker);
-                //random sleep after scrape to look more like a real user
-                Thread.sleep(getRandomTimeoutMs());
+                try {
+                    JSONObject correctMatch = findCorrectMatch(matchUrls, match);
+                    matchUrls.remove(correctMatch);
+                    String matchTitle = correctMatch.get("name").toString();
+                    String[] teamNames = getTeamNamesFromMatchup(matchTitle);
+                    String homeNameOddsChecker = teamNames[0];
+                    String awayNameOddsChecker = teamNames[1];
+                    addOdds(correctMatch.get("url").toString(), match, homeNameOddsChecker, awayNameOddsChecker);
+                    //random sleep after scrape to look more like a real user
+                    Thread.sleep(getRandomTimeoutMs());
+                } catch(NullPointerException | InterruptedException e) {
+                    System.out.println("Exception for game: " + match.getHomeTeamName() + " vs " + match.getAwayTeamName() + ". Likely could not find" +
+                            "match in Oddschecker.");
+                }
             }
             //once done whole league another sleep to add delay to call to scrape next league.
             Thread.sleep(getRandomTimeoutMs());
