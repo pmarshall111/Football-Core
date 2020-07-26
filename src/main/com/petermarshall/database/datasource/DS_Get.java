@@ -5,7 +5,7 @@ import com.petermarshall.database.BetReflection;
 import com.petermarshall.database.BetReflectionsTotalled;
 import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.Result;
-import com.petermarshall.database.dbTables.*;
+import dbTables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
 import com.petermarshall.machineLearning.createData.PlayerMatchDbData;

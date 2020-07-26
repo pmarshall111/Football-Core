@@ -1,4 +1,4 @@
-package com.petermarshall.database.dbTables;
+package dbTables;
 
 public class PlayerRatingTable {
     private PlayerRatingTable() {}

@@ -1,7 +1,7 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.database.Result;
-import com.petermarshall.database.dbTables.*;
+import dbTables.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +14,7 @@ public class DS_Main {
     static final String AWAYTEAM = "awayteam";
     static final String PLAYERS_TEAM = "playersteam";
 
+    private static final String AWS_CONNECTION_NAME = "jdbc:mysql://" + Keys.AWS_ENDPOINT + ":3306/footballtest2?serverTimezone=UTC";
     private static final String CONNECTION_NAME = "jdbc:mysql://localhost/footballtest2?serverTimezone=UTC";
     public static final String TEST_CONNECTION_NAME = "jdbc:mysql://localhost/testfootballtest?serverTimezone=UTC";
     public static Connection connection;
@@ -36,7 +37,8 @@ public class DS_Main {
         }
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(CONNECTION_NAME, Keys.USER, Keys.PASSWORD);
+//            connection = DriverManager.getConnection(CONNECTION_NAME, Keys.USER, Keys.PASSWORD);
+            connection = DriverManager.getConnection(AWS_CONNECTION_NAME, Keys.AWS_USER, Keys.AWS_PASSWORD);
             return true;
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());

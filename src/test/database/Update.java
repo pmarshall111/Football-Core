@@ -6,7 +6,7 @@ import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
-import com.petermarshall.database.dbTables.*;
+import dbTables.*;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.Match;

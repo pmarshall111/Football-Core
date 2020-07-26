@@ -1,4 +1,4 @@
-package com.petermarshall.database.dbTables;
+package dbTables;
 
 public class LogTable {
     private LogTable() {}

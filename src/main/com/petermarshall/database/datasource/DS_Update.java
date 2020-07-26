@@ -1,8 +1,8 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.dbTables.MatchTable;
-import com.petermarshall.database.dbTables.PredictionTable;
+import dbTables.MatchTable;
+import dbTables.PredictionTable;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 

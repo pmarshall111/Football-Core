@@ -1,6 +1,5 @@
 package com.petermarshall.taskScheduling;
 
-import com.petermarshall.AutomateBetUniBet;
 import com.petermarshall.BetPlaced;
 import com.petermarshall.BetPlacedUniBet;
 import com.petermarshall.DateHelper;
@@ -9,6 +8,7 @@ import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.BetLog;
 import com.petermarshall.database.datasource.DS_Update;
+import com.petermarshall.machineLearning.BetPlacedTemp;
 import com.petermarshall.machineLearning.DecideBet;
 import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.BetDecision;
@@ -26,15 +26,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.petermarshall.AutomateBet.placeBet;
 
 public class PredictPipeline {
 
     private static final double MIN_BALANCE_WARNING = 20.0;
 
     public static void main(String[] args) {
+        finishPredictedGames();
         predictGames();
-//        finishPredictedGames();
     }
 
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.

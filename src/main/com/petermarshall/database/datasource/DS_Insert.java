@@ -1,7 +1,7 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.dbTables.*;
+import dbTables.*;
 import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;

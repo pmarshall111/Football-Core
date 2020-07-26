@@ -1,12 +1,11 @@
 package database;
 
 import com.petermarshall.DateHelper;
-import com.petermarshall.database.FirstScorer;
 import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.dbTables.LeagueTable;
-import com.petermarshall.database.dbTables.MatchTable;
-import com.petermarshall.database.dbTables.PlayerRatingTable;
-import com.petermarshall.database.dbTables.TeamTable;
+import dbTables.LeagueTable;
+import dbTables.MatchTable;
+import dbTables.PlayerRatingTable;
+import dbTables.TeamTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
