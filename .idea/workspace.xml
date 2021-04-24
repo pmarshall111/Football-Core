@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -124,13 +123,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -263,7 +264,7 @@
       <workItem from="1595748238353" duration="1334000" />
       <workItem from="1618569199333" duration="5670000" />
       <workItem from="1619255304693" duration="144000" />
-      <workItem from="1619255679202" duration="3417000" />
+      <workItem from="1619255679202" duration="3941000" />
     </task>
     <servers />
   </component>
