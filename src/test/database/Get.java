@@ -153,7 +153,7 @@ public class Get {
         //testing that only games in the future that are the first game for both teams are got out
         //both teams must have also played more games than the training threshold. Currently 7...
         League l = new League(LeagueIdsAndData.EPL);
-        Season s = l.getSeason(19);
+        Season s = l.getSeason(DateHelper.getStartYearForCurrentSeason());
         //1-4 are used as teams without enough games, 5-8 are teams who have played required games.
         Team t1 = s.addNewTeam(new Team("team1")), t2 = s.addNewTeam(new Team("team2")),
                 t3 = s.addNewTeam(new Team("team3")), t4 = s.addNewTeam(new Team("team4")),

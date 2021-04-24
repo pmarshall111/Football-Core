@@ -12,6 +12,9 @@
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Get.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +99,7 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.AddNewSeason">
+  <component name="RunManager" selected="JUnit.Get.canGetOutNewMatchesToPredict">
     <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
       <module name="Football" />
@@ -136,18 +139,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BetDecisionTest.addsCorrectOddsAndStake" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="All in Football" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="machineLearning.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="machineLearning" />
-      <option name="MAIN_CLASS_NAME" value="machineLearning.BetDecisionTest" />
-      <option name="METHOD_NAME" value="addsCorrectOddsAndStake" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -187,17 +182,17 @@
     <list>
       <item itemvalue="Application.PredictPipeline" />
       <item itemvalue="Application.AddNewSeason" />
-      <item itemvalue="JUnit.BetDecisionTest.addsCorrectOddsAndStake" />
       <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
       <item itemvalue="JUnit.Update.canUpdatePredictionToIncludeOdds" />
+      <item itemvalue="JUnit.All in Football" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
+        <item itemvalue="JUnit.All in Football" />
         <item itemvalue="Application.AddNewSeason" />
         <item itemvalue="Application.PredictPipeline" />
         <item itemvalue="JUnit.Update.canUpdatePredictionToIncludeOdds" />
-        <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
-        <item itemvalue="JUnit.BetDecisionTest.addsCorrectOddsAndStake" />
       </list>
     </recent_temporary>
   </component>
@@ -265,6 +260,7 @@
       <workItem from="1618569199333" duration="5670000" />
       <workItem from="1619255304693" duration="144000" />
       <workItem from="1619255679202" duration="3941000" />
+      <workItem from="1619272504736" duration="1718000" />
     </task>
     <servers />
   </component>
@@ -338,11 +334,6 @@
           <option name="timeStamp" value="147" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/database/Get.java</url>
-          <line>254</line>
-          <option name="timeStamp" value="156" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/database/Update.java</url>
           <line>287</line>
           <option name="timeStamp" value="163" />
@@ -364,6 +355,16 @@
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java</url>
           <line>34</line>
           <option name="timeStamp" value="168" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/database/Get.java</url>
+          <line>204</line>
+          <option name="timeStamp" value="170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/database/Get.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="171" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
