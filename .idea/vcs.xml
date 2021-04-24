@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../Bet365-place-bet" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Unibet-Place-Bet" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$USER_HOME$/IdeaProjects/Bet365Scraper" vcs="Git" />
-    <mapping directory="$USER_HOME$/IdeaProjects/UnibetPlaceBet" vcs="Git" />
   </component>
 </project>

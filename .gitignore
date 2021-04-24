@@ -3,5 +3,6 @@
 *.zip
 /lib/
 /target
-/.idea
+.idea
 /src/main/com/petermarshall/database/datasource/Keys.java
+*PrivateKeys*
