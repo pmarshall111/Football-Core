@@ -1,6 +1,8 @@
 package scrape;
 
+import com.petermarshall.ConvertOdds;
 import com.petermarshall.DateHelper;
+import com.petermarshall.database.FirstScorer;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
 import com.petermarshall.scrape.classes.League;
@@ -19,41 +21,71 @@ import java.util.Set;
 
 
 public class SofascoreTest {
+    private static int seasonId;
+    private static int leagueId;
+    private static String leagueName;
     private static League epl;
+    private static Season season;
+    private static Set<Integer> ids;
+    private static Match lfcHome;
+    private static final int LFC_BURNLEY_MATCH_ID = 8692257;
 
     @BeforeClass
     public static void scrapeGames() {
-        //thinking we may not need to test with real data.
-//        epl = new League(LeagueIdsAndData.EPL);
-//        Understat.addLeaguesGames(epl);
+        String seasonYear = "19-20";
+        seasonId = EPL.getLeaguesSeasonId(seasonYear);
+        leagueId = EPL.getLeagueId();
+        leagueName = EPL.getSofaScoreLeagueName();
+        epl = new League(EPL);
+        season = epl.getSeason(seasonYear);
+
+        //add a known game from the season
+        Team burnley = new Team("Burnley");
+        Team liverpool = new Team("Liverpool");
+        Date kickOff = DateHelper.createDateyyyyMMdd("2020", "07", "11");
+        lfcHome = new Match(liverpool, burnley, kickOff, 1, 1);
+        season.addNewMatch(lfcHome);
+
+        //get the IDs for the games (required to run before other tests)
+        ids = SofaScore.getGamesOfLeaguesSeason(leagueName, leagueId, seasonId, null, null, season);
     }
 
     //possibly will need a test to look at what it does with postponed matches.
-    //also should move the scrape into the beforeClass method.
     @Test
     public void canGetIdsForLeagueSeason() {
-        String seasonYear = "19-20";
-        int seasonId = EPL.getLeaguesSeasonId(seasonYear);
-        int leagueId = EPL.getLeagueId();
-        String leagueName = EPL.getSofaScoreLeagueName();
-        League epl = new League(EPL);
-        Season season = epl.getSeason(seasonYear);
-
-        //add a known game from the season
-        Team manUnited = new Team("Manchester United");
-        Team liverpool = new Team("Liverpool");
-        Date kickOff = DateHelper.createDateyyyyMMdd("2020", "01", "19");
-        Match lfcHome = new Match(liverpool, manUnited, kickOff);
-        season.addNewMatch(lfcHome);
-
         //scrape from sofascore
-        Set<Integer> ids = SofaScore.getGamesOfLeaguesSeason(leagueName, leagueId, seasonId, null, null, season);
         Assert.assertNotNull(ids);
         Assert.assertEquals(380, ids.size()); //expect an id for every game of the season
 
         //check id is added to known game
         Assert.assertTrue(lfcHome.getSofaScoreGameId() > 0);
-        Assert.assertEquals(8243623, lfcHome.getSofaScoreGameId());
+        Assert.assertEquals(LFC_BURNLEY_MATCH_ID, lfcHome.getSofaScoreGameId());
         Assert.assertTrue(ids.contains(lfcHome.getSofaScoreGameId()));
+    }
+
+    //adds odds, players ratings, first goalscorer.
+    //executing as 1 integration test to save time.
+    @Test
+    public void canAddInfoToGame() {
+        int gameId = lfcHome.getSofaScoreGameId();
+        Assert.assertTrue(gameId > 0);
+
+        SofaScore.addInfoToGame(season, gameId);
+        //odds
+        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("1/5"), lfcHome.getHomeOdds(), 0.0001);
+        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("6/1"), lfcHome.getDrawOdds(), 0.0001);
+        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("12/1"), lfcHome.getAwayOdds(), 0.0001);
+        //home player ratings
+        Assert.assertNotNull(lfcHome.getHomePlayerRatings());
+        Assert.assertTrue(lfcHome.getHomePlayerRatings().size() > 0);
+        Assert.assertEquals(7.0, lfcHome.getHomePlayerRatings().get("Mohamed Salah").getRating(), 0.0001);
+        Assert.assertEquals(90, lfcHome.getHomePlayerRatings().get("Roberto Firmino").getMinutesPlayed(), 0.0001);
+        //away player ratings
+        Assert.assertNotNull(lfcHome.getAwayPlayerRatings());
+        Assert.assertTrue(lfcHome.getAwayPlayerRatings().size() > 0);
+        Assert.assertEquals(6.4, lfcHome.getAwayPlayerRatings().get("Chris Wood").getRating(), 0.0001);
+        Assert.assertEquals(65, lfcHome.getAwayPlayerRatings().get("Chris Wood").getMinutesPlayed(), 0.0001);
+        //first goalscorer
+        Assert.assertEquals(FirstScorer.HOME_FIRST.getSqlIntCode(), lfcHome.getFirstScorer().getSqlIntCode());
     }
 }

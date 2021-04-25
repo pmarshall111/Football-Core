@@ -219,7 +219,7 @@ public class DateHelper {
     }
 
     private static String turnMonthStringToNumb (String monthString) {
-        switch(monthString) {
+        switch (monthString) {
             case "Jan":
                 return "01";
             case "Feb":
@@ -247,5 +247,9 @@ public class DateHelper {
             default:
                 throw new RuntimeException("Could not change date string for month into number");
         }
+    }
+
+    public static Date getDateFromSofascoreTimestamp(long secsSinceEpoch) {
+        return new Date(secsSinceEpoch * 1000);
     }
 }

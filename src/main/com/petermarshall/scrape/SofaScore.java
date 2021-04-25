@@ -20,16 +20,15 @@ import java.util.*;
  * To be called after scraping from Understat
  */
 public class SofaScore {
-    private static final String BASE_URL = "https://www.sofascore.com";
-    private static final String EVENT_ADD_ON = "/event/";
-    private static final String LINEUPS_ADD_ON = "/lineups/";
-    private static final String JSON_ENDING = "json";
 
     private static final String API_URL = "https://api.sofascore.com/api/v1";
     private static final String TOURNAMENT_ADD_ON = "/unique-tournament/";
     private static final String SEASON_ADD_ON = "/season/";
     private static final String EVENTS_ADD_ON = "/events/last/";
+    private static final String EVENT_ADD_ON = "/event/";
+    private static final String LINEUPS_ADD_ON = "/lineups";
     private static final String ODDS_ADD_ON = "/odds/1/all";
+    private static final String INCIDENTS_ADD_ON = "/incidents";
 
     /*
      * Creating scraping URLs
@@ -38,13 +37,16 @@ public class SofaScore {
         return API_URL + TOURNAMENT_ADD_ON + LeagueId + SEASON_ADD_ON + SeasonId + EVENTS_ADD_ON + pageNumb;
     }
     private static String getGameInfoUrl(int gameId) {
-        return BASE_URL + EVENT_ADD_ON + gameId + "/" + JSON_ENDING;
+        return API_URL + EVENT_ADD_ON + gameId;
     }
     private static String getPlayerRatingsUrl(int gameId) {
-        return BASE_URL + EVENT_ADD_ON + gameId + LINEUPS_ADD_ON + JSON_ENDING;
+        return API_URL + EVENT_ADD_ON + gameId + LINEUPS_ADD_ON;
     }
-    private static String getAlternateBetsUrl(int gameId) {
+    private static String getBetsUrl(int gameId) {
         return API_URL + EVENT_ADD_ON + gameId + ODDS_ADD_ON;
+    }
+    private static String getIncidentsUrl(int gameId) {
+        return API_URL + EVENT_ADD_ON + gameId + INCIDENTS_ADD_ON;
     }
 
 
@@ -82,7 +84,7 @@ public class SofaScore {
                     String status = (String) statusObj.get("description");
 
                     String startTime = game.get("startTimestamp").toString(); //returns number of seconds since epoch
-                    Date kickoff = new Date(Integer.parseInt(startTime) * 1000L);
+                    Date kickoff = DateHelper.getDateFromSofascoreTimestamp(Long.parseLong(startTime));
 
                     if (!status.equals("Postponed") && !status.equals("Canceled")) {
                         int id = Integer.parseInt(game.get("id").toString());
@@ -132,10 +134,16 @@ public class SofaScore {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
             JSONObject event = (JSONObject) json.get("event");
-            Boolean confirmedLineups = (Boolean) event.get("confirmedLineups");
-            if (!confirmedLineups) {
-                //game is not within 1 hour to the future. no point getting in betting info, or player ratings/full time
-                // score as our algorithm needs confirmed lineups to work.
+
+            long timeStamp = (long) event.get("startTimestamp");
+            Date kickOff = DateHelper.getDateFromSofascoreTimestamp(timeStamp);
+            Date now = new Date();
+            int minsBetweenDates = DateHelper.findMinutesBetweenDates(now, kickOff);
+            boolean kickOffIsInPast =  now.after(kickOff);
+
+            boolean shouldHaveLineups = kickOffIsInPast || minsBetweenDates < 60; //lineups are announced 1hr before kickoff.
+            if (!shouldHaveLineups) {
+                //game is not within 1 hour to the future. no point getting in betting info, or player ratings/full-time score as algorithm needs confirmed lineups to work.
                 return;
             }
 
@@ -143,30 +151,27 @@ public class SofaScore {
             JSONObject awayTeam = (JSONObject) event.get("awayTeam");
             String homeTeamName = (String) homeTeam.get("name");
             String awayTeamName = (String) awayTeam.get("name");
-            String gameDate = (String) event.get("formatedStartDate"); //SofaScore devs spelt formatted wrong.
-            String[] dateInfo = gameDate.split("\\.");
-            Date dateKey = DateHelper.createDateyyyyMMdd(dateInfo[2], dateInfo[1], dateInfo[0]);
             Team hTeam = season.getTeam(homeTeamName);
             if (hTeam == null) {
                 throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.matchTeamNamesSofaScoreToUnderstat(homeTeamName));
             }
             Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
-                if (homeTeamName.equals("Genoa") && awayTeamName.equals("Fiorentina") && gameDate.equals("11.09.2016.")) {
+                String date = DateHelper.turnDateToddMMyyyyString(kickOff);
+                if (homeTeamName.equals("Genoa") && awayTeamName.equals("Fiorentina") && date.equals("11-09-2016")) {
                     //we have encountered a bug in SofaScore's data where they haven't changed a match's status to postponed. Instead there are 2 records of this game
                     //with the same score, but one is on the wrong date.
                     return;
                 }
-                else throw new RuntimeException("could not find match with date " + dateKey + " from team " + homeTeamName + " against " + awayTeamName);
+                else throw new RuntimeException("could not find match with date " + kickOff + " from team " + homeTeamName + " against " + awayTeamName);
             }
             match.setSofaScoreGameId(gameId);
-            JSONArray oddsArray = (JSONArray) json.get("odds"); //doesn't have odds. so can just use the newer version of this.
-            ArrayList<Double> homeDrawAway = oddsArray != null ? getOdds(oddsArray) : getOddsAlternate(gameId);
-            match.setHomeDrawAwayOdds(homeDrawAway);
-            Boolean isFullTime = ((String) event.get("statusDescription")).equals("FT");
+            match.setHomeDrawAwayOdds(getOdds(gameId));
+            JSONObject status = (JSONObject) event.get("status");
+            boolean isFullTime = ((String) status.get("description")).equals("Ended");
             if (isFullTime) {
                 addPlayerRatingsToGame(match, gameId);
-                addFirstGoalScorer(match, json);
+                addFirstGoalScorer(match, gameId);
             }
         } catch(ParseException e) {
             System.out.println(e.getMessage());
@@ -174,51 +179,8 @@ public class SofaScore {
         }
     }
 
-    private static ArrayList<Double> getOdds(JSONArray oddsArray) {
-        Iterator betsIterator = oddsArray.iterator();
-        while (betsIterator.hasNext()) {
-            JSONObject bet = (JSONObject) betsIterator.next();
-            String betType = (String) bet.get("name");
-
-            if (betType.equals("Full time")) {
-                JSONObject oddsObj = (JSONObject) ((JSONArray) bet.get("regular")).iterator().next();
-                JSONArray odds = (JSONArray) oddsObj.get("odds");
-                Iterator oddsIterator = odds.iterator();
-                double homeOdds = -1d, drawOdds = -1d, awayOdds = -1d;
-
-                while (oddsIterator.hasNext()) {
-                    JSONObject oddsObject = (JSONObject) oddsIterator.next();
-                    String choice = oddsObject.get("choice").toString();
-                    double decimalOdds = Double.parseDouble(oddsObject.get("decimalValue").toString());
-                    switch (choice) {
-                        case "1":
-                            homeOdds = decimalOdds;
-                            break;
-                        case "X":
-                            drawOdds = decimalOdds;
-                            break;
-                        case "2":
-                            awayOdds = decimalOdds;
-                            break;
-                        default:
-                            throw new RuntimeException("odds were not home, draw or away!");
-                    }
-                }
-                if (homeOdds == -1d || drawOdds == -1d || awayOdds == -1d)
-                    throw new RuntimeException("not all odds were scraped!");
-
-                ArrayList<Double> homeDrawAway = new ArrayList<>();
-                homeDrawAway.add(homeOdds);
-                homeDrawAway.add(drawOdds);
-                homeDrawAway.add(awayOdds);
-                return homeDrawAway;
-            }
-        }
-        return new ArrayList<Double>(){{add(-1d); add(-1d); add(-1d);}};
-    }
-
-    private static ArrayList<Double> getOddsAlternate(int gameId) {
-        String url = getAlternateBetsUrl(gameId);
+    private static ArrayList<Double> getOdds(int gameId) {
+        String url = getBetsUrl(gameId);
         String jsonString = GetJsonHelper.jsonGetRequest(url);
         try {
             JSONParser parser = new JSONParser();
@@ -267,23 +229,29 @@ public class SofaScore {
      * Method will be called by SofaScore.addInfoToGame. Will add the player name, his rating and minutes played
      * for the game.
      */
-    private static void addPlayerRatingsToGame(Match match, int gameId) {
+    public static void addPlayerRatingsToGame(Match match, int gameId) {
         String url = getPlayerRatingsUrl(gameId);
         try {
             String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
-            JSONObject homeTeam =(JSONObject) json.get("homeTeam");
-            JSONObject awayTeam =(JSONObject) json.get("awayTeam");
-            HashMap<String, PlayerRating> homeRatings = getRatingsFromJson(homeTeam, gameId);
-            HashMap<String, PlayerRating> awayRatings = getRatingsFromJson(awayTeam, gameId);
+            boolean isConfirmed = (boolean) json.get("confirmed");
+            if (!isConfirmed) {
+                System.out.println("Match doesn't have confirmed lineups yet. Not adding lineups/ratings. " + match.getHomeTeam().getTeamName() + " vs " + match.getAwayTeam().getTeamName() + " on " + match.getKickoffTime());
+                return;
+            }
+
+            JSONObject homeTeam =(JSONObject) json.get("home");
+            JSONObject awayTeam =(JSONObject) json.get("away");
+            HashMap<String, PlayerRating> homeRatings = getRatingsFromJson(homeTeam);
+            HashMap<String, PlayerRating> awayRatings = getRatingsFromJson(awayTeam);
             if (homeRatings != null && awayRatings != null) {
                 match.setHomePlayerRatings(homeRatings);
                 match.setAwayPlayerRatings(awayRatings);
             }
         } catch(ParseException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
+            System.out.println("Continuing.");
         }
     }
 
@@ -294,76 +262,72 @@ public class SofaScore {
      *
      * NOTE: Removes any apostrophe's in a players name as this causes issues for SQL.
      */
-    private static HashMap<String, PlayerRating> getRatingsFromJson(JSONObject jsonObject, int gameId) {
-        Boolean hasConfirmedLineups = (Boolean) jsonObject.get("confirmedLineups");
-        if (!hasConfirmedLineups) {
-            return null;
-        }
-
+    private static HashMap<String, PlayerRating> getRatingsFromJson(JSONObject jsonObject) {
         HashMap<String, PlayerRating> players = new HashMap<>();
-        JSONArray lineups = (JSONArray) jsonObject.get("lineupsSorted");
-        Iterator playersIterator = lineups.iterator();
+        JSONArray playerObjects = (JSONArray) jsonObject.get("players");
+        Iterator playersIterator = playerObjects.iterator();
         while (playersIterator.hasNext()) {
             JSONObject playerObj = (JSONObject) playersIterator.next();
             String playerName = (String) ((JSONObject) playerObj.get("player")).get("name");
             playerName = playerName.replaceAll("'", "");
-            String rating = playerObj.get("rating").toString();
-            try {
-                PlayerRating playerRating = new PlayerRating(90, Double.parseDouble(rating), playerName);
-                players.put(playerName, playerRating);
-            } catch (NumberFormatException e) {
-                //do nothing. player did not get a rating.
-            }
-        }
 
-        JSONObject incidents = new JSONObject();
-        try {
-            incidents = (JSONObject) jsonObject.get("incidents");
-        } catch (ClassCastException e) {
-            System.out.println(jsonObject.toJSONString());
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            System.out.println("Game id: " + gameId);
-        }
-
-        Iterator incidentsIterator = incidents.values().iterator();
-        while (incidentsIterator.hasNext()) {
-            JSONObject incident = (JSONObject) ((JSONArray) incidentsIterator.next()).iterator().next();
-            if (((String) incident.get("incidentType")).equals("substitution")) {
-                String subbedOff = (String) ((JSONObject) incident.get("playerOut")).get("name");
-                String subbedOn = (String) ((JSONObject) incident.get("playerIn")).get("name");
-                int subTime = Integer.parseInt(incident.get("time").toString());
-                try {
-                    //for player in, we just want to set minutes as 90-sub time.
-                    players.get(subbedOn).setMinutesPlayed(90 - subTime);
-                } catch (NullPointerException e) {
-                    //do nothing. means the player was subbed on too late to get a rating so he isn't in players map.
-                }
-
-                try {
-                    //for player out, we want to set minutes to be current minutes - time till end of game. this accounts for if they didn't start the game.
-                    int currentMinutes = players.get(subbedOff).getMinutesPlayed();
-                    players.get(subbedOff).setMinutesPlayed(currentMinutes - (90 - subTime));
-                } catch (NullPointerException e) {
-                    //do nothing. means the player coming off was subbed on too late to get a rating.
+            JSONObject playerStats = (JSONObject) playerObj.get("statistics");
+            if (playerStats.containsKey("rating") && playerStats.containsKey("minutesPlayed")) {
+                double rating = Double.parseDouble(playerStats.get("rating") + "");
+                long minsPlayed = (long) playerStats.get("minutesPlayed");
+                if (rating > 0 && minsPlayed >= 10) {
+                    try {
+                        PlayerRating playerRating = new PlayerRating(Integer.parseInt(minsPlayed + ""), rating, playerName);
+                        players.put(playerName, playerRating);
+                    } catch (NumberFormatException e) {
+                        System.out.println(rating);
+                        e.printStackTrace();
+                    }
                 }
             }
         }
         return players;
     }
 
-    private static void addFirstGoalScorer(Match match, JSONObject json) {
-        JSONArray incidents = (JSONArray) json.get("incidents");
-        Iterator incidentsIterator = incidents.iterator();
-        while (incidentsIterator.hasNext()) {
-            JSONObject incident = (JSONObject) incidentsIterator.next();
-            String typeOfIncident = (String) incident.get("incidentType");
-            if (typeOfIncident.equals("goal")) {
-                String homeScore = incident.get("homeScore").toString();
-                String awayScore = incident.get("awayScore").toString();
-                if (homeScore.equals("1") && awayScore.equals("0")) match.setFirstScorer(FirstScorer.HOME_FIRST);
-                else if (homeScore.equals("0") && awayScore.equals("1")) match.setFirstScorer(FirstScorer.AWAY_FIRST);
+    public static void addFirstGoalScorer(Match match, int gameId) {
+        String url = getIncidentsUrl(gameId);
+
+        try {
+            String jsonString = GetJsonHelper.jsonGetRequest(url);
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonString);
+
+            JSONArray incidents = (JSONArray) json.get("incidents");
+            Iterator incidentsIterator = incidents.iterator();
+
+            long minOfFirstGoal = 999;
+            FirstScorer firstScorer = FirstScorer.NO_FIRST_SCORER;
+
+            while (incidentsIterator.hasNext()) {
+                JSONObject incident = (JSONObject) incidentsIterator.next();
+                String typeOfIncident = (String) incident.get("incidentType");
+                boolean isGoal = typeOfIncident.equals("goal");
+                boolean isGoalFromVar = false;
+                String incidentClass = (String) incident.get("incidentClass");
+                if (typeOfIncident.equals("varDecision") && incidentClass.equals("goalAwarded")) {
+                    boolean isConfirmed = (boolean) incident.get("confirmed");
+                    if (isConfirmed) {
+                        isGoalFromVar = true;
+                    }
+                }
+                if (isGoal || isGoalFromVar) {
+                    boolean isHomeGoal = (boolean) incident.get("isHome");
+                    long min = (long) incident.get("time"); //JSONParser will make any whole numbers long's
+                    if (min < minOfFirstGoal) {
+                        firstScorer = isHomeGoal ? FirstScorer.HOME_FIRST : FirstScorer.AWAY_FIRST;
+                    }
+                }
             }
+
+            match.setFirstScorer(firstScorer);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

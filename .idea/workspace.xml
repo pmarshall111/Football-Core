@@ -11,14 +11,12 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/DateHelperTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scrape/UnderstatTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/UnderstatTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,20 +101,7 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SofascoreTest.canGetIdsForLeagueSeason">
-    <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.SofascoreTest">
     <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -130,31 +115,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="All in Football" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DateHelperTest.canFindMinutesBetweenDates" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Get.canGetOutNewMatchesToPredict" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="database.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Get" />
-      <option name="METHOD_NAME" value="canGetOutNewMatchesToPredict" />
+      <option name="MAIN_CLASS_NAME" value="DateHelperTest" />
+      <option name="METHOD_NAME" value="canFindMinutesBetweenDates" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SofascoreTest.canGetIdsForLeagueSeason" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SofascoreTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
@@ -164,13 +135,12 @@
       </extension>
       <option name="PACKAGE_NAME" value="scrape" />
       <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
-      <option name="METHOD_NAME" value="canGetIdsForLeagueSeason" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UnderstatTest.matchInPastHasXGAndScore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SofascoreTest.addPlayerRatingsToGame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
@@ -179,27 +149,59 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.UnderstatTest" />
-      <option name="METHOD_NAME" value="matchInPastHasXGAndScore" />
+      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
+      <option name="METHOD_NAME" value="addPlayerRatingsToGame" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SofascoreTest.canAddFirstGoalScorer" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
+      <option name="METHOD_NAME" value="canAddFirstGoalScorer" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SofascoreTest.canAddInfoToGame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
+      <option name="METHOD_NAME" value="canAddInfoToGame" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.AddNewSeason" />
-      <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
-      <item itemvalue="JUnit.All in Football" />
-      <item itemvalue="JUnit.UnderstatTest.matchInPastHasXGAndScore" />
-      <item itemvalue="JUnit.SofascoreTest.canGetIdsForLeagueSeason" />
+      <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
+      <item itemvalue="JUnit.DateHelperTest.canFindMinutesBetweenDates" />
+      <item itemvalue="JUnit.SofascoreTest" />
+      <item itemvalue="JUnit.SofascoreTest.addPlayerRatingsToGame" />
+      <item itemvalue="JUnit.SofascoreTest.canAddFirstGoalScorer" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.SofascoreTest.canGetIdsForLeagueSeason" />
-        <item itemvalue="Application.AddNewSeason" />
-        <item itemvalue="JUnit.UnderstatTest.matchInPastHasXGAndScore" />
-        <item itemvalue="JUnit.All in Football" />
-        <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
+        <item itemvalue="JUnit.SofascoreTest" />
+        <item itemvalue="JUnit.SofascoreTest.canAddFirstGoalScorer" />
+        <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
+        <item itemvalue="JUnit.SofascoreTest.addPlayerRatingsToGame" />
+        <item itemvalue="JUnit.DateHelperTest.canFindMinutesBetweenDates" />
       </list>
     </recent_temporary>
   </component>
@@ -269,7 +271,7 @@
       <workItem from="1619255679202" duration="3941000" />
       <workItem from="1619272504736" duration="3846000" />
       <workItem from="1619359660630" duration="34000" />
-      <workItem from="1619359714030" duration="4910000" />
+      <workItem from="1619359714030" duration="13732000" />
     </task>
     <servers />
   </component>
