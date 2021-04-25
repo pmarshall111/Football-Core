@@ -82,6 +82,7 @@ public class Integrity {
         }
     }
 
+    //TEST WILL FAIL IF NO DATA IN DB
     @Test
     public void matchesWithNoRatingsMoreThan3DaysAgo() {
         int knownCases = 1;
@@ -203,6 +204,7 @@ public class Integrity {
         }
     }
 
+    //TEST WILL FAIL IF NO DATA IN DB.
     @Test
     public void noGameMoreThan3DaysAgoWithoutStats() {
         int knownCases = 1;

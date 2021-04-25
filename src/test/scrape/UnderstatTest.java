@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static org.junit.Assert.fail;
+
 public class UnderstatTest {
     private static League epl;
 
@@ -57,6 +59,7 @@ public class UnderstatTest {
     @Test
     public void matchInPastHasXGAndScore() {
         //currently fails due to the coronavirus with matches not being rearranged.
+        //also will fail if Understat haven't updated their data.
         ArrayList<Season> seasons = epl.getAllSeasons();
         for (Season s: seasons) {
             ArrayList<Match> matches = s.getAllMatches();
@@ -64,10 +67,15 @@ public class UnderstatTest {
                 if (match.getKickoffTime().after(new Date())) {
                     break;
                 }
-                Assert.assertTrue(match.getHomeScore() >= 0);
-                Assert.assertTrue(match.getAwayScore() >= 0);
-                Assert.assertTrue(match.getHomeXGF() >= 0);
-                Assert.assertTrue(match.getAwayXGF() >= 0);
+                try {
+                    Assert.assertTrue(match.getHomeScore() >= 0);
+                    Assert.assertTrue(match.getAwayScore() >= 0);
+                    Assert.assertTrue(match.getHomeXGF() >= 0);
+                    Assert.assertTrue(match.getAwayXGF() >= 0);
+                } catch (AssertionError e) {
+                    System.out.println(match.getHomeTeam().getTeamName() + " vs " + match.getAwayTeam().getTeamName() + ". " + match.getKickoffTime());
+                    fail();
+                }
             }
         }
     }

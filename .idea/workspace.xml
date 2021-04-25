@@ -11,10 +11,14 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/scrape/UnderstatTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/UnderstatTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,22 +103,9 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.Get.canGetOutNewMatchesToPredict">
+  <component name="RunManager" selected="JUnit.SofascoreTest.canGetIdsForLeagueSeason">
     <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PredictPipeline" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.PredictPipeline" />
       <module name="Football" />
       <extension name="coverage">
         <pattern>
@@ -163,36 +154,52 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Update.canUpdatePredictionToIncludeOdds" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SofascoreTest.canGetIdsForLeagueSeason" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="database.*" />
+          <option name="PATTERN" value="scrape.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Update" />
-      <option name="METHOD_NAME" value="canUpdatePredictionToIncludeOdds" />
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
+      <option name="METHOD_NAME" value="canGetIdsForLeagueSeason" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UnderstatTest.matchInPastHasXGAndScore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="scrape.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="scrape" />
+      <option name="MAIN_CLASS_NAME" value="scrape.UnderstatTest" />
+      <option name="METHOD_NAME" value="matchInPastHasXGAndScore" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.PredictPipeline" />
       <item itemvalue="Application.AddNewSeason" />
       <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
-      <item itemvalue="JUnit.Update.canUpdatePredictionToIncludeOdds" />
       <item itemvalue="JUnit.All in Football" />
+      <item itemvalue="JUnit.UnderstatTest.matchInPastHasXGAndScore" />
+      <item itemvalue="JUnit.SofascoreTest.canGetIdsForLeagueSeason" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
-        <item itemvalue="JUnit.All in Football" />
+        <item itemvalue="JUnit.SofascoreTest.canGetIdsForLeagueSeason" />
         <item itemvalue="Application.AddNewSeason" />
-        <item itemvalue="Application.PredictPipeline" />
-        <item itemvalue="JUnit.Update.canUpdatePredictionToIncludeOdds" />
+        <item itemvalue="JUnit.UnderstatTest.matchInPastHasXGAndScore" />
+        <item itemvalue="JUnit.All in Football" />
+        <item itemvalue="JUnit.Get.canGetOutNewMatchesToPredict" />
       </list>
     </recent_temporary>
   </component>
@@ -260,7 +267,9 @@
       <workItem from="1618569199333" duration="5670000" />
       <workItem from="1619255304693" duration="144000" />
       <workItem from="1619255679202" duration="3941000" />
-      <workItem from="1619272504736" duration="1718000" />
+      <workItem from="1619272504736" duration="3846000" />
+      <workItem from="1619359660630" duration="34000" />
+      <workItem from="1619359714030" duration="4910000" />
     </task>
     <servers />
   </component>
@@ -358,13 +367,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/database/Get.java</url>
-          <line>204</line>
-          <option name="timeStamp" value="170" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/database/Get.java</url>
           <line>155</line>
           <option name="timeStamp" value="171" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/scrape/UnderstatTest.java</url>
+          <line>75</line>
+          <option name="timeStamp" value="173" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

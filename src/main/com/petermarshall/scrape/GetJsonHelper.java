@@ -63,6 +63,7 @@ public class GetJsonHelper {
             json = streamToString(inStream); // input stream to string
         } catch (IOException ex) {
             ex.printStackTrace();
+            System.out.println("Continuing despite the above error.");
         }
 //        System.out.println(json);
         return json;
