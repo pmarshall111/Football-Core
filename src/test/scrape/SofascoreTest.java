@@ -3,6 +3,7 @@ package scrape;
 import com.petermarshall.ConvertOdds;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.FirstScorer;
+import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.SofaScore;
 import com.petermarshall.scrape.Understat;
 import com.petermarshall.scrape.classes.League;
@@ -13,6 +14,7 @@ import static com.petermarshall.scrape.classes.LeagueIdsAndData.EPL;
 import com.petermarshall.scrape.classes.Team;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -87,5 +89,29 @@ public class SofascoreTest {
         Assert.assertEquals(65, lfcHome.getAwayPlayerRatings().get("Chris Wood").getMinutesPlayed(), 0.0001);
         //first goalscorer
         Assert.assertEquals(FirstScorer.HOME_FIRST.getSqlIntCode(), lfcHome.getFirstScorer().getSqlIntCode());
+    }
+
+    @Test
+    public void canGetUpdatedKickoffTimes() {
+        Date dateBST = DateHelper.createDateyyyyMMddHHmmss("2021", "05", "23", "16", "00", "00");
+        Date dateGMT = DateHelper.createDateyyyyMMddHHmmss("2021", "05", "23", "15", "00", "00");
+        ArrayList<Date> kickOffTimes = SofaScore.updateKickoffTimes(dateBST, false);
+        Assert.assertTrue(kickOffTimes.size() > 0);
+        Assert.assertTrue(kickOffTimes.contains(dateBST) || kickOffTimes.contains(dateGMT));
+    }
+
+    @Test
+    public void canGetLineupsForAMatchToPredict() {
+        MatchToPredict mtp = new MatchToPredict(lfcHome.getHomeTeam().getTeamName(), lfcHome.getAwayTeam().getTeamName(), "19-20",
+                EPL.getSofaScoreLeagueName(), DateHelper.getSqlDate(lfcHome.getKickoffTime()),-1, LFC_BURNLEY_MATCH_ID);
+        ArrayList<MatchToPredict> matches = new ArrayList<>();
+        matches.add(mtp);
+        SofaScore.addLineupsToGamesAboutToStart(matches);
+        Assert.assertNotNull(mtp.getHomeTeamPlayers());
+        Assert.assertNotNull(mtp.getAwayTeamPlayers());
+        Assert.assertEquals(11, mtp.getHomeTeamPlayers().size());
+        Assert.assertEquals(11, mtp.getAwayTeamPlayers().size());
+        Assert.assertTrue(mtp.getHomeTeamPlayers().contains("Mohamed Salah"));
+        Assert.assertTrue(mtp.getAwayTeamPlayers().contains("Chris Wood"));
     }
 }

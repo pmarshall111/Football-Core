@@ -7,6 +7,8 @@ import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.datasource.DS_Update;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,6 +49,9 @@ public class SofaScore {
     }
     private static String getIncidentsUrl(int gameId) {
         return API_URL + EVENT_ADD_ON + gameId + INCIDENTS_ADD_ON;
+    }
+    private static String getTodaysGamesUrl(String yyyymmdd) { //yyyymmdd must have a - between parts of the date e.g. 2021-08-26
+        return API_URL + "/sport/football/scheduled-events/" + yyyymmdd;
     }
 
 
@@ -338,18 +343,20 @@ public class SofaScore {
      *
      * Needed because the times given at the beginning of the season are often moved around by the TV companies. Possibly not needed every day.
      */
-    public static ArrayList<Date> updateTodaysKickoffTimes() {
+    public static ArrayList<Date> updateKickoffTimes(Date lookForGamesOnThisDate, boolean isProdEnv) { //boolean use
         ArrayList<League> leagues = new ArrayList<>();
         for (LeagueIdsAndData ids : LeagueIdsAndData.values()) {
             leagues.add(new League(ids));
         }
-        String today = DateHelper.turnDateToyyyyMMddString(new Date());
-        String url = "https://www.sofascore.com/football//" + today + "/json";
-        HashMap<String, String> leagueNames = new HashMap<>();
-        HashMap<String, String> sofaScoreNameToDbName = new HashMap<>();
+        String dateStr = DateHelper.turnDateToyyyyMMddString(lookForGamesOnThisDate);
+        String url = getTodaysGamesUrl(dateStr);
+        HashSet<String> targetCountryAndLeagueNames = new HashSet<>();
+        HashMap<String, String> dbNameTranslator = new HashMap<>(); //names stored in sofascore may be different to those stored in the database.
         for (League league: leagues) {
-            leagueNames.put(league.getIdsAndData().getSofaScoreLeagueName(), league.getIdsAndData().getSofaScoreCountryName());
-            sofaScoreNameToDbName.put(league.getIdsAndData().getSofaScoreLeagueName(), league.getIdsAndData().name());
+            String combinedCountryAndLeagueName = combineCountryAndLeagueName(league.getIdsAndData().getSofaScoreCountryName(),
+                                                                                league.getIdsAndData().getSofaScoreLeagueName());
+            targetCountryAndLeagueNames.add(combinedCountryAndLeagueName);
+            dbNameTranslator.put(combinedCountryAndLeagueName, league.getIdsAndData().name());
         }
 
         ArrayList<Date> dates = new ArrayList<>();
@@ -357,40 +364,32 @@ public class SofaScore {
             String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
-            JSONObject football = (JSONObject) json.get("sportItem");
-            JSONArray tournaments = (JSONArray) football.get("tournaments");
-            Iterator tournamentIterator = tournaments.iterator();
+            JSONArray events = (JSONArray) json.get("events");
+            Iterator eventsIterator = events.iterator();
             DS_Main.openProductionConnection();
-            while (tournamentIterator.hasNext()) {
-                JSONObject currTournament = (JSONObject) tournamentIterator.next();
-                JSONObject tournamentInfo = (JSONObject) currTournament.get("tournament");
-                JSONObject countryInfo = (JSONObject) currTournament.get("category");
+            while (eventsIterator.hasNext()) {
+                JSONObject event = (JSONObject) eventsIterator.next();
+                JSONObject tournamentInfo = (JSONObject) event.get("tournament");
+                JSONObject countryInfo = (JSONObject) tournamentInfo.get("category");
                 String tournamentName = tournamentInfo.get("name").toString();
                 String countryName = countryInfo.get("name").toString();
-                //default value needed as we only want to get leagues that are in our db.
-                //default value of "_" will not be in json countryName so we won't look at it.
-                if (leagueNames.getOrDefault(tournamentName, "_").equals(countryName)) {
-                    String leagueName = sofaScoreNameToDbName.get(tournamentName);
+                String combinedCountryAndLeagueName = combineCountryAndLeagueName(countryName, tournamentName);
+                if (targetCountryAndLeagueNames.contains(combinedCountryAndLeagueName)) {
+                    String leagueName = dbNameTranslator.get(combinedCountryAndLeagueName);
                     int leagueId = DS_Get.getLeagueId(leagueName);
-                    JSONArray events = (JSONArray) currTournament.get("events");
-                    Iterator eventsIterator = events.iterator();
-                    while (eventsIterator.hasNext()) {
-                        JSONObject event = (JSONObject) eventsIterator.next();
-                        String homeTeam = ((JSONObject) event.get("homeTeam")).get("name").toString();
-                        String awayTeam = ((JSONObject) event.get("awayTeam")).get("name").toString();
-                        //altering team names to match those stored in db. i.e. Wolverhampton Wanderers might be stored as Wolves.
-                        homeTeam = Team.matchTeamNamesSofaScoreToUnderstat(homeTeam);
-                        awayTeam = Team.matchTeamNamesSofaScoreToUnderstat(awayTeam);
-                        String startDate = event.get("formatedStartDate").toString();
-                        String startTime = event.get("startTime").toString();
-                        String[] startDateParts = startDate.split("\\.");
-                        //db dateString format is yyyy-mm-dd hh:mm:ss
-                        String dateString = startDateParts[2] + "-" + startDateParts[1] + "-" + startDateParts[0] + " " + startTime + ":00";
-                        Date date = DateHelper.createDateFromSQL(dateString);
-                        int seasonYearStart = leagues.get(0).getCurrentSeasonStartYear();
-                        DS_Update.updateKickoffTime(seasonYearStart, homeTeam, awayTeam, dateString, leagueId);
-                        dates.add(date);
+                    String homeTeam = ((JSONObject) event.get("homeTeam")).get("name").toString();
+                    String awayTeam = ((JSONObject) event.get("awayTeam")).get("name").toString();
+                    //altering team names to match the name that's stored in db. i.e. Wolverhampton Wanderers might be stored as Wolves.
+                    homeTeam = Team.matchTeamNamesSofaScoreToUnderstat(homeTeam);
+                    awayTeam = Team.matchTeamNamesSofaScoreToUnderstat(awayTeam);
+                    long timeStamp = (long) event.get("startTimestamp");
+                    Date date = DateHelper.getDateFromSofascoreTimestamp(timeStamp);
+                    String sqlString = DateHelper.getSqlDate(date);
+                    int seasonYearStart = leagues.get(0).getCurrentSeasonStartYear();
+                    if (isProdEnv) {
+                        DS_Update.updateKickoffTime(seasonYearStart, homeTeam, awayTeam, sqlString, leagueId);
                     }
+                    dates.add(date);
                 }
             }
         } catch (ParseException e) {
@@ -402,6 +401,10 @@ public class SofaScore {
         return dates;
     }
 
+    private static String combineCountryAndLeagueName(String countryName, String leagueName) {
+        return countryName + leagueName;
+    }
+
     public static void addLineupsToGamesAboutToStart(ArrayList<MatchToPredict> matches) {
         for (MatchToPredict match: matches) {
             String url = getPlayerRatingsUrl(match.getSofascore_id());
@@ -409,36 +412,39 @@ public class SofaScore {
                 String jsonString = GetJsonHelper.jsonGetRequest(url);
                 JSONParser parser = new JSONParser();
                 JSONObject json = (JSONObject) parser.parse(jsonString);
-                JSONObject homeTeam = (JSONObject) json.get("homeTeam");
-                JSONObject awayTeam = (JSONObject) json.get("awayTeam");
-                boolean homeConfirmedLineups = Boolean.parseBoolean(homeTeam.get("confirmedLineups").toString());
-                boolean awayConfirmedLineups = Boolean.parseBoolean(awayTeam.get("confirmedLineups").toString());
-                if (!homeConfirmedLineups || !awayConfirmedLineups) {
-                    //nothing to look at. go on to next game
-                    //TODO: add logging here
+                boolean isConfirmed = Boolean.parseBoolean(json.get("confirmed").toString());
+                if (!isConfirmed) {
+                    Logger logger = LogManager.getLogger(SofaScore.class);
+                    logger.error("Match to predict (" + match.getHomeTeamName() + " vs " + match.getAwayTeamName() + ") didn't have confirmed lineups when called.");
                     continue;
                 }
 
+                JSONObject homeTeam = (JSONObject) json.get("home");
+                JSONObject awayTeam = (JSONObject) json.get("away");
                 JSONObject[] teams = new JSONObject[]{homeTeam, awayTeam};
                 for (int i = 0; i< teams.length; i++) {
-                    JSONArray lineups = (JSONArray) teams[i].get("lineupsSorted");
-                    Iterator lineupsIterator = lineups.iterator();
-                    ArrayList<String> lineup = new ArrayList<>();
-                    while (lineupsIterator.hasNext() && lineup.size() < 11) {
-                        JSONObject currPlayer = (JSONObject) lineupsIterator.next();
+                    JSONArray lineups = (JSONArray) teams[i].get("players");
+                    Iterator players = lineups.iterator();
+                    ArrayList<String> startingLineup = new ArrayList<>();
+                    while (players.hasNext()) {
+                        JSONObject currPlayer = (JSONObject) players.next();
                         JSONObject playerInfo = (JSONObject) currPlayer.get("player");
                         String playerName = playerInfo.get("name").toString();
-                        lineup.add(playerName);
+                        boolean startsOnTheBench = Boolean.parseBoolean(currPlayer.get("substitute").toString());
+                        if (!startsOnTheBench) {
+                            startingLineup.add(playerName);
+                        }
                     }
                     if (i == 0) {
-                        match.setHomeTeamPlayers(lineup);
+                        match.setHomeTeamPlayers(startingLineup);
                     }
                     else {
-                        match.setAwayTeamPlayers(lineup);
+                        match.setAwayTeamPlayers(startingLineup);
                     }
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                Logger logger = LogManager.getLogger(SofaScore.class);
+                logger.error(e);
             }
         }
     }

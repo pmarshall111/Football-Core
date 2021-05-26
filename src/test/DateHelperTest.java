@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class DateHelperTest {
@@ -40,5 +41,13 @@ public class DateHelperTest {
         } catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    public void canConvertDateToDbFormat() {
+        //db dateString format is yyyy-mm-dd hh:mm:ss
+        Date createdDate = DateHelper.createDateyyyyMMddHHmmss("2020", "08", "26", "12", "34", "56");
+        String sqlString = DateHelper.getSqlDate(createdDate);
+        assertEquals("2020-08-26 12:34:56", sqlString);
     }
 }

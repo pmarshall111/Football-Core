@@ -34,7 +34,7 @@ public class PredictTodaysGames {
 
 
         //db dateString format is yyyy-mm-dd hh:mm:ss
-        ArrayList<Date> kickOffTimes = SofaScore.updateTodaysKickoffTimes();
+        ArrayList<Date> kickOffTimes = SofaScore.updateKickoffTimes(new Date(), true);
 
         ArrayList<Date> scrapingTimes = getTimesToScrape(kickOffTimes, minsAfterLineupsAnnouned, minsBeforeKickoff);
         Timer timer = new Timer();
