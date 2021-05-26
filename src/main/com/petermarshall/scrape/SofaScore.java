@@ -61,7 +61,7 @@ public class SofaScore {
      */
     public static Set<Integer> getGamesOfLeaguesSeason(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate, Season season ) {
         Set<Integer> gameIds = new HashSet<>();
-        //need to loop through the events until we get a 404 err
+        //need to loop through the events until we get a 404 err as Sofascore added pagination to their API
         int pageNumb = 0;
         boolean hasMorePages = true;
         while (hasMorePages) {

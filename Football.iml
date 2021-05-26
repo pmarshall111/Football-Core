@@ -364,5 +364,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.39.v20210325" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.39.v20210325" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.39.v20210325" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.30" level="project" />
   </component>
 </module>

@@ -11,12 +11,11 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/DateHelperTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/DateHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,16 +100,14 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SofascoreTest">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.SofascoreTest.canAddInfoToGame">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -197,9 +194,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
         <item itemvalue="JUnit.SofascoreTest" />
         <item itemvalue="JUnit.SofascoreTest.canAddFirstGoalScorer" />
-        <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
         <item itemvalue="JUnit.SofascoreTest.addPlayerRatingsToGame" />
         <item itemvalue="JUnit.DateHelperTest.canFindMinutesBetweenDates" />
       </list>
@@ -271,7 +268,10 @@
       <workItem from="1619255679202" duration="3941000" />
       <workItem from="1619272504736" duration="3846000" />
       <workItem from="1619359660630" duration="34000" />
-      <workItem from="1619359714030" duration="13732000" />
+      <workItem from="1619359714030" duration="14180000" />
+      <workItem from="1619783479643" duration="201000" />
+      <workItem from="1620729564784" duration="876000" />
+      <workItem from="1622028123396" duration="1723000" />
     </task>
     <servers />
   </component>
