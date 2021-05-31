@@ -5,6 +5,8 @@ import dbTables.*;
 import com.petermarshall.database.BetLog;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -148,7 +150,10 @@ public class DS_Insert {
 
           });
           statement.executeBatch();
+
         } catch (SQLException e) {
+            Logger logger = LogManager.getLogger(DS_Insert.class);
+            logger.error("Error inserting into database: e.getMessage()");
             e.printStackTrace();
         }
     }

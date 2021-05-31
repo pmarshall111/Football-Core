@@ -80,6 +80,12 @@ public class SofaScore {
 
                 for (Object aJsonObject : events) {
                     JSONObject game = (JSONObject) aJsonObject;
+                    JSONObject tournament = (JSONObject) game.get("tournament");
+                    String tournamentName = (String) tournament.get("name");
+                    if (tournamentName.matches("relegation")) {
+                        continue; //not interested in matches that are for relegation/promotion playoffs as we have no data about the team from the lower league.
+                    }
+
                     JSONObject homeTeam = (JSONObject) game.get("homeTeam");
                     String homeTeamName = (String) homeTeam.get("name");
                     JSONObject awayTeam = (JSONObject) game.get("awayTeam");
@@ -158,7 +164,9 @@ public class SofaScore {
             String awayTeamName = (String) awayTeam.get("name");
             Team hTeam = season.getTeam(homeTeamName);
             if (hTeam == null) {
-                throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.matchTeamNamesSofaScoreToUnderstat(homeTeamName));
+                Logger logger = LogManager.getLogger(SofaScore.class);
+                logger.error("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.matchTeamNamesSofaScoreToUnderstat(homeTeamName) + ". The sofascore ID is " + gameId);
+                throw new RuntimeException("could not find team with string " + homeTeamName + ".\n the altered name for this team is " + Team.matchTeamNamesSofaScoreToUnderstat(homeTeamName) + ". The sofascore ID is " + gameId);
             }
             Match match = hTeam.getMatchFromAwayTeamName(awayTeamName);
             if (match == null) {
@@ -168,7 +176,11 @@ public class SofaScore {
                     //with the same score, but one is on the wrong date.
                     return;
                 }
-                else throw new RuntimeException("could not find match with date " + kickOff + " from team " + homeTeamName + " against " + awayTeamName);
+                else {
+                    Logger logger = LogManager.getLogger(SofaScore.class);
+                    logger.error("could not find match with date " + kickOff + " from team " + homeTeamName + " against " + awayTeamName + ". Sofascore id " + gameId);
+                    throw new RuntimeException("could not find match with date " + kickOff + " from team " + homeTeamName + " against " + awayTeamName + ". Sofascore id " + gameId);
+                }
             }
             match.setSofaScoreGameId(gameId);
             match.setHomeDrawAwayOdds(getOdds(gameId));

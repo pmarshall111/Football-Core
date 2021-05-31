@@ -7,7 +7,7 @@ public class PlayerRating {
     private final String name;
 
     public PlayerRating(int minutesPlayed, double rating, String name) {
-        this.minutesPlayed = minutesPlayed;
+        this.minutesPlayed = Math.min(90, minutesPlayed); //forcing a max limit of 90mins played
         this.rating = rating;
         this.name = name;
     }
@@ -16,7 +16,7 @@ public class PlayerRating {
         return minutesPlayed;
     }
     public void setMinutesPlayed(int minutesPlayed) {
-        this.minutesPlayed = minutesPlayed;
+        this.minutesPlayed = Math.min(90, minutesPlayed);
     }
 
     public double getRating() {

@@ -152,6 +152,15 @@ public class Team {
                 return "Paderborn";
             case "1. FC Union Berlin":
                 return "Union Berlin";
+            case "FC Augsburg":
+                return "Augsburg";
+            case "FC Ingolstadt 04":
+                return "Ingolstadt";
+            case "VfL Wolfsburg":
+                return "Wolfsburg";
+            case "SC Freiburg":
+                return "Freiburg";
+
 
             //SERIE A
             case "Milan":
