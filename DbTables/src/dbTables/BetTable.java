@@ -3,12 +3,12 @@ package dbTables;
 public class BetTable {
     private BetTable() {}
 
-    private static final String TABLE_NAME = "bet";
-    private static final String COL_RESULT_BET_ON = "resultBetOn";
-    private static final String COL_ODDS = "odds";
-    private static final String COL_STAKE = "stake";
-    private static final String COL_MATCH_ID = "match_id";
-    private static final String COL_BET_PLACED_WITH = "betPlacedWith";
+    public static final String TABLE_NAME = "bet";
+    public static final String COL_RESULT_BET_ON = "resultBetOn";
+    public static final String COL_ODDS = "odds";
+    public static final String COL_STAKE = "stake";
+    public static final String COL_MATCH_ID = "match_id";
+    public static final String COL_BET_PLACED_WITH = "betPlacedWith";
 
     public static String getTableName() {
         return TABLE_NAME;

@@ -3,17 +3,17 @@ package dbTables;
 public class PredictionTable {
     private PredictionTable() {}
 
-    private static final String TABLE_NAME = "prediction";
-    private static final String COL_DATE = "date";
-    private static final String COL_WITH_LINEUPS = "withLineups";
-    private static final String COL_HOME_PRED = "homePred";
-    private static final String COL_DRAW_PRED = "drawPred";
-    private static final String COL_AWAY_PRED = "awayPred";
-    private static final String COL_H_ODDS = "homeOdds";
-    private static final String COL_D_ODDS = "drawOdds";
-    private static final String COL_A_ODDS = "awayOdds";
-    private static final String COL_BOOKIE_NAME = "bookie";
-    private static final String COL_MATCH_ID = "match_id";
+    public static final String TABLE_NAME = "prediction";
+    public static final String COL_DATE = "date";
+    public static final String COL_WITH_LINEUPS = "withLineups";
+    public static final String COL_HOME_PRED = "homePred";
+    public static final String COL_DRAW_PRED = "drawPred";
+    public static final String COL_AWAY_PRED = "awayPred";
+    public static final String COL_H_ODDS = "homeOdds";
+    public static final String COL_D_ODDS = "drawOdds";
+    public static final String COL_A_ODDS = "awayOdds";
+    public static final String COL_BOOKIE_NAME = "bookie";
+    public static final String COL_MATCH_ID = "match_id";
 
     public static String getTableName() {
         return TABLE_NAME;

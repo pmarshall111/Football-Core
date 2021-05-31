@@ -1,6 +1,8 @@
 package com.petermarshall.scrape;
 
 import com.petermarshall.mail.SendEmail;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,10 +64,10 @@ public class GetJsonHelper {
             InputStream inStream = connection.getInputStream();
             json = streamToString(inStream); // input stream to string
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.out.println("Continuing despite the above error.");
+            Logger logger = LogManager.getLogger(GetJsonHelper.class);
+            logger.info("JSON get request error: " + ex.getMessage());
+            logger.info("Above error is likely due to going past the last page of the event list.");
         }
-//        System.out.println(json);
         return json;
     }
 

@@ -10,15 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Bet365-place-bet/src/Bet365-place-bet.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/usefulSqlCommands.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DbTables/DbTables.iml" beforeDir="false" afterPath="$PROJECT_DIR$/DbTables/DbTables.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Football.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Football.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictTodaysGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictTodaysGames.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/DateHelperTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/DateHelperTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scrape/SofascoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +74,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Bet365-place-bet/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../springBootFootball" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4275862" />
@@ -111,7 +111,20 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SofascoreTest.canGetLineupsForAMatchToPredict">
+  <component name="RunManager" selected="Application.AddNewSeason">
+    <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -129,21 +142,6 @@
       <option name="MAIN_CLASS_NAME" value="DateHelperTest" />
       <option name="METHOD_NAME" value="canConvertDateToDbFormat" />
       <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SofascoreTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="scrape.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -198,18 +196,18 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
-      <item itemvalue="JUnit.SofascoreTest" />
       <item itemvalue="JUnit.DateHelperTest.canConvertDateToDbFormat" />
       <item itemvalue="JUnit.SofascoreTest.canGetUpdatedKickoffTimes" />
       <item itemvalue="JUnit.SofascoreTest.canGetLineupsForAMatchToPredict" />
+      <item itemvalue="Application.AddNewSeason" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.AddNewSeason" />
         <item itemvalue="JUnit.SofascoreTest.canGetLineupsForAMatchToPredict" />
         <item itemvalue="JUnit.SofascoreTest.canGetUpdatedKickoffTimes" />
         <item itemvalue="JUnit.DateHelperTest.canConvertDateToDbFormat" />
         <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
-        <item itemvalue="JUnit.SofascoreTest" />
       </list>
     </recent_temporary>
   </component>
@@ -282,7 +280,11 @@
       <workItem from="1619359714030" duration="14180000" />
       <workItem from="1619783479643" duration="201000" />
       <workItem from="1620729564784" duration="876000" />
-      <workItem from="1622028123396" duration="8956000" />
+      <workItem from="1622028123396" duration="9781000" />
+      <workItem from="1622112967493" duration="1797000" />
+      <workItem from="1622216407475" duration="297000" />
+      <workItem from="1622406757190" duration="601000" />
+      <workItem from="1622464558618" duration="5696000" />
     </task>
     <servers />
   </component>
@@ -387,11 +389,6 @@
           <url>file://$PROJECT_DIR$/src/test/scrape/UnderstatTest.java</url>
           <line>75</line>
           <option name="timeStamp" value="173" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/scrape/SofascoreTest.java</url>
-          <line>106</line>
-          <option name="timeStamp" value="179" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

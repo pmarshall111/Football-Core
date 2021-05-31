@@ -3,22 +3,22 @@ package dbTables;
 public class MatchTable {
     private MatchTable() {}
 
-    private static final String TABLE_NAME = "game";
-    private static final String COL_HOME_SCORE = "homeScore";
-    private static final String COL_AWAY_SCORE = "awayScore";
-    private static final String COL_HOME_XG = "homeXG";
-    private static final String COL_AWAY_XG = "awayXG";
-    private static final String COL_DATE = "date";
-    private static final String COL_HOME_WIN_ODDS = "homeOdds";
-    private static final String COL_DRAW_ODDS = "drawOdds";
-    private static final String COL_AWAY_WIN_ODDS = "awayOdds";
-    private static final String COL_FIRST_SCORER = "firstScorer";
-    private static final String COL_IS_POSTPONED = "isPostponed";
-    private static final String COL_HOMETEAM_ID = "homeTeam_id";
-    private static final String COL_AWAYTEAM_ID = "awayTeam_id";
-    private static final String COL_SEASON_YEAR_START = "season_year_start";
-    private static final String COL_PREDICTED_LIVE = "predictedLive";
-    private static final String COL_SOFASCORE_ID = "sofascore_id";
+    public static final String TABLE_NAME = "game";
+    public static final String COL_HOME_SCORE = "homeScore";
+    public static final String COL_AWAY_SCORE = "awayScore";
+    public static final String COL_HOME_XG = "homeXG";
+    public static final String COL_AWAY_XG = "awayXG";
+    public static final String COL_DATE = "date";
+    public static final String COL_HOME_WIN_ODDS = "homeOdds";
+    public static final String COL_DRAW_ODDS = "drawOdds";
+    public static final String COL_AWAY_WIN_ODDS = "awayOdds";
+    public static final String COL_FIRST_SCORER = "firstScorer";
+    public static final String COL_IS_POSTPONED = "isPostponed";
+    public static final String COL_HOMETEAM_ID = "homeTeam_id";
+    public static final String COL_AWAYTEAM_ID = "awayTeam_id";
+    public static final String COL_SEASON_YEAR_START = "season_year_start";
+    public static final String COL_PREDICTED_LIVE = "predictedLive";
+    public static final String COL_SOFASCORE_ID = "sofascore_id";
 
     public static String getColSofascoreId() {
         return COL_SOFASCORE_ID;
