@@ -85,8 +85,6 @@ public class Integrity {
     //TEST WILL FAIL IF NO DATA IN DB
     @Test
     public void matchesWithNoRatingsMoreThan3DaysAgo() {
-        int knownCases = 1;
-        //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory with no player ratings given
         try (Statement s = DS_Main.connection.createStatement()) {
             //need to include the date in query as the database will also have future games that have not yet been played.
             String threeDaysAgo = DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3));
@@ -96,7 +94,7 @@ public class Integrity {
                                                 " AND " + MatchTable.getColDate() + " < '" + threeDaysAgo + "'");
             while (rs.next()) {
                 int count = rs.getInt(1);
-                Assert.assertEquals(knownCases, count);
+                Assert.assertEquals(0, count);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -128,8 +126,9 @@ public class Integrity {
 
     //Problem with this test is that some players have the same name - Juanfran, Raul Garcia, Naldo, Danilo, Éder, Adama Traoré, Rafael. These have been checked
     //to make sure there are multiple players in the 6 leagues with the same name.
+    //possible to play for 3 clubs if you get loaned out for the first half of the season, play some games in January and are then loaned out for the end of the season
     @Test
-    public void playersOnlyPlayFor2ClubsInASeason() {
+    public void playersOnlyPlayFor3ClubsInASeason() {
         try {
             Statement s = DS_Main.connection.createStatement();
             String CLUBS_IN_SEASON = "clubsPlayedForInSeason";
@@ -149,36 +148,11 @@ public class Integrity {
                                     " ORDER BY " + PlayerRatingTable.getColPlayerName() +
                                     ") AS PLAYERS_FOR_EACH_TEAM" +
                                 " GROUP BY " + PlayerRatingTable.getColPlayerName() + ", " + MatchTable.getColSeasonYearStart() +
-                                " HAVING " + CLUBS_IN_SEASON + " > 2");
+                                " HAVING " + CLUBS_IN_SEASON + " > 3");
             while (rs.next()) {
                 String playerName = rs.getString(1);
                 int count = rs.getInt(2);
                 Assert.assertEquals("Failed for: " + playerName, 0, count);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            fail();
-        }
-    }
-
-    @Test
-    public void leaguesHaveSameNumberOfGamesForEachSeason() {
-        try (Statement s = DS_Main.connection.createStatement()) {
-            ResultSet rs = s.executeQuery("SELECT " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", COUNT(*)" +
-                    " FROM " + MatchTable.getTableName() +
-                    " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
-                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
-                    " WHERE " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " != '" + LeagueIdsAndData.LIGUE_1.name() + "'" +
-                    " AND " + MatchTable.getColSeasonYearStart() + " != 19" +
-                    " GROUP BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart());
-            HashMap<String, Integer> leaguesGames = new HashMap<>();
-            while (rs.next()) {
-                String league = rs.getString(1);
-                int seasonStartYear = rs.getInt(2);
-                int numbMatches = rs.getInt(3);
-                leaguesGames.putIfAbsent(league, numbMatches);
-                Assert.assertEquals(leaguesGames.get(league).intValue(), numbMatches);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -205,10 +179,10 @@ public class Integrity {
     }
 
     //TEST WILL FAIL IF NO DATA IN DB.
+    //delete any matches that are abandoned and awarded 3-0 victories without playing. this data doesn't help us to predict results.
+    //or add any data that the scraper has missed (sofascore may not have the data)
     @Test
     public void noGameMoreThan3DaysAgoWithoutStats() {
-        int knownCases = 1;
-        //bastia vs lyon 2017 where game was abandoned due to crowd trouble and lyon were awarded 3-0 victory. no player ratings for this also
         try (Statement s = DS_Main.connection.createStatement()) {
 
             System.out.println("SELECT COUNT(*) FROM " + MatchTable.getTableName() +
@@ -235,7 +209,7 @@ public class Integrity {
 
             while (rs.next()) {
                 int count = rs.getInt(1);
-                Assert.assertEquals(knownCases, count);
+                Assert.assertEquals(0, count);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

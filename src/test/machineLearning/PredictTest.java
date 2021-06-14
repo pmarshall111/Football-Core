@@ -42,7 +42,11 @@ public class PredictTest {
                     "EPL", DateHelper.getSqlDate(new Date()), -1, -1);
             ArrayList<Double> featureList = DoubleStream.of(matchFeatures).boxed().collect(Collectors.toCollection(ArrayList::new));
             featureList.add(0, 3d); //adding the result at the start
-            ithMatch.setFeatures(featureList, withLineups);
+            if (withLineups) {
+                ithMatch.setFeatures(featureList);
+            } else {
+                ithMatch.setFeaturesNoLineups(featureList);
+            }
             allMtps.add(ithMatch);
         }
         //add probabilities & test

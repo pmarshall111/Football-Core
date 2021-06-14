@@ -118,12 +118,12 @@ public class MatchToPredict {
         return dArr;
     }
 
-    public void setFeatures(ArrayList<Double> features, boolean withLineupFeatures) {
-        if (withLineupFeatures) {
+    public void setFeatures(ArrayList<Double> features) {
             this.features = features;
-        } else {
-            this.featuresNoLineups = features;
-        }
+    }
+
+    public void setFeaturesNoLineups(ArrayList<Double> features) {
+        this.featuresNoLineups = features;
     }
 
     public int getDatabase_id() {

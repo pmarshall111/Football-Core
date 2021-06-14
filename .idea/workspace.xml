@@ -13,12 +13,22 @@
       <change afterPath="$PROJECT_DIR$/../Bet365-place-bet/src/Bet365-place-bet.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalcPastStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CalcPastStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CreateFeatures.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/CreateFeatures.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/WriteTrainingData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/MatchToPredict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/machineLearning/createData/classes/TrainingMatch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/GetJsonHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/PlayerRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/PlayerRating.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Integrity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Integrity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/PredictTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/PredictTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/WriteTrainingDataTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/WriteTrainingDataTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,13 +121,13 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.AddNewSeason">
-    <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.petermarshall.machineLearning.createData.Main" />
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.petermarshall.taskScheduling.*" />
+          <option name="PATTERN" value="com.petermarshall.machineLearning.createData.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -125,89 +135,96 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Integrity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Football" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="database.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateHelperTest.canConvertDateToDbFormat" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Integrity.leaguesHaveSameNumberOfGamesForEachSeason" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="DateHelperTest" />
-      <option name="METHOD_NAME" value="canConvertDateToDbFormat" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="database.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
+      <option name="METHOD_NAME" value="leaguesHaveSameNumberOfGamesForEachSeason" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SofascoreTest.canAddInfoToGame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Integrity.matchesWithNoRatingsMoreThan3DaysAgo" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="scrape.*" />
+          <option name="PATTERN" value="database.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
-      <option name="METHOD_NAME" value="canAddInfoToGame" />
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
+      <option name="METHOD_NAME" value="matchesWithNoRatingsMoreThan3DaysAgo" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SofascoreTest.canGetLineupsForAMatchToPredict" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Integrity.playersOnlyPlayFor3ClubsInASeason" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="scrape.*" />
+          <option name="PATTERN" value="database.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
-      <option name="METHOD_NAME" value="canGetLineupsForAMatchToPredict" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SofascoreTest.canGetUpdatedKickoffTimes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Football" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="scrape.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="scrape" />
-      <option name="MAIN_CLASS_NAME" value="scrape.SofascoreTest" />
-      <option name="METHOD_NAME" value="canGetUpdatedKickoffTimes" />
+      <option name="PACKAGE_NAME" value="database" />
+      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
+      <option name="METHOD_NAME" value="playersOnlyPlayFor3ClubsInASeason" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
-      <item itemvalue="JUnit.DateHelperTest.canConvertDateToDbFormat" />
-      <item itemvalue="JUnit.SofascoreTest.canGetUpdatedKickoffTimes" />
-      <item itemvalue="JUnit.SofascoreTest.canGetLineupsForAMatchToPredict" />
-      <item itemvalue="Application.AddNewSeason" />
+      <item itemvalue="Application.Main" />
+      <item itemvalue="JUnit.Integrity" />
+      <item itemvalue="JUnit.Integrity.playersOnlyPlayFor3ClubsInASeason" />
+      <item itemvalue="JUnit.Integrity.leaguesHaveSameNumberOfGamesForEachSeason" />
+      <item itemvalue="JUnit.Integrity.matchesWithNoRatingsMoreThan3DaysAgo" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.AddNewSeason" />
-        <item itemvalue="JUnit.SofascoreTest.canGetLineupsForAMatchToPredict" />
-        <item itemvalue="JUnit.SofascoreTest.canGetUpdatedKickoffTimes" />
-        <item itemvalue="JUnit.DateHelperTest.canConvertDateToDbFormat" />
-        <item itemvalue="JUnit.SofascoreTest.canAddInfoToGame" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.Integrity" />
+        <item itemvalue="JUnit.Integrity.matchesWithNoRatingsMoreThan3DaysAgo" />
+        <item itemvalue="JUnit.Integrity.leaguesHaveSameNumberOfGamesForEachSeason" />
+        <item itemvalue="JUnit.Integrity.playersOnlyPlayFor3ClubsInASeason" />
       </list>
     </recent_temporary>
   </component>
@@ -284,7 +301,14 @@
       <workItem from="1622112967493" duration="1797000" />
       <workItem from="1622216407475" duration="297000" />
       <workItem from="1622406757190" duration="601000" />
-      <workItem from="1622464558618" duration="13108000" />
+      <workItem from="1622464558618" duration="13492000" />
+      <workItem from="1622561025201" duration="2668000" />
+      <workItem from="1622623797579" duration="5385000" />
+      <workItem from="1622708201120" duration="1363000" />
+      <workItem from="1622787748937" duration="9073000" />
+      <workItem from="1622887186241" duration="7001000" />
+      <workItem from="1623588568482" duration="13977000" />
+      <workItem from="1623669863192" duration="5099000" />
     </task>
     <servers />
   </component>
@@ -392,12 +416,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java</url>
-          <line>165</line>
+          <line>168</line>
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java</url>
-          <line>176</line>
+          <line>179</line>
           <option name="timeStamp" value="176" />
         </line-breakpoint>
       </breakpoints>

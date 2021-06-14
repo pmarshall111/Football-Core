@@ -82,7 +82,7 @@ public class SofaScore {
                     JSONObject game = (JSONObject) aJsonObject;
                     JSONObject tournament = (JSONObject) game.get("tournament");
                     String tournamentName = (String) tournament.get("name");
-                    if (tournamentName.matches("relegation")) {
+                    if (tournamentName.toLowerCase().contains("relegation")) {
                         continue; //not interested in matches that are for relegation/promotion playoffs as we have no data about the team from the lower league.
                     }
 
@@ -268,7 +268,10 @@ public class SofaScore {
             }
         } catch(ParseException e) {
             e.printStackTrace();
-            System.out.println("Continuing.");
+            System.out.println("Parse exception for " + url);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            System.out.println("Null pointer exception for " + url);
         }
     }
 
@@ -327,9 +330,15 @@ public class SofaScore {
                 boolean isGoalFromVar = false;
                 String incidentClass = (String) incident.get("incidentClass");
                 if (typeOfIncident.equals("varDecision") && incidentClass.equals("goalAwarded")) {
-                    boolean isConfirmed = (boolean) incident.get("confirmed");
-                    if (isConfirmed) {
-                        isGoalFromVar = true;
+                    try {
+                        boolean isConfirmed = (boolean) incident.get("confirmed");
+                        if (isConfirmed) {
+                            isGoalFromVar = true;
+                        }
+                    } catch (NullPointerException e) {
+                        System.out.println("Could not get confirmed field on VAR decision for URL: " + url);
+                        Logger logger = LogManager.getLogger(SofaScore.class);
+                        logger.warn("Could not get confirmed field on VAR decision for URL: " + url);
                     }
                 }
                 if (isGoal || isGoalFromVar) {
@@ -344,6 +353,7 @@ public class SofaScore {
             match.setFirstScorer(firstScorer);
 
         } catch (Exception e) {
+            System.out.println("Exception for URL: " + url);
             e.printStackTrace();
         }
     }

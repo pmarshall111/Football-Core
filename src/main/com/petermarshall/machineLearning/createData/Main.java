@@ -22,6 +22,14 @@ public class Main {
         WriteTrainingData.writeAllDataOutToOneCsvFile(matchesSubset, filename);
         DS_Main.closeConnection();
     }
+
+    public static void createOneBigFileWithGameIdAtEndOfRow(Date removeBefore, Date removeAfter, String filename) {
+        DS_Main.openProductionConnection();
+        ArrayList<TrainingMatch> trainingMatches = CalcPastStats.getAllTrainingMatches();
+        ArrayList<TrainingMatch> matchesSubset = removeTrainingMatches(removeBefore, removeAfter, trainingMatches);
+        WriteTrainingData.writeAllDataOutToOneCsvFileWithGameIdAtEndOfRow(matchesSubset, filename);
+        DS_Main.closeConnection();
+    }
     
     public static ArrayList<TrainingMatch> removeTrainingMatches(Date removeBefore, Date removeAfter, ArrayList<TrainingMatch> origList) {
         ArrayList<TrainingMatch> matchesSubset = new ArrayList<>();
@@ -36,9 +44,26 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Date removeBefore = null;
-        Date removeAfter = DateHelper.createDateyyyyMMdd("2019", "07", "05");
-        createOneBigFile(null, null, "allData.csv");
+//        Date removeBefore = null;
+//        Date removeAfter = DateHelper.createDateyyyyMMdd("2019", "07", "05");
+//        createOneBigFile(null, null, "allData.csv");
+
+//        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+//        Date removeAfter = null;
+//        createOneBigFile(null, removeBefore, "toTrainOn_extended.csv");
+//        createOneBigFile(removeBefore, null, "lastSeason_extended.csv");
+
+//        //just getting the results for the 2019-20 season.
+//        Date removeBefore = DateHelper.createDateyyyyMMdd("2019", "08", "01");
+//        Date removeAfter = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+//        createOneBigFileWithGameIdAtEndOfRow(null, removeBefore, "train_up_to_2019.csv");
+//        createOneBigFileWithGameIdAtEndOfRow(removeBefore, removeAfter, "19-20_season.csv");
+
+        //just getting the results for the 2020-21 season.
+        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
+        createOneBigFileWithGameIdAtEndOfRow(null, removeBefore, "train_up_to_2020.csv");
+        createOneBigFileWithGameIdAtEndOfRow(removeBefore, removeAfter, "20-21_season.csv");
     }
 
 }

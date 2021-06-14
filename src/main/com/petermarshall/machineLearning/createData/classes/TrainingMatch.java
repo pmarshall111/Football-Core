@@ -17,12 +17,14 @@ public class TrainingMatch {
     private int awayScore;
     private Date kickoffTime;
     private int seasonYearStart;
+    private int gameId;
 
     //general usage
     public TrainingMatch(TrainingTeam homeTeam, TrainingTeam awayTeam, double homeOdds, double drawOdds, double awayOdds,
-                         int homeScore, int awayScore, String sqlKickoffStr, int seasonYearStart) {
+                         int homeScore, int awayScore, String sqlKickoffStr, int seasonYearStart, int gameId) {
         this.homeTeamName = homeTeam.getTeamName();
         this.awayTeamName = awayTeam.getTeamName();
+        this.gameId = gameId;
         setMiscStats(homeOdds, drawOdds, awayOdds, homeScore, awayScore, sqlKickoffStr, seasonYearStart);
     }
 
@@ -98,4 +100,7 @@ public class TrainingMatch {
         this.featuresNoLineups = featuresNoLineups;
     }
 
+    public int getGameId() {
+        return gameId;
+    }
 }

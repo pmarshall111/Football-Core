@@ -95,13 +95,15 @@ public class Team {
             case "Cardiff City":
                 return "Cardiff";
             case "Swansea City":
-                    return "Swansea";
+                return "Swansea";
             case "Stoke City":
                 return "Stoke";
             case "Hull City":
                 return "Hull";
             case "Norwich City":
                 return "Norwich";
+            case "Leeds United":
+                return "Leeds";
 
             //LA LIGA
             case "Atlético Madrid":
@@ -122,6 +124,10 @@ public class Team {
                 return "Sporting Gijon";
             case "RCD Mallorca":
                 return "Mallorca";
+            case "Cádiz":
+                return "Cadiz";
+            case "Elche CF":
+                return "Elche";
 
             //BUNDESLIGA
             case "Borussia M'gladbach":
@@ -201,6 +207,8 @@ public class Team {
                 return "Nantes";
             case "Stade Brestois 29":
                 return "Brest";
+            case "RC Lens":
+                return "Lens";
 
             //RFPL (Russia)
             case "FK Krasnodar":
@@ -227,6 +235,10 @@ public class Team {
                 return "PFC Sochi";
             case "Tambov":
                 return "FC Tambov";
+            case "FK Khimki":
+                return "Khimki";
+            case "Rotor Volgograd":
+                return "FC Rotor Volgograd";
 
             default:
                 return teamName;

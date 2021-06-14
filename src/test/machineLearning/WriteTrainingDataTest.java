@@ -21,11 +21,11 @@ public class WriteTrainingDataTest {
 
         TrainingTeam t1 = new TrainingTeam("team1"), t2 = new TrainingTeam("team2");
         TrainingMatch beforeTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeAfter, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeAfter, 1)), 20, 1);
         TrainingMatch sameTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 0)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 0)), 20, 1);
         TrainingMatch afterTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 1)), 20, 1);
 
         ArrayList<TrainingMatch> tms = new ArrayList<>(Arrays.asList(beforeTime, sameTime, afterTime));
         ArrayList<TrainingMatch> filteredTms = Main.removeTrainingMatches(null, removeAfter, tms);
@@ -42,11 +42,11 @@ public class WriteTrainingDataTest {
         TrainingTeam t1 = new TrainingTeam("team1"), t2 = new TrainingTeam("team2");
 
         TrainingMatch beforeTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeBefore, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeBefore, 1)), 20, 1);
         TrainingMatch sameTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 0)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 0)), 20, 1);
         TrainingMatch afterTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 1)), 20, 1);
 
         ArrayList<TrainingMatch> tms = new ArrayList<>(Arrays.asList(beforeTime, sameTime, afterTime));
         ArrayList<TrainingMatch> filteredTms = Main.removeTrainingMatches(removeBefore, null, tms);
@@ -64,15 +64,15 @@ public class WriteTrainingDataTest {
         TrainingTeam t1 = new TrainingTeam("team1"), t2 = new TrainingTeam("team2");
 
         TrainingMatch beforeTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeBefore, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(removeBefore, 1)), 20, 1);
         TrainingMatch sameAsBeforeTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 0)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 0)), 20, 1);
         TrainingMatch inRange = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeBefore, 1)), 20, 1);
         TrainingMatch sameAsAfterTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 0)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 0)), 20, 1);
         TrainingMatch afterTime = new TrainingMatch(t1, t2, 1.1,2.2,3.3,3,2,
-                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 1)), 20);
+                DateHelper.getSqlDate(DateHelper.addXMinsToDate(removeAfter, 1)), 20, 1);
 
         ArrayList<TrainingMatch> tms = new ArrayList<>(Arrays.asList(beforeTime, sameAsBeforeTime, inRange, sameAsAfterTime, afterTime));
         ArrayList<TrainingMatch> filteredTms = Main.removeTrainingMatches(removeBefore, removeAfter, tms);

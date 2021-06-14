@@ -61,8 +61,55 @@ public class WriteTrainingData {
         }
     }
 
+    public static void writeFeaturesToCsvWithGameIdAtEndOfRow(ArrayList<TrainingMatch> trainingData, String fileName) {
+        try (FileWriter featuresWriter = new FileWriter(fileName);
+             FileWriter oddsWriter = new FileWriter("odds"+fileName)) {
+            for (int i = 0; i < trainingData.size(); i++) {
+                TrainingMatch match = trainingData.get(i);
+                ArrayList<Double> features = match.getFeaturesNoLineups();
+                String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                csv += ","+match.getGameId();
+                featuresWriter.append(csv);
+                String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
+                oddsWriter.append(odds);
+                if (i != trainingData.size()-1) {
+                    featuresWriter.append("\n");
+                    oddsWriter.append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeNoLineupsFeaturesToCsvWithGameIdAtEndOfRow(ArrayList<TrainingMatch> trainingData, String fileName) {
+        try (FileWriter featuresWriter = new FileWriter(fileName);
+             FileWriter oddsWriter = new FileWriter("odds"+fileName)) {
+            for (int i = 0; i < trainingData.size(); i++) {
+                TrainingMatch match = trainingData.get(i);
+                ArrayList<Double> features = match.getFeaturesNoLineups();
+                String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                csv += ","+match.getGameId();
+                featuresWriter.append(csv);
+                String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
+                oddsWriter.append(odds);
+                if (i != trainingData.size()-1) {
+                    featuresWriter.append("\n");
+                    oddsWriter.append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void writeAllDataOutToOneCsvFile(ArrayList<TrainingMatch> trainingData, String fileName) {
         writeFeaturesToCsv(trainingData, fileName);
         writeNoLineupsFeaturesToCsv(trainingData, "nolineups_"+fileName);
+    }
+
+    public static void writeAllDataOutToOneCsvFileWithGameIdAtEndOfRow(ArrayList<TrainingMatch> trainingData, String fileName) {
+        writeFeaturesToCsvWithGameIdAtEndOfRow(trainingData, fileName);
+        writeNoLineupsFeaturesToCsvWithGameIdAtEndOfRow(trainingData, "nolineups_"+fileName);
     }
 }

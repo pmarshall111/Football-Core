@@ -121,7 +121,7 @@ public class DS_Main {
             statement.execute("CREATE TABLE IF NOT EXISTS " + BetTable.getTableName() + " (" +
                     BetTable.getColResultBetOn() + " int NOT NULL, " +
                     BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
-                    BetTable.getColMatchId() + " int NOT NULL, " + BetTable.getColBetPlacedWith() + " text, " +
+                    BetTable.getColMatchId() + " int NOT NULL UNIQUE, " + BetTable.getColBetPlacedWith() + " text, " +
                     " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
                     " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
                     "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= " + Result.HOME_WIN.getSqlIntCode() +
@@ -135,6 +135,7 @@ public class DS_Main {
                     PredictionTable.getColHOdds() + " double DEFAULT -1, " + PredictionTable.getColDOdds() + " double DEFAULT -1, " +
                     PredictionTable.getColAOdds() + " double DEFAULT -1, " + PredictionTable.getColMatchId() + " int NOT NULL, " +
                     " KEY match_id_idx (" + PredictionTable.getColMatchId() + "), " +
+                    " CONSTRAINT 1_predict_with_without_lineups UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + ") " +
                     " CONSTRAINT match_id_f_key FOREIGN KEY (" + PredictionTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id))");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + LogTable.getTableName() + " (" +
