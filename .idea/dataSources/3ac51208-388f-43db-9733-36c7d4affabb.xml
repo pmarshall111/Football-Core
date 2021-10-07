@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="footballtest2@localhost">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.18">
-    <root id="1">
-      <ServerVersion>8.0.20</ServerVersion>
-      <DefaultEngine>InnoDB</DefaultEngine>
-      <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <DefaultCasing>lower/lower</DefaultCasing>
-    </root>
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.23">
+    <root id="1"/>
     <schema id="2" parent="1" name="football">
       <Collation>utf8mb4_0900_ai_ci</Collation>
     </schema>
@@ -917,25 +912,21 @@
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="295" parent="288" name="odds">
       <Position>2</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="296" parent="288" name="stake">
       <Position>3</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="297" parent="288" name="match_id">
       <Position>4</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <index id="298" parent="288" name="match_id_idx">
       <ColNames>match_id</ColNames>
@@ -949,87 +940,71 @@
     <column id="300" parent="289" name="homeScore">
       <Position>1</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="301" parent="289" name="awayScore">
       <Position>2</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="302" parent="289" name="homeXG">
       <Position>3</Position>
       <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="303" parent="289" name="awayXG">
       <Position>4</Position>
       <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="304" parent="289" name="date">
       <Position>5</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="305" parent="289" name="homeOdds">
       <Position>6</Position>
       <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="306" parent="289" name="drawOdds">
       <Position>7</Position>
       <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="307" parent="289" name="awayOdds">
       <Position>8</Position>
       <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="308" parent="289" name="firstScorer">
       <Position>9</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="309" parent="289" name="isPostponed">
       <Position>10</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="310" parent="289" name="homeTeam_id">
       <Position>11</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="311" parent="289" name="awayTeam_id">
       <Position>12</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="312" parent="289" name="season_year_start">
       <Position>13</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="313" parent="289" name="_id">
       <Position>14</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="314" parent="289" name="predictedLive">
       <Position>15</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="315" parent="289" name="sofascore_id">
       <Position>16</Position>
       <DataType>int|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <index id="316" parent="289" name="unique_match">
       <ColNames>homeTeam_id
@@ -1071,13 +1046,11 @@ season_year_start</ColNames>
       <Position>1</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="324" parent="290" name="_id">
       <Position>2</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <index id="325" parent="290" name="unique_league">
       <ColNames>name</ColNames>
@@ -1109,42 +1082,35 @@ season_year_start</ColNames>
     <column id="331" parent="291" name="dateTime">
       <Position>1</Position>
       <DataType>text|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="332" parent="291" name="info">
       <Position>2</Position>
       <DataType>text|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="333" parent="292" name="minutes">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="334" parent="292" name="rating">
       <Position>2</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="335" parent="292" name="match_id">
       <Position>3</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="336" parent="292" name="team_id">
       <Position>4</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="337" parent="292" name="playerName">
       <Position>5</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <index id="338" parent="292" name="unique_player_rating">
       <ColNames>match_id
@@ -1181,19 +1147,16 @@ team_id</ColNames>
       <Position>1</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="345" parent="293" name="leagueId">
       <Position>2</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <column id="346" parent="293" name="_id">
       <Position>3</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
     </column>
     <index id="347" parent="293" name="unique_team">
       <ColNames>name

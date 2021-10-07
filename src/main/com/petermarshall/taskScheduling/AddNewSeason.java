@@ -31,8 +31,8 @@ public class AddNewSeason {
     }
 
     public static void main(String[] args) {
-        League l = new League(LeagueIdsAndData.LA_LIGA);
-        l.scrapeOneSeason(20);
+        League l = new League(LeagueIdsAndData.RUSSIA);
+        l.scrapeOneSeason(21);
         DS_Main.openProductionConnection();
         DS_Main.initDB();
         System.out.println("Scraped everything for " + l.getName() + ". Commencing write to database...");

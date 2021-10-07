@@ -135,7 +135,7 @@ public class DS_Main {
                     PredictionTable.getColHOdds() + " double DEFAULT -1, " + PredictionTable.getColDOdds() + " double DEFAULT -1, " +
                     PredictionTable.getColAOdds() + " double DEFAULT -1, " + PredictionTable.getColMatchId() + " int NOT NULL, " +
                     " KEY match_id_idx (" + PredictionTable.getColMatchId() + "), " +
-                    " CONSTRAINT 1_predict_with_without_lineups UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + ") " +
+                    " CONSTRAINT predict_with_without_lineups_once UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + ") " +
                     " CONSTRAINT match_id_f_key FOREIGN KEY (" + PredictionTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id))");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + LogTable.getTableName() + " (" +

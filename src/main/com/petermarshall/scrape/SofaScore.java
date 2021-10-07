@@ -114,6 +114,16 @@ public class SofaScore {
                         } else if (kickoff.before(latestDate) && (kickoff.after(earliestDate) || kickoff.equals(earliestDate))) {
                             gameIds.add(id);
                         }
+                    } else {
+                        if (season != null) {
+                            Team hTeam = season.getTeam(homeTeamName);
+                            if (hTeam != null) {
+                                Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
+                                if (thisMatch != null) {
+                                    thisMatch.setPostponed(true);
+                                }
+                            }
+                        }
                     }
                 }
             } catch (ParseException e) {

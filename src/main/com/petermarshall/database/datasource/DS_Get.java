@@ -427,6 +427,7 @@ public class DS_Get {
                     " WHERE " + MatchTable.getColHomeScore() + " = -1" +
                     " AND " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(new Date(), 200)) + "'" +
                     " AND " + MatchTable.getColSeasonYearStart() + " = " + DateHelper.getStartYearForCurrentSeason() +
+                    " AND " + MatchTable.getColIsPostponed() + " = 0" +
                     " GROUP BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName());
 
             HashMap<League, String> leaguesAndEarliestDate = new HashMap<>();

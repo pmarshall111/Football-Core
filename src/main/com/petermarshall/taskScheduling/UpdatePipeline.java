@@ -15,6 +15,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class UpdatePipeline {
+    public static void main(String[] args) {
+        updateGames(true);
+    }
+
     /*
      * NOTE: Will only update games that happened at least 4 hours ago.
      */

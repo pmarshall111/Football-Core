@@ -37,15 +37,17 @@ public class DS_Update {
                                     MatchTable.getColHomeWinOdds() + " = " + match.getHomeOdds() + ", " + MatchTable.getColDrawOdds() + " = " + match.getDrawOdds() + ", " +
                                     MatchTable.getColAwayWinOdds() + " = " + match.getAwayOdds() + ", " + MatchTable.getColFirstScorer() + " = " + match.getFirstScorer().getSqlIntCode() + ", " +
                                     MatchTable.getColDate() + " = '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " +
-                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() +
+                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() + ", " +
+                                    MatchTable.getColIsPostponed() + " = " + match.isPostponed() +
                                     " WHERE _id = " + matchId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getHomePlayerRatings(), matchId, homeTeamId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);
                         } else {
-                            //just updating the kickoff time
+                            //just updating the kickoff time and postponed flag
                             batchStatement.addBatch("UPDATE " + MatchTable.getTableName() +
                                     " SET " + MatchTable.getColDate() + " = '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " +
-                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() +
+                                    MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() + ", " +
+                                    MatchTable.getColIsPostponed() + " = " + match.isPostponed() +
                                     " WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
                                     " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
                                     " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);

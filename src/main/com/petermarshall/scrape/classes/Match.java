@@ -18,6 +18,7 @@ public class Match {
     private HashMap<String, PlayerRating> awayPlayerRatings;
     private ArrayList<Double> homeDrawAwayOdds;
     private int sofaScoreGameId;
+    private boolean isPostponed = false;
 
     /*
      * Constructor will be initialised by Understat scraper, which will first look at the dates source so we can get the team names + kickoff times.
@@ -143,5 +144,12 @@ public class Match {
     }
     public void setSofaScoreGameId(int sofaScoreGameId) {
         this.sofaScoreGameId = sofaScoreGameId;
+    }
+    public boolean isPostponed() {
+        return isPostponed;
+    }
+
+    public void setPostponed(boolean postponed) {
+        isPostponed = postponed;
     }
 }

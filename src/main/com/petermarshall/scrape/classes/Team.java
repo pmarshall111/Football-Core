@@ -128,6 +128,8 @@ public class Team {
                 return "Cadiz";
             case "Elche CF":
                 return "Elche";
+            case "Real Betis Balompié":
+                return "Real Betis";
 
             //BUNDESLIGA
             case "Borussia M'gladbach":
@@ -166,6 +168,10 @@ public class Team {
                 return "Wolfsburg";
             case "SC Freiburg":
                 return "Freiburg";
+            case "SpVgg Greuther Fürth":
+                return "Greuther Fuerth";
+            case "VfL Bochum":
+                return "Bochum";
 
 
             //SERIE A
@@ -209,6 +215,8 @@ public class Team {
                 return "Brest";
             case "RC Lens":
                 return "Lens";
+            case "Clermont Foot 63":
+                return "Clermont Foot";
 
             //RFPL (Russia)
             case "FK Krasnodar":
@@ -239,6 +247,8 @@ public class Team {
                 return "Khimki";
             case "Rotor Volgograd":
                 return "FC Rotor Volgograd";
+            case "FK Nizhny Novgorod":
+                return "Nizhny Novgorod";
 
             default:
                 return teamName;
