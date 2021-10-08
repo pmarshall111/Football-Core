@@ -1,6 +1,7 @@
 package com.petermarshall.database.datasource;
 
 import com.petermarshall.database.Result;
+import com.petermarshall.database.datasource.dbTables.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

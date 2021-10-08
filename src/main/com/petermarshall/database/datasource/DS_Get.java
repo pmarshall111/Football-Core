@@ -11,6 +11,7 @@ import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.Season;
+import com.petermarshall.database.datasource.dbTables.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

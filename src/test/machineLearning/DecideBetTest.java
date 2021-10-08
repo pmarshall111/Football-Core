@@ -61,12 +61,13 @@ public class DecideBetTest {
     }
 
     @Test
-    public void doesNotMakeBetsWhereOddsCouldntBeFound() {
+    public void doesNotMakeBetsWhereOddsCouldntBeScraped() {
         MatchToPredict mtp = new MatchToPredict("Home", "Away", "18-19", "EPL",
                 DateHelper.getSqlDate(new Date()), -1, -1);
         mtp.setOurPredictions(new double[]{0.3, 0.3, 0.4}, false);
         LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
         bookiesOdds.put(OddsCheckerBookies.BET365.getName(), new double[]{-1, -1, -1});
+        bookiesOdds.put(OddsCheckerBookies.UNIBET.getName(), new double[]{-1,-1,-1});
         mtp.setBookiesOdds(bookiesOdds);
         ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtp));
         DecideBet.addDecisionRealMatches(mtps);
@@ -105,7 +106,8 @@ public class DecideBetTest {
                 DateHelper.getSqlDate(new Date()), -1, -1);
         mtp.setOurPredictions(new double[]{0.65, 0.3, 0.4}, false);
         LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
-        bookiesOdds.put(OddsCheckerBookies.BET365.getName(), new double[]{1/0.4, 1/0.3, 1/0.3});
+        bookiesOdds.put(OddsCheckerBookies.BET365.getName(), new double[]{1/0.41, 1/0.3, 1/0.29});
+        bookiesOdds.put(OddsCheckerBookies.UNIBET.getName(), new double[]{1/0.4, 1/0.3, 1/0.3}); //should return this one as the odds will be more favourable
         mtp.setBookiesOdds(bookiesOdds);
         ArrayList<MatchToPredict> mtps = new ArrayList<>(Arrays.asList(mtp));
         DecideBet.addDecisionRealMatches(mtps);

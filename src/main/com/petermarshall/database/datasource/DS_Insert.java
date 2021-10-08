@@ -6,6 +6,7 @@ import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.classes.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.petermarshall.database.datasource.dbTables.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -11,12 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Bet365-place-bet/src/Bet365-place-bet.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/AutomateBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/BetPlaced.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/Winner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/AutomateBetUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/BetPlacedUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/AutomateBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/BetPlaced.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/Winner.java" beforeDir="false" />
@@ -24,8 +18,13 @@
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/BetPlacedUniBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/Main.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/DbTestHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/DbTestHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/database/Write.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Write.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,7 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.UpdatePipeline">
+  <component name="RunManager" selected="JUnit.DecideBetTest.addsCorrectStakeAndOdds">
     <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
       <module name="Football" />
@@ -159,32 +158,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Integrity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DecideBetTest.addsCorrectStakeAndOdds" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="database.*" />
+          <option name="PATTERN" value="machineLearning.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="machineLearning" />
+      <option name="MAIN_CLASS_NAME" value="machineLearning.DecideBetTest" />
+      <option name="METHOD_NAME" value="addsCorrectStakeAndOdds" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Integrity.matchesWithNoRatingsMoreThan3DaysAgo" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DecideBetTest.doesNotMakeBetsWhereOddsCouldntBeScraped" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Football" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="database.*" />
+          <option name="PATTERN" value="machineLearning.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="database" />
-      <option name="MAIN_CLASS_NAME" value="database.Integrity" />
-      <option name="METHOD_NAME" value="matchesWithNoRatingsMoreThan3DaysAgo" />
+      <option name="PACKAGE_NAME" value="machineLearning" />
+      <option name="MAIN_CLASS_NAME" value="machineLearning.DecideBetTest" />
+      <option name="METHOD_NAME" value="doesNotMakeBetsWhereOddsCouldntBeScraped" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -194,16 +194,16 @@
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.AddNewSeason" />
       <item itemvalue="Application.UpdatePipeline" />
-      <item itemvalue="JUnit.Integrity" />
-      <item itemvalue="JUnit.Integrity.matchesWithNoRatingsMoreThan3DaysAgo" />
+      <item itemvalue="JUnit.DecideBetTest.doesNotMakeBetsWhereOddsCouldntBeScraped" />
+      <item itemvalue="JUnit.DecideBetTest.addsCorrectStakeAndOdds" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DecideBetTest.addsCorrectStakeAndOdds" />
+        <item itemvalue="JUnit.DecideBetTest.doesNotMakeBetsWhereOddsCouldntBeScraped" />
         <item itemvalue="Application.UpdatePipeline" />
         <item itemvalue="Application.AddNewSeason" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.Integrity" />
-        <item itemvalue="JUnit.Integrity.matchesWithNoRatingsMoreThan3DaysAgo" />
       </list>
     </recent_temporary>
   </component>
@@ -293,7 +293,7 @@
       <workItem from="1633516499113" duration="6455000" />
       <workItem from="1633627240937" duration="3181000" />
       <workItem from="1633631615904" duration="825000" />
-      <workItem from="1633691505186" duration="350000" />
+      <workItem from="1633691505186" duration="2245000" />
     </task>
     <servers />
   </component>
@@ -363,12 +363,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java</url>
-          <line>110</line>
+          <line>112</line>
           <option name="timeStamp" value="147" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/database/Update.java</url>
-          <line>287</line>
+          <line>290</line>
           <option name="timeStamp" value="163" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -413,6 +413,11 @@
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java</url>
           <line>27</line>
           <option name="timeStamp" value="177" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java</url>
+          <line>72</line>
+          <option name="timeStamp" value="178" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
