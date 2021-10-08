@@ -1,10 +1,10 @@
 package machineLearning;
 
 import com.petermarshall.database.datasource.DS_Main;
-import dbTables.LeagueTable;
-import dbTables.MatchTable;
-import dbTables.PlayerRatingTable;
-import dbTables.TeamTable;
+import com.petermarshall.database.datasource.dbTables.LeagueTable;
+import com.petermarshall.database.datasource.dbTables.MatchTable;
+import com.petermarshall.database.datasource.dbTables.PlayerRatingTable;
+import com.petermarshall.database.datasource.dbTables.TeamTable;
 import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.machineLearning.createData.classes.Player;

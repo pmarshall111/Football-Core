@@ -1,14 +1,13 @@
 package com.petermarshall.taskScheduling;
 
-import com.petermarshall.BetPlaced;
-import com.petermarshall.BetPlacedUniBet;
+import com.petermarshall.placeBet.bet365.BetPlaced;
+import com.petermarshall.placeBet.unibet.BetPlacedUniBet;
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
 import com.petermarshall.database.BetLog;
 import com.petermarshall.database.datasource.DS_Update;
-import com.petermarshall.machineLearning.BetPlacedTemp;
 import com.petermarshall.machineLearning.DecideBet;
 import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.BetDecision;

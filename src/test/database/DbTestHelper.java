@@ -2,7 +2,6 @@ package database;
 
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
-import dbTables.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;

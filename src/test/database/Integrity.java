@@ -2,18 +2,16 @@ package database;
 
 import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Main;
-import dbTables.LeagueTable;
-import dbTables.MatchTable;
-import dbTables.PlayerRatingTable;
-import dbTables.TeamTable;
+import com.petermarshall.database.datasource.dbTables.LeagueTable;
+import com.petermarshall.database.datasource.dbTables.MatchTable;
+import com.petermarshall.database.datasource.dbTables.PlayerRatingTable;
+import com.petermarshall.database.datasource.dbTables.TeamTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.HashMap;
 
-import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

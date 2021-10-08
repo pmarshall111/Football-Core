@@ -33,9 +33,9 @@
                         <configuration>
                             <sources>
                                 <!--https://github.com/pmarshall111/Bet365-place-bet-->
-                                <source>/home/peter/Documents/personalProjects/Bet365-place-bet/src</source>
-                                <!--https://github.com/pmarshall111/Unibet-Place-Bet-->
-                                <source>/home/peter/Documents/personalProjects/Unibet-Place-Bet/src</source>
+<!--                                <source>/home/peter/Documents/personalProjects/Bet365-place-bet/src</source>-->
+<!--                                &lt;!&ndash;https://github.com/pmarshall111/Unibet-Place-Bet&ndash;&gt;-->
+<!--                                <source>/home/peter/Documents/personalProjects/Unibet-Place-Bet/src</source>-->
                                 <source>DbTables/src</source>
                             </sources>
                         </configuration>

@@ -11,19 +11,21 @@
   <component name="ChangeListManager">
     <list default="true" id="70a1389d-dd5c-4ad2-9fbe-5232ad1e9daa" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Bet365-place-bet/src/Bet365-place-bet.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/PrivateKeysUniBet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3ac51208-388f-43db-9733-36c7d4affabb.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3ac51208-388f-43db-9733-36c7d4affabb.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/AutomateBet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/BetPlaced.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/Winner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/AutomateBetUniBet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/BetPlacedUniBet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/AutomateBet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/BetPlaced.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Bet365-place-bet/src/com/petermarshall/Winner.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/BetPlacedUniBet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/Main.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Update.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/LeagueIdsAndData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/scrape/classes/Team.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/AddNewSeason.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,9 +193,9 @@
     <list>
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.AddNewSeason" />
+      <item itemvalue="Application.UpdatePipeline" />
       <item itemvalue="JUnit.Integrity" />
       <item itemvalue="JUnit.Integrity.matchesWithNoRatingsMoreThan3DaysAgo" />
-      <item itemvalue="Application.UpdatePipeline" />
     </list>
     <recent_temporary>
       <list>
@@ -289,7 +291,9 @@
       <workItem from="1623835378265" duration="12000" />
       <workItem from="1633459761014" duration="771000" />
       <workItem from="1633516499113" duration="6455000" />
-      <workItem from="1633627240937" duration="1383000" />
+      <workItem from="1633627240937" duration="3181000" />
+      <workItem from="1633631615904" duration="825000" />
+      <workItem from="1633691505186" duration="350000" />
     </task>
     <servers />
   </component>
@@ -369,7 +373,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java</url>
-          <line>50</line>
+          <line>49</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
@@ -377,12 +381,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java</url>
-          <line>61</line>
+          <line>60</line>
           <option name="timeStamp" value="167" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/PredictPipeline.java</url>
-          <line>34</line>
+          <line>33</line>
           <option name="timeStamp" value="168" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -397,12 +401,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java</url>
-          <line>168</line>
+          <line>178</line>
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/com/petermarshall/scrape/SofaScore.java</url>
-          <line>179</line>
+          <line>189</line>
           <option name="timeStamp" value="176" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

@@ -3,26 +3,13 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
-    <content url="file://$MODULE_DIR$/../Bet365-place-bet/src">
-      <sourceFolder url="file://$MODULE_DIR$/../Bet365-place-bet/src" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../Unibet-Place-Bet/src">
-      <sourceFolder url="file://$MODULE_DIR$/../Unibet-Place-Bet/src" isTestSource="false" />
-    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/DbTables/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
-    </content>
-    <content url="file://$USER_HOME$/IdeaProjects/Bet365/src">
-      <sourceFolder url="file://$USER_HOME$/IdeaProjects/Bet365/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Bet365Scraper" />
-    <orderEntry type="module" module-name="UnibetPlaceBet" />
-    <orderEntry type="module" module-name="DbTables" />
     <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-compiler-plugin:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-model:3.0" level="project" />
