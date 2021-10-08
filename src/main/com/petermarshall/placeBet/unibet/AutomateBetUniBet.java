@@ -37,8 +37,8 @@ public class AutomateBetUniBet {
                 System.out.println("No annoying cover page. Continuing as normal");
             }
             //login
-            wait.until(presenceOfElementLocated(By.cssSelector("input[data-test-name='field-username']"))).sendKeys(PrivateKeysUniBet.USERNAME);
-            driver.findElement(By.cssSelector("input[data-test-name='field-password']")).sendKeys(PrivateKeysUniBet.PASSWORD);
+            wait.until(presenceOfElementLocated(By.cssSelector("input[data-test-name='field-username']"))).sendKeys(Unibet_Secrets.USERNAME);
+            driver.findElement(By.cssSelector("input[data-test-name='field-password']")).sendKeys(Unibet_Secrets.PASSWORD);
             WebElement loginBtn = wait.until(presenceOfElementLocated(By.cssSelector("button[data-test-name='btn-login']")));
             loginBtn.click();
             Thread.sleep(5000); //waiting for the page to reload otherwise we will find containers before page reload.

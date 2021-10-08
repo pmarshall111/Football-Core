@@ -17,24 +17,13 @@
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/BetPlacedUniBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/mysql_mysql_connector_java_8_0_20.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/org_simplejavamail_simple_java_mail_5_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Football.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Football.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/activation-1.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/emailaddress-rfc2822-1.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/javax.mail-1.6.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/jsr305-3.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/simple-java-mail-5.1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/slf4j-api-1.7.21.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/META-INF/MANIFEST.MF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/anothergo/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/aws/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/small/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/AutomateBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/AutomateBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/Bet365_Secrets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/bet365/Bet365_Secrets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/AutomateBetUniBet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/AutomateBetUniBet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/Unibet_Secrets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/placeBet/unibet/Unibet_Secrets.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +146,16 @@
       </method>
     </configuration>
     <configuration name="UpdatePipeline" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="DB_URL" value="localhost" />
+        <env name="DB_NAME" value="football_betting" />
+        <env name="DB_USER" value="football_betting" />
+        <env name="DB_PASS" value="HNY7ubwNa7aY" />
+        <env name="BET365_USER" value="pmarshall111" />
+        <env name="BET365_PASS" value="Betting111" />
+        <env name="UNIBET_USER" value="pmarshall1993@hotmail.com" />
+        <env name="UNIBET_PASS" value="UniBetAuto325" />
+      </envs>
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.UpdatePipeline" />
       <module name="Football" />
       <extension name="coverage">
@@ -305,7 +304,7 @@
       <workItem from="1633627240937" duration="3181000" />
       <workItem from="1633631615904" duration="825000" />
       <workItem from="1633691505186" duration="6500000" />
-      <workItem from="1633698681709" duration="1480000" />
+      <workItem from="1633698681709" duration="2963000" />
     </task>
     <servers />
   </component>

@@ -40,8 +40,8 @@ public class AutomateBet {
             //login
             WebElement loginBtn = wait.until(presenceOfElementLocated(By.cssSelector(".hm-MainHeaderRHSLoggedOutWide_Login")));
             loginBtn.click();
-            driver.findElement(By.cssSelector(".lms-StandardLogin_Username")).sendKeys(PrivateKeys.USER);
-            driver.findElement(By.cssSelector(".lms-StandardLogin_Password")).sendKeys(PrivateKeys.PASSWORD + Keys.ENTER);
+            driver.findElement(By.cssSelector(".lms-StandardLogin_Username")).sendKeys(Bet365_Secrets.USER);
+            driver.findElement(By.cssSelector(".lms-StandardLogin_Password")).sendKeys(Bet365_Secrets.PASSWORD + Keys.ENTER);
             //wait for market info
             Thread.sleep(5000);
             wait.until(presenceOfElementLocated(By.cssSelector("div[class*='MarketFixtureDetailsLabel']")));
