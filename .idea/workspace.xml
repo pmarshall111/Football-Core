@@ -17,14 +17,24 @@
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/AutomateBetUniBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/BetPlacedUniBet.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Unibet-Place-Bet/src/com/petermarshall/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/mysql_mysql_connector_java_8_0_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/org_simplejavamail_simple_java_mail_5_1_0.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Get.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Football.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Football.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/activation-1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/emailaddress-rfc2822-1.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/javax.mail-1.6.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/jsr305-3.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/simple-java-mail-5.1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/slf4j-api-1.7.21.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/META-INF/MANIFEST.MF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource/DS_Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/DbTestHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/DbTestHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Update.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/database/Write.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/database/Write.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/machineLearning/DecideBetTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/com/petermarshall/taskScheduling/UpdatePipeline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/anothergo/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/aws/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/small/META-INF/MANIFEST.MF" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +90,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Groovy JUnit" value="groovy.util.GroovyTestCase" />
     <property name="create.test.in.the.same.root" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../springBootFootball" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -89,6 +99,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib" />
@@ -98,11 +109,11 @@
       <recent name="groovy.util.GroovyTestCase" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/target" />
       <recent name="$PROJECT_DIR$/src/main/com/petermarshall/database/datasource" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\lib\ext" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main\com" />
       <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\main" />
-      <recent name="C:\Users\Peter\Documents\JavaProjects\Football\src\com\petermarshall\logging" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
       <recent name="com.petermarshall.machineLearning" />
@@ -118,7 +129,7 @@
       <recent name="com.petermarshall.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DecideBetTest.addsCorrectStakeAndOdds">
+  <component name="RunManager" selected="Application.UpdatePipeline">
     <configuration name="AddNewSeason" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.petermarshall.taskScheduling.AddNewSeason" />
       <module name="Football" />
@@ -199,9 +210,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.UpdatePipeline" />
         <item itemvalue="JUnit.DecideBetTest.addsCorrectStakeAndOdds" />
         <item itemvalue="JUnit.DecideBetTest.doesNotMakeBetsWhereOddsCouldntBeScraped" />
-        <item itemvalue="Application.UpdatePipeline" />
         <item itemvalue="Application.AddNewSeason" />
         <item itemvalue="Application.Main" />
       </list>
@@ -293,7 +304,8 @@
       <workItem from="1633516499113" duration="6455000" />
       <workItem from="1633627240937" duration="3181000" />
       <workItem from="1633631615904" duration="825000" />
-      <workItem from="1633691505186" duration="2245000" />
+      <workItem from="1633691505186" duration="6500000" />
+      <workItem from="1633698681709" duration="1480000" />
     </task>
     <servers />
   </component>

@@ -14,8 +14,8 @@ public class DS_Main {
     static final String AWAYTEAM = "awayteam";
     static final String PLAYERS_TEAM = "playersteam";
 
-    private static final String CONNECTION_NAME = "jdbc:mysql://" + Keys.ENDPOINT + ":3306/" + Keys.DB_NAME + "?serverTimezone=UTC";
-    public static final String TEST_CONNECTION_NAME = "jdbc:mysql://localhost:3306/" + Keys.DB_NAME + "_TEST?serverTimezone=UTC";
+    private static final String CONNECTION_NAME = "jdbc:mariadb://" + Keys.ENDPOINT + ":3306/" + Keys.DB_NAME + "?serverTimezone=UTC";
+    public static final String TEST_CONNECTION_NAME = "jdbc:mariadb://localhost:3306/" + Keys.DB_NAME + "_TEST?serverTimezone=UTC";
     public static Connection connection;
 
     public static boolean isOpen() {
@@ -35,12 +35,10 @@ public class DS_Main {
             return true;
         }
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(CONNECTION_NAME, Keys.USER, Keys.PASS);
-//            connection = DriverManager.getConnection(AWS_CONNECTION_NAME, Keys.AWS_USER, Keys.AWS_PASSWORD);
             return true;
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -135,7 +133,7 @@ public class DS_Main {
                     PredictionTable.getColHOdds() + " double DEFAULT -1, " + PredictionTable.getColDOdds() + " double DEFAULT -1, " +
                     PredictionTable.getColAOdds() + " double DEFAULT -1, " + PredictionTable.getColMatchId() + " int NOT NULL, " +
                     " KEY match_id_idx (" + PredictionTable.getColMatchId() + "), " +
-                    " CONSTRAINT predict_with_without_lineups_once UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + ") " +
+                    " CONSTRAINT predict_with_without_lineups_once UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + "), " +
                     " CONSTRAINT match_id_f_key FOREIGN KEY (" + PredictionTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id))");
 
             statement.execute("CREATE TABLE IF NOT EXISTS " + LogTable.getTableName() + " (" +

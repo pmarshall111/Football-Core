@@ -27,6 +27,7 @@ public class UpdatePipeline {
         DS_Main.initDB();
         HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
         if (leaguesToUpdate.keySet().size() == 0) {
+            System.out.println("No games to update! - " + new Date());
             return;
         }
         Iterator<League> iter = leaguesToUpdate.keySet().iterator();
