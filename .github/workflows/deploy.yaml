@@ -20,9 +20,6 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Remove old jars, but keep the most recent in case there are any commands running. (The most recent jar is kept in the awk command)
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} find . -name "football-core*.jar" -mmin +5 -printf "%T@ %p\n" | sort -nr | cut -f 2 -d " " | awk 'NR>1' | xargs rm
-
       - name: Save current time to use in jar name and crontab
         run: CURR_TIME=$(date +%d-%m-%y_%T)
 
@@ -34,3 +31,6 @@ jobs:
 
       - name: Set new crontab
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} crontab ~/crontab.txt
+
+      - name: Remove old jars, but keep the most recent in case there are any commands running. (The most recent and the new jar is kept in the awk command)
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} find . -name "football-core*.jar" -mmin +5 -printf "%T@ %p\n" | sort -nr | cut -f 2 -d " " | awk 'NR>2' | xargs rm
