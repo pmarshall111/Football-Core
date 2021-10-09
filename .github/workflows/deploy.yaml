@@ -21,10 +21,10 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy jar with rsync
-        run: rsync -avP ./target/Football-1.0-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_{{ GITHUB_SHA }}.jar
+        run: rsync -avP ./target/Football-1.0-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_${GITHUB_SHA::8}.jar
 
       - name: Generate new crontab. First the crontab loads the environment variables from .environment, then runs the Core project, appending the output of the command to a log file.
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_{{ GITHUB_SHA }}.jar:deps/mariadb-java-client-2.7.4.jar com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log' > ~/crontab.txt"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar:deps/mariadb-java-client-2.7.4.jar com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log' > ~/crontab.txt"
 
       - name: Set new crontab
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "crontab ~/crontab.txt"
