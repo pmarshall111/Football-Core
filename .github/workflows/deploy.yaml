@@ -1,0 +1,38 @@
+name: deploy-to-ec2
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - run: mvn package
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'add-known-hosts-in-next-command'
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Remove old jars, but keep the most recent in case there are any commands running. (The most recent jar is kept in the awk command)
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} find . -name "football-core*.jar" -mmin +5 -printf "%T@ %p\n" | sort -nr | cut -f 2 -d " " | awk 'NR>1' | xargs rm
+
+      - name: Save current time to use in jar name and crontab
+        run: CURR_TIME=$(date +%d-%m-%y_%T)
+
+      - name: Deploy jar with rsync
+        run: rsync -avP ./target/football-0.0.1-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_$CURR_TIME.jar
+
+      - name: Generate new crontab. First the crontab loads the environment variables from .environment, then runs the Core project, appending the output of the command to a log file.
+        run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          echo "12 2 * * * . ~/.environment; java -cp "~/football-core_$CURR_TIME.jar:deps/mariadb-java-client-2.7.4.jar" com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log" \ > ~/crontab.txt
+
+      - name: Set new crontab
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} crontab ~/crontab.txt
