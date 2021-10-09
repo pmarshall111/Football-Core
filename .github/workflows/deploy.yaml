@@ -30,9 +30,7 @@ jobs:
         run: rsync -avP ./target/football-0.0.1-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_$CURR_TIME.jar
 
       - name: Generate new crontab. First the crontab loads the environment variables from .environment, then runs the Core project, appending the output of the command to a log file.
-        run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-          echo "12 2 * * * . ~/.environment; java -cp "~/football-core_$CURR_TIME.jar:deps/mariadb-java-client-2.7.4.jar" com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log" \ > ~/crontab.txt
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "12 2 * * * . ~/.environment; java -cp "~/football-core_$CURR_TIME.jar:deps/mariadb-java-client-2.7.4.jar" com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log" \ > ~/crontab.txt
 
       - name: Set new crontab
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} crontab ~/crontab.txt
