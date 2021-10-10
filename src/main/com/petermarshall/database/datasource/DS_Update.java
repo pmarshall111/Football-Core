@@ -94,6 +94,7 @@ public class DS_Update {
                             " SET " + PredictionTable.getColHOdds() + " = " + bookieOdds[0] + ", " +
                             PredictionTable.getColDOdds() + " = " + bookieOdds[1] + ", " +
                             PredictionTable.getColAOdds() + " = " + bookieOdds[2] +
+                            PredictionTable.getColBookieName() + " = " + bookie +
                             " WHERE " + PredictionTable.getColMatchId() + " = " + mtp.getDatabase_id());
                 }
             }

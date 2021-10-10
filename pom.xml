@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <build>
         <sourceDirectory>src/main</sourceDirectory>
-        <testSourceDirectory>src/test</testSourceDirectory>
+<!--        <testSourceDirectory>src/test</testSourceDirectory>-->
 
         <plugins>
             <plugin>

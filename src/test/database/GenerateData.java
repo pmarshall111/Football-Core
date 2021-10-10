@@ -35,7 +35,7 @@ public class GenerateData {
 
     static final int NUMB_PLAYERS_PER_MATCH = 11;
 
-    static GenerateData addBulkData(boolean addStatsToMatch) {
+    public static GenerateData addBulkData(boolean addStatsToMatch) {
         GenerateData data = new GenerateData(addStatsToMatch);
         ArrayList<League> leagues = data.getLeagues();
         writeData(leagues);

@@ -31,7 +31,7 @@ public class AddNewSeason {
     }
 
     public static void main(String[] args) {
-        League l = new League(LeagueIdsAndData.RUSSIA);
+        League l = new League(LeagueIdsAndData.EPL);
         l.scrapeOneSeason(21);
         DS_Main.openProductionConnection();
         DS_Main.initDB();
