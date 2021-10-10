@@ -38,6 +38,7 @@ public class PredictPipeline {
     //Method will create non-lineup predictions for all teams next games in the database, but only the next 1 game.
     //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
     public static void predictGames() {
+        DS_Main.openProductionConnection();
         //first check that all games are updated.
         UpdatePipeline.updateGames(false);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();

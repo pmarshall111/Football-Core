@@ -89,6 +89,10 @@ public class MatchToPredict {
         }
     }
 
+    public boolean hasLineups() {
+        return this.features != null && this.features.size() > 0;
+    }
+
     public boolean hasPredictionsWithLineups() {
         return ourPredictions != null && ourPredictions.length == 3;
     }

@@ -7,8 +7,8 @@ import org.ejml.simple.SimpleMatrix;
 import java.io.IOException;
 
 public class Main {
-    public static final String THETAS_LINEUPS_PATH = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\finalThetasLineups_space.csv";
-    public static final String THETAS_NO_LINEUPS_PATH = "C:\\Users\\Peter\\Documents\\JavaProjects\\Football\\noLineup_finalThetas_space.csv";
+    public static final String THETAS_LINEUPS_PATH = "src/main/com/petermarshall/machineLearning/logisticRegression/thetas_lineups.csv";
+    public static final String THETAS_NO_LINEUPS_PATH = "src/main/com/petermarshall/machineLearning/logisticRegression/thetas_no_lineups.csv";
 
     /*
      * Method loads in csv files for both the Test data and also the theta values for all 3 logistic regressions, trained outside of this app in octave.

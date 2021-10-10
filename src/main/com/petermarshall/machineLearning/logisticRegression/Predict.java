@@ -6,6 +6,7 @@ import org.ejml.equation.Equation;
 import org.ejml.ops.MatrixIO;
 import org.ejml.simple.SimpleMatrix;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -82,7 +83,7 @@ public class Predict {
 
     /*
      * For this function to work, we need a list of all the features for each match so that we can multiply them out with our thetas to get predictions.
-     * Method will fail when changing number of model featuers, as we've hardcoded in the number of rows and columns in our thetas.
+     * Method will fail when changing number of model features, as we've hardcoded in the number of rows and columns in our thetas.
      *
      * Bias parameter is already added to match features so no need to do that here.
      */
@@ -91,7 +92,7 @@ public class Predict {
             ArrayList<MatchToPredict> matchesWithLineups = new ArrayList<>();
             ArrayList<MatchToPredict> matchesNoLineups = new ArrayList<>();
             for (MatchToPredict mtp: matches) {
-                if (mtp.hasPredictionsWithLineups()) {
+                if (mtp.hasLineups()) {
                     matchesWithLineups.add(mtp);
                 } else {
                     matchesNoLineups.add(mtp);
@@ -99,12 +100,12 @@ public class Predict {
             }
 
             if (matchesWithLineups.size() > 0) {
-                DMatrixRMaj dMatrixWithLineups = MatrixIO.loadCSV(THETAS_LINEUPS_PATH, 3, 53);
+                DMatrixRMaj dMatrixWithLineups = MatrixIO.loadCSV(THETAS_LINEUPS_PATH, 3, 85);
                 SimpleMatrix thetasWithLineups = SimpleMatrix.wrap(dMatrixWithLineups);
                 addOurProbabilitiesToGames(matchesWithLineups, thetasWithLineups, true);
             }
             if (matchesNoLineups.size() > 0) {
-                DMatrixRMaj dMatrixNoLineups = MatrixIO.loadCSV(THETAS_NO_LINEUPS_PATH, 3, 49);
+                DMatrixRMaj dMatrixNoLineups = MatrixIO.loadCSV(THETAS_NO_LINEUPS_PATH, 3, 77);
                 SimpleMatrix thetasNoLineups = SimpleMatrix.wrap(dMatrixNoLineups);
                 addOurProbabilitiesToGames(matchesNoLineups, thetasNoLineups, false);
             }
