@@ -178,10 +178,19 @@ public class CalcPastStats {
         }
         if (data.getHomeScore() != -1 && data.getAwayScore() != -1) {
             //saving stats to season and team history
+
+            if (homeSeason.getNumbGamesPlayed() == 0) initialiseNewSeason(homeTeam, homeSeason);
+            if (awaySeason.getNumbGamesPlayed() == 0) initialiseNewSeason(awayTeam, awaySeason);
             addStatsToTeamsSeasons(data, homeSeason, awaySeason, homeLineup, awayLineup);
             homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
             awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
         }
+    }
+
+    private static void initialiseNewSeason(TrainingTeam team, TrainingTeamsSeason newSeason) {
+        // initialise season with the stats at the end of last season if this is the first game played
+        TrainingTeamsSeason lastSeason = team.getTeamsSeason(newSeason.getSeasonYearStart()-1);
+        if (lastSeason.getNumbGamesPlayed() > 0) newSeason.copyStatsFromPreviousSeason(lastSeason);
     }
 
     public static HashMap<String,Player> getStartingXI(HashMap<String,Player> allPlayers) {
@@ -199,6 +208,7 @@ public class CalcPastStats {
     //method gets the data first out rather than passing in the oppositions season, so that we use the stats before each season is updated.
     public static void addStatsToTeamsSeasons(PlayerMatchDbData data, TrainingTeamsSeason homeSeason, TrainingTeamsSeason awaySeason,
                                                HashMap<String, Player> homeLineup, HashMap<String, Player> awayLineup) {
+
         double homeTotalAvgGoalsFor = homeSeason.getAvgGoalsFor(GamesSelector.ALL_GAMES);
         double homeTotalAvgGoalsAgainst = homeSeason.getAvgGoalsAgainst(GamesSelector.ALL_GAMES);
         double homeHomeAvgGoalsFor = homeSeason.getAvgGoalsFor(GamesSelector.ONLY_HOME_GAMES);

@@ -8,6 +8,9 @@ import java.util.HashMap;
 //huge range of fields to allow for choice when creating features & training model
 public class TrainingTeamsSeason {
     private int seasonYearStart;
+    private int homeGamesPlayed = 0;
+    private int awayGamesPlayed = 0;
+
     //Using arrays here so if we want to we can calculate fields for last 5 games etc.
     //Not done the same for weighted xG because that's already been taken into account (bc it's weighted)
     private ArrayList<HomeAwayWrapper> goalsFor;
@@ -126,20 +129,22 @@ public class TrainingTeamsSeason {
      * Therefore we cannot just pass in the opponents TrainingTeamsSeason or we will update one and then use the updated version to update the other.
      * Temp variables are needed, hence the long argument list.
      */
-    public void addGameStats(int goalsFor, int goalsAgainst, double xGF, double xGA, boolean scoredFirst, boolean hasScoredFirstData, boolean homeTeam, double oppositionAvgTotalGF,
+    public void addGameStats(int goalsFor, int goalsAgainst, double xGF, double xGA, boolean scoredFirst, boolean hasScoredFirstData, boolean isHomeTeam, double oppositionAvgTotalGF,
                              double oppositionAvgTotalGA, double oppositionAvgHomeAwayGF, double oppositionAvgHomeAwayGA, double oppositionAvgTotalXGF, double oppositionAvgTotalXGA,
                              double oppositionAvgHomeAwayXGF, double oppositionAvgHomeAwayXGA, double oppositionWeightedTotalXGF, double oppositionWeightedTotalXGA,
                              double oppositionWeightedHomeAwayXGF, double oppositionWeightedHomeAwayXGA, double opponentTotalWholeSeasonPPG, double opponentHomeAwayWholeSeasonPPG,
                              double opponentTotalLast5PPG, double opponentHomeAwayLast5PPG, double oppositionWeightedTotalGF,
                              double oppositionWeightedTotalGA, double oppositionWeightedHomeAwayGoalsFor, double oppositionWeightedHomeAwayGoalsAgainst) {
+        if (isHomeTeam) this.homeGamesPlayed++;
+        else this.awayGamesPlayed++;
 
         if (goalsFor != -1 && goalsAgainst != -1) {
             //goals
-            this.goalsFor.add(new HomeAwayWrapper(homeTeam, goalsFor));
-            this.goalsAgainst.add(new HomeAwayWrapper(homeTeam, goalsAgainst));
+            this.goalsFor.add(new HomeAwayWrapper(isHomeTeam, goalsFor));
+            this.goalsAgainst.add(new HomeAwayWrapper(isHomeTeam, goalsAgainst));
             this.totalWeightedGoalsFor = calcExponWeightedAvg(this.totalWeightedGoalsFor, goalsFor);
             this.totalWeightedGoalsAgainst = calcExponWeightedAvg(this.totalWeightedGoalsAgainst, goalsAgainst);
-            if (homeTeam) {
+            if (isHomeTeam) {
                 this.homeWeightedGoalsFor = calcExponWeightedAvg(this.homeWeightedGoalsFor, goalsFor);
                 this.homeWeightedGoalsAgainst = calcExponWeightedAvg(this.homeWeightedGoalsAgainst, goalsAgainst);
             } else {
@@ -147,16 +152,16 @@ public class TrainingTeamsSeason {
                 this.awayWeightedGoalsAgainst = calcExponWeightedAvg(this.awayWeightedGoalsAgainst, goalsAgainst);
             }
 
-            this.totalFormGoalsForHistory.add(new HomeAwayWrapper(homeTeam, goalsFor - oppositionAvgTotalGA));
-            this.totalFormGoalsAgainstHistory.add(new HomeAwayWrapper(homeTeam, goalsAgainst - oppositionAvgTotalGF));
-            this.totalFormWeightedGoalsForHistory.add(new HomeAwayWrapper(homeTeam, goalsFor - oppositionWeightedTotalGA));
-            this.totalFormWeightedGoalsAgainstHistory.add(new HomeAwayWrapper(homeTeam, goalsAgainst - oppositionWeightedTotalGF));
+            this.totalFormGoalsForHistory.add(new HomeAwayWrapper(isHomeTeam, goalsFor - oppositionAvgTotalGA));
+            this.totalFormGoalsAgainstHistory.add(new HomeAwayWrapper(isHomeTeam, goalsAgainst - oppositionAvgTotalGF));
+            this.totalFormWeightedGoalsForHistory.add(new HomeAwayWrapper(isHomeTeam, goalsFor - oppositionWeightedTotalGA));
+            this.totalFormWeightedGoalsAgainstHistory.add(new HomeAwayWrapper(isHomeTeam, goalsAgainst - oppositionWeightedTotalGF));
 
             this.totalFormGoalsFor = calcExponWeightedAvg(this.totalFormGoalsFor, goalsFor - oppositionAvgTotalGA);
             this.totalFormGoalsAgainst = calcExponWeightedAvg(this.totalFormGoalsAgainst, goalsAgainst - oppositionAvgTotalGF);
             this.totalFormWeightedGoalsFor = calcExponWeightedAvg(this.totalFormWeightedGoalsFor, goalsFor - oppositionWeightedTotalGA);
             this.totalFormWeightedGoalsAgainst = calcExponWeightedAvg(this.totalFormWeightedGoalsAgainst, goalsAgainst - oppositionWeightedTotalGF);
-            if (homeTeam) {
+            if (isHomeTeam) {
                 this.homeFormGoalsFor = calcExponWeightedAvg(this.homeFormGoalsFor, goalsFor - oppositionAvgHomeAwayGA);
                 this.homeFormGoalsAgainst = calcExponWeightedAvg(this.homeFormGoalsAgainst, goalsAgainst - oppositionAvgHomeAwayGF);
                 this.homeFormWeightedGoalsFor = calcExponWeightedAvg(this.homeFormWeightedGoalsFor, goalsFor - oppositionWeightedHomeAwayGoalsAgainst);
@@ -169,25 +174,25 @@ public class TrainingTeamsSeason {
             }
 
             //points
-            HomeAwayWrapper points = new HomeAwayWrapper(homeTeam, goalsFor > goalsAgainst ? 3 : goalsFor == goalsAgainst ? 1 : 0);
+            HomeAwayWrapper points = new HomeAwayWrapper(isHomeTeam, goalsFor > goalsAgainst ? 3 : goalsFor == goalsAgainst ? 1 : 0);
             this.points.add(points);
             if (hasScoredFirstData && (goalsFor > 0 || goalsAgainst > 0)) {
                 if (scoredFirst) this.pointsScoredFirst.add(points);
                 else this.pointsConceededFirst.add(points);
             }
-            this.totalPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(homeTeam, opponentTotalWholeSeasonPPG));
-            this.homeAwayPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(homeTeam, opponentHomeAwayWholeSeasonPPG));
-            this.totalPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(homeTeam, opponentTotalLast5PPG));
-            this.homeAwayPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(homeTeam, opponentHomeAwayLast5PPG));
+            this.totalPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(isHomeTeam, opponentTotalWholeSeasonPPG));
+            this.homeAwayPointsPerGameOfOpponentsWholeSeason.add(new HomeAwayWrapper(isHomeTeam, opponentHomeAwayWholeSeasonPPG));
+            this.totalPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(isHomeTeam, opponentTotalLast5PPG));
+            this.homeAwayPointsPerGameOfOpponentsLast5.add(new HomeAwayWrapper(isHomeTeam, opponentHomeAwayLast5PPG));
         }
 
         //xG
         if (xGF != -1 && xGA != -1) {
-            this.xGF.add(new HomeAwayWrapper(homeTeam, xGF));
-            this.xGA.add(new HomeAwayWrapper(homeTeam, xGA));
+            this.xGF.add(new HomeAwayWrapper(isHomeTeam, xGF));
+            this.xGA.add(new HomeAwayWrapper(isHomeTeam, xGA));
             this.totalWeightedXGF = calcExponWeightedAvg(this.totalWeightedXGF, xGF);
             this.totalWeightedXGA = calcExponWeightedAvg(this.totalWeightedXGA, xGA);
-            if (homeTeam) {
+            if (isHomeTeam) {
                 this.homeWeightedXGF = calcExponWeightedAvg(this.homeWeightedXGF, xGF);
                 this.homeWeightedXGA = calcExponWeightedAvg(this.homeWeightedXGA, xGA);
             } else {
@@ -196,17 +201,17 @@ public class TrainingTeamsSeason {
             }
             //how many more xG we had compared to how many the oppositions form dictated we should have had. A measure of how good team is compared to other teams opposition has faced.
             //all calculated with exponentially weighted averages to include overperformance over the whole season, but place more weight ont he most recent games.
-            this.totalFormXGFHistory.add(new HomeAwayWrapper(homeTeam, xGF - oppositionAvgTotalXGA));
-            this.totalFormXGAHistory.add(new HomeAwayWrapper(homeTeam, xGA - oppositionAvgTotalXGF));
-            this.totalFormWeightedXGFHistory.add(new HomeAwayWrapper(homeTeam, xGF - oppositionWeightedTotalXGA));
-            this.totalFormWeightedXGAHistory.add(new HomeAwayWrapper(homeTeam, xGA - oppositionWeightedTotalXGF));
+            this.totalFormXGFHistory.add(new HomeAwayWrapper(isHomeTeam, xGF - oppositionAvgTotalXGA));
+            this.totalFormXGAHistory.add(new HomeAwayWrapper(isHomeTeam, xGA - oppositionAvgTotalXGF));
+            this.totalFormWeightedXGFHistory.add(new HomeAwayWrapper(isHomeTeam, xGF - oppositionWeightedTotalXGA));
+            this.totalFormWeightedXGAHistory.add(new HomeAwayWrapper(isHomeTeam, xGA - oppositionWeightedTotalXGF));
 
             this.totalFormXGF = calcExponWeightedAvg(this.totalFormXGF, xGF - oppositionAvgTotalXGA);
             this.totalFormXGA = calcExponWeightedAvg(this.totalFormXGA, xGA - oppositionAvgTotalXGF);
             this.totalFormWeightedXGF = calcExponWeightedAvg(this.totalFormWeightedXGF, xGF - oppositionWeightedTotalXGA);
             this.totalFormWeightedXGA = calcExponWeightedAvg(this.totalFormWeightedXGA, xGA - oppositionWeightedTotalXGF);
 
-            if (homeTeam) {
+            if (isHomeTeam) {
                 this.homeFormXGF = calcExponWeightedAvg(this.homeFormXGF, xGF - oppositionAvgHomeAwayXGA);
                 this.homeFormXGA = calcExponWeightedAvg(this.homeFormXGA, xGA - oppositionAvgHomeAwayXGF);
                 this.homeFormWeightedXGF = calcExponWeightedAvg(this.homeFormWeightedXGF, xGF - oppositionWeightedHomeAwayXGA);
@@ -230,21 +235,86 @@ public class TrainingTeamsSeason {
         }
     }
 
+    // Method will add the last 5 records from the arrays of the last season and also update any values with the values from last season.
+    public void copyStatsFromPreviousSeason(TrainingTeamsSeason lastSeason) {
+        if (lastSeason == null) return;
+
+        final int NUMB_GAMES_TO_COPY = 5;
+
+        this.goalsFor.addAll(lastSeason.goalsFor.subList(lastSeason.goalsFor.size() - NUMB_GAMES_TO_COPY, lastSeason.goalsFor.size()));
+        this.goalsAgainst.addAll(lastSeason.goalsAgainst.subList(lastSeason.goalsAgainst.size() - NUMB_GAMES_TO_COPY, lastSeason.goalsAgainst.size()));
+        this.xGF.addAll(lastSeason.xGF.subList(lastSeason.xGF.size() - NUMB_GAMES_TO_COPY, lastSeason.xGF.size()));
+        this.xGA.addAll(lastSeason.xGA.subList(lastSeason.xGA.size() - NUMB_GAMES_TO_COPY, lastSeason.xGA.size()));
+        this.points.addAll(lastSeason.points.subList(lastSeason.points.size() - NUMB_GAMES_TO_COPY, lastSeason.points.size()));
+        this.pointsConceededFirst.addAll(lastSeason.pointsConceededFirst.subList(lastSeason.pointsConceededFirst.size() - NUMB_GAMES_TO_COPY, lastSeason.pointsConceededFirst.size()));
+        this.pointsScoredFirst.addAll(lastSeason.pointsScoredFirst.subList(lastSeason.pointsScoredFirst.size() - NUMB_GAMES_TO_COPY, lastSeason.pointsScoredFirst.size()));
+        this.totalPointsPerGameOfOpponentsWholeSeason.addAll(lastSeason.totalPointsPerGameOfOpponentsWholeSeason.subList(lastSeason.totalPointsPerGameOfOpponentsWholeSeason.size() - NUMB_GAMES_TO_COPY, lastSeason.totalPointsPerGameOfOpponentsWholeSeason.size()));
+        this.homeAwayPointsPerGameOfOpponentsWholeSeason.addAll(lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.subList(lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.size() - NUMB_GAMES_TO_COPY, lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.size()));
+        this.totalPointsPerGameOfOpponentsLast5.addAll(lastSeason.totalPointsPerGameOfOpponentsLast5.subList(lastSeason.totalPointsPerGameOfOpponentsLast5.size() - NUMB_GAMES_TO_COPY, lastSeason.totalPointsPerGameOfOpponentsLast5.size()));
+        this.homeAwayPointsPerGameOfOpponentsLast5.addAll(lastSeason.homeAwayPointsPerGameOfOpponentsLast5.subList(lastSeason.homeAwayPointsPerGameOfOpponentsLast5.size() - NUMB_GAMES_TO_COPY, lastSeason.homeAwayPointsPerGameOfOpponentsLast5.size()));
+
+        this.totalWeightedXGF = lastSeason.totalWeightedXGF;
+        this.homeWeightedXGF = lastSeason.homeWeightedXGF;
+        this.awayWeightedXGF = lastSeason.awayWeightedXGF;
+        this.totalWeightedXGA = lastSeason.totalWeightedXGA;
+        this.homeWeightedXGA = lastSeason.homeWeightedXGA;
+        this.awayWeightedXGA = lastSeason.awayWeightedXGA;
+
+        this.totalFormXGF = lastSeason.totalFormXGF;
+        this.homeFormXGF = lastSeason.homeFormXGF;
+        this.awayFormXGF = lastSeason.awayFormXGF;
+        this.totalFormXGA = lastSeason.totalFormXGA;
+        this.homeFormXGA = lastSeason.homeFormXGA;
+        this.awayFormXGA = lastSeason.awayFormXGA;
+        this.totalFormXGFHistory.addAll(lastSeason.totalFormXGFHistory.subList(lastSeason.totalFormXGFHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormXGFHistory.size()));
+        this.totalFormXGAHistory.addAll(lastSeason.totalFormXGAHistory.subList(lastSeason.totalFormXGAHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormXGAHistory.size()));
+
+        this.totalFormWeightedXGF = lastSeason.totalFormWeightedXGF;
+        this.homeFormWeightedXGF = lastSeason.homeFormWeightedXGF;
+        this.awayFormWeightedXGF = lastSeason.awayFormWeightedXGF;
+        this.totalFormWeightedXGA = lastSeason.totalFormWeightedXGA;
+        this.homeFormWeightedXGA = lastSeason.homeFormWeightedXGA;
+        this.awayFormWeightedXGA = lastSeason.awayFormWeightedXGA;
+        this.totalFormWeightedXGFHistory.addAll(lastSeason.totalFormWeightedXGFHistory.subList(lastSeason.totalFormWeightedXGFHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormWeightedXGFHistory.size()));
+        this.totalFormWeightedXGAHistory.addAll(lastSeason.totalFormWeightedXGAHistory.subList(lastSeason.totalFormWeightedXGAHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormWeightedXGAHistory.size()));
+
+        this.totalWeightedGoalsFor = lastSeason.totalWeightedGoalsFor;
+        this.homeWeightedGoalsFor = lastSeason.homeWeightedGoalsFor;
+        this.awayWeightedGoalsFor = lastSeason.awayWeightedGoalsFor;
+        this.totalWeightedGoalsAgainst = lastSeason.totalWeightedGoalsAgainst;
+        this.homeWeightedGoalsAgainst = lastSeason.homeWeightedGoalsAgainst;
+        this.awayWeightedGoalsAgainst = lastSeason.awayWeightedGoalsAgainst;
+
+        this.totalFormGoalsFor = lastSeason.totalFormGoalsFor;
+        this.homeFormGoalsFor = lastSeason.homeFormGoalsFor;
+        this.awayFormGoalsFor = lastSeason.awayFormGoalsFor;
+        this.totalFormGoalsAgainst = lastSeason.totalFormGoalsAgainst;
+        this.homeFormGoalsAgainst = lastSeason.homeFormGoalsAgainst;
+        this.awayFormGoalsAgainst = lastSeason.awayFormGoalsAgainst;
+        this.totalFormGoalsForHistory.addAll(lastSeason.totalFormGoalsForHistory.subList(lastSeason.totalFormGoalsForHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormGoalsForHistory.size()));
+        this.totalFormGoalsAgainstHistory.addAll(lastSeason.totalFormGoalsAgainstHistory.subList(lastSeason.totalFormGoalsAgainstHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormGoalsAgainstHistory.size()));
+
+        this.totalFormWeightedGoalsFor = lastSeason.totalFormWeightedGoalsFor;
+        this.homeFormWeightedGoalsFor = lastSeason.homeFormWeightedGoalsFor;
+        this.awayFormWeightedGoalsFor = lastSeason.awayFormWeightedGoalsFor;
+        this.totalFormWeightedGoalsAgainst = lastSeason.totalFormWeightedGoalsAgainst;
+        this.homeFormWeightedGoalsAgainst = lastSeason.homeFormWeightedGoalsAgainst;
+        this.awayFormWeightedGoalsAgainst = lastSeason.awayFormWeightedGoalsAgainst;
+        this.totalFormWeightedGoalsForHistory.addAll(lastSeason.totalFormWeightedGoalsForHistory.subList(lastSeason.totalFormWeightedGoalsForHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormWeightedGoalsForHistory.size()));
+        this.totalFormWeightedGoalsAgainstHistory.addAll(lastSeason.totalFormWeightedGoalsAgainstHistory.subList(lastSeason.totalFormWeightedGoalsAgainstHistory.size() - NUMB_GAMES_TO_COPY, lastSeason.totalFormWeightedGoalsAgainstHistory.size()));
+    }
+
     /*
      * GETTERS
      */
 
     public int getNumbGamesPlayed() {
-        return this.points.size();
+        return this.homeGamesPlayed + this.awayGamesPlayed;
     }
     public int getNumbGamesPlayed(GamesSelector gamesSelector) {
-        if (gamesSelector.getSetting() == 3) return this.points.size();
-        else {
-            ArrayList<HomeAwayWrapper> filteredList =  new ArrayList<>(this.points);
-            filteredList.removeIf(record -> gamesSelector.getSetting() == 1 ? record.isHome() : !record.isHome());
-
-            return filteredList.size();
-        }
+        if (gamesSelector.getSetting() == 1) return this.homeGamesPlayed;
+        else if (gamesSelector.getSetting() == 2) return this.awayGamesPlayed;
+        else return this.getNumbGamesPlayed();
     }
 
     public double getAvgGoalsFor(GamesSelector gamesSelector) {
