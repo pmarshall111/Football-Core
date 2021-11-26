@@ -93,8 +93,8 @@ public class DS_Update {
                     batchStatement.addBatch("UPDATE " + PredictionTable.getTableName() +
                             " SET " + PredictionTable.getColHOdds() + " = " + bookieOdds[0] + ", " +
                             PredictionTable.getColDOdds() + " = " + bookieOdds[1] + ", " +
-                            PredictionTable.getColAOdds() + " = " + bookieOdds[2] +
-                            PredictionTable.getColBookieName() + " = " + bookie +
+                            PredictionTable.getColAOdds() + " = " + bookieOdds[2] + ", " +
+                            PredictionTable.getColBookieName() + " = '" + bookie + "' " +
                             " WHERE " + PredictionTable.getColMatchId() + " = " + mtp.getDatabase_id());
                 }
             }
