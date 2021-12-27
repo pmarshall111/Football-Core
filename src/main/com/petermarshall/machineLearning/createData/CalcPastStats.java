@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class CalcPastStats {
     //constants to use when calculating a teams form
     public static final int NUMB_SEASONS_HISTORY = 2;
-    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
+    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 12; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
     public static final int COMPARE_LAST_N_GAMES = 5;
 
     //will do it for all leagues in db.
@@ -77,6 +77,9 @@ public class CalcPastStats {
         return CreateFeatures.getFeaturesExtendedOld(homeTeam, homeSeason, awayTeam, awaySeason,
                 homePlayersNames, awayPlayersNames,
                 seasonYearStart, result);
+//        return CreateFeatures.getFeaturesSmallMakesSense(homeTeam, homeSeason, awayTeam, awaySeason,
+//                homePlayersNames, awayPlayersNames,
+//                seasonYearStart, result);
     }
 
     private static ArrayList<Double> getFeaturesNoLineups(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
@@ -179,8 +182,8 @@ public class CalcPastStats {
         if (data.getHomeScore() != -1 && data.getAwayScore() != -1) {
             //saving stats to season and team history
 
-            if (homeSeason.getNumbGamesPlayed() == 0) initialiseNewSeason(homeTeam, homeSeason);
-            if (awaySeason.getNumbGamesPlayed() == 0) initialiseNewSeason(awayTeam, awaySeason);
+//            if (homeSeason.getNumbGamesPlayed() == 0) initialiseNewSeason(homeTeam, homeSeason);
+//            if (awaySeason.getNumbGamesPlayed() == 0) initialiseNewSeason(awayTeam, awaySeason);
             addStatsToTeamsSeasons(data, homeSeason, awaySeason, homeLineup, awayLineup);
             homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
             awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
