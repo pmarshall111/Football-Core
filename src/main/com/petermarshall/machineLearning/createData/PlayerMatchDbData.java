@@ -27,6 +27,13 @@ public class PlayerMatchDbData {
     private int matchId;
     private int seasonYearStart;
     private String leagueName;
+    private String playerPosition;
+    private double homePossession;
+    private double awayPossession;
+    private int homeShots;
+    private int awayShots;
+    private int homeShotsOnTarget;
+    private int awayShotsOnTarget;
 
     public PlayerMatchDbData(ResultSet rs) throws SQLException {
         this.name = rs.getString(1);
@@ -47,6 +54,13 @@ public class PlayerMatchDbData {
         this.matchId = rs.getInt(16);
         this.seasonYearStart = rs.getInt(17);
         this.leagueName = rs.getString(18);
+        this.playerPosition = rs.getString(19);
+        this.homePossession = rs.getDouble(20);
+        this.awayPossession = rs.getDouble(21);
+        this.homeShots = rs.getInt(22);
+        this.awayShots = rs.getInt(23);
+        this.homeShotsOnTarget = rs.getInt(24);
+        this.awayShotsOnTarget = rs.getInt(25);
     }
 
     public boolean playsForHomeTeam() {
@@ -123,6 +137,34 @@ public class PlayerMatchDbData {
 
     public String getLeagueName() {
         return leagueName;
+    }
+
+    public String getPlayerPosition() {
+        return playerPosition;
+    }
+
+    public double getHomePossession() {
+        return homePossession;
+    }
+
+    public double getAwayPossession() {
+        return awayPossession;
+    }
+
+    public int getHomeShots() {
+        return homeShots;
+    }
+
+    public int getAwayShots() {
+        return awayShots;
+    }
+
+    public int getHomeShotsOnTarget() {
+        return homeShotsOnTarget;
+    }
+
+    public int getAwayShotsOnTarget() {
+        return awayShotsOnTarget;
     }
 
     public int getResult() {

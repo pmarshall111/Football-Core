@@ -24,6 +24,9 @@ public class TrainingTeamsSeason {
     private ArrayList<HomeAwayWrapper> homeAwayPointsPerGameOfOpponentsWholeSeason; //contains opponents Home/Away PPG.
     private ArrayList<HomeAwayWrapper> totalPointsPerGameOfOpponentsLast5;
     private ArrayList<HomeAwayWrapper> homeAwayPointsPerGameOfOpponentsLast5;
+    private ArrayList<HomeAwayWrapper> possession;
+    private ArrayList<HomeAwayWrapper> shots;
+    private ArrayList<HomeAwayWrapper> shotsOnTarget;
 
     //default values. calculated over 7718 games in db at end of 18/19 season.
     public static final double AVG_GOALS_PER_GAME = 1.34;
@@ -113,6 +116,9 @@ public class TrainingTeamsSeason {
         this.homeAwayPointsPerGameOfOpponentsWholeSeason = new ArrayList<>();
         this.totalPointsPerGameOfOpponentsLast5 = new ArrayList<>();
         this.homeAwayPointsPerGameOfOpponentsLast5 = new ArrayList<>();
+        this.possession = new ArrayList<>();
+        this.shots = new ArrayList<>();
+        this.shotsOnTarget = new ArrayList<>();
     }
 
     /*
@@ -134,7 +140,8 @@ public class TrainingTeamsSeason {
                              double oppositionAvgHomeAwayXGF, double oppositionAvgHomeAwayXGA, double oppositionWeightedTotalXGF, double oppositionWeightedTotalXGA,
                              double oppositionWeightedHomeAwayXGF, double oppositionWeightedHomeAwayXGA, double opponentTotalWholeSeasonPPG, double opponentHomeAwayWholeSeasonPPG,
                              double opponentTotalLast5PPG, double opponentHomeAwayLast5PPG, double oppositionWeightedTotalGF,
-                             double oppositionWeightedTotalGA, double oppositionWeightedHomeAwayGoalsFor, double oppositionWeightedHomeAwayGoalsAgainst) {
+                             double oppositionWeightedTotalGA, double oppositionWeightedHomeAwayGoalsFor, double oppositionWeightedHomeAwayGoalsAgainst,
+                             double possession, int shots, int shotsOnTarget) {
         if (isHomeTeam) this.homeGamesPlayed++;
         else this.awayGamesPlayed++;
 
@@ -223,15 +230,19 @@ public class TrainingTeamsSeason {
                 this.awayFormWeightedXGA = calcExponWeightedAvg(this.awayFormWeightedXGA, xGA - oppositionWeightedHomeAwayXGF);
             }
         }
+
+        this.possession.add(new HomeAwayWrapper(isHomeTeam, possession));
+        this.shots.add(new HomeAwayWrapper(isHomeTeam, shots));
+        this.shotsOnTarget.add(new HomeAwayWrapper(isHomeTeam, shotsOnTarget));
     }
 
-    public void addPlayerStats(String playerName, int minsPlayed, double rating, boolean homeTeam) {
+    public void addPlayerStats(String playerName, int minsPlayed, double rating, boolean homeTeam, String playerPosition) {
         Player player = this.playerStats.getOrDefault(playerName, null);
         if (player == null) {
-            this.playerStats.put(playerName, new Player(playerName, minsPlayed, rating, homeTeam));
+            this.playerStats.put(playerName, new Player(playerName, minsPlayed, rating, homeTeam, playerPosition));
         }
         else {
-            player.addMatchMinsRating(minsPlayed, rating, homeTeam);
+            player.addMatchMinsRating(minsPlayed, rating, homeTeam, playerPosition);
         }
     }
 
@@ -252,6 +263,9 @@ public class TrainingTeamsSeason {
         this.homeAwayPointsPerGameOfOpponentsWholeSeason.addAll(lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.subList(lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.size() - NUMB_GAMES_TO_COPY, lastSeason.homeAwayPointsPerGameOfOpponentsWholeSeason.size()));
         this.totalPointsPerGameOfOpponentsLast5.addAll(lastSeason.totalPointsPerGameOfOpponentsLast5.subList(lastSeason.totalPointsPerGameOfOpponentsLast5.size() - NUMB_GAMES_TO_COPY, lastSeason.totalPointsPerGameOfOpponentsLast5.size()));
         this.homeAwayPointsPerGameOfOpponentsLast5.addAll(lastSeason.homeAwayPointsPerGameOfOpponentsLast5.subList(lastSeason.homeAwayPointsPerGameOfOpponentsLast5.size() - NUMB_GAMES_TO_COPY, lastSeason.homeAwayPointsPerGameOfOpponentsLast5.size()));
+        this.possession.addAll(lastSeason.possession.subList(lastSeason.possession.size() - NUMB_GAMES_TO_COPY, lastSeason.possession.size()));
+        this.shots.addAll(lastSeason.shots.subList(lastSeason.shots.size() - NUMB_GAMES_TO_COPY, lastSeason.shots.size()));
+        this.shotsOnTarget.addAll(lastSeason.shotsOnTarget.subList(lastSeason.shotsOnTarget.size() - NUMB_GAMES_TO_COPY, lastSeason.shotsOnTarget.size()));
 
         this.totalWeightedXGF = lastSeason.totalWeightedXGF;
         this.homeWeightedXGF = lastSeason.homeWeightedXGF;
@@ -556,6 +570,58 @@ public class TrainingTeamsSeason {
         return calcHomeAwayAvg(ppgOfOpponentsLast5Games, gamesSelector.getSetting(), AVG_PPG, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
     }
 
+    public double getAvgPossession(GamesSelector gamesSelector) {
+        return calcHomeAwayAvg(this.possession, gamesSelector.getSetting(), 50, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgPossessionLast5Games(GamesSelector gamesSelector, int lastNRecords) {
+        ArrayList<HomeAwayWrapper> possessionLast5 = getLastNRecords(gamesSelector, this.possession , lastNRecords);
+        return calcHomeAwayAvg(possessionLast5, gamesSelector.getSetting(), 50, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgShots(GamesSelector gamesSelector) {
+        return calcHomeAwayAvg(this.shots, gamesSelector.getSetting(), 13, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgShotsLast5(GamesSelector gamesSelector, int lastNRecords) {
+        ArrayList<HomeAwayWrapper> shotsLast5 = getLastNRecords(gamesSelector, this.shots , lastNRecords);
+        return calcHomeAwayAvg(shotsLast5, gamesSelector.getSetting(), 13, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgShotsOnTarget(GamesSelector gamesSelector) {
+        return calcHomeAwayAvg(this.shotsOnTarget, gamesSelector.getSetting(), 4.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAvgShotsOnTargetLast5(GamesSelector gamesSelector, int lastNRecords) {
+        ArrayList<HomeAwayWrapper> shotsOnTargetLast5 = getLastNRecords(gamesSelector, this.shotsOnTarget , lastNRecords);
+        return calcHomeAwayAvg(shotsOnTargetLast5, gamesSelector.getSetting(), 4.5, ADD_DEFAULT_VALUE_UNTIL_N_LENGTH);
+    }
+
+    public double getAttackPlayerRating() {
+        return this.getRatingAtPosition(new ArrayList<>() {{add("F");}});
+    }
+
+    public double getMidfieldPlayerRating() {
+        return this.getRatingAtPosition(new ArrayList<>() {{add("M");}});
+    }
+
+    public double getDefensePlayerRating() {
+        return this.getRatingAtPosition(new ArrayList<>() {{add("D"); add("G");}});
+    }
+
+
+    private double getRatingAtPosition(ArrayList<String> positions) {
+        double totalMinsInPosition = 0;
+        double totalMinsWeightedRating = 0;
+        for (Player player: this.playerStats.values()) {
+            if (positions.contains(player.getPlayerPosition())) {
+                totalMinsWeightedRating += player.getSummedWeightedOvrRating();
+                totalMinsInPosition += player.getOvrMins();
+            }
+        }
+        if (totalMinsInPosition == 0) return 0;
+        else return totalMinsWeightedRating/totalMinsInPosition;
+    }
 
     /*
      * Mins weighted means the weight of the rating is determined by the number of mins he played in the game. If he played 2 games, one he
@@ -565,9 +631,6 @@ public class TrainingTeamsSeason {
      * minsWeightedRating is basically average rating per minute in a match
      */
     public double getMinsWeightedLineupRating (GamesSelector gamesSelector, ArrayList<String> startingXI) {
-        if (startingXI.size() != 11) {
-            throw new RuntimeException();
-        }
         double weightedRating = 0d;
         int teamMinsPlayed = 0;
         int numbTeammatesNotYetPlayed = 0;
@@ -603,9 +666,6 @@ public class TrainingTeamsSeason {
      * Gets the average rating of the lineup based on each players average rating per game.
      */
     public double getGamesWeightedLineupRating (GamesSelector gamesSelector, ArrayList<String> startingXI) {
-        if (startingXI.size() != 11) {
-            throw new RuntimeException();
-        }
         double weightedRating = 0d;
         for (String p: startingXI) {
             Player player = this.playerStats.getOrDefault(p, null);

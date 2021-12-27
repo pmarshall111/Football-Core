@@ -62,10 +62,10 @@ public class TrainingTeamsSeasonTest {
             double rating = Math.min(10, 5 + 10 * i);
             for (int p = 0; p < 11; p++) {
                 String pName = PLAYER_NAMES[p];
-                Player player = new Player(pName, mins, rating, isHome);
+                Player player = new Player(pName, mins, rating, isHome, "_");
                 pRatings.put(pName, player);
             }
-            pRatings.put("Sub", new Player("Sub", 20, 6, isHome));
+            pRatings.put("Sub", new Player("Sub", 20, 6, isHome, "_"));
             if (isHome) {
                 HOMERATINGS[i] = pRatings;
             } else {

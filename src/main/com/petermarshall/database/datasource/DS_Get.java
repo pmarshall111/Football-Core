@@ -225,7 +225,14 @@ public class DS_Get {
                     MatchTable.getTableName() + "." + MatchTable.getColFirstScorer() + ", " +
                     MatchTable.getTableName() + "._id, " +
                     MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", " +
-                    LeagueTable.getTableName() + "." + LeagueTable.getColName() +
+                    LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " +
+                    PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPosition() + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_HOME_POSESSION + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_AWAY_POSESSION + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_HOME_TOTAL_SHOTS + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_AWAY_TOTAL_SHOTS + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_HOME_SHOTS_ON_TARGET + ", " +
+                    MatchTable.getTableName() + "." + MatchTable.COL_AWAY_SHOTS_ON_TARGET +
                     " FROM " + PlayerRatingTable.getTableName() +
                     " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + PLAYERS_TEAM + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColTeamId() + " = " + PLAYERS_TEAM + "._id" +

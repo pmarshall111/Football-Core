@@ -95,7 +95,7 @@ public class FeatureConsistency {
         String playersTeam = "players_team", home = "home", away = "away";
         ResultSet rs = stmt.executeQuery("SELECT " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColPlayerName() + ", " +
                 PlayerRatingTable.getColMins() + ", " + PlayerRatingTable.getColRating() + ", " +
-                playersTeam + "." + TeamTable.getColTeamName() + " FROM " + PlayerRatingTable.getTableName() +
+                playersTeam + "." + TeamTable.getColTeamName() + ", " + PlayerRatingTable.getColPosition() + " FROM " + PlayerRatingTable.getTableName() +
                 " INNER JOIN " + MatchTable.getTableName() + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColMatchId() + " = " + MatchTable.getTableName() + "._id" +
                 " INNER JOIN " + TeamTable.getTableName() + " AS " + playersTeam + " ON " + PlayerRatingTable.getTableName() + "." + PlayerRatingTable.getColTeamId() + " = " + playersTeam + "._id" +
                 " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + home + "._id" +
@@ -112,8 +112,9 @@ public class FeatureConsistency {
             int mins = rs.getInt(2);
             double rating = rs.getDouble(3);
             String team = rs.getString(4);
+            String position = rs.getString(5);
             boolean isHomeTeam = team.equals(mtp.getHomeTeamName());
-            Player p = new Player(playerName, mins, rating, isHomeTeam);
+            Player p = new Player(playerName, mins, rating, isHomeTeam, position);
             if (isHomeTeam) {
                 homePlayers.put(playerName, p);
             } else {

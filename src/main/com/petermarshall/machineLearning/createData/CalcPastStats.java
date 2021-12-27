@@ -147,9 +147,9 @@ public class CalcPastStats {
             }
 
             if (data.playsForHomeTeam()) {
-                homeLineup.put(data.getName(), new Player(data.getName(), data.getMins(), data.getRating(), true));
+                homeLineup.put(data.getName(), new Player(data.getName(), data.getMins(), data.getRating(), true, data.getPlayerPosition()));
             } else {
-                awayLineup.put(data.getName(), new Player(data.getName(), data.getMins(), data.getRating(), false));
+                awayLineup.put(data.getName(), new Player(data.getName(), data.getMins(), data.getRating(), false, data.getPlayerPosition()));
             }
             lastMatchId = data.getMatchId();
             lastRecordData = data;
@@ -280,11 +280,14 @@ public class CalcPastStats {
                 awayWeightedTotalGoalsFor,
                 awayWeightedTotalGoalsAgainst,
                 awayWeightedAwayGoalsFor,
-                awayWeightedAwayGoalsAgainst);
+                awayWeightedAwayGoalsAgainst,
+                data.getHomePossession(),
+                data.getHomeShots(),
+                data.getHomeShotsOnTarget());
 
         ArrayList<Player> homePlayerRatings = new ArrayList<>(homeLineup.values());
         homePlayerRatings.forEach(player -> {
-            homeSeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), true);
+            homeSeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), true, player.getPlayerPosition());
         });
 
         awaySeason.addGameStats(data.getAwayScore(),
@@ -313,11 +316,14 @@ public class CalcPastStats {
                 homeWeightedTotalGoalsFor,
                 homeWeightedTotalGoalsAgainst,
                 homeWeightedHomeGoalsFor,
-                homeWeightedHomeGoalsAgainst);
+                homeWeightedHomeGoalsAgainst,
+                data.getAwayPossession(),
+                data.getAwayShots(),
+                data.getAwayShotsOnTarget());
 
         ArrayList<Player> awayPlayerRatings = new ArrayList<>(awayLineup.values());
         awayPlayerRatings.forEach(player -> {
-            awaySeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), false);
+            awaySeason.addPlayerStats(player.getPlayerName(), player.getOvrMins(), player.getAvgOvrRating(), false, player.getPlayerPosition());
         });
     }
 
