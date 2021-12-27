@@ -136,11 +136,14 @@ public class DS_Insert {
                   statement.addBatch("INSERT IGNORE INTO " + MatchTable.getTableName() + " (" + MatchTable.getColDate() + ", " +
                           MatchTable.getColHometeamId() + ", " + MatchTable.getColAwayteamId() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() + ", " +
                           MatchTable.getColHomeScore() + ", " + MatchTable.getColAwayScore() + ", " + MatchTable.getColHomeWinOdds() + ", " + MatchTable.getColAwayWinOdds() + ", " +
-                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", " +
-                          MatchTable.getColSofascoreId() + ", _id) " +
+                          MatchTable.getColDrawOdds() + ", " + MatchTable.getColFirstScorer() + ", " + MatchTable.getColSeasonYearStart() + ", " + MatchTable.getColSofascoreId() + ", " +
+                          MatchTable.COL_HOME_POSESSION + ", " + MatchTable.COL_AWAY_POSESSION + ", " + MatchTable.COL_HOME_TOTAL_SHOTS + ", " + MatchTable.COL_AWAY_TOTAL_SHOTS + ", " +
+                          MatchTable.COL_HOME_SHOTS_ON_TARGET + ", " + MatchTable.COL_AWAY_SHOTS_ON_TARGET + ", _id) " +
                           "VALUES ( '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " + homeTeamId + ", " + awayTeamId + ", " + match.getHomeXGF() + ", " + match.getAwayXGF() + ", " +
                           match.getHomeScore() + ", " + match.getAwayScore() + ", " + match.getHomeDrawAwayOdds().get(0) + ", " + match.getHomeDrawAwayOdds().get(2) + ", " +
-                          match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer().getSqlIntCode() + ", " + seasonYearStart + ", " + match.getSofaScoreGameId() + ", " + ++MATCH_ID + ")");
+                          match.getHomeDrawAwayOdds().get(1) + ", " + match.getFirstScorer().getSqlIntCode() + ", " + seasonYearStart + ", " + match.getSofaScoreGameId() + ", " +
+                          match.getHomePossession() + ", " + match.getAwayPossession() + ", " + match.getHomeShots() + ", " + match.getAwayShots() + ", " +
+                          match.getHomeShotsOnTarget() + ", " + match.getAwayShotsOnTarget() + ", " + ++MATCH_ID + ")");
 
                   addPlayerRatingsToBatch(statement, match.getHomePlayerRatings(), MATCH_ID, homeTeamId);
                   addPlayerRatingsToBatch(statement, match.getAwayPlayerRatings(), MATCH_ID, awayTeamId);
@@ -153,7 +156,7 @@ public class DS_Insert {
 
         } catch (SQLException e) {
             Logger logger = LogManager.getLogger(DS_Insert.class);
-            logger.error("Error inserting into database: e.getMessage()");
+            logger.error("Error inserting into database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -163,9 +166,9 @@ public class DS_Insert {
             try {
                 batchStmt.addBatch("INSERT IGNORE INTO " + PlayerRatingTable.getTableName() +
                         " (" + PlayerRatingTable.getColPlayerName() + ", " + PlayerRatingTable.getColRating() + ", " + PlayerRatingTable.getColMins() + ", " +
-                        PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ") " +
+                        PlayerRatingTable.getColMatchId() + ", " + PlayerRatingTable.getColTeamId() + ", " + PlayerRatingTable.getColPosition() + ") " +
                         "VALUES ('" + rating.getName() + "', " + rating.getRating() + ", " + rating.getMinutesPlayed() + ", " +
-                        matchId + ", " + teamId + ")");
+                        matchId + ", " + teamId + ", '" + rating.getPosition() + "')");
             } catch (SQLException e) {
                 e.printStackTrace();
             }

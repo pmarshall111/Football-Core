@@ -19,6 +19,12 @@ public class MatchTable {
     public static final String COL_SEASON_YEAR_START = "season_year_start";
     public static final String COL_PREDICTED_LIVE = "predictedLive";
     public static final String COL_SOFASCORE_ID = "sofascore_id";
+    public static final String COL_HOME_POSESSION = "home_possession";
+    public static final String COL_AWAY_POSESSION = "away_possession";
+    public static final String COL_HOME_TOTAL_SHOTS = "home_total_shots";
+    public static final String COL_AWAY_TOTAL_SHOTS = "away_total_shots";
+    public static final String COL_HOME_SHOTS_ON_TARGET = "home_shots_on_target";
+    public static final String COL_AWAY_SHOTS_ON_TARGET = "away_shots_on_target";
 
     public static String getColSofascoreId() {
         return COL_SOFASCORE_ID;

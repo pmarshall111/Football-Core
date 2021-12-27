@@ -351,8 +351,18 @@ public class TrainingTeamsSeason {
         return calcHomeAwayAvg(this.xGF, gamesSelector.getSetting(), AVG_XG_PER_GAME);
     }
 
+    public double getAvgXGFOverLastXGames(GamesSelector gamesSelector, int lastXGames) {
+        ArrayList<HomeAwayWrapper> lastNRecords = getLastNRecords(gamesSelector, this.xGF, lastXGames);
+        return calcHomeAwayAvg(lastNRecords, gamesSelector.getSetting(), AVG_GOALS_PER_GAME, lastXGames);
+    }
+
     public double getAvgXGA(GamesSelector gamesSelector) {
         return calcHomeAwayAvg(this.xGA, gamesSelector.getSetting(), AVG_XG_PER_GAME);
+    }
+
+    public double getAvgXGAOverLastXGames(GamesSelector gamesSelector, int lastXGames) {
+        ArrayList<HomeAwayWrapper> lastNRecords = getLastNRecords(gamesSelector, this.xGA, lastXGames);
+        return calcHomeAwayAvg(lastNRecords, gamesSelector.getSetting(), AVG_GOALS_PER_GAME, lastXGames);
     }
 
     public double getWeightedAvgXGF (GamesSelector gamesSelector) {
@@ -685,7 +695,7 @@ public class TrainingTeamsSeason {
     }
 
     public static double calcExponWeightedAvg(double currAvg, double newEntry) {
-        double ALPHA = 0.8;
+        double ALPHA = 0.75;
         return ALPHA * currAvg + (1-ALPHA)*newEntry;
     }
 }

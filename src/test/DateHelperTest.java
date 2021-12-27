@@ -33,10 +33,10 @@ public class DateHelperTest {
         try {
             Date firstDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(d0);
             Date lastDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(d1);
-            int mins = DateHelper.findMinutesBetweenDates(firstDate, lastDate);
+            int mins = DateHelper.findMinutesToAddToDate1ToGetDate2(firstDate, lastDate);
             Assert.assertEquals(55, mins);
 
-            int minsWhenPutDatesInWrongOrder = DateHelper.findMinutesBetweenDates(lastDate, firstDate);
+            int minsWhenPutDatesInWrongOrder = DateHelper.findMinutesToAddToDate1ToGetDate2(lastDate, firstDate);
             Assert.assertEquals(0, minsWhenPutDatesInWrongOrder);
         } catch (Exception e) {
             fail();

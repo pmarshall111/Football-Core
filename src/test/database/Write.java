@@ -222,7 +222,7 @@ public class Write {
             String newPlayerName = "Peter Marshall";
             HashMap<String, PlayerRating> pRatings = new HashMap<>();
             pRatings.put(playerName, pr);
-            pRatings.put(newPlayerName, new PlayerRating(90, 10, newPlayerName));
+            pRatings.put(newPlayerName, new PlayerRating(90, 10, newPlayerName, "D"));
             //try insert repeated & extra player
             DS_Insert.addPlayerRatingsToBatch(s, pRatings, matchId, teamId);
             s.executeBatch();

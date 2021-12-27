@@ -2,6 +2,7 @@ package com.petermarshall.scrape.classes;
 
 import com.petermarshall.database.FirstScorer;
 
+import java.text.ParseException;
 import java.util.*;
 
 public class Match {
@@ -19,6 +20,13 @@ public class Match {
     private ArrayList<Double> homeDrawAwayOdds;
     private int sofaScoreGameId;
     private boolean isPostponed = false;
+    private double homePossession;
+    private double awayPossession;
+    private int homeShots;
+    private int awayShots;
+    private int homeShotsOnTarget;
+    private int awayShotsOnTarget;
+
 
     /*
      * Constructor will be initialised by Understat scraper, which will first look at the dates source so we can get the team names + kickoff times.
@@ -151,5 +159,83 @@ public class Match {
 
     public void setPostponed(boolean postponed) {
         isPostponed = postponed;
+    }
+
+    public double getHomePossession() {
+        return homePossession;
+    }
+
+    public void setHomePossession(String homePossession) {
+        try {
+            this.homePossession = Double.parseDouble(homePossession);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
+    }
+
+    public double getAwayPossession() {
+        return awayPossession;
+    }
+
+    public void setAwayPossession(String awayPossession) {
+        try {
+            this.awayPossession = Double.parseDouble(awayPossession);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
+    }
+
+    public int getHomeShots() {
+        return homeShots;
+    }
+
+    public void setHomeShots(String homeShots) {
+        try {
+            this.homeShots = Integer.parseInt(homeShots);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
+    }
+
+    public int getAwayShots() {
+        return awayShots;
+    }
+
+    public void setAwayShots(String awayShots) {
+        try {
+            this.awayShots = Integer.parseInt(awayShots);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
+    }
+
+    public int getHomeShotsOnTarget() {
+        return homeShotsOnTarget;
+    }
+
+    public void setHomeShotsOnTarget(String homeShotsOnTarget) {
+        try {
+            this.homeShotsOnTarget = Integer.parseInt(homeShotsOnTarget);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
+    }
+
+    public int getAwayShotsOnTarget() {
+        return awayShotsOnTarget;
+    }
+
+    public void setAwayShotsOnTarget(String awayShotsOnTarget) {
+        try {
+            this.awayShotsOnTarget = Integer.parseInt(awayShotsOnTarget);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
+        }
     }
 }

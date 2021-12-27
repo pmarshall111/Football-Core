@@ -163,7 +163,7 @@ public class DateHelper {
     /*
      * Date comparisons
      */
-    public static int findMinutesBetweenDates(Date currentTime, Date futureTime) {
+    public static int findMinutesToAddToDate1ToGetDate2(Date currentTime, Date futureTime) {
         if (futureTime.before(currentTime)) return 0;
         else {
             int minsDifference = 0;

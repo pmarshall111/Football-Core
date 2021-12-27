@@ -28,6 +28,7 @@ public class WriteTrainingData {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeatures();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + csv; // adding the score to the front of the csv for the cost function
                 featuresWriter.append(csv);
                 String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
                 oddsWriter.append(odds);
@@ -48,6 +49,7 @@ public class WriteTrainingData {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeaturesNoLineups();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + csv; // adding the score to the front of the csv for the cost function
                 featuresWriter.append(csv);
                 String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
                 oddsWriter.append(odds);

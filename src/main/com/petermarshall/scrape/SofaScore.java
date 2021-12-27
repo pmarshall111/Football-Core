@@ -14,7 +14,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -31,6 +30,7 @@ public class SofaScore {
     private static final String LINEUPS_ADD_ON = "/lineups";
     private static final String ODDS_ADD_ON = "/odds/1/all";
     private static final String INCIDENTS_ADD_ON = "/incidents";
+    private static final String STATISTICS_ADD_ON = "/statistics";
 
     /*
      * Creating scraping URLs
@@ -53,6 +53,7 @@ public class SofaScore {
     private static String getTodaysGamesUrl(String yyyymmdd) { //yyyymmdd must have a - between parts of the date e.g. 2021-08-26
         return API_URL + "/sport/football/scheduled-events/" + yyyymmdd;
     }
+    private static String getStatisticsUrl(int gameId) { return API_URL + EVENT_ADD_ON + gameId + STATISTICS_ADD_ON; }
 
 
     /*
@@ -159,7 +160,7 @@ public class SofaScore {
             long timeStamp = (long) event.get("startTimestamp");
             Date kickOff = DateHelper.getDateFromSofascoreTimestamp(timeStamp);
             Date now = new Date();
-            int minsBetweenDates = DateHelper.findMinutesBetweenDates(now, kickOff);
+            int minsBetweenDates = DateHelper.findMinutesToAddToDate1ToGetDate2(now, kickOff);
             boolean kickOffIsInPast =  now.after(kickOff);
 
             boolean shouldHaveLineups = kickOffIsInPast || minsBetweenDates < 60; //lineups are announced 1hr before kickoff.
@@ -199,6 +200,7 @@ public class SofaScore {
             if (isFullTime) {
                 addPlayerRatingsToGame(match, gameId);
                 addFirstGoalScorer(match, gameId);
+                addMatchStatistics(match, gameId);
             }
         } catch(ParseException e) {
             System.out.println(e.getMessage());
@@ -302,12 +304,13 @@ public class SofaScore {
             playerName = playerName.replaceAll("'", "");
 
             JSONObject playerStats = (JSONObject) playerObj.get("statistics");
+            String playerPosition = playerObj.getOrDefault("position", "null").toString();
             if (playerStats.containsKey("rating") && playerStats.containsKey("minutesPlayed")) {
                 double rating = Double.parseDouble(playerStats.get("rating") + "");
                 long minsPlayed = (long) playerStats.get("minutesPlayed");
                 if (rating > 0 && minsPlayed >= 10) {
                     try {
-                        PlayerRating playerRating = new PlayerRating(Integer.parseInt(minsPlayed + ""), rating, playerName);
+                        PlayerRating playerRating = new PlayerRating(Integer.parseInt(minsPlayed + ""), rating, playerName, playerPosition);
                         players.put(playerName, playerRating);
                     } catch (NumberFormatException e) {
                         System.out.println(rating);
@@ -361,6 +364,67 @@ public class SofaScore {
             }
 
             match.setFirstScorer(firstScorer);
+
+        } catch (Exception e) {
+            System.out.println("Exception for URL: " + url);
+            e.printStackTrace();
+        }
+    }
+
+    public static void addMatchStatistics(Match match, int gameId) {
+        String url = getStatisticsUrl(gameId);
+        try {
+            String jsonString = GetJsonHelper.jsonGetRequest(url);
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonString);
+
+            JSONArray statistics = (JSONArray) json.get("statistics");
+            Iterator statsIterator = statistics.iterator();
+
+            while (statsIterator.hasNext()) {
+                JSONObject stats = (JSONObject) statsIterator.next();
+                if (stats.get("period").equals("ALL")) {
+                    JSONArray groups = (JSONArray) stats.get("groups");
+                    Iterator groupsIterator = groups.iterator();
+
+                    while (groupsIterator.hasNext()) {
+                        JSONObject group = (JSONObject) groupsIterator.next();
+                        String category = group.get("groupName").toString();
+                        JSONArray items = (JSONArray) group.get("statisticsItems");
+                        Iterator itemsIterator = items.iterator();
+                        if (category.equals("Possession")) {
+                            while (itemsIterator.hasNext()) {
+                                JSONObject item = (JSONObject) itemsIterator.next();
+                                String itemName = item.get("name").toString();
+                                if (itemName.equals("Ball possession")) {
+                                    String home = item.get("home").toString();
+                                    home = home.substring(0, home.length()-1);
+                                    String away = item.get("away").toString();
+                                    away = away.substring(0, away.length()-1);
+                                    match.setHomePossession(home);
+                                    match.setAwayPossession(away);
+                                }
+                            }
+                        } else if (category.equals("Shots")) {
+                            while (itemsIterator.hasNext()) {
+                                JSONObject item = (JSONObject) itemsIterator.next();
+                                String itemName = item.get("name").toString();
+                                if (itemName.equalsIgnoreCase("Total shots")) {
+                                    String home = item.get("home").toString();
+                                    String away = item.get("away").toString();
+                                    match.setHomeShots(home);
+                                    match.setAwayShots(away);
+                                } else if (itemName.equalsIgnoreCase("Shots on target")) {
+                                    String home = item.get("home").toString();
+                                    String away = item.get("away").toString();
+                                    match.setHomeShotsOnTarget(home);
+                                    match.setAwayShotsOnTarget(away);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
         } catch (Exception e) {
             System.out.println("Exception for URL: " + url);

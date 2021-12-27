@@ -96,6 +96,12 @@ public class DS_Main {
                     MatchTable.getColSeasonYearStart() + " int NOT NULL, _id int NOT NULL, " +
                     MatchTable.getColPredictedLive() + " int DEFAULT NULL, " +
                     MatchTable.getColSofascoreId() + " int DEFAULT NULL, " +
+                    MatchTable.COL_HOME_POSESSION + " double DEFAULT NULL, " +
+                    MatchTable.COL_AWAY_POSESSION + " double DEFAULT NULL, " +
+                    MatchTable.COL_HOME_TOTAL_SHOTS + " int DEFAULT NULL, " +
+                    MatchTable.COL_AWAY_TOTAL_SHOTS + " int DEFAULT NULL, " +
+                    MatchTable.COL_HOME_SHOTS_ON_TARGET + " int DEFAULT NULL, " +
+                    MatchTable.COL_AWAY_SHOTS_ON_TARGET + " int DEFAULT NULL, " +
                     "PRIMARY KEY(_id), " +
                     "UNIQUE (" + MatchTable.getColHometeamId() + "," + MatchTable.getColAwayteamId() + "," + MatchTable.getColSeasonYearStart() + "), " +
                     "FOREIGN KEY (" + MatchTable.getColAwayteamId() + ") REFERENCES " + TeamTable.getTableName() + "(_id), " +
@@ -105,8 +111,10 @@ public class DS_Main {
             statement.execute("CREATE TABLE IF NOT EXISTS " + PlayerRatingTable.getTableName() + " (" +
                     PlayerRatingTable.getColMins() + " int NOT NULL, " +
                     PlayerRatingTable.getColRating() + " double NOT NULL, " +
-                    PlayerRatingTable.getColMatchId() + " int NOT NULL, " + PlayerRatingTable.getColTeamId() + " int NOT NULL, " +
+                    PlayerRatingTable.getColMatchId() + " int NOT NULL, " +
+                    PlayerRatingTable.getColTeamId() + " int NOT NULL, " +
                     PlayerRatingTable.getColPlayerName() + " text NOT NULL, " +
+                    PlayerRatingTable.getColPosition() + " text, " +
                     "UNIQUE KEY unique_player_rating (" + PlayerRatingTable.getColMatchId() + "," + PlayerRatingTable.getColPlayerName() + "(50)," + PlayerRatingTable.getColTeamId() + ")," +
                     "KEY match_id_idx (" + PlayerRatingTable.getColMatchId() + "), " +
                     "KEY team_id_idx (" + PlayerRatingTable.getColTeamId() + "), " +

@@ -58,7 +58,7 @@ public class PredictTodaysGames {
 
 
             TimeUnit timeInMins = TimeUnit.MINUTES;
-            int minsTillRuntime = DateHelper.findMinutesBetweenDates(new Date(), scrapeTime);
+            int minsTillRuntime = DateHelper.findMinutesToAddToDate1ToGetDate2(new Date(), scrapeTime);
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
             scheduler.schedule(new Runnable() {

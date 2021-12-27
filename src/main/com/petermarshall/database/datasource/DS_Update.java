@@ -38,7 +38,10 @@ public class DS_Update {
                                     MatchTable.getColAwayWinOdds() + " = " + match.getAwayOdds() + ", " + MatchTable.getColFirstScorer() + " = " + match.getFirstScorer().getSqlIntCode() + ", " +
                                     MatchTable.getColDate() + " = '" + DateHelper.getSqlDate(match.getKickoffTime()) + "', " +
                                     MatchTable.getColSofascoreId() + " = " + match.getSofaScoreGameId() + ", " +
-                                    MatchTable.getColIsPostponed() + " = " + match.isPostponed() +
+                                    MatchTable.getColIsPostponed() + " = " + match.isPostponed() + ", " +
+                                    MatchTable.COL_HOME_POSESSION + " = " + match.getHomePossession() + ", " + MatchTable.COL_AWAY_POSESSION + " = " + match.getAwayPossession() + ", " +
+                                    MatchTable.COL_HOME_TOTAL_SHOTS + " = " + match.getHomeShots() + ", " + MatchTable.COL_AWAY_TOTAL_SHOTS + " = " + match.getAwayShots() + ", " +
+                                    MatchTable.COL_HOME_SHOTS_ON_TARGET + " = " + match.getHomeShotsOnTarget() + ", " + MatchTable.COL_AWAY_SHOTS_ON_TARGET + " = " + match.getAwayShotsOnTarget() +
                                     " WHERE _id = " + matchId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getHomePlayerRatings(), matchId, homeTeamId);
                             DS_Insert.addPlayerRatingsToBatch(batchStatement, match.getAwayPlayerRatings(), matchId, awayTeamId);

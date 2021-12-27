@@ -103,4 +103,12 @@ public class TrainingMatch {
     public int getGameId() {
         return gameId;
     }
+
+    public int getHomeScore() {
+        return homeScore;
+    }
+
+    public int getAwayScore() {
+        return awayScore;
+    }
 }

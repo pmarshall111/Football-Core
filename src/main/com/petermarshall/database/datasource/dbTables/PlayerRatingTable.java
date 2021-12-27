@@ -9,6 +9,7 @@ public class PlayerRatingTable {
     private static final String COL_PLAYER_NAME = "playerName";
     private static final String COL_MATCH_ID = "match_id";
     private static final String COL_TEAM_ID = "team_id";
+    private static final String COL_POSITION = "position";
 
     public static String getTableName() {
         return TABLE_NAME;
@@ -33,4 +34,9 @@ public class PlayerRatingTable {
     public static String getColMatchId() {
         return COL_MATCH_ID;
     }
+
+    public static String getColPosition() {
+        return COL_POSITION;
+    }
+
 }

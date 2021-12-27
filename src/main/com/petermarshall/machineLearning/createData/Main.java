@@ -44,9 +44,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Date removeBefore = null;
-        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "07", "20");
-        createOneBigFile(null, removeAfter, "allData.csv");
+//        Date removeBefore = null;
+//        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "07", "20");
+//        createOneBigFile(null, removeAfter, "allDataCarryOverLastSeason.csv");
 
 //        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
 //        Date removeAfter = null;
@@ -54,16 +54,18 @@ public class Main {
 //        createOneBigFile(removeBefore, null, "lastSeason_extended.csv");
 
 //        //just getting the results for the 2019-20 season.
-//        Date removeBefore = DateHelper.createDateyyyyMMdd("2019", "08", "01");
-//        Date removeAfter = DateHelper.createDateyyyyMMdd("2020", "08", "01");
-//        createOneBigFileWithGameIdAtEndOfRow(null, removeBefore, "train_up_to_2019.csv");
-//        createOneBigFileWithGameIdAtEndOfRow(removeBefore, removeAfter, "19-20_season.csv");
+        Date removeBefore = DateHelper.createDateyyyyMMdd("2019", "08", "01");
+        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
+        createOneBigFile(null, removeBefore, "toTrainOn_extended.csv");
+        createOneBigFile(removeBefore, removeAfter, "lastSeason_extended.csv");
 
         //just getting the results for the 2020-21 season.
 //        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
 //        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
-//        createOneBigFileWithGameIdAtEndOfRow(null, removeBefore, "train_up_to_2020.csv");
-//        createOneBigFileWithGameIdAtEndOfRow(removeBefore, removeAfter, "20-21_season.csv");
+//        createOneBigFile(null, removeBefore, "toTrainOn_extended.csv");
+//        createOneBigFile(removeBefore, removeAfter, "lastSeason_extended.csv");
+
+//        createOneBigFile(null, null, "allDataSPSS.csv");
     }
 
 }
