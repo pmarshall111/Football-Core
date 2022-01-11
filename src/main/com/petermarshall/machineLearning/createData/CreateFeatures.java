@@ -1,5 +1,6 @@
 package com.petermarshall.machineLearning.createData;
 
+import com.petermarshall.machineLearning.createData.classes.LeagueStatsForSeason;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
 import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
 import org.apache.logging.log4j.core.appender.AbstractWriterAppender;
@@ -402,6 +403,128 @@ public class CreateFeatures {
 //        features.add(homeSeason.getAvgNumberOfCleanSheets(ONLY_HOME_GAMES));
 //        features.add(awaySeason.getAvgNumberOfCleanSheets(ALL_GAMES));
 //        features.add(awaySeason.getAvgNumberOfCleanSheets(ONLY_AWAY_GAMES));
+
+        // additional features based on both the home and away team
+        // a predictor of the number of XG in the game
+        features.add((homeSeason.getAvgXGF(ONLY_HOME_GAMES) - awaySeason.getAvgXGA(ONLY_AWAY_GAMES)) - (awaySeason.getAvgXGF(ONLY_AWAY_GAMES) - homeSeason.getAvgXGA(ONLY_HOME_GAMES)));
+        features.add((homeSeason.getAvgXGF(ALL_GAMES) - awaySeason.getAvgXGA(ALL_GAMES)) - (awaySeason.getAvgXGF(ALL_GAMES) - homeSeason.getAvgXGA(ALL_GAMES)));
+        // same but for goals
+        features.add((homeSeason.getAvgGoalsFor(ONLY_HOME_GAMES) - awaySeason.getAvgGoalsAgainst(ONLY_AWAY_GAMES)) - (awaySeason.getAvgGoalsFor(ONLY_AWAY_GAMES) - homeSeason.getAvgGoalsAgainst(ONLY_HOME_GAMES)));
+        features.add((homeSeason.getAvgGoalsFor(ALL_GAMES) - awaySeason.getAvgGoalsAgainst(ALL_GAMES)) - (awaySeason.getAvgGoalsFor(ALL_GAMES) - homeSeason.getAvgGoalsAgainst(ALL_GAMES)));
+
+        // combined features using the form metrics
+        features.add((homeSeason.getFormGoalsFor(ALL_GAMES) - awaySeason.getFormGoalsAgainst(ALL_GAMES))
+                - (awaySeason.getFormGoalsFor(ALL_GAMES) - homeSeason.getFormGoalsAgainst(ALL_GAMES)));
+        features.add((homeSeason.getFormGoalsFor(ONLY_HOME_GAMES) - awaySeason.getFormGoalsAgainst(ONLY_AWAY_GAMES))
+                - (awaySeason.getFormGoalsFor(ONLY_AWAY_GAMES) - homeSeason.getFormGoalsAgainst(ONLY_HOME_GAMES)));
+        features.add((homeSeason.getFormXGF(ALL_GAMES) - awaySeason.getFormXGA(ALL_GAMES))
+                - (awaySeason.getFormXGF(ALL_GAMES) - homeSeason.getFormXGA(ALL_GAMES)));
+        features.add((homeSeason.getFormXGF(ONLY_HOME_GAMES) - awaySeason.getFormXGA(ONLY_AWAY_GAMES))
+                - (awaySeason.getFormXGF(ONLY_AWAY_GAMES) - homeSeason.getFormXGA(ONLY_HOME_GAMES)));
+        // combined features using the weighted metrics
+        features.add((homeSeason.getWeightedAvgGoalsFor(ALL_GAMES) - awaySeason.getWeightedAvgGoalsAgainst(ALL_GAMES))
+                - (awaySeason.getWeightedAvgGoalsFor(ALL_GAMES) - homeSeason.getWeightedAvgGoalsAgainst(ALL_GAMES)));
+        features.add((homeSeason.getWeightedAvgGoalsFor(ONLY_HOME_GAMES) - awaySeason.getWeightedAvgGoalsAgainst(ONLY_AWAY_GAMES))
+                - (awaySeason.getWeightedAvgGoalsFor(ONLY_AWAY_GAMES) - homeSeason.getWeightedAvgGoalsAgainst(ONLY_HOME_GAMES)));
+        features.add((homeSeason.getWeightedAvgXGF(ALL_GAMES) - awaySeason.getWeightedAvgXGA(ALL_GAMES))
+                - (awaySeason.getWeightedAvgXGF(ALL_GAMES) - homeSeason.getWeightedAvgXGA(ALL_GAMES)));
+        features.add((homeSeason.getWeightedAvgXGF(ONLY_HOME_GAMES) - awaySeason.getWeightedAvgXGA(ONLY_AWAY_GAMES))
+                - (awaySeason.getWeightedAvgXGF(ONLY_AWAY_GAMES) - homeSeason.getWeightedAvgXGA(ONLY_HOME_GAMES)));
+
+
+        // points compared to points of opposition faced
+        features.add(homeSeason.getAvgPoints(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES));
+        features.add(awaySeason.getAvgPoints(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES));
+        features.add((homeSeason.getAvgPoints(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES))
+                - (awaySeason.getAvgPoints(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES)));
+
+        // features to do with possession
+        features.add(homeSeason.getAvgPossession(ALL_GAMES));
+        features.add(awaySeason.getAvgPossession(ALL_GAMES));
+        // xg per possession
+        features.add(homeSeason.getAvgXGF(ALL_GAMES) / homeSeason.getAvgPossession(ALL_GAMES));
+        features.add(awaySeason.getAvgXGF(ALL_GAMES) / awaySeason.getAvgPossession(ALL_GAMES));
+
+
+        // features to do with player ratings
+        // avg rating of defense
+        features.add(homeSeason.getDefensePlayerRating());
+        features.add(awaySeason.getDefensePlayerRating());
+        // avg rating of mid
+        features.add(homeSeason.getMidfieldPlayerRating());
+        features.add(awaySeason.getMidfieldPlayerRating());
+        // avg rating of attack
+        features.add(homeSeason.getAttackPlayerRating());
+        features.add(awaySeason.getAttackPlayerRating());
+        // rating combinations
+        features.add(homeSeason.getDefensePlayerRating() - awaySeason.getAttackPlayerRating());
+        features.add(awaySeason.getDefensePlayerRating() - homeSeason.getAttackPlayerRating());
+        features.add(homeSeason.getMidfieldPlayerRating() - awaySeason.getMidfieldPlayerRating());
+
+        // features to do with shots on target
+        features.add(homeSeason.getAvgShots(ALL_GAMES));
+        features.add(awaySeason.getAvgShots(ALL_GAMES));
+        features.add(homeSeason.getAvgShotsOnTarget(ALL_GAMES));
+        features.add(awaySeason.getAvgShotsOnTarget(ALL_GAMES));
+        // avg xg of chances created.
+        features.add(homeSeason.getAvgXGF(ALL_GAMES) / homeSeason.getAvgShots(ALL_GAMES));
+        features.add(awaySeason.getAvgXGF(ALL_GAMES) / awaySeason.getAvgShots(ALL_GAMES));
+
+        // xg compared to goals
+        features.add(homeSeason.getAvgGoalsFor(ALL_GAMES) - homeSeason.getAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getAvgGoalsAgainst(ALL_GAMES) - homeSeason.getAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getAvgGoalsFor(ALL_GAMES) - awaySeason.getAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getAvgGoalsAgainst(ALL_GAMES) - awaySeason.getAvgXGA(ALL_GAMES));
+
+        // team strength features based on comparison to the rest of the league.
+        features.add(homeSeason.getHomeAttackStrength());
+        features.add(homeSeason.getHomeDefenseStrength());
+        features.add(awaySeason.getAwayAttackStrength());
+        features.add(awaySeason.getAwayDefenseStrength());
+        features.add((homeSeason.getHomeAttackStrength() - awaySeason.getAwayDefenseStrength()) - (awaySeason.getAwayAttackStrength() - homeSeason.getHomeDefenseStrength()));
+
+        // team strength using XG
+        features.add(homeSeason.getHomeXgAttackStrength());
+        features.add(homeSeason.getHomeXgDefenseStrength());
+        features.add(awaySeason.getAwayXgAttackStrength());
+        features.add(awaySeason.getAwayXgDefenseStrength());
+        features.add((homeSeason.getHomeXgAttackStrength() - awaySeason.getAwayXgDefenseStrength()) - (awaySeason.getAwayXgAttackStrength() - homeSeason.getHomeXgDefenseStrength()));
+
+        // last 5 goals compared to opponent strength
+        double last5HomeGoalsComparedToOpponentStrength = homeSeason.getAvgGoalsForLastXGames(ALL_GAMES, LAST_5) / homeSeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5AwayGoalsComparedToOpponentStrength = awaySeason.getAvgGoalsForLastXGames(ALL_GAMES, LAST_5) / awaySeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5HomeGoalsAgainstComparedToOpponentStrength = homeSeason.getAvgGoalsAgainstLastXGames(ALL_GAMES, LAST_5) / homeSeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5AwayGoalsAgainstComparedToOpponentStrength = awaySeason.getAvgGoalsAgainstLastXGames(ALL_GAMES, LAST_5) / awaySeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        features.add(last5HomeGoalsComparedToOpponentStrength);
+        features.add(last5AwayGoalsComparedToOpponentStrength);
+        features.add((last5HomeGoalsComparedToOpponentStrength - last5AwayGoalsAgainstComparedToOpponentStrength) - (last5AwayGoalsComparedToOpponentStrength - last5HomeGoalsAgainstComparedToOpponentStrength));
+
+        // goals compared to opponent strength
+        double homeGoalsComparedToOpponentStrength = homeSeason.getAvgGoalsFor(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double awayGoalsComparedToOpponentStrength = awaySeason.getAvgGoalsFor(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double homeGoalsAgainstComparedToOpponentStrength = homeSeason.getAvgGoalsAgainst(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double awayGoalsAgainstComparedToOpponentStrength = awaySeason.getAvgGoalsAgainst(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        features.add(homeGoalsComparedToOpponentStrength);
+        features.add(awayGoalsComparedToOpponentStrength);
+        features.add((homeGoalsComparedToOpponentStrength - awayGoalsAgainstComparedToOpponentStrength) - (awayGoalsComparedToOpponentStrength - homeGoalsAgainstComparedToOpponentStrength));
+
+        // last 5 goals compared to opponent strength
+        double last5HomeXgfComparedToOpponentStrength = homeSeason.getAvgXGFOverLastXGames(ALL_GAMES, LAST_5) / homeSeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5AwayXgfComparedToOpponentStrength = awaySeason.getAvgXGFOverLastXGames(ALL_GAMES, LAST_5) / awaySeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5HomeXgaComparedToOpponentStrength = homeSeason.getAvgXGAOverLastXGames(ALL_GAMES, LAST_5) / homeSeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        double last5AwayXgaComparedToOpponentStrength = awaySeason.getAvgXGAOverLastXGames(ALL_GAMES, LAST_5) / awaySeason.getAvgPointsOfAllOpponentsLast5Games(ALL_GAMES);
+        features.add(last5HomeXgfComparedToOpponentStrength);
+        features.add(last5AwayXgfComparedToOpponentStrength);
+        features.add((last5HomeXgfComparedToOpponentStrength - last5AwayXgaComparedToOpponentStrength) - (last5AwayXgfComparedToOpponentStrength - last5HomeXgaComparedToOpponentStrength));
+
+        // goals compared to opponent strength
+        double homeXgfComparedToOpponentStrength = homeSeason.getAvgXGF(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double awayXgfComparedToOpponentStrength = awaySeason.getAvgXGF(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double homeXgaComparedToOpponentStrength = homeSeason.getAvgXGA(ALL_GAMES) / homeSeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        double awayXgaComparedToOpponentStrength = awaySeason.getAvgXGA(ALL_GAMES) / awaySeason.getAvgPointsOfAllOpponentsGamesWholeSeason(ALL_GAMES);
+        features.add(homeXgfComparedToOpponentStrength);
+        features.add(awayXgfComparedToOpponentStrength);
+        features.add((homeXgfComparedToOpponentStrength - awayXgaComparedToOpponentStrength) - (awayXgfComparedToOpponentStrength - homeXgaComparedToOpponentStrength));
 
         return features;
     }

@@ -116,10 +116,12 @@ public class CalcPastStats {
      */
     private static ArrayList<TrainingMatch> createLeaguesMatches(ArrayList<PlayerMatchDbData> playerRatings, HashMap<String, TrainingTeam> teamsInLeague, boolean saveLastMatch) {
         int lastMatchId = -1; //to be used to see if we come across a new match
+        int lastSeasonYearStart = -1;
         TrainingTeam homeTeam = null;
         TrainingTeamsSeason homeSeason = null;
         TrainingTeam awayTeam = null;
         TrainingTeamsSeason awaySeason = null;
+        LeagueStatsForSeason leagueStatsForSeason = null;
         HashMap<String, Player> homeLineup = new HashMap<>();
         HashMap<String, Player> awayLineup = new HashMap<>();
         ArrayList<TrainingMatch> matches = new ArrayList<>();
@@ -136,6 +138,7 @@ public class CalcPastStats {
                 }
 
                 //then need to update fields for next iter
+                if (data.getSeasonYearStart() != lastSeasonYearStart) leagueStatsForSeason = new LeagueStatsForSeason();
                 homeLineup.clear();
                 awayLineup.clear();
                 teamsInLeague.putIfAbsent(data.getHomeTeam(), new TrainingTeam(data.getHomeTeam()));
@@ -144,6 +147,8 @@ public class CalcPastStats {
                 awayTeam = teamsInLeague.get(data.getAwayTeam());
                 homeSeason = homeTeam.getTeamsSeason(data.getSeasonYearStart());
                 awaySeason = awayTeam.getTeamsSeason(data.getSeasonYearStart());
+                if (homeSeason.getLeagueStatsForSeason() == null) homeSeason.setLeagueStatsForSeason(leagueStatsForSeason);
+                if (awaySeason.getLeagueStatsForSeason() == null) awaySeason.setLeagueStatsForSeason(leagueStatsForSeason);
             }
 
             if (data.playsForHomeTeam()) {
@@ -185,6 +190,8 @@ public class CalcPastStats {
 //            if (homeSeason.getNumbGamesPlayed() == 0) initialiseNewSeason(homeTeam, homeSeason);
 //            if (awaySeason.getNumbGamesPlayed() == 0) initialiseNewSeason(awayTeam, awaySeason);
             addStatsToTeamsSeasons(data, homeSeason, awaySeason, homeLineup, awayLineup);
+            homeSeason.getLeagueStatsForSeason()
+                    .addGame(data.getHomeScore(), data.getAwayScore(), data.getHomeXGF(), data.getAwayXGF());
             homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
             awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
         }

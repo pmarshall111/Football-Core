@@ -10,6 +10,7 @@ public class TrainingTeamsSeason {
     private int seasonYearStart;
     private int homeGamesPlayed = 0;
     private int awayGamesPlayed = 0;
+    private LeagueStatsForSeason leagueStatsForSeason = null;
 
     //Using arrays here so if we want to we can calculate fields for last 5 games etc.
     //Not done the same for weighted xG because that's already been taken into account (bc it's weighted)
@@ -609,7 +610,6 @@ public class TrainingTeamsSeason {
         return this.getRatingAtPosition(new ArrayList<>() {{add("D"); add("G");}});
     }
 
-
     private double getRatingAtPosition(ArrayList<String> positions) {
         double totalMinsInPosition = 0;
         double totalMinsWeightedRating = 0;
@@ -757,5 +757,53 @@ public class TrainingTeamsSeason {
     public static double calcExponWeightedAvg(double currAvg, double newEntry) {
         double ALPHA = 0.75;
         return ALPHA * currAvg + (1-ALPHA)*newEntry;
+    }
+
+    public LeagueStatsForSeason getLeagueStatsForSeason() {
+        return leagueStatsForSeason;
+    }
+
+    public void setLeagueStatsForSeason(LeagueStatsForSeason leagueStatsForSeason) {
+        this.leagueStatsForSeason = leagueStatsForSeason;
+    }
+
+    public double getHomeAttackStrength() {
+        double homeGoalsFor = getAvgGoalsFor(GamesSelector.ONLY_HOME_GAMES);
+        return homeGoalsFor / leagueStatsForSeason.getAvgHomeGoalsPerGame();
+    }
+
+    public double getHomeDefenseStrength() {
+        double homeGoalsConceeded = getAvgGoalsAgainst(GamesSelector.ONLY_HOME_GAMES);
+        return homeGoalsConceeded / leagueStatsForSeason.getAvgAwayGoalsPerGame();
+    }
+
+    public double getAwayAttackStrength() {
+        double awayGoalsFor = getAvgGoalsFor(GamesSelector.ONLY_AWAY_GAMES);
+        return awayGoalsFor / leagueStatsForSeason.getAvgAwayGoalsPerGame();
+    }
+
+    public double getAwayDefenseStrength() {
+        double awayGoalsConceeded = getAvgGoalsAgainst(GamesSelector.ONLY_AWAY_GAMES);
+        return awayGoalsConceeded / leagueStatsForSeason.getAvgHomeGoalsPerGame();
+    }
+
+    public double getHomeXgAttackStrength() {
+        double homeXGF = getAvgXGF(GamesSelector.ONLY_HOME_GAMES);
+        return homeXGF / leagueStatsForSeason.getAvgHomeXgPerGame();
+    }
+
+    public double getHomeXgDefenseStrength() {
+        double homeXGA = getAvgXGA(GamesSelector.ONLY_HOME_GAMES);
+        return homeXGA / leagueStatsForSeason.getAvgAwayXgPerGame();
+    }
+
+    public double getAwayXgAttackStrength() {
+        double awayXGF = getAvgXGF(GamesSelector.ONLY_AWAY_GAMES);
+        return awayXGF / leagueStatsForSeason.getAvgAwayXgPerGame();
+    }
+
+    public double getAwayXgDefenseStrength() {
+        double awayXGA = getAvgXGA(GamesSelector.ONLY_AWAY_GAMES);
+        return awayXGA / leagueStatsForSeason.getAvgHomeXgPerGame();
     }
 }

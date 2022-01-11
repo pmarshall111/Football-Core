@@ -53,7 +53,7 @@ public class GetJsonHelper {
             char firstChar = (""+respCode).charAt(0);
             if (firstChar == '5') {
                 //server error, try again.
-                System.out.println("Server error on JSON request to " + url + ". Trying again...");
+                System.out.println("Server error on JSON request to " + url + ". Error code: " + connection.getResponseCode() + " Trying again...");
                 Logger logger = LogManager.getLogger(GetJsonHelper.class);
                 logger.warn("Server error on JSON request to " + url + ". Trying again...");
                 sleep();

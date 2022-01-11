@@ -180,11 +180,14 @@ public class Team {
             case "Parma":
                 return "Parma Calcio 1913";
             case "SPAL":
+            case "Società Polisportiva Ars Et Labor":
                 return "SPAL 2013";
             case "ChievoVerona":
                 return "Chievo";
             case "Hellas Verona":
                 return "Verona";
+            case "Athletic Carpi":
+                return "Carpi";
 
             //LIGUE 1
             case "Paris Saint-Germain":
