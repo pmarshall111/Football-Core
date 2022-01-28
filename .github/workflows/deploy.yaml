@@ -24,10 +24,10 @@ jobs:
         run: rsync -avP ./target/Football-1.0-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_${GITHUB_SHA::8}.jar
 
       - name: Generate new crontab. First the crontab loads the environment variables from .environment, then runs the Core project, appending the output of the command to a log file.
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar:deps/mariadb-java-client-2.7.4.jar com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log' > ~/crontab.txt"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar:deps/mariadb-java-client-2.7.4.jar com.petermarshall.taskScheduling.UpdatePipeline >> ~/logs/update.log 2&>1' > ~/crontab.txt"
 
       - name: Set new crontab
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "crontab ~/crontab.txt"
 
       - name: Remove old jars, but keep the most recent in case there are any commands running. (The latest jar on the system is kept in the awk command and the jar from this deployment is ignored via the mmin arg)
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "find . -name 'file*' -mmin +5 -printf '%T@ %p\n' | sort -nr | cut -f 2 -d ' ' | awk 'NR>1' | xargs rm -f"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "find . -name 'football-core*' -mmin +5 -printf '%T@ %p\n' | sort -nr | cut -f 2 -d ' ' | awk 'NR>1' | xargs rm -f"
