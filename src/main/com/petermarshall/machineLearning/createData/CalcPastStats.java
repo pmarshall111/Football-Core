@@ -7,11 +7,13 @@ import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petermarshall.scrape.OddsChecker.BEST_BOOKIE_ENTRY;
+
 //class to be used to create csv files to learn from and update cache in db for past seasons.
 public class CalcPastStats {
     //constants to use when calculating a teams form
     public static final int NUMB_SEASONS_HISTORY = 2;
-    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 12; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
+    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
     public static final int COMPARE_LAST_N_GAMES = 5;
 
     //will do it for all leagues in db.
@@ -59,11 +61,11 @@ public class CalcPastStats {
                         mtp.getAwayTeamPlayers() != null && mtp.getAwayTeamPlayers().size() == 11) {
                             ArrayList<Double> features = getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                             mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                            currSeason, -1);
+                            currSeason, -1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY));
                             mtp.setFeatures(features);
                 }
                 ArrayList<Double> featuresNoLineups = getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                                        currSeason,-1);
+                                                                            currSeason,-1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY));
                 mtp.setFeaturesNoLineups(featuresNoLineups);
             });
         });
@@ -73,10 +75,8 @@ public class CalcPastStats {
     private static ArrayList<Double> getFeatures(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
                                                  TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
                                                  ArrayList<String> homePlayersNames, ArrayList<String> awayPlayersNames,
-                                                 int seasonYearStart, int result) {
-        return CreateFeatures.getFeaturesExtendedOld(homeTeam, homeSeason, awayTeam, awaySeason,
-                homePlayersNames, awayPlayersNames,
-                seasonYearStart, result);
+                                                 int seasonYearStart, int result, double[] odds) {
+        return CreateFeatures.getFeaturesSmallMakesSense(homeTeam, homeSeason, awayTeam, awaySeason, result, odds);
 //        return CreateFeatures.getFeaturesSmallMakesSense(homeTeam, homeSeason, awayTeam, awaySeason,
 //                homePlayersNames, awayPlayersNames,
 //                seasonYearStart, result);
@@ -84,8 +84,8 @@ public class CalcPastStats {
 
     private static ArrayList<Double> getFeaturesNoLineups(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
                                                  TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
-                                                 int seasonYearStart, int result) {
-        return CreateFeatures.getFeaturesExtendedOldNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, seasonYearStart, result);
+                                                 int seasonYearStart, int result, double[] odds) {
+        return CreateFeatures.getFeaturesSmallFromRCoeffMakesSense(homeTeam, homeSeason, awayTeam, awaySeason, result, odds);
     }
 
 
@@ -99,7 +99,8 @@ public class CalcPastStats {
             teamsInLeague.putIfAbsent(data.getAwayTeam(), new TrainingTeam(data.getAwayTeam()));
             TrainingTeam homeTeam = teamsInLeague.get(data.getHomeTeam());
             TrainingTeam awayTeam = teamsInLeague.get(data.getAwayTeam());
-            TrainingMatch match = new TrainingMatch(homeTeam, awayTeam, data.getHomeScore(), data.getAwayScore(), data.getSeasonYearStart());
+            TrainingMatch match = new TrainingMatch(homeTeam.getTeamName(), awayTeam.getTeamName(), data.getHomeScore(),
+                    data.getAwayScore(), data.getSeasonYearStart(), data.getHomeXG(), data.getAwayXG());
             homeTeam.addMatchWithTeam(data.getAwayTeam(), match);
             awayTeam.addMatchWithTeam(data.getHomeTeam(), match);
         }
@@ -172,13 +173,14 @@ public class CalcPastStats {
         //creating match which we can create features on later
         HashMap<String, Player> homeStartingXI = getStartingXI(homeLineup);
         HashMap<String, Player> awayStartingXI = getStartingXI(awayLineup);
-        TrainingMatch match = new TrainingMatch(homeTeam, awayTeam, data.getHomeOdds(), data.getDrawOdds(), data.getAwayOdds(),
-                                                data.getHomeScore(), data.getAwayScore(), data.getDate(), data.getSeasonYearStart(), data.getMatchId());
+        TrainingMatch match = new TrainingMatch(homeTeam.getTeamName(), awayTeam.getTeamName(), data.getHomeOdds(), data.getDrawOdds(),
+                                                data.getAwayOdds(), data.getHomeScore(), data.getAwayScore(), data.getDate(),
+                                                data.getSeasonYearStart(), data.getMatchId(), data.getHomeXGF(), data.getAwayXGF());
         ArrayList<Double> features = getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                                                 new ArrayList<>(homeStartingXI.keySet()), new ArrayList<>(awayStartingXI.keySet()),
-                                                data.getSeasonYearStart(), data.getResult());
+                                                data.getSeasonYearStart(), data.getResult(), match.getOdds());
         match.setFeatures(features);
-        ArrayList<Double> featuresNoLineups = getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getResult());
+        ArrayList<Double> featuresNoLineups = getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason, data.getSeasonYearStart(), data.getResult(), match.getOdds());
         match.setFeaturesNoLineups(featuresNoLineups);
         if (homeSeason.getNumbGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA &&
                 awaySeason.getNumbGamesPlayed() >= NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA) {

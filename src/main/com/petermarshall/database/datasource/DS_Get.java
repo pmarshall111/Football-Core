@@ -269,7 +269,8 @@ public class DS_Get {
         try (Statement statement = DS_Main.connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT " + HOMETEAM + "." + TeamTable.getColTeamName() + ", " + AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
                     MatchTable.getTableName() + "." + MatchTable.getColHomeScore() + ", " + MatchTable.getTableName() + "." + MatchTable.getColAwayScore() + ", " +
-                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + " FROM " + MatchTable.getTableName() +
+                    MatchTable.getTableName() + "." + MatchTable.getColSeasonYearStart() + ", " + MatchTable.getColHomeXg() + ", " + MatchTable.getColAwayXg() +
+                    " FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
                     " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id" +
@@ -308,7 +309,9 @@ public class DS_Get {
 
     public static void main(String[] args) {
         DS_Main.openProductionConnection();
-        getMatchesToPredict();
+//        getMatchesToPredict();
+        ArrayList<ArrayList<String>> matchData = getRawGameData();
+        System.out.println(matchData.size());
     }
 
     //method will get out matches from the database where it is both teams next match and has not already been predicted on
@@ -459,6 +462,63 @@ public class DS_Get {
         } catch (SQLException e) {
             e.printStackTrace();
             return new HashMap<>();
+        }
+    }
+
+    public static ArrayList<ArrayList<String>> getRawGameData() {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+
+            ResultSet rs = statement.executeQuery("SELECT " +
+                    LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", "  +
+                    HOMETEAM + "." + TeamTable.getColTeamName() + ", " +
+                    AWAYTEAM + "." + TeamTable.getColTeamName() + ", " +
+                    MatchTable.getColDate() + ", " +
+                    MatchTable.getColSeasonYearStart() + ", " +
+                    MatchTable.getColHomeScore() + ", " +
+                    MatchTable.getColAwayScore() + ", " +
+                    MatchTable.getColHomeXg() + ", " +
+                    MatchTable.getColAwayXg() + ", " +
+                    MatchTable.getColHomeWinOdds() + ", " +
+                    MatchTable.getColDrawOdds() + ", " +
+                    MatchTable.getColAwayWinOdds() +
+                    " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + HOMETEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + HOMETEAM + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + AWAYTEAM + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + AWAYTEAM + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + HOMETEAM + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " WHERE " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(new Date()) + "'" +
+                    " AND " + MatchTable.getColHomeScore() + " != -1 " +
+                    " AND " + MatchTable.getColAwayScore() + " != -1 " +
+                    " AND " + MatchTable.getColHomeWinOdds() + " != -1 " +
+                    " AND " + MatchTable.getColIsPostponed() + " = 0 " +
+                    " ORDER BY " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", " + MatchTable.getColDate());
+
+            ArrayList<ArrayList<String>> rawData = new ArrayList<>();
+            ArrayList<String> titles = new ArrayList<>(){{
+                add("League");
+                add("HomeTeam");
+                add("AwayTeam");
+                add("Date");
+                add("Season Start Year");
+                add("HomeScore");
+                add("AwayScore");
+                add("HomeXG");
+                add("AwayXG");
+                add("HomeOdds");
+                add("DrawOdds");
+                add("AwayOdds");
+            }};
+            rawData.add(titles);
+            while (rs.next()) {
+                ArrayList<String> dataRow = new ArrayList<>();
+                for (int i = 1; i<= titles.size(); i++) {
+                    dataRow.add(rs.getString(i));
+                }
+                rawData.add(dataRow);
+            }
+            return rawData;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

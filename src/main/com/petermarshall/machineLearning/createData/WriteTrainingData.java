@@ -28,9 +28,11 @@ public class WriteTrainingData {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeatures();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
-                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + csv; // adding the score to the front of the csv for the cost function
+                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + match.getProbability() + "," + match.getGameId() + "," + csv; // adding the score to the front of the csv for the cost function
                 featuresWriter.append(csv);
                 String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
+//                featuresWriter.append(","+odds+","+(match.getOdds()[0] - match.getOdds()[2]));
+//                featuresWriter.append(","+ Arrays.stream(match.getOdds()).mapToObj(x -> (1/x)+"").collect(Collectors.joining(",")));
                 oddsWriter.append(odds);
                 if (i != trainingData.size()-1) {
                     featuresWriter.append("\n");
@@ -49,7 +51,7 @@ public class WriteTrainingData {
                 TrainingMatch match = trainingData.get(i);
                 ArrayList<Double> features = match.getFeaturesNoLineups();
                 String csv = features.stream().map(x -> x+"").collect(Collectors.joining(","));
-                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + csv; // adding the score to the front of the csv for the cost function
+                csv = match.getHomeScore() + "," + match.getAwayScore() + "," + match.getProbability() + "," + match.getGameId() + "," + csv; // adding the score to the front of the csv for the cost function
                 featuresWriter.append(csv);
                 String odds = Arrays.stream(match.getOdds()).mapToObj(x -> x+"").collect(Collectors.joining(","));
                 oddsWriter.append(odds);
@@ -113,5 +115,16 @@ public class WriteTrainingData {
     public static void writeAllDataOutToOneCsvFileWithGameIdAtEndOfRow(ArrayList<TrainingMatch> trainingData, String fileName) {
         writeFeaturesToCsvWithGameIdAtEndOfRow(trainingData, fileName);
         writeNoLineupsFeaturesToCsvWithGameIdAtEndOfRow(trainingData, "nolineups_"+fileName);
+    }
+
+    public static void writeArrayOfStringsToCsv(ArrayList<ArrayList<String>> rows, String fileName) {
+        try (FileWriter featuresWriter = new FileWriter(fileName);) {
+            for (ArrayList<String> row : rows) {
+                String csvRow = String.join(",", row) + "\n";
+                featuresWriter.append(csvRow);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

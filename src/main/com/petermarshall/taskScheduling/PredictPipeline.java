@@ -43,9 +43,10 @@ public class PredictPipeline {
         UpdatePipeline.updateGames(false);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
         if (mtps.size() > 0) {
+            OddsChecker.addBookiesOddsForGames(mtps); //TODO: Need to make sure this adds the odds to the games. Or else our predictions will be wrong
+            mtps.removeIf(mtp -> mtp.getBookiesOdds().size() == 0);
             CalcPastStats.addFeaturesToPredict(mtps, false);
             Predict.addOurProbabilitiesToGames(mtps);
-            OddsChecker.addBookiesOddsForGames(mtps);
             DS_Insert.addPredictionsToDb(mtps);
             DecideBet.addDecisionRealMatches(mtps);
             mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);

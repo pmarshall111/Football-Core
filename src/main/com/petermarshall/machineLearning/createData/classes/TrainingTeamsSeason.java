@@ -610,6 +610,10 @@ public class TrainingTeamsSeason {
         return this.getRatingAtPosition(new ArrayList<>() {{add("D"); add("G");}});
     }
 
+    public double getOvrPlayerRating() {
+        return this.getRatingAtPosition(new ArrayList<>() {{add("D"); add("G"); add("M"); add("F");}});
+    }
+
     private double getRatingAtPosition(ArrayList<String> positions) {
         double totalMinsInPosition = 0;
         double totalMinsWeightedRating = 0;

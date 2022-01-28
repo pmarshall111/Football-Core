@@ -15,36 +15,55 @@ public class TrainingMatch {
     private double[] odds;
     private int homeScore;
     private int awayScore;
+    private double homeXG;
+    private double awayXG;
     private Date kickoffTime;
     private int seasonYearStart;
     private int gameId;
+    private double probability = 1;
 
     //general usage
-    public TrainingMatch(TrainingTeam homeTeam, TrainingTeam awayTeam, double homeOdds, double drawOdds, double awayOdds,
-                         int homeScore, int awayScore, String sqlKickoffStr, int seasonYearStart, int gameId) {
-        this.homeTeamName = homeTeam.getTeamName();
-        this.awayTeamName = awayTeam.getTeamName();
+    public TrainingMatch(String homeTeamName, String awayTeamName, double homeOdds, double drawOdds, double awayOdds,
+                         int homeScore, int awayScore, String sqlKickoffStr, int seasonYearStart, int gameId,
+                         double homeXG, double awayXG) {
+        this.homeTeamName = homeTeamName;
+        this.awayTeamName = awayTeamName;
         this.gameId = gameId;
-        setMiscStats(homeOdds, drawOdds, awayOdds, homeScore, awayScore, sqlKickoffStr, seasonYearStart);
+        setMiscStats(homeOdds, drawOdds, awayOdds, homeScore, awayScore, sqlKickoffStr, seasonYearStart, homeXG, awayXG);
     }
 
     //needed to create a training match for historic games of previous seasons so that future TrainingMatches can be made.
     //used when we predict games and do not go through the entire history of the games, just the current season.
     //Only limited info is needed from the old games.
-    public TrainingMatch(TrainingTeam homeTeam, TrainingTeam awayTeam, int homeScore, int awayScore, int seasonYearStart) {
-        this.homeTeamName = homeTeam.getTeamName();
-        this.awayTeamName = awayTeam.getTeamName();
+    public TrainingMatch(String homeTeamName, String awayTeamName, int homeScore, int awayScore, int seasonYearStart,
+                         double homeXG, double awayXG) {
+        this.homeTeamName = homeTeamName;
+        this.awayTeamName = awayTeamName;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.seasonYearStart = seasonYearStart;
+        this.homeXG = homeXG;
+        this.awayXG = awayXG;
     }
 
-    private void setMiscStats(double homeOdds, double drawOdds, double awayOdds, int homeScore, int awayScore, String kickoff, int seasonYearStart) {
+    private void setMiscStats(double homeOdds, double drawOdds, double awayOdds, int homeScore, int awayScore, String kickoff,
+                              int seasonYearStart, double homeXG, double awayXG) {
         this.odds = new double[]{homeOdds,drawOdds,awayOdds};
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.kickoffTime = DateHelper.createDateFromSQL(kickoff);
         this.seasonYearStart = seasonYearStart;
+        this.homeXG = homeXG;
+        this.awayXG = awayXG;
+    }
+
+    public TrainingMatch clone() {
+        TrainingMatch clone = new TrainingMatch(this.homeTeamName, this.awayTeamName, this.odds[0], this.odds[1], this.odds[2],
+                this.homeScore, this.awayScore, DateHelper.getSqlDate(this.kickoffTime), this.seasonYearStart, this.gameId,
+                this.homeXG, this.awayXG);
+        clone.setFeatures(this.features);
+        clone.setFeaturesNoLineups(this.featuresNoLineups);
+        return clone;
     }
 
     public int getPoints(String teamName) {
@@ -110,5 +129,21 @@ public class TrainingMatch {
 
     public int getAwayScore() {
         return awayScore;
+    }
+
+    public void setProbability(double probability) {
+        this.probability = probability;
+    }
+
+    public double getProbability() {
+        return probability;
+    }
+
+    public double getHomeXG() {
+        return homeXG;
+    }
+
+    public double getAwayXG() {
+        return awayXG;
     }
 }
