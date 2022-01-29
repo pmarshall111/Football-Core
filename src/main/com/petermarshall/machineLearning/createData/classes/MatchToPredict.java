@@ -141,4 +141,12 @@ public class MatchToPredict {
     public void addGoodBet(BetDecision goodBet) {
         goodBets.add(goodBet);
     }
+
+    public ArrayList<Double> getFeatures() {
+        return features;
+    }
+
+    public ArrayList<Double> getFeaturesNoLineups() {
+        return featuresNoLineups;
+    }
 }

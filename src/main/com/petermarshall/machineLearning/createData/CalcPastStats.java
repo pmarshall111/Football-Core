@@ -49,7 +49,7 @@ public class CalcPastStats {
             ArrayList<PlayerMatchDbData> playerRatings = DS_Get.getLeagueData(league, matches.get(0).getSeasonYearStart());
             ArrayList<HistoricMatchDbData> pastMatches = DS_Get.getMatchesBetweenTeams(league, matches);
             HashMap<String, TrainingTeam> teamsInLeague = createHistoricMatchups(pastMatches);
-            boolean saveLastMatch = isRunInTestSuite ? false : true;
+            boolean saveLastMatch = isRunInTestSuite;
             createLeaguesMatches(playerRatings, teamsInLeague, saveLastMatch);
             toPredicts.forEach(mtp -> {
                 int currSeason = mtp.getSeasonYearStart();
@@ -57,16 +57,11 @@ public class CalcPastStats {
                 TrainingTeam awayTeam = teamsInLeague.get(mtp.getAwayTeamName());
                 TrainingTeamsSeason homeSeason = homeTeam.getTeamsSeason(currSeason);
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
-                if (mtp.getHomeTeamPlayers() != null && mtp.getHomeTeamPlayers().size() == 11 &&
-                        mtp.getAwayTeamPlayers() != null && mtp.getAwayTeamPlayers().size() == 11) {
-                            ArrayList<Double> features = getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
-                            mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                            currSeason, -1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY));
-                            mtp.setFeatures(features);
-                }
-                ArrayList<Double> featuresNoLineups = getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                                                                            currSeason,-1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY));
-                mtp.setFeaturesNoLineups(featuresNoLineups);
+                mtp.setFeatures(getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
+                        mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
+                        currSeason, -1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY)));
+                mtp.setFeaturesNoLineups(getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
+                        currSeason,-1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY)));
             });
         });
     }

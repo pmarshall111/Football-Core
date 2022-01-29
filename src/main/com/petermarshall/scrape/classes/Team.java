@@ -285,13 +285,19 @@ public class Team {
             case "Borussia M.Gladbach":
                 return "Borussia Monchengladbach";
             case "FC Cologne":
-                return "FC Koln";
+                return "Cologne";
             case "Hamburger SV":
                 return "Hamburg";
             case "Hannover 96":
                 return "Hannover";
             case "Nuernberg":
                 return "FC Nurnberg";
+            case "Mainz 05":
+                return "Mainz";
+            case "Hoffenheim":
+                return "TSG Hoffenheim";
+            case "Freiburg":
+                return "SC Freiburg";
 
             //LA LIGA
             case "Real Valladolid":

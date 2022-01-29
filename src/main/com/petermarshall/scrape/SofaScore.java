@@ -98,8 +98,8 @@ public class SofaScore {
                     String startTime = game.get("startTimestamp").toString(); //returns number of seconds since epoch
                     Date kickoff = DateHelper.getDateFromSofascoreTimestamp(Long.parseLong(startTime));
 
+                    int id = Integer.parseInt(game.get("id").toString());
                     if (!status.equals("Postponed") && !status.equals("Canceled")) {
-                        int id = Integer.parseInt(game.get("id").toString());
                         if (season != null) {
                             Team hTeam = season.getTeam(homeTeamName);
                             if (hTeam != null) {
@@ -122,6 +122,8 @@ public class SofaScore {
                                 Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
                                 if (thisMatch != null) {
                                     thisMatch.setPostponed(true);
+                                    thisMatch.setSofaScoreGameId(id);
+                                    thisMatch.setKickoffTime(kickoff);
                                 }
                             }
                         }
@@ -146,12 +148,12 @@ public class SofaScore {
      * Main body of function finds the correct match instance already created, then adds the
      * betting odds to it. Then if it is full time, we call addPlayerRatingsToGame, and also addFirstScorer.
      */
-    public static void addInfoToGame(Season season, int gameId) {
+    public static Match addInfoToGame(Season season, int gameId) {
         //SofaScore does not have data for this game (Ligue 1. Bastia vs Lyon 16-17 - abandoned early due to crowd trouble). Return early to avoid error.
-        if (gameId == 7080222) return;
+        if (gameId == 7080222) return null;
 
         String url = getGameInfoUrl(gameId);
-        try  {
+        try {
             String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
@@ -166,7 +168,7 @@ public class SofaScore {
             boolean shouldHaveLineups = kickOffIsInPast || minsBetweenDates < 60; //lineups are announced 1hr before kickoff.
             if (!shouldHaveLineups) {
                 //game is not within 1 hour to the future. no point getting in betting info, or player ratings/full-time score as algorithm needs confirmed lineups to work.
-                return;
+                return null;
             }
 
             JSONObject homeTeam = (JSONObject) event.get("homeTeam");
@@ -185,7 +187,7 @@ public class SofaScore {
                 if (homeTeamName.equals("Genoa") && awayTeamName.equals("Fiorentina") && date.equals("11-09-2016")) {
                     //we have encountered a bug in SofaScore's data where they haven't changed a match's status to postponed. Instead there are 2 records of this game
                     //with the same score, but one is on the wrong date.
-                    return;
+                    return null;
                 }
                 else {
                     Logger logger = LogManager.getLogger(SofaScore.class);
@@ -196,15 +198,17 @@ public class SofaScore {
             match.setSofaScoreGameId(gameId);
             match.setHomeDrawAwayOdds(getOdds(gameId));
             JSONObject status = (JSONObject) event.get("status");
-            boolean isFullTime = ((String) status.get("description")).equals("Ended");
+            boolean isFullTime = (status.get("description")).equals("Ended");
             if (isFullTime) {
                 addPlayerRatingsToGame(match, gameId);
                 addFirstGoalScorer(match, gameId);
                 addMatchStatistics(match, gameId);
             }
-        } catch(ParseException e) {
+            return match;
+        } catch(Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
+            return null;
         }
     }
 

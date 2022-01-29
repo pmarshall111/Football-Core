@@ -1,3 +1,5 @@
 MariaDB [old_db]> SELECT season_year_start,league.name FROM game INNER JOIN team ON team._id = homeTeam_id INNER JOIN league on league._id = league_id GROUP BY season_year_start,league.name ORDER BY league.name, season_year_start;
-
 ^ Get all seasons for the leagues in the db
+
+SELECT * FROM game INNER JOIN team as HOMETEAM on HOMETEAM._id = hometeam_id INNER JOIN team AS AWAYTEAM on AWAYTEAM._id = awayteam_id INNER JOIN league on HOMETEAM.league_id = league._id WHERE date < "2022-01-29 10:00:00" AND homeScore = -1 AND season_year_start = 21 AND league.name = "LA_LIGA" ORDER BY date;
+^ Get all games for current season that haven't been updated with the result yet

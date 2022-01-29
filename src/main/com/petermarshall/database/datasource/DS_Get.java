@@ -431,7 +431,7 @@ public class DS_Get {
         try (Statement statement = DS_Main.connection.createStatement()) {
 
             ResultSet rs = statement.executeQuery("SELECT " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", "  + 
-                    MatchTable.getColDate() + " FROM " + MatchTable.getTableName() +
+                    " MIN(" + MatchTable.getColDate() + ") FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
                     " WHERE " + MatchTable.getColHomeScore() + " = -1" +
@@ -459,6 +459,34 @@ public class DS_Get {
                 }
             }
             return leaguesAndEarliestDate;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+
+    public static HashMap<String, ArrayList<Integer>> getPostponedGames() {
+        try (Statement statement = DS_Main.connection.createStatement()) {
+
+            ResultSet rs = statement.executeQuery("SELECT " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + ", "  +
+                    MatchTable.getColSofascoreId() + " FROM " + MatchTable.getTableName() +
+                    " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
+                    " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
+                    " WHERE " + MatchTable.getColHomeScore() + " = -1" +
+                    " AND " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(new Date(), 200)) + "'" +
+                    " AND " + MatchTable.getColSeasonYearStart() + " = " + DateHelper.getStartYearForCurrentSeason() +
+                    " AND " + MatchTable.getColIsPostponed() + " = 1");
+
+            HashMap<String, ArrayList<Integer>> leaguesAndPostponedGames = new HashMap<>();
+            while (rs.next()) {
+                String leagueName = rs.getString(1);
+                int sofascoreId = rs.getInt(2);
+                if (!leaguesAndPostponedGames.containsKey(leagueName)) {
+                    leaguesAndPostponedGames.put(leagueName, new ArrayList<>());
+                }
+                leaguesAndPostponedGames.get(leagueName).add(sofascoreId);
+            }
+            return leaguesAndPostponedGames;
         } catch (SQLException e) {
             e.printStackTrace();
             return new HashMap<>();
