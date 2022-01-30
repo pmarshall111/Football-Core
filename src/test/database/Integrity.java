@@ -1,11 +1,10 @@
 package database;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.dbTables.LeagueTable;
-import com.petermarshall.database.datasource.dbTables.MatchTable;
-import com.petermarshall.database.datasource.dbTables.PlayerRatingTable;
-import com.petermarshall.database.datasource.dbTables.TeamTable;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.datasource.dbTables.MatchTable;
+import com.footballbettingcore.database.datasource.dbTables.PlayerRatingTable;
+import com.footballbettingcore.database.datasource.dbTables.TeamTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

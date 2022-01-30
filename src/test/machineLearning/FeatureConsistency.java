@@ -1,15 +1,15 @@
 package machineLearning;
 
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.dbTables.LeagueTable;
-import com.petermarshall.database.datasource.dbTables.MatchTable;
-import com.petermarshall.database.datasource.dbTables.PlayerRatingTable;
-import com.petermarshall.database.datasource.dbTables.TeamTable;
-import com.petermarshall.machineLearning.createData.CalcPastStats;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.classes.Player;
-import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.scrape.classes.Season;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.datasource.dbTables.LeagueTable;
+import com.footballbettingcore.database.datasource.dbTables.MatchTable;
+import com.footballbettingcore.database.datasource.dbTables.PlayerRatingTable;
+import com.footballbettingcore.database.datasource.dbTables.TeamTable;
+import com.footballbettingcore.machineLearning.createData.CalcPastStats;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.machineLearning.createData.classes.Player;
+import com.footballbettingcore.machineLearning.createData.classes.TrainingMatch;
+import com.footballbettingcore.scrape.classes.Season;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static com.petermarshall.database.datasource.DS_Main.*;
+import static com.footballbettingcore.database.datasource.DS_Main.*;
 import static org.junit.Assert.fail;
 
 //Class will be to ensure that the methods we use to create features for TrainingMatches and MatchesToPredict are the same.
@@ -68,21 +68,21 @@ public class FeatureConsistency {
             trainingFeaturesNL.remove(0);
             trainingFeatures.remove(0);
 
-            double[] predictFeaturesNL = mtp.getFeaturesWithoutResult(false);
-            double[] predictFeatures = mtp.getFeaturesWithoutResult(true);
+            ArrayList<Double> predictFeaturesNL = mtp.getFeaturesNoLineups();
+            ArrayList<Double> predictFeatures = mtp.getFeatures();
 
-            Assert.assertEquals(trainingFeaturesNL.size(), predictFeaturesNL.length);
-            Assert.assertEquals(trainingFeatures.size(), predictFeatures.length);
+            Assert.assertEquals(trainingFeaturesNL.size(), predictFeaturesNL.size());
+            Assert.assertEquals(trainingFeatures.size(), predictFeatures.size());
             for (int i = 0; i<trainingFeaturesNL.size(); i++) {
                 if (i != 19 && i != 43) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
-                    Assert.assertEquals("Index failed at: " + i, trainingFeaturesNL.get(i), predictFeaturesNL[i], 0.0001);
+                    Assert.assertEquals("Index failed at: " + i, trainingFeaturesNL.get(i), predictFeaturesNL.get(i), 0.0001);
                 }
             }
             for (int i = 0; i<trainingFeatures.size(); i++) {
                 if (i != 19 && i != 45) {
                     //Avoiding these 2 indexes as these are calculated from historic games and testing on past games will include the result of game we're predicting
-                    Assert.assertEquals("Index failed at: " + i, trainingFeatures.get(i), predictFeatures[i], 0.0001);
+                    Assert.assertEquals("Index failed at: " + i, trainingFeatures.get(i), predictFeatures.get(i), 0.0001);
                 }
             }
         } catch (SQLException e) {

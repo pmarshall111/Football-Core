@@ -1,16 +1,14 @@
 package machineLearning;
 
-import com.petermarshall.machineLearning.BetDecision;
-import com.petermarshall.machineLearning.BookieBetInfo;
-import com.petermarshall.scrape.classes.OddsCheckerBookies;
+import com.footballbettingcore.machineLearning.BetDecision;
+import com.footballbettingcore.machineLearning.BookieBetInfo;
+import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.TreeSet;
-
-import static com.petermarshall.database.Result.HOME_WIN;
-import static com.petermarshall.machineLearning.DecideBet.MAX_STAKE;
-import static com.petermarshall.machineLearning.DecideBet.MIN_STAKE;
+import static com.footballbettingcore.database.Result.HOME_WIN;
+import static com.footballbettingcore.machineLearning.DecideBet.MAX_STAKE;
+import static com.footballbettingcore.machineLearning.DecideBet.MIN_STAKE;
 
 public class BetDecisionTest {
     @Test

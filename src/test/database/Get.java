@@ -1,16 +1,16 @@
 package database;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.FirstScorer;
-import com.petermarshall.database.datasource.DS_Get;
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.dbTables.MatchTable;
-import com.petermarshall.database.datasource.dbTables.TeamTable;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
-import com.petermarshall.scrape.classes.*;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.database.FirstScorer;
+import com.footballbettingcore.database.datasource.DS_Get;
+import com.footballbettingcore.database.datasource.DS_Insert;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.datasource.dbTables.MatchTable;
+import com.footballbettingcore.database.datasource.dbTables.TeamTable;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.machineLearning.createData.HistoricMatchDbData;
+import com.footballbettingcore.machineLearning.createData.PlayerMatchDbData;
+import com.footballbettingcore.scrape.classes.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-import static com.petermarshall.database.datasource.DS_Main.connection;
-import static com.petermarshall.machineLearning.createData.CalcPastStats.NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA;
+import static com.footballbettingcore.database.datasource.DS_Main.connection;
+import static com.footballbettingcore.machineLearning.createData.CalcPastStats.NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
 

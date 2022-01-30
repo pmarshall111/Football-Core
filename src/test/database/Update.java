@@ -1,20 +1,20 @@
 package database;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.FirstScorer;
-import com.petermarshall.database.datasource.DS_Get;
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.DS_Update;
-import com.petermarshall.database.datasource.dbTables.MatchTable;
-import com.petermarshall.database.datasource.dbTables.PlayerRatingTable;
-import com.petermarshall.database.datasource.dbTables.PredictionTable;
-import com.petermarshall.database.datasource.dbTables.TeamTable;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.Match;
-import com.petermarshall.scrape.classes.OddsCheckerBookies;
-import com.petermarshall.scrape.classes.Season;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.database.FirstScorer;
+import com.footballbettingcore.database.datasource.DS_Get;
+import com.footballbettingcore.database.datasource.DS_Insert;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.datasource.DS_Update;
+import com.footballbettingcore.database.datasource.dbTables.MatchTable;
+import com.footballbettingcore.database.datasource.dbTables.PlayerRatingTable;
+import com.footballbettingcore.database.datasource.dbTables.PredictionTable;
+import com.footballbettingcore.database.datasource.dbTables.TeamTable;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.scrape.classes.League;
+import com.footballbettingcore.scrape.classes.Match;
+import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
+import com.footballbettingcore.scrape.classes.Season;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import static com.petermarshall.database.datasource.DS_Main.connection;
+import static com.footballbettingcore.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
 

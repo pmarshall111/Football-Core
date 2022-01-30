@@ -1,14 +1,14 @@
 package database;
 
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.datasource.dbTables.*;
+import com.footballbettingcore.database.datasource.DS_Insert;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.datasource.dbTables.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.petermarshall.database.datasource.DS_Main.TEST_CONNECTION_NAME;
-import static com.petermarshall.database.datasource.DS_Main.connection;
+import static com.footballbettingcore.database.datasource.DS_Main.TEST_CONNECTION_NAME;
+import static com.footballbettingcore.database.datasource.DS_Main.connection;
 
 public abstract class DbTestHelper {
     static void setupNewTestDb() {

@@ -1,16 +1,16 @@
 package database;
 
-import com.petermarshall.database.FirstScorer;
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.scrape.classes.*;
+import com.footballbettingcore.database.FirstScorer;
+import com.footballbettingcore.database.datasource.DS_Insert;
+import com.footballbettingcore.scrape.classes.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.petermarshall.database.datasource.DS_Main.TEST_CONNECTION_NAME;
-import static com.petermarshall.database.datasource.DS_Main.connection;
+import static com.footballbettingcore.database.datasource.DS_Main.TEST_CONNECTION_NAME;
+import static com.footballbettingcore.database.datasource.DS_Main.connection;
 
 //for 1 league: 2 seasons, 8 teams per season, 4 matches per season,  22 players per match
 //totals: 2 leagues, 4 seasons, 32 teams, 16 matches, 352 players

@@ -1,7 +1,7 @@
 package scrape;
 
-import com.petermarshall.scrape.Understat;
-import com.petermarshall.scrape.classes.*;
+import com.footballbettingcore.scrape.Understat;
+import com.footballbettingcore.scrape.classes.*;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

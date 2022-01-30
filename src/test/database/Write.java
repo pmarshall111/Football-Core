@@ -1,13 +1,13 @@
 package database;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.Result;
-import com.petermarshall.database.datasource.DS_Insert;
-import com.petermarshall.database.datasource.DS_Main;
-import com.petermarshall.database.BetLog;
-import com.petermarshall.database.datasource.dbTables.*;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.scrape.classes.*;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.database.Result;
+import com.footballbettingcore.database.datasource.DS_Insert;
+import com.footballbettingcore.database.datasource.DS_Main;
+import com.footballbettingcore.database.BetLog;
+import com.footballbettingcore.database.datasource.dbTables.*;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.scrape.classes.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-import static com.petermarshall.database.datasource.DS_Main.connection;
+import static com.footballbettingcore.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
 

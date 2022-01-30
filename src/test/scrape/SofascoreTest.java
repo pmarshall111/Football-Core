@@ -1,16 +1,16 @@
 package scrape;
 
-import com.petermarshall.ConvertOdds;
-import com.petermarshall.DateHelper;
-import com.petermarshall.database.FirstScorer;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.scrape.SofaScore;
-import com.petermarshall.scrape.classes.League;
-import com.petermarshall.scrape.classes.Match;
-import com.petermarshall.scrape.classes.Season;
-import static com.petermarshall.scrape.classes.LeagueIdsAndData.EPL;
+import com.footballbettingcore.utils.ConvertOdds;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.database.FirstScorer;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.scrape.SofaScore;
+import com.footballbettingcore.scrape.classes.League;
+import com.footballbettingcore.scrape.classes.Match;
+import com.footballbettingcore.scrape.classes.Season;
+import static com.footballbettingcore.scrape.classes.LeagueIdsAndData.EPL;
 
-import com.petermarshall.scrape.classes.Team;
+import com.footballbettingcore.scrape.classes.Team;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -87,15 +87,6 @@ public class SofascoreTest {
         Assert.assertEquals(65, lfcHome.getAwayPlayerRatings().get("Chris Wood").getMinutesPlayed(), 0.0001);
         //first goalscorer
         Assert.assertEquals(FirstScorer.HOME_FIRST.getSqlIntCode(), lfcHome.getFirstScorer().getSqlIntCode());
-    }
-
-    @Test
-    public void canGetUpdatedKickoffTimes() {
-        Date dateBST = DateHelper.createDateyyyyMMddHHmmss("2021", "05", "23", "16", "00", "00");
-        Date dateGMT = DateHelper.createDateyyyyMMddHHmmss("2021", "05", "23", "15", "00", "00");
-        ArrayList<Date> kickOffTimes = SofaScore.updateKickoffTimes(dateBST, false);
-        Assert.assertTrue(kickOffTimes.size() > 0);
-        Assert.assertTrue(kickOffTimes.contains(dateBST) || kickOffTimes.contains(dateGMT));
     }
 
     @Test

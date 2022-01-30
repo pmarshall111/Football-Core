@@ -1,9 +1,9 @@
 package machineLearning;
 
-import com.petermarshall.machineLearning.createData.CalcPastStats;
-import com.petermarshall.machineLearning.createData.HistoricMatchDbData;
-import com.petermarshall.machineLearning.createData.classes.GamesSelector;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
+import com.footballbettingcore.machineLearning.createData.CalcPastStats;
+import com.footballbettingcore.machineLearning.createData.HistoricMatchDbData;
+import com.footballbettingcore.machineLearning.createData.classes.GamesSelector;
+import com.footballbettingcore.machineLearning.createData.classes.TrainingTeam;
 import org.junit.Assert;
 import org.junit.Test;
 

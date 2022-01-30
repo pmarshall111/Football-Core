@@ -1,13 +1,9 @@
 package machineLearning;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.machineLearning.createData.Main;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.createData.classes.TrainingMatch;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeam;
-import com.petermarshall.scrape.classes.*;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.machineLearning.createData.Main;
+import com.footballbettingcore.machineLearning.createData.classes.TrainingMatch;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;

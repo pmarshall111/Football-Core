@@ -1,10 +1,10 @@
 package machineLearning;
 
-import com.petermarshall.DateHelper;
-import com.petermarshall.machineLearning.BetDecision;
-import com.petermarshall.machineLearning.DecideBet;
-import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.scrape.classes.OddsCheckerBookies;
+import com.footballbettingcore.utils.DateHelper;
+import com.footballbettingcore.machineLearning.BetDecision;
+import com.footballbettingcore.machineLearning.DecideBet;
+import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
+import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import static com.petermarshall.database.Result.AWAY_WIN;
-import static com.petermarshall.database.Result.HOME_WIN;
-import static com.petermarshall.machineLearning.DecideBet.*;
+import static com.footballbettingcore.database.Result.AWAY_WIN;
+import static com.footballbettingcore.database.Result.HOME_WIN;
+import static com.footballbettingcore.machineLearning.DecideBet.*;
 
 public class DecideBetTest {
     @Test

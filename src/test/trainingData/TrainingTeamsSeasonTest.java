@@ -1,11 +1,11 @@
 package trainingData;
 
-import com.petermarshall.machineLearning.createData.classes.GamesSelector;
-import com.petermarshall.machineLearning.createData.classes.HomeAwayWrapper;
-import com.petermarshall.machineLearning.createData.classes.Player;
-import com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason;
-import com.petermarshall.machineLearning.createData.CalcPastStats;
-import com.petermarshall.machineLearning.createData.PlayerMatchDbData;
+import com.footballbettingcore.machineLearning.createData.classes.GamesSelector;
+import com.footballbettingcore.machineLearning.createData.classes.HomeAwayWrapper;
+import com.footballbettingcore.machineLearning.createData.classes.Player;
+import com.footballbettingcore.machineLearning.createData.classes.TrainingTeamsSeason;
+import com.footballbettingcore.machineLearning.createData.CalcPastStats;
+import com.footballbettingcore.machineLearning.createData.PlayerMatchDbData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static com.petermarshall.machineLearning.createData.classes.TrainingTeamsSeason.AVG_GOALS_PER_GAME;
+import static com.footballbettingcore.machineLearning.createData.classes.TrainingTeamsSeason.AVG_GOALS_PER_GAME;
 
 //Right now testing is only for overall stats and not for separated home and away
 public class TrainingTeamsSeasonTest {
