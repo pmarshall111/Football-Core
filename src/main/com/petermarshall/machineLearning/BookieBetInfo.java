@@ -32,4 +32,8 @@ public class BookieBetInfo implements Comparable {
     public double getMinOdds() {
         return minOdds;
     }
+
+    public static double getStakeToNearest50p(double stake) {
+        return (double)(Math.round(stake*2))/2;
+    }
 }

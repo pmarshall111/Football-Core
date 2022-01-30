@@ -26,11 +26,8 @@ public class DS_Update {
                     .collect(Collectors.toCollection(ArrayList::new));
             addMatchesToBatch(batchStatement, league, season, matchesToUpdate);
 
-            ArrayList<Match> matchesToUpdateKickoffTime = season.getAllMatches().stream()
-                    .filter(m -> m.getKickoffTime().before(onlyUpdateGamesAfter) || m.getKickoffTime().after(new Date()))
-                    .collect(Collectors.toCollection(ArrayList::new));
             HashMap<String, Integer> teamIds = DS_Insert.getTeamIds(season.getAllTeams(), DS_Get.getLeagueId(league));
-            matchesToUpdateKickoffTime.forEach(match ->
+            season.getAllMatches().forEach(match ->
                     addUpdateKickoffTimeToBatch(batchStatement, teamIds, match, season.getSeasonYearStart())
             );
 

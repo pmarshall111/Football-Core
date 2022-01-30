@@ -21,11 +21,13 @@ import java.util.*;
  * To be called after scraping from Understat
  */
 public class SofaScore {
+    private static final Logger logger = LogManager.getLogger(SofaScore.class);
 
     private static final String API_URL = "https://api.sofascore.com/api/v1";
     private static final String TOURNAMENT_ADD_ON = "/unique-tournament/";
     private static final String SEASON_ADD_ON = "/season/";
-    private static final String EVENTS_ADD_ON = "/events/last/";
+    private static final String EVENTS_PAST_ADD_ON = "/events/last/";
+    private static final String EVENTS_FUTURE_ADD_ON = "/events/next/";
     private static final String EVENT_ADD_ON = "/event/";
     private static final String LINEUPS_ADD_ON = "/lineups";
     private static final String ODDS_ADD_ON = "/odds/1/all";
@@ -35,8 +37,11 @@ public class SofaScore {
     /*
      * Creating scraping URLs
      */
-    private static String getSeasonStatsUrl(int LeagueId, int SeasonId, int pageNumb) {
-        return API_URL + TOURNAMENT_ADD_ON + LeagueId + SEASON_ADD_ON + SeasonId + EVENTS_ADD_ON + pageNumb;
+    private static String getSeasonStatsForPrevGamesUrl(int LeagueId, int SeasonId, int pageNumb) {
+        return API_URL + TOURNAMENT_ADD_ON + LeagueId + SEASON_ADD_ON + SeasonId + EVENTS_PAST_ADD_ON + pageNumb;
+    }
+    private static String getSeasonStatsForFutureGamesUrl(int LeagueId, int SeasonId, int pageNumb) {
+        return API_URL + TOURNAMENT_ADD_ON + LeagueId + SEASON_ADD_ON + SeasonId + EVENTS_FUTURE_ADD_ON + pageNumb;
     }
     private static String getGameInfoUrl(int gameId) {
         return API_URL + EVENT_ADD_ON + gameId;
@@ -65,80 +70,95 @@ public class SofaScore {
      * Called from League class which loops through all it's seasons and calls this method.
      * When it finds an ID that correlates to match in the season argument, it will add the ID to that match.
      */
-    public static Set<Integer> getGamesOfLeaguesSeason(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate, Season season ) {
+    public static Set<Integer> getSofascoreIdsAndAddBaseDataToMatches(String sofaScoreLeagueName, int leagueId, int seasonId, Date earliestDate, Date latestDate, Season season ) {
         Set<Integer> gameIds = new HashSet<>();
         //need to loop through the events until we get a 404 err as Sofascore added pagination to their API
-        int pageNumb = 0;
-        boolean hasMorePages = true;
-        while (hasMorePages) {
-            String url = getSeasonStatsUrl(leagueId, seasonId, pageNumb);
+        int pastPageNumb = 0;
+        boolean pastHasMorePages = true;
+        while (pastHasMorePages) {
+            String url = getSeasonStatsForPrevGamesUrl(leagueId, seasonId, pastPageNumb);
             try {
-                String jsonString = GetJsonHelper.jsonGetRequest(url);
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(jsonString);
+                addDataToMatches(url, season, earliestDate, latestDate, gameIds);
+            } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
+                logger.error(e.getStackTrace());
+                pastHasMorePages = false;
+            }
+            pastPageNumb++;
+        }
 
-                JSONArray events = (JSONArray) json.get("events");
+        int futurePageNumb = 0;
+        boolean futureHasMorePages = true;
+        while (futureHasMorePages) {
+            String url = getSeasonStatsForFutureGamesUrl(leagueId, seasonId, futurePageNumb);
+            try {
+                addDataToMatches(url, season, earliestDate, latestDate, gameIds);
+            } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
+                logger.error(e.getStackTrace());
+                futureHasMorePages = false;
+            }
+            futurePageNumb++;
+        }
+        
+        return gameIds;
+    }
 
-                for (Object aJsonObject : events) {
-                    JSONObject game = (JSONObject) aJsonObject;
-                    JSONObject tournament = (JSONObject) game.get("tournament");
-                    String tournamentName = (String) tournament.get("name");
-                    if (tournamentName.toLowerCase().contains("relegation")) {
-                        continue; //not interested in matches that are for relegation/promotion playoffs as we have no data about the team from the lower league.
-                    }
+    private static void addDataToMatches(String url, Season season, Date earliestDate, Date latestDate, Set<Integer> gameIds) throws Exception {
+        String jsonString = GetJsonHelper.jsonGetRequest(url);
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(jsonString);
 
-                    JSONObject homeTeam = (JSONObject) game.get("homeTeam");
-                    String homeTeamName = (String) homeTeam.get("name");
-                    JSONObject awayTeam = (JSONObject) game.get("awayTeam");
-                    String awayTeamName = (String) awayTeam.get("name");
+        JSONArray events = (JSONArray) json.get("events");
 
-                    JSONObject statusObj = (JSONObject) game.get("status");
-                    String status = (String) statusObj.get("description");
+        for (Object aJsonObject : events) {
+            JSONObject game = (JSONObject) aJsonObject;
+            JSONObject tournament = (JSONObject) game.get("tournament");
+            String tournamentName = (String) tournament.get("name");
+            if (tournamentName.toLowerCase().contains("relegation")) {
+                continue; //not interested in matches that are for relegation/promotion playoffs as we have no data about the team from the lower league.
+            }
 
-                    String startTime = game.get("startTimestamp").toString(); //returns number of seconds since epoch
-                    Date kickoff = DateHelper.getDateFromSofascoreTimestamp(Long.parseLong(startTime));
+            JSONObject homeTeam = (JSONObject) game.get("homeTeam");
+            String homeTeamName = (String) homeTeam.get("name");
+            JSONObject awayTeam = (JSONObject) game.get("awayTeam");
+            String awayTeamName = (String) awayTeam.get("name");
 
-                    int id = Integer.parseInt(game.get("id").toString());
-                    if (!status.equals("Postponed") && !status.equals("Canceled")) {
-                        if (season != null) {
-                            Team hTeam = season.getTeam(homeTeamName);
-                            if (hTeam != null) {
-                                Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
-                                if (thisMatch != null) {
-                                    thisMatch.setSofaScoreGameId(id);
-                                    thisMatch.setKickoffTime(kickoff);
-                                }
-                            }
-                        }
-                        if (earliestDate == null && latestDate == null) {
-                            gameIds.add(id);
-                        } else if (kickoff.before(latestDate) && (kickoff.after(earliestDate) || kickoff.equals(earliestDate))) {
-                            gameIds.add(id);
-                        }
-                    } else {
-                        if (season != null) {
-                            Team hTeam = season.getTeam(homeTeamName);
-                            if (hTeam != null) {
-                                Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
-                                if (thisMatch != null) {
-                                    thisMatch.setPostponed(true);
-                                    thisMatch.setSofaScoreGameId(id);
-                                    thisMatch.setKickoffTime(kickoff);
-                                }
-                            }
+            JSONObject statusObj = (JSONObject) game.get("status");
+            String status = (String) statusObj.get("description");
+
+            String startTime = game.get("startTimestamp").toString(); //returns number of seconds since epoch
+            Date kickoff = DateHelper.getDateFromSofascoreTimestamp(Long.parseLong(startTime));
+
+            int id = Integer.parseInt(game.get("id").toString());
+            if (!status.equals("Postponed") && !status.equals("Canceled")) {
+                if (season != null) {
+                    Team hTeam = season.getTeam(homeTeamName);
+                    if (hTeam != null) {
+                        Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
+                        if (thisMatch != null) {
+                            thisMatch.setSofaScoreGameId(id);
+                            thisMatch.setKickoffTime(kickoff);
                         }
                     }
                 }
-            } catch (ParseException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-                return null;
-            } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
-                hasMorePages = false;
+                if (earliestDate == null && latestDate == null) {
+                    gameIds.add(id);
+                } else if (kickoff.before(latestDate) && (kickoff.after(earliestDate) || kickoff.equals(earliestDate))) {
+                    gameIds.add(id);
+                }
+            } else {
+                if (season != null) {
+                    Team hTeam = season.getTeam(homeTeamName);
+                    if (hTeam != null) {
+                        Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
+                        if (thisMatch != null) {
+                            thisMatch.setPostponed(true);
+                            thisMatch.setSofaScoreGameId(id);
+                            thisMatch.setKickoffTime(kickoff);
+                        }
+                    }
+                }
             }
-            pageNumb++;
         }
-        return gameIds;
     }
 
     /*
@@ -198,8 +218,8 @@ public class SofaScore {
             match.setSofaScoreGameId(gameId);
             match.setHomeDrawAwayOdds(getOdds(gameId));
             JSONObject status = (JSONObject) event.get("status");
-            boolean isFullTime = (status.get("description")).equals("Ended");
-            if (isFullTime) {
+            String statusDesc = status.get("description").toString();
+            if (statusDesc.equals("Ended")) { // This method shouldn't update the postponed flag as Sofascore has inaccurate data for that from this URL
                 addPlayerRatingsToGame(match, gameId);
                 addFirstGoalScorer(match, gameId);
                 addMatchStatistics(match, gameId);

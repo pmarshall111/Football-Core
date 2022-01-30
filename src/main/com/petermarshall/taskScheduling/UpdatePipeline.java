@@ -10,12 +10,15 @@ import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
 import com.petermarshall.scrape.classes.Match;
 import com.petermarshall.scrape.classes.Season;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class UpdatePipeline {
+    private static final Logger logger = LogManager.getLogger(UpdatePipeline.class);
+
     public static void main(String[] args) {
         updatePlayedGames(true);
     }
@@ -26,10 +29,9 @@ public class UpdatePipeline {
     public static void updatePlayedGames(boolean closeConnection) {
         DS_Main.openProductionConnection();
         DS_Main.initDB();
-        updatePostponedGames();
         HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
         if (leaguesToUpdate.keySet().size() == 0) {
-            System.out.println("No games to update! - " + new Date());
+            logger.info("No games to update");
             return;
         }
         Iterator<League> iter = leaguesToUpdate.keySet().iterator();
@@ -42,36 +44,18 @@ public class UpdatePipeline {
             Date earliestMatchWithBuffer = DateHelper.subtractXDaysFromDate(earliestMatchDate,1); // buffer to account for TV rescheduling
             Date fourHoursAgo = DateHelper.subtractXminsFromDate(new Date(),240);
             Understat.addSeasonsGames(l, currSeasonKey, null, null);
-            Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(l.getIdsAndData().getSofaScoreLeagueName(), l.getIdsAndData().getLeagueId(),
+            Set<Integer> allGameIds = SofaScore.getSofascoreIdsAndAddBaseDataToMatches(l.getIdsAndData().getSofaScoreLeagueName(), l.getIdsAndData().getLeagueId(),
                     l.getIdsAndData().getLeaguesSeasonId(currSeason.getSeasonKey()), earliestMatchWithBuffer, fourHoursAgo, currSeason);
-            System.out.println("For " + currSeason.getSeasonKey() + " in " + l.getName() +", we have " + allGameIds.size() + "new ids");
+            logger.info("For " + currSeason.getSeasonKey() + " in " + l.getName() +", we have " + allGameIds.size() + "new ids");
             AtomicInteger gamesScraped = new AtomicInteger();
             allGameIds.forEach(gameId -> {
                 SofaScore.addInfoToGame(currSeason, gameId);
-                System.out.println("Scraped " + gamesScraped.incrementAndGet() + " games");
+                logger.info("Scraped " + gamesScraped.incrementAndGet() + " games");
             });
             DS_Update.updateGamesInDB(l, currSeason, earliestMatchWithBuffer);
         }
         if (closeConnection) {
             DS_Main.closeConnection();
-        }
-    }
-
-    private static void updatePostponedGames() {
-        HashMap<String, ArrayList<Integer>> postponedIds = DS_Get.getPostponedGames();
-        Iterator<String> iter = postponedIds.keySet().iterator();
-        while (iter.hasNext()) {
-            String leagueName = iter.next();
-            League l = new League(LeagueIdsAndData.valueOf(leagueName));
-            Understat.addSeasonsGames(l, l.getCurrentSeasonStartYear(), null, null);
-            ArrayList<Integer> leaguePostponedIds = postponedIds.get(leagueName);
-            Season currSeason = l.getSeason(l.getCurrentSeasonStartYear());
-            ArrayList<Match> postponedMatches = new ArrayList<>();
-            leaguePostponedIds.forEach(gameId -> {
-                Match match = SofaScore.addInfoToGame(currSeason, gameId);
-                postponedMatches.add(match);
-            });
-            DS_Update.updatePostponedMatches(l, currSeason, postponedMatches);
         }
     }
 }

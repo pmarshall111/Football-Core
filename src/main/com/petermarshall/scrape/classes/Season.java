@@ -1,5 +1,6 @@
 package com.petermarshall.scrape.classes;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -53,6 +54,17 @@ public class Season {
 
     public ArrayList<Match> getAllMatches() {
         return matches;
+    }
+
+    public ArrayList<Match> getMatchesBySofascoreId(ArrayList<Integer> sofascoreIds) {
+        HashMap<Integer, Match> matchMap = new HashMap<>();
+        this.matches.forEach(match -> matchMap.put(match.getSofaScoreGameId(), match));
+
+        ArrayList<Match> matchesWithSofascoreId = new ArrayList<>();
+        sofascoreIds.forEach(id -> {
+            if (matchMap.containsKey(id)) matchesWithSofascoreId.add(matchMap.get(id));
+        });
+        return matchesWithSofascoreId;
     }
 
     public static String getSeasonKeyFromYearStart(int yearStart) {

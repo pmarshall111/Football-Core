@@ -31,7 +31,8 @@ public enum OddsCheckerBookies {
     BETFAIR("Betfair"), 
     BETDAQ("Betdaq"), 
     MATCHBOOK("Matchbook"), 
-    SMARKETS("Smarkets");
+    SMARKETS("Smarkets"),
+    OPTIMAL_ODDS("Best");
     
     private final String bookie;
 

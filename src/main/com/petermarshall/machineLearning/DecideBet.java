@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import static com.petermarshall.ConvertOdds.fromOddsToProbability;
 import static com.petermarshall.ConvertOdds.fromProbabilityToOdds;
 import static com.petermarshall.database.Result.*;
-import static com.petermarshall.scrape.OddsChecker.BEST_BOOKIE_ENTRY;
 
 public class DecideBet {
     public static final int INITIAL_BET = 5;
@@ -22,7 +21,7 @@ public class DecideBet {
             double homePred = 999, drawPred = 999, awayPred = 999;
             boolean scrapeSuccess = false;
             try {
-                double[] odds = mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY);
+                double[] odds = mtp.getBookiesOdds().get(OddsCheckerBookies.OPTIMAL_ODDS.getName());
                 homePred = fromOddsToProbability(odds[0]);
                 drawPred = fromOddsToProbability(odds[1]);
                 awayPred = fromOddsToProbability(odds[2]);

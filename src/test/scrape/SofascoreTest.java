@@ -5,7 +5,6 @@ import com.petermarshall.DateHelper;
 import com.petermarshall.database.FirstScorer;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.scrape.SofaScore;
-import com.petermarshall.scrape.Understat;
 import com.petermarshall.scrape.classes.League;
 import com.petermarshall.scrape.classes.Match;
 import com.petermarshall.scrape.classes.Season;
@@ -14,7 +13,6 @@ import static com.petermarshall.scrape.classes.LeagueIdsAndData.EPL;
 import com.petermarshall.scrape.classes.Team;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class SofascoreTest {
         season.addNewMatch(lfcHome);
 
         //get the IDs for the games (required to run before other tests)
-        ids = SofaScore.getGamesOfLeaguesSeason(leagueName, leagueId, seasonId, null, null, season);
+        ids = SofaScore.getSofascoreIdsAndAddBaseDataToMatches(leagueName, leagueId, seasonId, null, null, season);
     }
 
     //possibly will need a test to look at what it does with postponed matches.

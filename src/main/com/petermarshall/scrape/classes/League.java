@@ -72,7 +72,7 @@ public class League {
     }
 
     private void scrapeSeason(Season currSeason) {
-        Set<Integer> allGameIds = SofaScore.getGamesOfLeaguesSeason(this.idsAndData.getSofaScoreLeagueName(), this.idsAndData.getLeagueId(),
+        Set<Integer> allGameIds = SofaScore.getSofascoreIdsAndAddBaseDataToMatches(this.idsAndData.getSofaScoreLeagueName(), this.idsAndData.getLeagueId(),
                 this.idsAndData.getLeaguesSeasonId(currSeason.getSeasonKey()), null, null, currSeason);
         System.out.println("For " + currSeason.getSeasonKey() + ", we have " + allGameIds.size() + "ids");
         ArrayList<Integer> shuffledIds = new ArrayList<>(allGameIds);

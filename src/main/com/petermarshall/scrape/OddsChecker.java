@@ -6,6 +6,7 @@ import com.petermarshall.ConvertOdds;
 import com.petermarshall.DateHelper;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
 import com.petermarshall.mail.SendEmail;
+import com.petermarshall.scrape.classes.OddsCheckerBookies;
 import com.petermarshall.scrape.classes.Team;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,7 +34,6 @@ public class OddsChecker implements Runnable {
     public static final String SERIE_A_URL = "https://www.oddschecker.com/football/italy/serie-a";
     public static final String LA_LIGA_URL = "https://www.oddschecker.com/football/spain/la-liga-primera";
     public static final String RUSSIA_URL = "https://www.oddschecker.com/football/russia/premier-league";
-    public static final String BEST_BOOKIE_ENTRY = "Best";
 
     private ArrayList<MatchToPredict> matches;
 
@@ -115,7 +115,7 @@ public class OddsChecker implements Runnable {
                 matchInfos.remove(correctMatch);
                 if (correctMatch != null && correctMatch.odds != null) {
                     LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>() {{
-                        put(BEST_BOOKIE_ENTRY, correctMatch.odds);
+                        put(OddsCheckerBookies.OPTIMAL_ODDS.getName(), correctMatch.odds);
                     }};
                     match.setBookiesOdds(bookiesOdds);
                 }

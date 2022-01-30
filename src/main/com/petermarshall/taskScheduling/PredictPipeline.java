@@ -1,8 +1,8 @@
 package com.petermarshall.taskScheduling;
 
+import com.petermarshall.machineLearning.Predict;
 import com.petermarshall.placeBet.bet365.BetPlaced;
 import com.petermarshall.placeBet.unibet.BetPlacedUniBet;
-import com.petermarshall.DateHelper;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.database.datasource.DS_Insert;
 import com.petermarshall.database.datasource.DS_Main;
@@ -13,7 +13,6 @@ import com.petermarshall.machineLearning.createData.CalcPastStats;
 import com.petermarshall.machineLearning.BetDecision;
 import com.petermarshall.machineLearning.BookieBetInfo;
 import com.petermarshall.machineLearning.createData.classes.MatchToPredict;
-import com.petermarshall.machineLearning.logisticRegression.Predict;
 import com.petermarshall.mail.SendEmail;
 import com.petermarshall.scrape.OddsChecker;
 import com.petermarshall.scrape.SofaScore;
@@ -22,8 +21,8 @@ import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 
 public class PredictPipeline {
@@ -31,7 +30,7 @@ public class PredictPipeline {
     private static final double MIN_BALANCE_WARNING = 20.0;
 
     public static void main(String[] args) {
-        finishPredictedGames();
+//        finishPredictedGames();
         predictGames();
     }
 
@@ -39,18 +38,21 @@ public class PredictPipeline {
     //Then will place a bet for us if good odds found, first will try Bet365, then if not possible tries UniBet
     public static void predictGames() {
         DS_Main.openProductionConnection();
-        //first check that all games are updated.
-        UpdatePipeline.updateGames(false);
+        UpdatePipeline.updatePlayedGames(false);
         ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredict();
+//        ArrayList<MatchToPredict> tempMtps = DS_Get.getMatchesToPredict();
+//        ArrayList<MatchToPredict> mtps = new ArrayList<>(){{add(tempMtps.get(1));}};
         if (mtps.size() > 0) {
-            OddsChecker.addBookiesOddsForGames(mtps); //TODO: Need to make sure this adds the odds to the games. Or else our predictions will be wrong
-            mtps.removeIf(mtp -> mtp.getBookiesOdds().size() == 0);
+            OddsChecker.addBookiesOddsForGames(mtps);
+//            mtps.get(0).setBookiesOdds(new LinkedHashMap<>(){{put("Best", new double[]{2.6,2.82,3.9});}});
+            mtps.removeIf(mtp -> mtp.getBookiesOdds() == null || mtp.getBookiesOdds().size() == 0);
             CalcPastStats.addFeaturesToPredict(mtps, false);
-            Predict.addOurProbabilitiesToGames(mtps);
+            Predict.addPredictionsToGames(mtps);
+            mtps.removeIf(mtp -> mtp.getOurPredictions(false) == null || mtp.getOurPredictions(false).length == 0);
             DS_Insert.addPredictionsToDb(mtps);
-            DecideBet.addDecisionRealMatches(mtps);
-            mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
+            mtps.removeIf(mtp -> mtp.getGoodBets() == null || mtp.getGoodBets().size() == 0);
             if (mtps.size() > 0) {
+                // TODO: write the code to store and bet on matches
                 betOnMatches(mtps);
             }
         }
@@ -69,30 +71,6 @@ public class PredictPipeline {
             matches.removeIf(mtp -> mtp.getGoodBets().size() == 0);
             if (matches.size() > 0) {
                 betOnMatches(matches);
-            }
-        }
-    }
-
-    public static void predictGamesWithLineups() {
-        //first check that all games are updated.
-        UpdatePipeline.updateGames(false);
-        Date in5Mins = DateHelper.addXMinsToDate(new Date(), 5);
-        Date in55Mins = DateHelper.addXMinsToDate(new Date(), 55);
-        ArrayList<MatchToPredict> mtps = DS_Get.getMatchesToPredictByDates(in5Mins, in55Mins);
-        if (mtps.size() > 0) {
-            //add lineups & odds and remove game if couldn't get lineups or odds
-            addLineupsAndOddsConcurrently(mtps);
-            mtps.removeIf(mtp -> mtp.getHomeTeamPlayers().size() != 11 || mtp.getAwayTeamPlayers().size() != 11 ||
-                    mtp.getBookiesOdds() == null || mtp.getBookiesOdds().size() == 0);
-            if (mtps.size() > 0) {
-                CalcPastStats.addFeaturesToPredict(mtps, false);
-                Predict.addOurProbabilitiesToGames(mtps);
-                DS_Insert.addPredictionsToDb(mtps);
-                DecideBet.addDecisionRealMatches(mtps);
-                mtps.removeIf(mtp -> mtp.getGoodBets().size() == 0);
-                if (mtps.size() > 0) {
-                    betOnMatches(mtps);
-                }
             }
         }
     }

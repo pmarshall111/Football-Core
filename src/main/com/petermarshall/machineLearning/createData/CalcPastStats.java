@@ -3,11 +3,10 @@ package com.petermarshall.machineLearning.createData;
 import com.petermarshall.database.datasource.DS_Get;
 import com.petermarshall.machineLearning.createData.classes.*;
 import com.petermarshall.scrape.classes.LeagueIdsAndData;
+import com.petermarshall.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.petermarshall.scrape.OddsChecker.BEST_BOOKIE_ENTRY;
 
 //class to be used to create csv files to learn from and update cache in db for past seasons.
 public class CalcPastStats {
@@ -59,9 +58,9 @@ public class CalcPastStats {
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
                 mtp.setFeatures(getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                         mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                        currSeason, -1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY)));
+                        currSeason, -1, mtp.getBookiesOdds().get(OddsCheckerBookies.OPTIMAL_ODDS.getName())));
                 mtp.setFeaturesNoLineups(getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                        currSeason,-1, mtp.getBookiesOdds().get(BEST_BOOKIE_ENTRY)));
+                        currSeason,-1, mtp.getBookiesOdds().get(OddsCheckerBookies.OPTIMAL_ODDS.getName())));
             });
         });
     }

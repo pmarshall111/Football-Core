@@ -67,8 +67,7 @@ public class GetJsonHelper {
             json = streamToString(inStream); // input stream to string
         } catch (IOException ex) {
             Logger logger = LogManager.getLogger(GetJsonHelper.class);
-            logger.info("JSON get request error: " + ex.getMessage());
-            logger.info("Above error is likely due to going past the last page of the event list.");
+            logger.error("JSON get request error: " + ex.getMessage());
         }
         return json;
     }

@@ -149,4 +149,8 @@ public class MatchToPredict {
     public ArrayList<Double> getFeaturesNoLineups() {
         return featuresNoLineups;
     }
+
+    public String getMatchString() {
+        return this.homeTeamName + " vs " + this.awayTeamName + " on " + this.getSqlDateString();
+    }
 }
