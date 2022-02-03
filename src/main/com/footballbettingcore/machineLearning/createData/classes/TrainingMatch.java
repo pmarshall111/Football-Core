@@ -21,6 +21,8 @@ public class TrainingMatch {
     private int seasonYearStart;
     private int gameId;
     private double probability = 1;
+    private double[] xgSimulatedProbabilties = new double[]{-1,-1,-1};
+    private double[] fiveThirtyEightProbabilities = new double[]{-1,-1,-1};
 
     //general usage
     public TrainingMatch(String homeTeamName, String awayTeamName, double homeOdds, double drawOdds, double awayOdds,
@@ -63,6 +65,8 @@ public class TrainingMatch {
                 this.homeXG, this.awayXG);
         clone.setFeatures(this.features);
         clone.setFeaturesNoLineups(this.featuresNoLineups);
+        clone.setXgSimulatedProbabilties(this.xgSimulatedProbabilties);
+        clone.setFiveThirtyEightProbabilities(this.fiveThirtyEightProbabilities);
         return clone;
     }
 
@@ -145,5 +149,33 @@ public class TrainingMatch {
 
     public double getAwayXG() {
         return awayXG;
+    }
+
+    public void setHomeScore(int homeScore) {
+        this.homeScore = homeScore;
+    }
+
+    public void setAwayScore(int awayScore) {
+        this.awayScore = awayScore;
+    }
+
+    public double[] getXgSimulatedProbabilties() {
+        return xgSimulatedProbabilties;
+    }
+
+    public void setXgSimulatedProbabilties(double[] xgSimulatedProbabilties) {
+        this.xgSimulatedProbabilties = xgSimulatedProbabilties;
+    }
+
+    public double[] getFiveThirtyEightProbabilities() {
+        return fiveThirtyEightProbabilities;
+    }
+
+    public void setFiveThirtyEightProbabilities(double[] fiveThirtyEightProbabilities) {
+        this.fiveThirtyEightProbabilities = fiveThirtyEightProbabilities;
+    }
+
+    public String getMatchString() {
+        return getHomeTeamName() + " vs " + getAwayTeamName() + " on " + kickoffTime;
     }
 }

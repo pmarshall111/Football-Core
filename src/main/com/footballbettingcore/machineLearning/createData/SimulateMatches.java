@@ -18,14 +18,22 @@ public class SimulateMatches {
             ResultProbabilities probs = createResultProbabilities(match);
             TrainingMatch homeWinSimulation = match.clone();
             homeWinSimulation.setProbability(probs.getHomeWinProbability());
+            homeWinSimulation.setHomeScore(1);
+            homeWinSimulation.setAwayScore(0);
             TrainingMatch drawSimulation = match.clone();
             drawSimulation.setProbability(probs.getDrawProbability());
+            drawSimulation.setHomeScore(0);
+            drawSimulation.setAwayScore(0);
             TrainingMatch awayWinSimulation = match.clone();
             awayWinSimulation.setProbability(probs.getAwayWinProbability());
+            awayWinSimulation.setHomeScore(0);
+            awayWinSimulation.setAwayScore(1);
 
             simulated.add(homeWinSimulation);
             simulated.add(drawSimulation);
             simulated.add(awayWinSimulation);
+
+            match.setXgSimulatedProbabilties(new double[]{probs.getHomeWinProbability(), probs.getDrawProbability(), probs.getAwayWinProbability()});
         }
 
         return simulated;
@@ -41,6 +49,8 @@ public class SimulateMatches {
                     if (scoreProb >= 0.01) { // not including really low probabilities so training set stays reasonably small
                         TrainingMatch matchSimulation = match.clone();
                         matchSimulation.setProbability(scoreProb);
+                        matchSimulation.setHomeScore(i);
+                        matchSimulation.setAwayScore(j);
                         simulated.add(matchSimulation);
                     }
                 }
