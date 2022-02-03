@@ -20,6 +20,26 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+            <!-- Used to create a 'fat jar' - a jar with all the dependencies included -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble-all</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -35,18 +55,6 @@
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.json.simple</artifactId>
             <version>0.4</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ejml/ejml-all -->
-        <dependency>
-            <groupId>org.ejml</groupId>
-            <artifactId>ejml-all</artifactId>
-            <version>0.37</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ejml/ejml-experimental -->
-        <dependency>
-            <groupId>org.ejml</groupId>
-            <artifactId>ejml-experimental</artifactId>
-            <version>0.37</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->

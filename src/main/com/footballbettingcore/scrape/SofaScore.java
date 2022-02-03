@@ -81,7 +81,7 @@ public class SofaScore {
             try {
                 addDataToMatches(url, season, earliestDate, latestDate, gameIds);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
-                logger.error(e.getStackTrace());
+                logger.error(e);
                 pastHasMorePages = false;
             }
             pastPageNumb++;
@@ -94,7 +94,7 @@ public class SofaScore {
             try {
                 addDataToMatches(url, season, earliestDate, latestDate, gameIds);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
-                logger.error(e.getStackTrace());
+                logger.error(e);
                 futureHasMorePages = false;
             }
             futurePageNumb++;
