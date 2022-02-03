@@ -1,5 +1,7 @@
 package com.footballbettingcore.scrape.classes;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -10,12 +12,12 @@ import java.util.Iterator;
  * NOTE: once added new season Ids here, the seasons must be scraped to the database by creating a call to Scrape.scrapeOneSeason();
  */
 public enum LeagueIdsAndData {
-    EPL("EPL", "Premier League", "England", 17, new int[]{10356, 11733, 13380, 17359, 23776, 29415, 37036}),
-    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{10495, 11906, 13662, 18020, 24127, 32501, 37223}),
-    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, 11818, 13477, 17597, 23538, 28210, 37166}),
-    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{10596, 11966, 13768, 17932, 24644, 32523, 37475}),
-    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{10373, 11648, 13384, 17279, 23872, 28222, 37167}),
-    RUSSIA("RFPL", "Premier League", "Russia", 203, new int[]{-1, 11868, 13387, 17753, 23682, 29200, 37038});
+    EPL("EPL", "Premier League", "England", 17, new int[]{10356, 11733, 13380, 17359, 23776, 29415, 37036}, 2411),
+    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{10495, 11906, 13662, 18020, 24127, 32501, 37223}, 1869),
+    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, 11818, 13477, 17597, 23538, 28210, 37166}, 1845),
+    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{10596, 11966, 13768, 17932, 24644, 32523, 37475}, 1854),
+    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{10373, 11648, 13384, 17279, 23872, 28222, 37167}, 1843),
+    RUSSIA("RFPL", "Premier League", "Russia", 203, new int[]{-1, 11868, 13387, 17753, 23682, 29200, 37038}, 1866);
 
     private static final int FIRST_SEASON_START = 15;
     private final int leagueId;
@@ -23,8 +25,9 @@ public enum LeagueIdsAndData {
     private final String understatUrl;
     private final String sofaScoreLeagueName;
     private final String sofaScoreCountryName;
+    private final int fiveThirtyEightId;
 
-    LeagueIdsAndData(String understatUrl, String sofaScoreLeagueName, String sofaScoreCountryName, int LeagueId, int[] ids) {
+    LeagueIdsAndData(String understatUrl, String sofaScoreLeagueName, String sofaScoreCountryName, int LeagueId, int[] ids, int fiveThirtyEightId) {
         this.understatUrl = understatUrl;
         this.sofaScoreLeagueName = sofaScoreLeagueName;
         this.leagueId = LeagueId;
@@ -35,6 +38,7 @@ public enum LeagueIdsAndData {
                 this.seasonIds.put(Season.getSeasonKeyFromYearStart(FIRST_SEASON_START+i), ids[i]);
             }
         }
+        this.fiveThirtyEightId = fiveThirtyEightId;
     }
 
     /*
@@ -81,5 +85,15 @@ public enum LeagueIdsAndData {
 
     public HashMap<String, Integer> getSeasonIds() {
         return seasonIds;
+    }
+
+    public int getFiveThirtyEightId() {
+        return fiveThirtyEightId;
+    }
+
+    public static boolean isRelevantFiveThirtyEightId(int id) {
+        int[] allIds = new int[]{EPL.fiveThirtyEightId, LA_LIGA.fiveThirtyEightId, BUNDESLIGA.fiveThirtyEightId,
+                SERIE_A.fiveThirtyEightId, LIGUE_1.fiveThirtyEightId, RUSSIA.fiveThirtyEightId};
+        return ArrayUtils.contains(allIds, id);
     }
 }

@@ -21,7 +21,9 @@ public class WriteTrainingData {
             for (int i = 0; i < trainingData.size(); i++) {
                 TrainingMatch match = trainingData.get(i);
                 featuresWriter.append(getOddsLine(match.getOdds()) + ",");
-                featuresWriter.append(getCsvLine(match.getHomeScore(), match.getAwayScore(), match.getProbability(), match.getGameId(), match.getFeatures()));
+                featuresWriter.append(getMatchDataLine(match.getHomeScore(), match.getAwayScore(), match.getHomeXG(),
+                        match.getAwayXG(), match.getXgSimulatedProbabilties(), match.getFiveThirtyEightProbabilities(), match.getProbability(), match.getGameId()) + ",");
+                featuresWriter.append(getFeaturesLine(match.getFeatures()));
                 if (i != trainingData.size()-1) {
                     featuresWriter.append("\n");
                 }
@@ -36,7 +38,9 @@ public class WriteTrainingData {
             for (int i = 0; i < trainingData.size(); i++) {
                 MatchToPredict match = trainingData.get(i);
                 featuresWriter.append(getOddsLineForMatchToPredict(match) + ",");
-                featuresWriter.append(getCsvLine(-1, -1, -1, match.getDatabase_id(), match.getFeatures()));
+                // TODO: Need to also add code to get the 538 predictions when we're predicting games if it turns out to be worth doing
+                featuresWriter.append(getMatchDataLine(-1, -1, -1, -1, new double[]{-1,-1,-1}, new double[]{-1,-1,-1}, -1, match.getDatabase_id()) + ",");
+                featuresWriter.append(getFeaturesLine(match.getFeatures()));
                 if (i != trainingData.size()-1) {
                     featuresWriter.append("\n");
                 }
@@ -51,7 +55,10 @@ public class WriteTrainingData {
             for (int i = 0; i < trainingData.size(); i++) {
                 TrainingMatch match = trainingData.get(i);
                 featuresWriter.append(getOddsLine(match.getOdds()) + ",");
-                featuresWriter.append(getCsvLine(match.getHomeScore(), match.getAwayScore(), match.getProbability(), match.getGameId(), match.getFeaturesNoLineups()));
+                featuresWriter.append(getMatchDataLine(match.getHomeScore(), match.getAwayScore(), match.getHomeXG(),
+                        match.getAwayXG(), match.getXgSimulatedProbabilties(), match.getFiveThirtyEightProbabilities(),
+                        match.getProbability(), match.getGameId()) + ",");
+                featuresWriter.append(getFeaturesLine(match.getFeaturesNoLineups()));
                 if (i != trainingData.size()-1) {
                     featuresWriter.append("\n");
                 }
@@ -66,7 +73,9 @@ public class WriteTrainingData {
             for (int i = 0; i < trainingData.size(); i++) {
                 MatchToPredict match = trainingData.get(i);
                 featuresWriter.append(getOddsLineForMatchToPredict(match) + ",");
-                featuresWriter.append(getCsvLine(-1, -1, -1, match.getDatabase_id(), match.getFeaturesNoLineups()));
+                featuresWriter.append(getMatchDataLine(-1, -1, -1, -1, new double[]{-1,-1,-1},
+                        new double[]{-1,-1,-1}, -1, match.getDatabase_id()) + ",");
+                featuresWriter.append(getFeaturesLine(match.getFeaturesNoLineups()));
                 if (i != trainingData.size()-1) {
                     featuresWriter.append("\n");
                 }
@@ -111,10 +120,19 @@ public class WriteTrainingData {
         return Arrays.stream(odds).mapToObj(x -> x+"").collect(Collectors.joining(","));
     }
 
-    private static String getCsvLine(int homeScore, int awayScore, double resultProbability, int gameId, ArrayList<Double> features) {
+    private static String getMatchDataLine(int homeScore, int awayScore, double homeXg, double awayXg,
+                                           double[] xgSimulatedResultProbabilities, double[] fiveThirtyEightProbabilities,
+                                           double resultProbability, int gameId) {
         int result = homeScore > awayScore ? Result.HOME_WIN.getSqlIntCode() :
-                    homeScore == awayScore ? Result.DRAW.getSqlIntCode() :
-                    Result.AWAY_WIN.getSqlIntCode();
-        return homeScore + "," + awayScore + "," + resultProbability + "," + gameId + "," + result + "," + features.stream().map(x -> x+"").collect(Collectors.joining(","));
+                     homeScore == awayScore ? Result.DRAW.getSqlIntCode() :
+                     Result.AWAY_WIN.getSqlIntCode();
+        return homeScore + "," + awayScore + "," + homeXg + "," + awayXg + "," +
+                xgSimulatedResultProbabilities[0] + "," + xgSimulatedResultProbabilities[1] + "," + xgSimulatedResultProbabilities[2] + "," +
+                fiveThirtyEightProbabilities[0] + "," + fiveThirtyEightProbabilities[1] + "," + fiveThirtyEightProbabilities[2] + "," +
+                resultProbability + "," + gameId + "," + result;
+    }
+
+    private static String getFeaturesLine(ArrayList<Double> features) {
+        return features.stream().map(x -> x+"").collect(Collectors.joining(","));
     }
 }

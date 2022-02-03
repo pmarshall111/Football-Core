@@ -202,10 +202,10 @@ public class DateHelper {
      * Getters
      */
     public static int getStartYearForCurrentSeason() {
-        return getEndingYearForCurrentSeason(new Date())-1;
+        return getEndingYearForSeason(new Date())-1;
     }
 
-    public static int getEndingYearForCurrentSeason(Date currentDate) {
+    public static int getEndingYearForSeason(Date currentDate) {
         String[] partsOfDate = currentDate.toString().split(" ");
         int year2Digits = Integer.parseInt(partsOfDate[5].substring(2,4));
         int month = Integer.parseInt(turnMonthStringToNumb(partsOfDate[1]));

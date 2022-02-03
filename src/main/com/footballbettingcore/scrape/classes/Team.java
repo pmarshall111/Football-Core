@@ -1,7 +1,9 @@
 package com.footballbettingcore.scrape.classes;
 
 import com.footballbettingcore.utils.DateHelper;
+import org.apache.commons.lang3.StringUtils;
 
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -328,6 +330,167 @@ public class Team {
                 return "FK Krasnodar";
             case "FC Tambov":
                 return "FK Tambov";
+
+            default:
+                return teamName;
+        }
+    }
+
+    public static String match538TeamNamesToUnderstat(String teamName) {
+        teamName = StringUtils.stripAccents(teamName);
+
+        // EPL
+        switch (teamName) {
+            case "Leicester City":
+                return "Leicester";
+            case "Swansea City":
+                return "Swansea";
+            case "Hull City":
+                return "Hull";
+            case "Stoke City":
+                return "Stoke";
+            case "Tottenham Hotspur":
+                return "Tottenham";
+            case "West Ham United":
+                return "West Ham";
+            case "AFC Bournemouth":
+                return "Bournemouth";
+            case "Huddersfield Town":
+                return "Huddersfield";
+            case "Brighton and Hove Albion":
+                return "Brighton";
+            case "Newcastle":
+                return "Newcastle United";
+            case "Cardiff City":
+                return "Cardiff";
+            case "Wolverhampton":
+                return "Wolverhampton Wanderers";
+            case "Norwich City":
+                return "Norwich";
+            case "Leeds United":
+                return "Leeds";
+
+            // La Liga
+            case "Sevilla FC":
+                return "Sevilla";
+            case "Deportivo La Coruña":
+                return "Deportivo La Coruna";
+            case "Alavés":
+                return "Alaves";
+            case "Athletic Bilbao":
+                return "Athletic Club";
+            case "Sporting Gijón":
+                return "Sporting Gijon";
+            case "Girona FC":
+                return "Girona";
+
+            // Bundesliga
+            case "Hamburg SV":
+                return "Hamburger SV";
+            case "FC Ingolstadt 04":
+                return "Ingolstadt";
+            case "SV Darmstadt 98":
+                return "Darmstadt";
+            case "SC Freiburg":
+                return "Freiburg";
+            case "TSG Hoffenheim":
+                return "Hoffenheim";
+            case "Borussia Monchengladbach":
+                return "Borussia M.Gladbach";
+            case "RB Leipzig":
+                return "RasenBallsport Leipzig";
+            case "Mainz":
+                return "Mainz 05";
+            case "VfL Wolfsburg":
+                return "Wolfsburg";
+            case "FC Augsburg":
+                return "Augsburg";
+            case "Fortuna Dusseldorf":
+                return "Fortuna Duesseldorf";
+            case "1. FC Nurnberg":
+                return "Nuernberg";
+            case "1. FC Union Berlin":
+                return "Union Berlin";
+            case "SC Paderborn":
+                return "Paderborn";
+            case "SpVgg Greuther Furth":
+                return "Greuther Fuerth";
+            case "VfL Bochum":
+                return "Bochum";
+
+            //Serie A
+            case "AS Roma":
+                return "Roma";
+            case "US Pescara":
+                return "Pescara";
+            case "Internazionale":
+                return "Inter";
+            case "Chievo Verona":
+                return "Chievo";
+            case "Spal":
+                return "SPAL 2013";
+            case "Parma":
+                return "Parma Calcio 1913";
+            case "F.B.C Unione Venezia":
+                return "Venezia";
+
+            // Ligue 1
+            case "Stade Rennes":
+                return "Rennes";
+            case "Paris Saint-Germain":
+                return "Paris Saint Germain";
+            case "Dijon FCO":
+                return "Dijon";
+            case "AS Nancy Lorraine":
+                return "Nancy";
+            case "Bastia":
+                return "SC Bastia";
+            case "AS Monaco":
+                return "Monaco";
+            case "St Etienne":
+                return "Saint-Etienne";
+
+            //Russia
+            case "FK Krasnodar":
+                return "FC Krasnodar";
+            case "Rostov":
+                return "FC Rostov";
+            case "Gazovik Orenburg":
+                return "FC Orenburg";
+            case "Akhmat Grozny":
+                return "FK Akhmat";
+            case "Ural Sverdlovsk Oblast":
+                return "Ural";
+            case "Dynamo Moscow":
+                return "Dinamo Moscow";
+            case "FK Ufa":
+                return "FC Ufa";
+            case "Metallurg Krasnoyarsk":
+                return "FC Yenisey Krasnoyarsk";
+            case "Amkar Perm":
+                return "Amkar";
+            case "Sochi":
+                return "PFC Sochi";
+            case "Tambov":
+                return "FC Tambov";
+            case "FC Khimki":
+                return "Khimki";
+            case "FK Volgograd":
+                return "FC Rotor Volgograd";
+            case "FK Nizhny Novgorod":
+                return "Nizhny Novgorod";
+            case "FC Arsenal Tula":
+                return "Arsenal Tula";
+            case "FC Tosno":
+                return "Tosno";
+            case "Energiya Khabarovsk":
+                return "SKA-Khabarovsk";
+            case "Terek Grozny":
+                return "FK Akhmat";
+            case "Zenit St Petersburg":
+                return "Zenit St. Petersburg";
+            case "Krylia Sovetov":
+                return "Krylya Sovetov Samara";
 
             default:
                 return teamName;

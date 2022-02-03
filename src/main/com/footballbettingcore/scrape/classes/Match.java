@@ -25,6 +25,7 @@ public class Match {
     private int awayShots;
     private int homeShotsOnTarget;
     private int awayShotsOnTarget;
+    private double[] fiveThirtyEightPredictions = new double[]{-1,-1,-1};
 
 
     /*
@@ -236,5 +237,21 @@ public class Match {
             e.printStackTrace();
             System.out.println(this.homeTeam.getTeamName() + " vs " + this.awayTeam.getTeamName());
         }
+    }
+
+    public double[] getFiveThirtyEightPredictions() {
+        return fiveThirtyEightPredictions;
+    }
+
+    public void setFiveThirtyEightPredictions(double[] fiveThirtyEightPredictions) {
+        this.fiveThirtyEightPredictions = fiveThirtyEightPredictions;
+    }
+
+    public String getHomeTeamName() {
+        return this.homeTeam.getTeamName();
+    }
+
+    public String getAwayTeamName() {
+        return this.awayTeam.getTeamName();
     }
 }

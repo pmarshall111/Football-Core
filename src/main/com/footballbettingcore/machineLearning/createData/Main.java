@@ -2,6 +2,8 @@ package com.footballbettingcore.machineLearning.createData;
 import com.footballbettingcore.database.datasource.DS_Get;
 import com.footballbettingcore.database.datasource.DS_Main;
 import com.footballbettingcore.machineLearning.createData.classes.TrainingMatch;
+import com.footballbettingcore.scrape.FiveThirtyEight;
+import com.footballbettingcore.utils.DateHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,13 +14,13 @@ import static com.footballbettingcore.machineLearning.createData.WriteTrainingDa
 public class Main {
     public static void main(String[] args) {
         // Generate files for a test and training set.
-//        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
-//        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
-//        createFileWithSimulatedMatchesByResult(null, removeBefore, "train.csv");
-//        createOneBigFile(removeBefore, removeAfter, "test.csv");
+        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
+        createOneBigFile(null, removeBefore, "train.csv");
+        createOneBigFile(removeBefore, removeAfter, "test.csv");
 
         // Generate file with all data for feature analysis or final model training
-//        createOneBigFile(null, null, "allDataSpssWithNewFeatures.csv");
+//        createOneBigFile(null, null, "train_final_model.csv");
 //        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
 
         // Generate file for the Poisson Regression python code
@@ -29,6 +31,9 @@ public class Main {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalcPastStats.getAllTrainingMatches();
         ArrayList<TrainingMatch> matchesSubset = removeTrainingMatches(removeBefore, removeAfter, trainingMatches);
+        FiveThirtyEight.addPredictionsToTrainingMatches(matchesSubset);
+        matchesSubset.removeIf(m -> m.getFiveThirtyEightProbabilities()[0] == -1);
+        SimulateMatches.createSimulatedMatchesWithProbabilityOfResult(matchesSubset); // adds simulated probabilities
         WriteTrainingData.writeAllDataOutToOneCsvFile(matchesSubset, filename);
         DS_Main.closeConnection();
     }
