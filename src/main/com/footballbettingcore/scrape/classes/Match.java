@@ -17,7 +17,7 @@ public class Match {
     private HashMap<String, PlayerRating> homePlayerRatings;
     private HashMap<String, PlayerRating> awayPlayerRatings;
     private ArrayList<Double> homeDrawAwayOdds;
-    private int sofaScoreGameId;
+    private int sofaScoreGameId = -1;
     private boolean isPostponed = false;
     private double homePossession;
     private double awayPossession;

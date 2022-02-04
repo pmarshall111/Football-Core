@@ -1,9 +1,6 @@
 package com.footballbettingcore.scrape;
 
 import com.footballbettingcore.database.FirstScorer;
-import com.footballbettingcore.database.datasource.DS_Get;
-import com.footballbettingcore.database.datasource.DS_Main;
-import com.footballbettingcore.database.datasource.DS_Update;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.classes.*;
 import com.footballbettingcore.utils.ConvertOdds;
@@ -79,9 +76,8 @@ public class SofaScore {
         while (pastHasMorePages) {
             String url = getSeasonStatsForPrevGamesUrl(leagueId, seasonId, pastPageNumb);
             try {
-                addDataToMatches(url, season, earliestDate, latestDate, gameIds);
+                addDataToMatches(url, season, earliestDate, latestDate, gameIds, false);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
-                logger.error(e);
                 pastHasMorePages = false;
             }
             pastPageNumb++;
@@ -92,9 +88,8 @@ public class SofaScore {
         while (futureHasMorePages) {
             String url = getSeasonStatsForFutureGamesUrl(leagueId, seasonId, futurePageNumb);
             try {
-                addDataToMatches(url, season, earliestDate, latestDate, gameIds);
+                addDataToMatches(url, season, earliestDate, latestDate, gameIds, true);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
-                logger.error(e);
                 futureHasMorePages = false;
             }
             futurePageNumb++;
@@ -103,7 +98,7 @@ public class SofaScore {
         return gameIds;
     }
 
-    private static void addDataToMatches(String url, Season season, Date earliestDate, Date latestDate, Set<Integer> gameIds) throws Exception {
+    private static void addDataToMatches(String url, Season season, Date earliestDate, Date latestDate, Set<Integer> gameIds, boolean shouldOverwrite) throws Exception {
         String jsonString = GetJsonHelper.jsonGetRequest(url);
         JSONParser parser = new JSONParser();
         JSONObject json = (JSONObject) parser.parse(jsonString);
@@ -130,34 +125,33 @@ public class SofaScore {
             Date kickoff = DateHelper.getDateFromSofascoreTimestamp(Long.parseLong(startTime));
 
             int id = Integer.parseInt(game.get("id").toString());
-            if (!status.equals("Postponed") && !status.equals("Canceled")) {
-                if (season != null) {
-                    Team hTeam = season.getTeam(homeTeamName);
-                    if (hTeam != null) {
-                        Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
-                        if (thisMatch != null) {
+            if (season != null) {
+                Team hTeam = season.getTeam(homeTeamName);
+                if (hTeam != null) {
+                    Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
+                    if (thisMatch != null) {
+                        if (thisMatch.getSofaScoreGameId() > -1 && shouldOverwrite || thisMatch.getSofaScoreGameId() == -1) {
+                            // Sofascore duplicates rescheduled games in their match list.
+                            // We only want to overwrite if we have a more recent game. Can't compare dates for this as Whoscored
+                            // already adds a date to the match. So we must look at the Sofascore Id to see if it's been updated yet
+                            // and then use logic from whether we're looking back or forwards in time from the calling method to
+                            // decide whether to update.
+                            if ((status.equals("Postponed") || status.equals("Canceled")) &&
+                                    (thisMatch.getHomeXGF() == -1 || thisMatch.getAwayXGF() == -1)) {
+                                // if we have data for a match, it has been played. So ensure postponed flag is not added.
+                                // Postponed description stays in sofascore API even if game has now been played.
+                                thisMatch.setPostponed(true);
+                            }
                             thisMatch.setSofaScoreGameId(id);
                             thisMatch.setKickoffTime(kickoff);
                         }
                     }
                 }
-                if (earliestDate == null && latestDate == null) {
-                    gameIds.add(id);
-                } else if (kickoff.before(latestDate) && (kickoff.after(earliestDate) || kickoff.equals(earliestDate))) {
-                    gameIds.add(id);
-                }
-            } else {
-                if (season != null) {
-                    Team hTeam = season.getTeam(homeTeamName);
-                    if (hTeam != null) {
-                        Match thisMatch = hTeam.getMatchFromAwayTeamName(awayTeamName);
-                        if (thisMatch != null) {
-                            thisMatch.setPostponed(true);
-                            thisMatch.setSofaScoreGameId(id);
-                            thisMatch.setKickoffTime(kickoff);
-                        }
-                    }
-                }
+            }
+            if (earliestDate == null && latestDate == null) {
+                gameIds.add(id);
+            } else if (kickoff.before(latestDate) && (kickoff.after(earliestDate) || kickoff.equals(earliestDate))) {
+                gameIds.add(id);
             }
         }
     }

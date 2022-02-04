@@ -24,8 +24,7 @@ public class OctavePredictionMapper {
                 double stake = Double.parseDouble(prediction.get(5));
                 double odds = Double.parseDouble(prediction.get(6));
                 if (resultToBetOn != -1) {
-                    BetDecision bet = new BetDecision(Result.valueOf(resultToBetOn-1+""));
-                    bet.addBookie(OddsCheckerBookies.OPTIMAL_ODDS, stake, odds);
+                    BookieBetInfo bet = new BookieBetInfo(OddsCheckerBookies.BET365, Result.valueOf(resultToBetOn-1+""), stake, odds);
                     match.addGoodBet(bet);
                 }
             }

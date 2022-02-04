@@ -4,10 +4,12 @@ import com.footballbettingcore.utils.ConvertOdds;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 import com.footballbettingcore.scrape.classes.Team;
+import com.shapesecurity.salvation2.Values.Hash;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
@@ -21,6 +23,7 @@ public class OddsChecker implements Runnable {
     public static final String SERIE_A_URL = "https://www.oddschecker.com/football/italy/serie-a";
     public static final String LA_LIGA_URL = "https://www.oddschecker.com/football/spain/la-liga-primera";
     public static final String RUSSIA_URL = "https://www.oddschecker.com/football/russia/premier-league";
+    public final static String CHROMEDRIVER_PATH = System.getenv("CHROMEDRIVER_PATH");
 
     private ArrayList<MatchToPredict> matches;
 
@@ -66,7 +69,7 @@ public class OddsChecker implements Runnable {
                     RUSSIA.add(match);
                     break;
                 default:
-                        throw new RuntimeException("Could not fit match into suitable league");
+                    throw new RuntimeException("Could not fit match into suitable league");
             }
         }
 
@@ -82,8 +85,10 @@ public class OddsChecker implements Runnable {
      * Method will search through the various CDATA tags from the Oddschecker website, and when it finds the one with the fixtures, will grab
      */
     private static void addOddsForLeague(ArrayList<MatchToPredict> matches, String url) {
-        System.setProperty("webdriver.chrome.driver", "/home/peter/Documents/personalProjects/footballBettingCore/target/chromedriver");
-        WebDriver driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver", CHROMEDRIVER_PATH);
+        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--headless");
+        WebDriver driver = new ChromeDriver(options);
         WebDriverWait wait = new WebDriverWait(driver, 20);
         try {
             driver.get(url);
@@ -93,16 +98,29 @@ public class OddsChecker implements Runnable {
             List<WebElement> items = driver.findElements(By.cssSelector(".match-on"));
             items.forEach(item -> {
                 List<WebElement> teamNames = item.findElements(By.cssSelector(".fixtures-bet-name"));
-                double[] odds = item.findElements(By.cssSelector(".add-to-bet-basket")).stream().mapToDouble(OddsChecker::getOddsFromHtmlElement).toArray();
-                matchInfos.add(new MatchInfo(teamNames.get(0).getText(), teamNames.get(1).getText(), odds));
+                String allOddsUrl = item.findElement(By.cssSelector(".betting a")).getAttribute("href");
+                matchInfos.add(new MatchInfo(teamNames.get(0).getText(), teamNames.get(1).getText(), allOddsUrl));
             });
 
             for (MatchToPredict match: matches) {
                 MatchInfo correctMatch = findCorrectMatch(matchInfos, match);
                 matchInfos.remove(correctMatch);
-                if (correctMatch != null && correctMatch.odds != null) {
+                if (correctMatch != null) {
+                    driver.manage().deleteAllCookies();
+                    driver.get(correctMatch.oddsUrl);
+                    List<WebElement> oddsRows = driver.findElements(By.cssSelector("div[class^='oddsAreaWrapper']"));
+                    double[] bet365Odds = new double[3];
+                    double[] unibetOdds = new double[3];
+                    for (int i = 0; i<3; i++) {
+                        WebElement oddsRow = oddsRows.get(i);
+                        String fractionalBet365Odds = oddsRow.findElement(By.cssSelector("button[data-bk=B3]")).getText();
+                        String fractionalUnibetOdds = oddsRow.findElement(By.cssSelector("button[data-bk=UN]")).getText();
+                        bet365Odds[i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
+                        unibetOdds[i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
+                    }
                     LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>() {{
-                        put(OddsCheckerBookies.OPTIMAL_ODDS.getName(), correctMatch.odds);
+                        put(OddsCheckerBookies.BET365.getName(), bet365Odds);
+                        put(OddsCheckerBookies.UNIBET.getName(), unibetOdds);
                     }};
                     match.setBookiesOdds(bookiesOdds);
                 }
@@ -117,17 +135,13 @@ public class OddsChecker implements Runnable {
     private static class MatchInfo{
         String homeTeam;
         String awayTeam;
-        double[] odds;
+        String oddsUrl;
 
-        public MatchInfo(String homeTeam, String awayTeam, double[] odds) {
+        public MatchInfo(String homeTeam, String awayTeam, String oddsUrl) {
             this.homeTeam = homeTeam;
             this.awayTeam = awayTeam;
-            this.odds = odds;
+            this.oddsUrl = oddsUrl;
         }
-    }
-
-    private static double getOddsFromHtmlElement(WebElement elem) {
-        return ConvertOdds.fromFractionToDecimal(elem.getText());
     }
 
     /*
@@ -150,9 +164,7 @@ public class OddsChecker implements Runnable {
 
     public static void main(String[] args) {
         ArrayList<MatchToPredict> mtps = new ArrayList<>();
-        mtps.add(new MatchToPredict("Chelsea", "Manchester City", "19-20", "EPL", "17/06/20",-1,-1));
-        mtps.add(new MatchToPredict("Aston Villa", "Wolverhampton Wanderers", "19-20", "EPL", "17/06/20",-1,-1));
-        mtps.add(new MatchToPredict("Sheffield United", "Tottenham", "19-20", "EPL", "21/06/20",-1,-1));
+        mtps.add(new MatchToPredict("Burnley", "Watford", "21-22", "EPL", "2022-02-05",-1,-1));
 
         addOddsForLeague(mtps, "https://www.oddschecker.com/football/english/premier-league");
     }

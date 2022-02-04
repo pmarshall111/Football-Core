@@ -19,7 +19,7 @@ public class AutomateBet {
     final private static String RUSSIA = "https://www.bet365.com/#/AC/B1/C1/D13/E49078161/F2/";
 
     public static void main(String[] args) {
-        BetPlaced bp = placeBet("LA_LIGA", "Real Sociedad", "Real Madrid", Winner.AWAY.getSetting(), 0.1, 1.7);
+        BetPlaced bp = placeBet("EPL", "Burnley", "Watford", Winner.AWAY.getSetting(), 0.1, 1.7);
         System.out.println("Odds: " + bp.getOddsOffered());
         System.out.println("Stake: " + bp.getStake());
         System.out.println("Success: " + bp.isBetSuccessful());

@@ -1,6 +1,6 @@
 package com.footballbettingcore.machineLearning.createData.classes;
 
-import com.footballbettingcore.machineLearning.BetDecision;
+import com.footballbettingcore.machineLearning.BookieBetInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class MatchToPredict {
     private LinkedHashMap<String, double[]> bookiesOdds;
     private final int database_id;
     private final int sofascore_id;
-    private final ArrayList<BetDecision> goodBets;
+    private final ArrayList<BookieBetInfo> goodBets;
 
     public MatchToPredict(String homeTeamName, String awayTeamName, String seasonKey, String leagueName, String sqlDateString, int database_id, int sofascore_id) {
         this.homeTeamName = homeTeamName;
@@ -124,11 +124,11 @@ public class MatchToPredict {
         return database_id;
     }
 
-    public ArrayList<BetDecision> getGoodBets() {
+    public ArrayList<BookieBetInfo> getGoodBets() {
         return goodBets;
     }
 
-    public void addGoodBet(BetDecision goodBet) {
+    public void addGoodBet(BookieBetInfo goodBet) {
         goodBets.add(goodBet);
     }
 

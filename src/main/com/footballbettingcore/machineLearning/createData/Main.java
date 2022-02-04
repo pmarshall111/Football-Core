@@ -14,20 +14,29 @@ import static com.footballbettingcore.machineLearning.createData.WriteTrainingDa
 public class Main {
     public static void main(String[] args) {
         // Generate files for a test and training set.
-        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
-        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
-        createOneBigFile(null, removeBefore, "train.csv");
-        createOneBigFile(removeBefore, removeAfter, "test.csv");
+//        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+//        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
+//        createOneBigFile(null, removeBefore, "train.csv");
+//        createOneBigFile(removeBefore, removeAfter, "test.csv");
 
         // Generate file with all data for feature analysis or final model training
 //        createOneBigFile(null, null, "train_final_model.csv");
-//        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
+        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
 
         // Generate file for the Poisson Regression python code
 //        createOneBigFileForPoissonRegression();
     }
 
     public static void createOneBigFile(Date removeBefore, Date removeAfter, String filename) {
+        DS_Main.openProductionConnection();
+        ArrayList<TrainingMatch> trainingMatches = CalcPastStats.getAllTrainingMatches();
+        ArrayList<TrainingMatch> matchesSubset = removeTrainingMatches(removeBefore, removeAfter, trainingMatches);
+        SimulateMatches.createSimulatedMatchesWithProbabilityOfResult(matchesSubset); // adds simulated probabilities
+        WriteTrainingData.writeAllDataOutToOneCsvFile(matchesSubset, filename);
+        DS_Main.closeConnection();
+    }
+
+    public static void createOneBigFileWithFiveThirtyEightData(Date removeBefore, Date removeAfter, String filename) {
         DS_Main.openProductionConnection();
         ArrayList<TrainingMatch> trainingMatches = CalcPastStats.getAllTrainingMatches();
         ArrayList<TrainingMatch> matchesSubset = removeTrainingMatches(removeBefore, removeAfter, trainingMatches);

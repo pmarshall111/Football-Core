@@ -58,9 +58,9 @@ public class CalcPastStats {
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
                 mtp.setFeatures(getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                         mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                        currSeason, -1, mtp.getBookiesOdds().get(OddsCheckerBookies.OPTIMAL_ODDS.getName())));
+                        currSeason, -1, mtp.getBookiesOdds().get(OddsCheckerBookies.BET365.getName())));
                 mtp.setFeaturesNoLineups(getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                        currSeason,-1, mtp.getBookiesOdds().get(OddsCheckerBookies.OPTIMAL_ODDS.getName())));
+                        currSeason,-1, mtp.getBookiesOdds().get(OddsCheckerBookies.BET365.getName())));
             });
         });
     }
