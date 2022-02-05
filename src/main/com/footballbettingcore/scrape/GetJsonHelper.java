@@ -59,7 +59,7 @@ public class GetJsonHelper {
                 return jsonGetRequest(urlQueryString, timesCalled+1);
             } else if (respCode == 403) {
                 SendEmail.sendOutEmail("ATTN: Scraper banned",
-                        "Tried connecting to '" + urlQueryString + "'\n" +connection.getResponseMessage());
+                        "Tried connecting to '" + urlQueryString + "'\n" +connection.getResponseMessage(), SendEmail.ADMIN_EMAIL);
                 throw new RuntimeException("403 forbidden response code received");
             }
             InputStream inStream = connection.getInputStream();

@@ -8,9 +8,9 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class SendEmail {
-    private final static String username = "javatestemail470@gmail.com";
-    private final static String password = "Test_ing123";
-    private final static String to = "pmarshall1993@hotmail.com";
+    private final static String SENDING_EMAIL_ACC = System.getenv("SENDING_EMAIL_ACC");
+    private final static String SENDING_EMAIL_PASS = System.getenv("SENDING_EMAIL_PASS");
+    public final static String ADMIN_EMAIL = System.getenv("ADMIN_EMAIL");
 
     private static Session session;
 
@@ -24,16 +24,16 @@ public class SendEmail {
         session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
+                        return new PasswordAuthentication(SENDING_EMAIL_ACC, SENDING_EMAIL_PASS);
                     }
                 });
     }
 
 
-    public static boolean sendOutEmail(String subject, String body) {
+    public static boolean sendOutEmail(String subject, String body, String to) {
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
+            message.setFrom(new InternetAddress(SENDING_EMAIL_ACC));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setText(body);
@@ -43,5 +43,9 @@ public class SendEmail {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) {
+        sendOutEmail("Hey, just testing", "Hi", SendEmail.ADMIN_EMAIL);
     }
 }
