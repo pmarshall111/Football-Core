@@ -1,4 +1,4 @@
-package com.footballbettingcore.placeBet.bet365;
+package com.footballbettingcore.scrape.placeBet.bet365;
 
 class Bet365_Secrets {
     final static String USER = System.getenv("BET365_USER");

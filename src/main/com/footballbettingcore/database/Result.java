@@ -14,4 +14,11 @@ public enum Result {
     public int getSqlIntCode() {
         return sqlIntCode;
     }
+
+    public static Result getResultFromInt(int sqlIntCode) {
+        if (sqlIntCode == 0) return HOME_WIN;
+        if (sqlIntCode == 1) return DRAW;
+        if (sqlIntCode == 2) return AWAY_WIN;
+        return null;
+    }
 }

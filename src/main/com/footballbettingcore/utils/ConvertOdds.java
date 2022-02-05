@@ -3,8 +3,8 @@ package com.footballbettingcore.utils;
 public class ConvertOdds {
     public static double fromFractionToDecimal(String fractionalVal) {
         String[] partsOfFraction = fractionalVal.split("/");
-        int numerator = Integer.parseInt(partsOfFraction[0]);
-        int denominator = Integer.parseInt(partsOfFraction[1]);
+        int numerator = Integer.parseInt(partsOfFraction[0].trim());
+        int denominator = Integer.parseInt(partsOfFraction[1].trim());
         return fromFractionToDecimal(numerator, denominator);
     }
 

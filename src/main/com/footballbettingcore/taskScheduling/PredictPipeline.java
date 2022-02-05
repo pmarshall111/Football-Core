@@ -1,29 +1,20 @@
 package com.footballbettingcore.taskScheduling;
 
+import com.footballbettingcore.database.BetLog;
+import com.footballbettingcore.machineLearning.BookieBetInfo;
 import com.footballbettingcore.machineLearning.Predict;
-import com.footballbettingcore.placeBet.bet365.BetPlaced;
-import com.footballbettingcore.placeBet.unibet.AutomateBetUniBet;
-import com.footballbettingcore.placeBet.unibet.BetPlacedUniBet;
 import com.footballbettingcore.database.datasource.DS_Get;
 import com.footballbettingcore.database.datasource.DS_Insert;
 import com.footballbettingcore.database.datasource.DS_Main;
-import com.footballbettingcore.database.BetLog;
 import com.footballbettingcore.machineLearning.createData.CalcPastStats;
-import com.footballbettingcore.machineLearning.BookieBetInfo;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
-import com.footballbettingcore.mail.SendEmail;
 import com.footballbettingcore.scrape.OddsChecker;
-import com.footballbettingcore.scrape.classes.LeagueIdsAndData;
 
 import java.util.ArrayList;
-
-import com.footballbettingcore.placeBet.PlaceBet;
-
 
 public class PredictPipeline {
 
     public static void main(String[] args) {
-//        finishPredictedGames();
         predictGames();
     }
 
@@ -41,9 +32,10 @@ public class PredictPipeline {
             mtps.removeIf(mtp -> mtp.getOurPredictions(false) == null || mtp.getOurPredictions(false).length == 0);
             DS_Insert.addPredictionsToDb(mtps);
             mtps.removeIf(mtp -> mtp.getGoodBets() == null || mtp.getGoodBets().size() == 0);
-            if (mtps.size() > 0) {
-                PlaceBet.betOnMatches(mtps);
-            }
+            mtps.forEach(mtp -> {
+                BookieBetInfo betInfo = mtp.getGoodBets().get(0);
+                DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), "NOT_YET_PLACED", betInfo.getMinOdds(), betInfo.getStake()));
+            });
         }
     }
 

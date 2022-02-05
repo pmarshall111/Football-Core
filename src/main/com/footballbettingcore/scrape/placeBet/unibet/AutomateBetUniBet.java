@@ -1,7 +1,10 @@
-package com.footballbettingcore.placeBet.unibet;
+package com.footballbettingcore.scrape.placeBet.unibet;
 
+import com.footballbettingcore.scrape.ChromeDriverFactory;
+import com.footballbettingcore.utils.ConvertOdds;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ public class AutomateBetUniBet {
     public static void main(String[] args) {
         BetPlacedUniBet bpub = placeBet("Italy", "Serie A", "Bologna", "Juventus", 2, 0.1, 1.3);
         System.out.println("Odds: " + bpub.getOddsOffered());
-        System.out.println("STake: " + bpub.getStake());
+        System.out.println("Stake: " + bpub.getStake());
         System.out.println("Success: " + bpub.isBetSuccessful());
         System.out.println("bal:" + bpub.getBalance());
     }
@@ -23,25 +26,46 @@ public class AutomateBetUniBet {
     public static BetPlacedUniBet placeBet(String targetCountry, String leagueName, String homeTeam, String awayTeam, int result, double amount, double minOdds) {
         double stake = amount;
         BetPlacedUniBet bet = new BetPlacedUniBet(-1, stake,false, -1);
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 30);
+        WebDriver driver = ChromeDriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 15);
+        Actions actions = new Actions(driver);
         try {
             driver.get(UNIBET_LINK);
             //close annoying cover page showing offers. enclosed in try because sometimes does not appear
             try {
                 wait.until(presenceOfElementLocated(By.cssSelector("button[type='reset']")));
                 WebElement closeBtn = driver.findElement(By.cssSelector("button[type='reset']"));
-                Thread.sleep(2010); //site makes link unclickable for some time
+                Thread.sleep(2000); //site makes link unclickable for some time
                 closeBtn.click();
             } catch (Exception e) {
                 System.out.println("No annoying cover page. Continuing as normal");
             }
+
+            //get rid of annoying cookies notice. should be done here as cookie overlay can block click events on the odds.
+            boolean hasAcceptedCookies = false;
+            try {
+                wait.until(presenceOfElementLocated(By.cssSelector("#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"))).click();
+                hasAcceptedCookies = true;
+            } catch (Exception e) {
+                System.out.println("No need to accept cookies. Continuing as normal");
+            }
+
             //login
-            wait.until(presenceOfElementLocated(By.cssSelector("input[data-test-name='field-username']"))).sendKeys(Unibet_Secrets.USERNAME);
-            driver.findElement(By.cssSelector("input[data-test-name='field-password']")).sendKeys(Unibet_Secrets.PASSWORD);
-            WebElement loginBtn = wait.until(presenceOfElementLocated(By.cssSelector("button[data-test-name='btn-login']")));
+            driver.findElement(By.cssSelector("[data-test-name=header-login-button]")).click();
+            wait.until(presenceOfElementLocated(By.cssSelector("input[data-test-name='kaf-username-email-field']"))).sendKeys(Unibet_Secrets.USERNAME);
+            driver.findElement(By.cssSelector("input[data-test-name='kaf-password-field']")).sendKeys(Unibet_Secrets.PASSWORD);
+            WebElement loginBtn = wait.until(presenceOfElementLocated(By.cssSelector("button[data-test-name='kaf-submit-credentials-button']")));
             loginBtn.click();
-            Thread.sleep(5000); //waiting for the page to reload otherwise we will find containers before page reload.
+            Thread.sleep(2000); //waiting for the page to reload otherwise we will find containers before page reload.
+
+            if (!hasAcceptedCookies) {
+                //get rid of annoying cookies notice. should be done here as cookie overlay can block click events on the odds.
+                try {
+                    wait.until(presenceOfElementLocated(By.cssSelector("#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"))).click();
+                } catch (Exception e) {
+                    System.out.println("No need to accept cookies. Continuing as normal");
+                }
+            }
 
             //wait for balance to show
             wait.until(presenceOfElementLocated(By.cssSelector("span[data-test-name='balance-cash-amount']")));
@@ -56,37 +80,36 @@ public class AutomateBetUniBet {
             }
 
             //wait for market info
-            Thread.sleep(20000); //extra long wait as webpage can take a really long time to load in countries
-            wait.until(presenceOfElementLocated(By.cssSelector(".KambiBC-collapsible-container")));
-            Thread.sleep(5000); //letting the webpage load in all countries
-            ArrayList<WebElement> allCountries = (ArrayList<WebElement>) driver.findElements(By.cssSelector(".KambiBC-mod-event-group-container"));
-            //get rid of annoying cookies notice. should be done here as cookie overlay can block click events on the odds.
-            wait.until(presenceOfElementLocated(By.cssSelector("#CybotCookiebotDialogBodyButtonAccept"))).click();
+            wait.until(presenceOfElementLocated(By.cssSelector("[data-test-name=matches]")));
+            ArrayList<WebElement> allCountries = (ArrayList<WebElement>) driver.findElements(By.cssSelector("[data-test-name=accordionLevel1]"));
+
             //look for correct league
             countryLoop:
             for (WebElement country: allCountries) {
-                String uniBetCountry = country.findElement(By.cssSelector("header span")).getText().trim(); //title should be first span in group
+                actions.moveToElement(country);
+                actions.perform();
+                String uniBetCountry = country.findElement(By.cssSelector("h3")).getText().trim(); //title should be first span in group
                 if (uniBetCountry.equals(targetCountry)) {
-                    if (!country.getAttribute("class").contains("KambiBC-expanded")) {
-                        country.click();
-                        Thread.sleep(1500); //allowing webpage to load in leagues and games of country
-                    }
-                    ArrayList<WebElement> leaguesInCountry = (ArrayList<WebElement>) country.findElements(By.cssSelector(".KambiBC-betoffer-labels__title"));
-                    ArrayList<WebElement> gamesInLeagues = (ArrayList<WebElement>) country.findElements(By.cssSelector(".KambiBC-list-view__event-list"));
+                    country.click();
+                    Thread.sleep(1500); //allowing webpage to load in leagues and games of country
+                    ArrayList<WebElement> leaguesInCountry = (ArrayList<WebElement>) country.findElements(By.cssSelector("[data-test-name=accordionLevel2]"));
                     for (int i = 0; i<leaguesInCountry.size(); i++) {
-                        String league = leaguesInCountry.get(i).getText().trim();
-                        if (league.equals(leagueName)) {
-                            ArrayList<WebElement> games = (ArrayList<WebElement>) gamesInLeagues.get(i).findElements(By.cssSelector(".KambiBC-event-item__event-wrapper"));
+                        WebElement leagueElem = leaguesInCountry.get(i);
+                        if (leagueName.equals(leagueElem.getText().trim())) {
+                            ArrayList<WebElement> games = (ArrayList<WebElement>) leagueElem.findElements(By.cssSelector("[data-test-name=event]"));
                             for (int g = 0; g < games.size(); g++) {
                                 WebElement game = games.get(g);
-                                ArrayList<WebElement> teamNames = (ArrayList<WebElement>) game.findElements(By.cssSelector(".KambiBC-event-participants__name"));
+                                ArrayList<WebElement> teamNames = (ArrayList<WebElement>) game.findElements(By.cssSelector("[data-test-name=teamName]"));
                                 if (teamNames.get(0).getText().equals(homeTeam) || teamNames.get(1).getText().equals(awayTeam)) {
-                                    ArrayList<WebElement> odds = (ArrayList<WebElement>) game.findElements(By.cssSelector("div[class*='onecrosstwo'] button"));
+                                    ArrayList<WebElement> odds = (ArrayList<WebElement>) game.findElements(By.cssSelector("[data-test-id=odds]"));
                                     WebElement relevantOdds = odds.get(result);
-                                    String oddsStr = relevantOdds.findElements(By.cssSelector("div > div > div")).get(2).getText();
-                                    double oddsOffered = Double.parseDouble(oddsStr);
+                                    String oddsStr = relevantOdds.getText();
+                                    if (oddsStr.equals("Evens")) oddsStr = "1/1";
+                                    double oddsOffered = ConvertOdds.fromFractionToDecimal(oddsStr);
                                     bet.setOddsOffered(oddsOffered);
                                     if (oddsOffered >= minOdds) {
+                                        actions.moveToElement(odds.get(0));
+                                        actions.perform();
                                         relevantOdds.click();
                                         break countryLoop;
                                     } else {
@@ -94,15 +117,15 @@ public class AutomateBetUniBet {
                                     }
                                 }
                                 //scroll latest game into view so next game can be seen
-                                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", game);
-                                Thread.sleep(200);
+//                                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", game);
+//                                Thread.sleep(200);
                             }
                         }
                     }
                 }
                 //scrolling latest country into view so the next element is not covered by the header
-                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", country);
-                Thread.sleep(200);
+//                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", country);
+//                Thread.sleep(200);
             };
 
             //filling out bet form and placing bet

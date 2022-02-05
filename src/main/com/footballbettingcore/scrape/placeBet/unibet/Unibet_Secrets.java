@@ -1,4 +1,4 @@
-package com.footballbettingcore.placeBet.unibet;
+package com.footballbettingcore.scrape.placeBet.unibet;
 
 class Unibet_Secrets {
     static final String USERNAME = System.getenv("UNIBET_USER");

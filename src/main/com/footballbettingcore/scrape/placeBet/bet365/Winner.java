@@ -1,4 +1,4 @@
-package com.footballbettingcore.placeBet.bet365;
+package com.footballbettingcore.scrape.placeBet.bet365;
 
 public enum Winner {
     HOME(0),

@@ -1,12 +1,12 @@
-package com.footballbettingcore.placeBet.unibet;
+package com.footballbettingcore.scrape.placeBet.bet365;
 
-public class BetPlacedUniBet {
+public class BetPlaced {
     private double oddsOffered;
     private double stake;
     private boolean betSuccessful;
     private double balance;
 
-    public BetPlacedUniBet(double oddsOffered, double stake, boolean betSuccessful, double balance) {
+    public BetPlaced(double oddsOffered, double stake, boolean betSuccessful, double balance) {
         this.oddsOffered = oddsOffered;
         this.stake = stake;
         this.betSuccessful = betSuccessful;

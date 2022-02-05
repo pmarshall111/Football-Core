@@ -4,12 +4,11 @@ import com.footballbettingcore.utils.ConvertOdds;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 import com.footballbettingcore.scrape.classes.Team;
-import com.shapesecurity.salvation2.Values.Hash;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
@@ -17,13 +16,14 @@ import java.util.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 public class OddsChecker implements Runnable {
+    private static final Logger logger = LogManager.getLogger(OddsChecker.class);
+
     public static final String PL_URL = "https://www.oddschecker.com/football/english/premier-league";
     public static final String BUNDESLIGA_URL = "https://www.oddschecker.com/football/germany/bundesliga";
     public static final String LIGUE_1_URL = "https://www.oddschecker.com/football/france/ligue-1";
     public static final String SERIE_A_URL = "https://www.oddschecker.com/football/italy/serie-a";
     public static final String LA_LIGA_URL = "https://www.oddschecker.com/football/spain/la-liga-primera";
     public static final String RUSSIA_URL = "https://www.oddschecker.com/football/russia/premier-league";
-    public final static String CHROMEDRIVER_PATH = System.getenv("CHROMEDRIVER_PATH");
 
     private ArrayList<MatchToPredict> matches;
 
@@ -85,11 +85,8 @@ public class OddsChecker implements Runnable {
      * Method will search through the various CDATA tags from the Oddschecker website, and when it finds the one with the fixtures, will grab
      */
     private static void addOddsForLeague(ArrayList<MatchToPredict> matches, String url) {
-        System.setProperty("webdriver.chrome.driver", CHROMEDRIVER_PATH);
-        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");
-        WebDriver driver = new ChromeDriver(options);
-        WebDriverWait wait = new WebDriverWait(driver, 20);
+        WebDriver driver = ChromeDriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 15);
         try {
             driver.get(url);
             wait.until(presenceOfElementLocated(By.cssSelector(".match-on")));
@@ -106,17 +103,26 @@ public class OddsChecker implements Runnable {
                 MatchInfo correctMatch = findCorrectMatch(matchInfos, match);
                 matchInfos.remove(correctMatch);
                 if (correctMatch != null) {
+                    logger.info("Scraping for " + match.getMatchString());
                     driver.manage().deleteAllCookies();
                     driver.get(correctMatch.oddsUrl);
                     List<WebElement> oddsRows = driver.findElements(By.cssSelector("div[class^='oddsAreaWrapper']"));
+                    wait.until(presenceOfElementLocated(By.cssSelector("button[data-bk=B3]")));
+                    boolean rowOrderIsHomeDrawAway = isOddOrderHomeDrawAway(driver, match);
                     double[] bet365Odds = new double[3];
                     double[] unibetOdds = new double[3];
                     for (int i = 0; i<3; i++) {
                         WebElement oddsRow = oddsRows.get(i);
-                        String fractionalBet365Odds = oddsRow.findElement(By.cssSelector("button[data-bk=B3]")).getText();
-                        String fractionalUnibetOdds = oddsRow.findElement(By.cssSelector("button[data-bk=UN]")).getText();
-                        bet365Odds[i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
-                        unibetOdds[i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
+                        String fractionalBet365Odds = oddsRow.findElement(By.cssSelector("button[data-bk=B3]")).getText().trim();
+                        String fractionalUnibetOdds = oddsRow.findElement(By.cssSelector("button[data-bk=UN]")).getText().trim();
+                        logger.info("Odds: " + fractionalBet365Odds + ", " + fractionalUnibetOdds);
+                        if (rowOrderIsHomeDrawAway) {
+                            bet365Odds[i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
+                            unibetOdds[i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
+                        } else {
+                            bet365Odds[2-i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
+                            unibetOdds[2-i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
+                        }
                     }
                     LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>() {{
                         put(OddsCheckerBookies.BET365.getName(), bet365Odds);
@@ -126,7 +132,7 @@ public class OddsChecker implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         } finally {
             driver.close();
         }
@@ -160,6 +166,25 @@ public class OddsChecker implements Runnable {
         }
         System.out.println("Could not find Oddschecker match " + match.getHomeTeamName() + " vs " + match.getAwayTeamName());
         return null;
+    }
+
+    // Oddschecker order their matches by the alphabetical order of the teams, rather than by the team being the home/away team.
+    // Therefore, we need to determine which row of odds applies to which team.
+    private static boolean isOddOrderHomeDrawAway(WebDriver driver, MatchToPredict match) {
+        List<WebElement> orderOfRows = driver.findElements(By.cssSelector("div[class^='BetRowLeftBetContent']"));
+        String homeTeam = Team.matchTeamNamesUnderstatToOddsChecker(match.getHomeTeamName());
+        String awayTeam = Team.matchTeamNamesUnderstatToOddsChecker(match.getAwayTeamName());
+        String firstRowTeam = orderOfRows.get(0).findElement(By.cssSelector("a")).getText().trim();
+        String lastRowTeam = orderOfRows.get(2).findElement(By.cssSelector("a")).getText().trim();
+        if (firstRowTeam.equals(homeTeam) || lastRowTeam.equals(awayTeam)) {
+            return true;
+        }
+        if (lastRowTeam.equals(homeTeam) || firstRowTeam.equals(awayTeam)) {
+            return false;
+        }
+        // if none of the teamnames match, determine order alphabetically
+        logger.warn("No team names match on Oddschecker. Oddschecker teamnames = " + firstRowTeam + ", " + lastRowTeam);
+        return homeTeam.compareTo(awayTeam) < 0;
     }
 
     public static void main(String[] args) {

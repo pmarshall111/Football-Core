@@ -1,4 +1,4 @@
-package com.footballbettingcore.placeBet.unibet;
+package com.footballbettingcore.scrape.placeBet.unibet;
 
 public class Main {
 

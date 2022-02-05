@@ -1,5 +1,6 @@
-package com.footballbettingcore.placeBet.bet365;
+package com.footballbettingcore.scrape.placeBet.bet365;
 
+import com.footballbettingcore.scrape.ChromeDriverFactory;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,7 @@ public class AutomateBet {
     final private static String LIGUE_1 = "https://www.bet365.com/#/AC/B1/C1/D13/E0/F2/J0/Q1/F^24/"; //TODO: needs to be found. As season cancelled could not confirm
     final private static String RUSSIA = "https://www.bet365.com/#/AC/B1/C1/D13/E49078161/F2/";
 
+
     public static void main(String[] args) {
         BetPlaced bp = placeBet("EPL", "Burnley", "Watford", Winner.AWAY.getSetting(), 0.1, 1.7);
         System.out.println("Odds: " + bp.getOddsOffered());
@@ -26,22 +28,24 @@ public class AutomateBet {
         System.out.println("Balance: " + bp.getBalance());
     }
 
-    //NOTE: Method will only bet on the teams next home or away game due to matching either the home or away team. Decision made
-    //to minimise chances that we cannot bet due to a team name being different. e.g. Wolves vs Wolverhampton Wanderers
     public static BetPlaced placeBet(String leagueName, String homeTeam, String awayTeam, int result, double amount, double minOdds) {
         double stake = amount;
         BetPlaced bet = new BetPlaced(-1,stake,false, -1);
-        WebDriver driver = new ChromeDriver();
+        WebDriver driver = ChromeDriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, 20);
         String url = getUrlFromLeagueName(leagueName);
         try {
             driver.get(url);
-            wait.until(presenceOfElementLocated(By.cssSelector("div[class*='MarketFixtureDetailsLabel']")));
+//            try {
+//                wait.until(presenceOfElementLocated(By.cssSelector("div[class*='MarketFixtureDetailsLabel']")));
+//            } catch (Exception e) {}
             //login
             WebElement loginBtn = wait.until(presenceOfElementLocated(By.cssSelector(".hm-MainHeaderRHSLoggedOutWide_Login")));
             loginBtn.click();
+            driver.manage().deleteAllCookies();
             driver.findElement(By.cssSelector(".lms-StandardLogin_Username")).sendKeys(Bet365_Secrets.USER);
-            driver.findElement(By.cssSelector(".lms-StandardLogin_Password")).sendKeys(Bet365_Secrets.PASSWORD + Keys.ENTER);
+            driver.findElement(By.cssSelector(".lms-StandardLogin_Password")).sendKeys(Bet365_Secrets.PASSWORD);
+            driver.findElement(By.cssSelector(".lms-LoginButton")).click();
             //wait for market info
             Thread.sleep(5000);
             wait.until(presenceOfElementLocated(By.cssSelector("div[class*='MarketFixtureDetailsLabel']")));

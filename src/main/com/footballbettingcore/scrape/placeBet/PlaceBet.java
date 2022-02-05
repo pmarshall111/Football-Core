@@ -1,21 +1,29 @@
-package com.footballbettingcore.placeBet;
+package com.footballbettingcore.scrape.placeBet;
 
 import com.footballbettingcore.database.BetLog;
+import com.footballbettingcore.database.Result;
 import com.footballbettingcore.database.datasource.DS_Insert;
 import com.footballbettingcore.machineLearning.BookieBetInfo;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.mail.SendEmail;
-import com.footballbettingcore.placeBet.bet365.BetPlaced;
-import com.footballbettingcore.placeBet.unibet.AutomateBetUniBet;
-import com.footballbettingcore.placeBet.unibet.BetPlacedUniBet;
+import com.footballbettingcore.scrape.placeBet.bet365.BetPlaced;
+import com.footballbettingcore.scrape.placeBet.unibet.AutomateBetUniBet;
+import com.footballbettingcore.scrape.placeBet.unibet.BetPlacedUniBet;
 import com.footballbettingcore.scrape.classes.LeagueIdsAndData;
+import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
+import com.footballbettingcore.scrape.placeBet.bet365.AutomateBet;
 
 import java.util.ArrayList;
 
-import static com.footballbettingcore.placeBet.bet365.AutomateBet.placeBet;
-
 public class PlaceBet {
     private static final double MIN_BALANCE_WARNING = 20.0;
+
+    public static void main(String[] args) {
+        MatchToPredict mtp = new MatchToPredict("Inter", "AC Milan", "21-22", "SERIE_A", "2022-02-05", -1, -1);
+        mtp.addGoodBet(new BookieBetInfo(OddsCheckerBookies.BET365, Result.HOME_WIN, 0.25, 2));
+        ArrayList<MatchToPredict> mtps = new ArrayList<>(){{add(mtp);}};
+        betOnMatches(mtps);
+    }
 
     public static void betOnMatches(ArrayList<MatchToPredict> matches) {
         StringBuilder sb = new StringBuilder();
@@ -28,17 +36,18 @@ public class PlaceBet {
                 String homeTeam = mtp.getHomeTeamName();
                 String awayTeam = mtp.getAwayTeamName();
                 for (BookieBetInfo betInfo: mtp.getGoodBets()) {
-                    BetPlaced bet365 = placeBet(leagueName, homeTeam, awayTeam, betInfo.getBetOn().getSqlIntCode(), betInfo.getStake(), betInfo.getMinOdds());
-//                            BetPlaced bet365 = new BetPlaced(betInfo.getMinOdds(),betInfo.getStake(), true, 100);
-                    if (bet365.getBalance() > -1) {
-                        bet365Balance = bet365.getBalance();
-                    }
-                    if (bet365.isBetSuccessful()) {
-                        DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), betInfo.getBookie().getName(), bet365.getOddsOffered(), bet365.getStake()));
-                        sb.append(homeTeam + " vs " + awayTeam + ": Bet £" + bet365.getStake() + " on " + betInfo.getBetOn().name() + " at odds of " +
-                                bet365.getOddsOffered() + ". Potential return: " + (5*bet365.getOddsOffered()));
-                        betsPlaced++;
-                    } else {
+                    // TODO: Bet365 scraper not letting me log in at the moment
+//                    BetPlaced bet365 = AutomateBet.placeBet(leagueName, homeTeam, awayTeam, betInfo.getBetOn().getSqlIntCode(), betInfo.getStake(), betInfo.getMinOdds());
+////                            BetPlaced bet365 = new BetPlaced(betInfo.getMinOdds(),betInfo.getStake(), true, 100);
+//                    if (bet365.getBalance() > -1) {
+//                        bet365Balance = bet365.getBalance();
+//                    }
+//                    if (bet365.isBetSuccessful()) {
+//                        DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), betInfo.getBookie().getName(), bet365.getOddsOffered(), bet365.getStake()));
+//                        sb.append(homeTeam + " vs " + awayTeam + ": Bet £" + bet365.getStake() + " on " + betInfo.getBetOn().name() + " at odds of " +
+//                                bet365.getOddsOffered() + ". Potential return: " + (5*bet365.getOddsOffered()));
+//                        betsPlaced++;
+//                    } else {
                         String country = getCountryFromLeagueName(mtp.getLeagueName());
                         String leagueNameUb = translateLeagueNameUnibet(mtp.getLeagueName());
                         BetPlacedUniBet unibet = AutomateBetUniBet.placeBet(country, leagueNameUb, homeTeam, awayTeam, betInfo.getBetOn().getSqlIntCode(),
@@ -57,7 +66,7 @@ public class PlaceBet {
                             // neither bookie had odds that were better than the Bet365 odds scraped from Oddschecker
                             DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), "COULD NOT_PLACE", betInfo.getMinOdds(), betInfo.getStake()));
                         }
-                    }
+//                    }
                 }
             }
         }
