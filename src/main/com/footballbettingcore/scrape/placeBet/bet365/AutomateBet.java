@@ -1,10 +1,10 @@
 package com.footballbettingcore.scrape.placeBet.bet365;
 
-import com.footballbettingcore.scrape.ChromeDriverFactory;
+import com.footballbettingcore.scrape.WebDriverFactory;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -31,8 +31,8 @@ public class AutomateBet {
     public static BetPlaced placeBet(String leagueName, String homeTeam, String awayTeam, int result, double amount, double minOdds) {
         double stake = amount;
         BetPlaced bet = new BetPlaced(-1,stake,false, -1);
-        WebDriver driver = ChromeDriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 20);
+        WebDriver driver = WebDriverFactory.getFirefoxDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         String url = getUrlFromLeagueName(leagueName);
         try {
             driver.get(url);

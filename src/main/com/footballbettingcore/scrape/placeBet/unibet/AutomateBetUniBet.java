@@ -1,12 +1,12 @@
 package com.footballbettingcore.scrape.placeBet.unibet;
 
-import com.footballbettingcore.scrape.ChromeDriverFactory;
+import com.footballbettingcore.scrape.WebDriverFactory;
 import com.footballbettingcore.utils.ConvertOdds;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -26,8 +26,8 @@ public class AutomateBetUniBet {
     public static BetPlacedUniBet placeBet(String targetCountry, String leagueName, String homeTeam, String awayTeam, int result, double amount, double minOdds) {
         double stake = amount;
         BetPlacedUniBet bet = new BetPlacedUniBet(-1, stake,false, -1);
-        WebDriver driver = ChromeDriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 15);
+        WebDriver driver = WebDriverFactory.getFirefoxDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         Actions actions = new Actions(driver);
         try {
             driver.get(UNIBET_LINK);

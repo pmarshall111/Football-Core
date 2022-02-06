@@ -7,10 +7,12 @@ import com.footballbettingcore.scrape.classes.Team;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.*;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -85,10 +87,11 @@ public class OddsChecker implements Runnable {
      * Method will search through the various CDATA tags from the Oddschecker website, and when it finds the one with the fixtures, will grab
      */
     private static void addOddsForLeague(ArrayList<MatchToPredict> matches, String url) {
-        WebDriver driver = ChromeDriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 15);
+        WebDriver driver = WebDriverFactory.getFirefoxDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
             driver.get(url);
+            Dimension d = driver.manage().window().getSize();
             wait.until(presenceOfElementLocated(By.cssSelector(".match-on")));
 
             ArrayList<MatchInfo> matchInfos = new ArrayList<>();
@@ -109,24 +112,11 @@ public class OddsChecker implements Runnable {
                     List<WebElement> oddsRows = driver.findElements(By.cssSelector("div[class^='oddsAreaWrapper']"));
                     wait.until(presenceOfElementLocated(By.cssSelector("button[data-bk=B3]")));
                     boolean rowOrderIsHomeDrawAway = isOddOrderHomeDrawAway(driver, match);
-                    double[] bet365Odds = new double[3];
-                    double[] unibetOdds = new double[3];
-                    for (int i = 0; i<3; i++) {
-                        WebElement oddsRow = oddsRows.get(i);
-                        String fractionalBet365Odds = oddsRow.findElement(By.cssSelector("button[data-bk=B3]")).getText().trim();
-                        String fractionalUnibetOdds = oddsRow.findElement(By.cssSelector("button[data-bk=UN]")).getText().trim();
-                        logger.info("Odds: " + fractionalBet365Odds + ", " + fractionalUnibetOdds);
-                        if (rowOrderIsHomeDrawAway) {
-                            bet365Odds[i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
-                            unibetOdds[i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
-                        } else {
-                            bet365Odds[2-i] = ConvertOdds.fromFractionToDecimal(fractionalBet365Odds);
-                            unibetOdds[2-i] = ConvertOdds.fromFractionToDecimal(fractionalUnibetOdds);
-                        }
-                    }
+                    double[] bet365Odds = getOddsForBookie("B3", oddsRows, rowOrderIsHomeDrawAway);
+                    double[] unibetOdds = getOddsForBookie("UN", oddsRows, rowOrderIsHomeDrawAway);
                     LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>() {{
-                        put(OddsCheckerBookies.BET365.getName(), bet365Odds);
-                        put(OddsCheckerBookies.UNIBET.getName(), unibetOdds);
+                        if (bet365Odds != null) put(OddsCheckerBookies.BET365.getName(), bet365Odds);
+                        if (unibetOdds != null) put(OddsCheckerBookies.UNIBET.getName(), unibetOdds);
                     }};
                     match.setBookiesOdds(bookiesOdds);
                 }
@@ -185,6 +175,23 @@ public class OddsChecker implements Runnable {
         // if none of the teamnames match, determine order alphabetically
         logger.warn("No team names match on Oddschecker. Oddschecker teamnames = " + firstRowTeam + ", " + lastRowTeam);
         return homeTeam.compareTo(awayTeam) < 0;
+    }
+
+    private static double[] getOddsForBookie(String bookieShortName, List<WebElement> oddsRows, boolean rowOrderIsHomeDrawAway) {
+        double[] bookieOdds = new double[3];
+        try {
+            for (int i = 0; i < 3; i++) {
+                WebElement oddsRow = oddsRows.get(i);
+                String fractionalOdds = oddsRow.findElement(By.cssSelector("button[data-bk=" + bookieShortName + "]")).getText().trim();
+                logger.info("Odds for " + bookieShortName + ": " + fractionalOdds);
+                if (rowOrderIsHomeDrawAway) {
+                    bookieOdds[i] = ConvertOdds.fromFractionToDecimal(fractionalOdds);
+                } else {
+                    bookieOdds[2 - i] = ConvertOdds.fromFractionToDecimal(fractionalOdds);
+                }
+            }
+            return bookieOdds;
+        } catch (Exception e) {return null;}
     }
 
     public static void main(String[] args) {

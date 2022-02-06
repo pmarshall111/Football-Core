@@ -1,7 +1,5 @@
 package com.footballbettingcore.taskScheduling;
 
-import com.footballbettingcore.database.BetLog;
-import com.footballbettingcore.machineLearning.BookieBetInfo;
 import com.footballbettingcore.machineLearning.Predict;
 import com.footballbettingcore.database.datasource.DS_Get;
 import com.footballbettingcore.database.datasource.DS_Insert;
