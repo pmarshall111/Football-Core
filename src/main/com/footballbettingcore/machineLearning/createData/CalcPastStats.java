@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class CalcPastStats {
     //constants to use when calculating a teams form
     public static final int NUMB_SEASONS_HISTORY = 2;
-    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 7; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
+    public static final int NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA = 12; //NOTE: if changed to > 7, Get.canGetOutNewMatchesToPredict test needs more games added
     public static final int COMPARE_LAST_N_GAMES = 5;
 
     //will do it for all leagues in db.
@@ -71,12 +71,15 @@ public class CalcPastStats {
                                                  ArrayList<String> homePlayersNames, ArrayList<String> awayPlayersNames,
                                                  int seasonYearStart, int result, double[] odds) {
         return CreateFeatures.getFeaturesSmallMakesSense(homeTeam, homeSeason, awayTeam, awaySeason);
+//        return CreateFeatures.getFeaturesToCalcRCoefficient(homeTeam, homeSeason, awayTeam, awaySeason, odds);
     }
 
     private static ArrayList<Double> getFeaturesNoLineups(TrainingTeam homeTeam, TrainingTeamsSeason homeSeason,
                                                  TrainingTeam awayTeam, TrainingTeamsSeason awaySeason,
                                                  int seasonYearStart, int result, double[] odds) {
-        return CreateFeatures.getFeaturesSmallFromRCoeffMakesSense(homeTeam, homeSeason, awayTeam, awaySeason, odds);
+//                return CreateFeatures.getFeaturesTest(homeTeam, homeSeason, awayTeam, awaySeason, odds);
+        return CreateFeatures.getFeaturesFromRCoefficient(homeTeam, homeSeason, awayTeam, awaySeason, odds);
+//                return CreateFeatures.getFeaturesSmallFromRCoeffMakesSense(homeTeam, homeSeason, awayTeam, awaySeason, odds);
     }
 
 

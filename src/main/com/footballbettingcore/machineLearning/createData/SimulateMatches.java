@@ -15,7 +15,7 @@ public class SimulateMatches {
     public static ArrayList<TrainingMatch> createSimulatedMatchesWithProbabilityOfResult(ArrayList<TrainingMatch> realMatches) {
         ArrayList<TrainingMatch> simulated = new ArrayList<>();
         for (TrainingMatch match: realMatches) {
-            ResultProbabilities probs = createResultProbabilities(match);
+            ResultProbabilities probs = createResultProbabilities(match.getHomeXG(), match.getAwayXG());
             TrainingMatch homeWinSimulation = match.clone();
             homeWinSimulation.setProbability(probs.getHomeWinProbability());
             homeWinSimulation.setHomeScore(1);
@@ -42,7 +42,7 @@ public class SimulateMatches {
     public static ArrayList<TrainingMatch> createSimulatedMatchesWithProbabilityOfScores(ArrayList<TrainingMatch> realMatches) {
         ArrayList<TrainingMatch> simulated = new ArrayList<>();
         for (TrainingMatch match: realMatches) {
-            ScoreProbabilities scoreProbabilities = simulateMatch(match);
+            ScoreProbabilities scoreProbabilities = simulateMatch(match.getHomeXG(), match.getAwayXG());
             for (int i = 0; i<10; i++) {
                 for (int j = 0; j<10; j++) {
                     double scoreProb = scoreProbabilities.getProbability(i, j);
@@ -60,8 +60,8 @@ public class SimulateMatches {
         return simulated;
     }
 
-    private static ResultProbabilities createResultProbabilities(TrainingMatch match) {
-        ScoreProbabilities scoreProbabilities = simulateMatch(match);
+    public static ResultProbabilities createResultProbabilities(double homeXg, double awayXg) {
+        ScoreProbabilities scoreProbabilities = simulateMatch(homeXg, awayXg);
         double homeWinProb = 0, drawWinProb = 0, awayWinProb = 0;
         for (int i = 0; i<12; i++) {
             for (int j = 0; j < 12; j++) {
@@ -78,9 +78,9 @@ public class SimulateMatches {
         return new ResultProbabilities(homeWinProb, drawWinProb, awayWinProb);
     }
 
-    private static ScoreProbabilities simulateMatch(TrainingMatch match) {
-        var homePoissonDistribution = new PoissonDistribution(match.getHomeXG()+0.0001); // addition to prevent mean of 0 error
-        var awayPoissonDistribution = new PoissonDistribution(match.getAwayXG()+0.0001);
+    private static ScoreProbabilities simulateMatch(double homeXg, double awayXg) {
+        var homePoissonDistribution = new PoissonDistribution(homeXg+0.0001); // addition to prevent mean of 0 error
+        var awayPoissonDistribution = new PoissonDistribution(awayXg+0.0001);
 
         ScoreProbabilities scoreProbs = new ScoreProbabilities();
         for (int i = 0; i<12; i++) {
@@ -113,7 +113,7 @@ public class SimulateMatches {
         }
     }
 
-    private static class ResultProbabilities {
+    static class ResultProbabilities {
         private double homeWin;
         private double draw;
         private double awayWin;

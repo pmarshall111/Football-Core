@@ -14,14 +14,15 @@ import static com.footballbettingcore.machineLearning.createData.WriteTrainingDa
 public class Main {
     public static void main(String[] args) {
         // Generate files for a test and training set.
-//        Date removeBefore = DateHelper.createDateyyyyMMdd("2020", "08", "01");
-//        Date removeAfter = DateHelper.createDateyyyyMMdd("2021", "08", "01");
-//        createOneBigFile(null, removeBefore, "train.csv");
-//        createOneBigFile(removeBefore, removeAfter, "test.csv");
+//        Date removeBefore = DateHelper.createDateyyyyMMdd("2019", "08", "01");
+//        Date removeAfter = DateHelper.createDateyyyyMMdd("2020", "08", "01");
+//        createFileWithSimulatedMatchesByScore(null, removeBefore, "train.csv");
+//        createOneBigFile(removeBefore, null, "test.csv");
 
         // Generate file with all data for feature analysis or final model training
 //        createOneBigFile(null, null, "train_final_model.csv");
-        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
+//        createOneBigFileWithFiveThirtyEightData(null, null, "calc_r_score.csv");
+//        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
 
         // Generate file for the Poisson Regression python code
 //        createOneBigFileForPoissonRegression();

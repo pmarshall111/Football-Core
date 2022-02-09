@@ -87,11 +87,11 @@ public class OddsChecker implements Runnable {
      * Method will search through the various CDATA tags from the Oddschecker website, and when it finds the one with the fixtures, will grab
      */
     private static void addOddsForLeague(ArrayList<MatchToPredict> matches, String url) {
-        WebDriver driver = WebDriverFactory.getFirefoxDriver();
+        WebDriver driver = WebDriverFactory.getChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
+            logger.info("Scraping " + url);
             driver.get(url);
-            Dimension d = driver.manage().window().getSize();
             wait.until(presenceOfElementLocated(By.cssSelector(".match-on")));
 
             ArrayList<MatchInfo> matchInfos = new ArrayList<>();
