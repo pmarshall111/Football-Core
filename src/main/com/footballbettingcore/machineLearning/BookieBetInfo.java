@@ -1,15 +1,14 @@
 package com.footballbettingcore.machineLearning;
 
 import com.footballbettingcore.database.Result;
-import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 
 public class BookieBetInfo implements Comparable {
-    private OddsCheckerBookies bookie;
+    private String bookie;
     private double stake;
     private double minOdds;
     private Result betOn;
 
-    public BookieBetInfo(OddsCheckerBookies bookie, Result betOn, double stake, double minOdds) {
+    public BookieBetInfo(String bookie, Result betOn, double stake, double minOdds) {
         this.bookie = bookie;
         this.betOn = betOn;
         this.stake = getStakeToNearest50p(stake);
@@ -24,7 +23,7 @@ public class BookieBetInfo implements Comparable {
         return this.minOdds < ((BookieBetInfo) that).getMinOdds() ? 1 : -1;
     }
 
-    public OddsCheckerBookies getBookie() {
+    public String getBookie() {
         return bookie;
     }
 

@@ -496,4 +496,51 @@ public class Team {
                 return teamName;
         }
     }
+
+    public static String matchBetfairNamesToUnderstat(String teamName) {
+        switch (teamName) {
+            // EPL
+            case "Man City":
+                return "Manchester City";
+            case "Man Utd":
+                return "Manchester United";
+            case "Newcastle":
+                return "Newcastle United";
+            case "Wolves":
+                return "Wolverhampton Wanderers";
+
+            // BUNDESLIGA
+            case "Dortmund":
+                return "Borussia Dortmund";
+            case "Greuther Furth":
+                return "Greuther Fuerth";
+            case "Leverkusen":
+                return "Bayer Leverkusen";
+            case "Mainz":
+                return "Mainz 05";
+            case "Mgladbach":
+                return "Borussia M.Gladbach";
+            case "Stuttgart":
+                return "VfB Stuttgart";
+
+            // LIGUE 1
+            case "Clermont":
+                return "Clermont Foot";
+            case "ESTAC Troyes":
+                return "Troyes";
+            case "Paris St-G":
+                return "Paris Saint Germain";
+            case "St Etienne":
+                return "Saint-Etienne";
+
+            // LA LIGA
+            case "Athletic Bilbao":
+                return "Athletic Club";
+            case "Betis":
+                return "Real Betis";
+
+            default:
+                return teamName;
+        }
+    }
 }

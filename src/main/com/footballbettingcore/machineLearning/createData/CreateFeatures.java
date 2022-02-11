@@ -50,6 +50,20 @@ public class CreateFeatures {
         features.add(homeSeason.getAvgPoints(ALL_GAMES) - awaySeason.getAvgPoints(ALL_GAMES));
         features.add(homeSeason.getAvgPointsOverLastXGames(ALL_GAMES, 5) - awaySeason.getAvgPointsOverLastXGames(ALL_GAMES, 5));
 
+        features.add(homeSeason.getAvgPoints(ALL_GAMES));
+        features.add(homeSeason.getAvgPointsOverLastXGames(ALL_GAMES, 5));
+        features.add(awaySeason.getAvgPoints(ALL_GAMES));
+        features.add(awaySeason.getAvgPointsOverLastXGames(ALL_GAMES, 5));
+        features.add(awayTeam.getPointsOfLastMatchups(homeTeam.getTeamName(), ALL_GAMES, awaySeason.getSeasonYearStart()-2));
+        features.add(homeSeason.getAvgGoalsFor(ALL_GAMES));
+        features.add(awaySeason.getAvgGoalsFor(ALL_GAMES));
+        features.add(homeSeason.getAvgXGF(ALL_GAMES));
+        features.add(awaySeason.getAvgXGF(ALL_GAMES));
+        features.add(homeSeason.getAvgXGA(ALL_GAMES));
+        features.add(awaySeason.getAvgXGA(ALL_GAMES));
+        features.add(homeSeason.getFormXGF(ALL_GAMES));
+        features.add(awaySeason.getFormXGF(ALL_GAMES));
+
         return features;
     }
 

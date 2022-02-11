@@ -90,9 +90,10 @@ public class WriteTrainingData {
         writeNoLineupsFeaturesToCsv(trainingData, "nolineups_"+fileName);
     }
 
-    public static void writeMatchesToPredictOutToCsvFile(ArrayList<MatchToPredict> trainingData, String fileName) {
-        writeFeaturesToPredictToCsv(trainingData, fileName);
-        writeNoLineupsFeaturesToPredictToCsv(trainingData, fileName.replace(".csv", "noLineups.csv"));
+    public static void writeMatchesToPredictOutToCsvFile(ArrayList<MatchToPredict> trainingData,
+                                                         String featuresFileName, String noLineupFeaturesFineName) {
+        writeFeaturesToPredictToCsv(trainingData, featuresFileName);
+        writeNoLineupsFeaturesToPredictToCsv(trainingData, noLineupFeaturesFineName);
     }
 
     public static void writeArrayOfStringsToCsv(ArrayList<ArrayList<String>> rows, String fileName) {

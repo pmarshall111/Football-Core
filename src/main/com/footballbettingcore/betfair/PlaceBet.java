@@ -1,4 +1,4 @@
-package com.footballbettingcore.scrape.placeBet;
+package com.footballbettingcore.betfair;
 
 import com.footballbettingcore.database.BetLog;
 import com.footballbettingcore.database.Result;
@@ -6,21 +6,18 @@ import com.footballbettingcore.database.datasource.DS_Insert;
 import com.footballbettingcore.machineLearning.BookieBetInfo;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.mail.SendEmail;
-import com.footballbettingcore.scrape.placeBet.bet365.BetPlaced;
-import com.footballbettingcore.scrape.placeBet.unibet.AutomateBetUniBet;
-import com.footballbettingcore.scrape.placeBet.unibet.BetPlacedUniBet;
 import com.footballbettingcore.scrape.classes.LeagueIdsAndData;
-import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
-import com.footballbettingcore.scrape.placeBet.bet365.AutomateBet;
 
 import java.util.ArrayList;
+
+import static com.footballbettingcore.betfair.OddsRetriever.BETFAIR_EXCHANGE;
 
 public class PlaceBet {
     private static final double MIN_BALANCE_WARNING = 20.0;
 
     public static void main(String[] args) {
         MatchToPredict mtp = new MatchToPredict("Inter", "AC Milan", "21-22", "SERIE_A", "2022-02-05", -1, -1);
-        mtp.addGoodBet(new BookieBetInfo(OddsCheckerBookies.BET365, Result.HOME_WIN, 0.25, 2));
+        mtp.addGoodBet(new BookieBetInfo(BETFAIR_EXCHANGE, Result.HOME_WIN, 0.25, 2));
         ArrayList<MatchToPredict> mtps = new ArrayList<>(){{add(mtp);}};
         betOnMatches(mtps);
     }

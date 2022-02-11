@@ -3,10 +3,11 @@ package com.footballbettingcore.machineLearning.createData;
 import com.footballbettingcore.database.datasource.DS_Get;
 import com.footballbettingcore.machineLearning.createData.classes.*;
 import com.footballbettingcore.scrape.classes.LeagueIdsAndData;
-import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.footballbettingcore.betfair.OddsRetriever.BETFAIR_EXCHANGE;
 
 //class to be used to create csv files to learn from and update cache in db for past seasons.
 public class CalcPastStats {
@@ -58,9 +59,9 @@ public class CalcPastStats {
                 TrainingTeamsSeason awaySeason = awayTeam.getTeamsSeason(currSeason);
                 mtp.setFeatures(getFeatures(homeTeam, homeSeason, awayTeam, awaySeason,
                         mtp.getHomeTeamPlayers(), mtp.getAwayTeamPlayers(),
-                        currSeason, -1, mtp.getBookiesOdds().get(OddsCheckerBookies.BET365.getName())));
+                        currSeason, -1, mtp.getBookiesOdds().get(BETFAIR_EXCHANGE)));
                 mtp.setFeaturesNoLineups(getFeaturesNoLineups(homeTeam, homeSeason, awayTeam, awaySeason,
-                        currSeason,-1, mtp.getBookiesOdds().get(OddsCheckerBookies.BET365.getName())));
+                        currSeason,-1, mtp.getBookiesOdds().get(BETFAIR_EXCHANGE)));
             });
         });
     }

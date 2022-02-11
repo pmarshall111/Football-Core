@@ -13,7 +13,6 @@ import com.footballbettingcore.database.datasource.dbTables.TeamTable;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.classes.League;
 import com.footballbettingcore.scrape.classes.Match;
-import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 import com.footballbettingcore.scrape.classes.Season;
 import org.junit.After;
 import org.junit.Assert;
@@ -28,6 +27,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import static com.footballbettingcore.betfair.OddsRetriever.BETFAIR_EXCHANGE;
 import static com.footballbettingcore.database.datasource.DS_Main.connection;
 import static database.GenerateData.*;
 import static org.junit.Assert.fail;
@@ -250,7 +250,7 @@ public class Update {
                     Season.getSeasonKeyFromYearStart(19), "EPL", DateHelper.getSqlDate(new Date()), dbIdNeverHaveOdds, 2);
             LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
             double[] oddsAlreadyInDb = new double[]{1,3,5};
-            bookiesOdds.put(OddsCheckerBookies.BET365.getName(), oddsAlreadyInDb);
+            bookiesOdds.put(BETFAIR_EXCHANGE, oddsAlreadyInDb);
             withOdds.setBookiesOdds(bookiesOdds);
             double[] predictions = new double[]{0.2,0.3,0.5};
             withOdds.setOurPredictions(predictions, false);
@@ -285,7 +285,7 @@ public class Update {
             //now try to update
             double[] newOdds = new double[]{6.2,9.1,2.2};
             LinkedHashMap<String, double[]> newBookiesOdds = new LinkedHashMap<>();
-            newBookiesOdds.put(OddsCheckerBookies.BET365.getName(), newOdds);
+            newBookiesOdds.put(BETFAIR_EXCHANGE, newOdds);
             noOddsYet.setBookiesOdds(newBookiesOdds);
 
             DS_Update.updatePredictionToIncludeOdds(matches);

@@ -2,10 +2,11 @@ package com.footballbettingcore.machineLearning;
 
 import com.footballbettingcore.database.Result;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
-import com.footballbettingcore.scrape.classes.OddsCheckerBookies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.footballbettingcore.betfair.OddsRetriever.BETFAIR_EXCHANGE;
 
 public class OctavePredictionMapper {
     private final HashMap<Integer, MatchToPredict> matchMap = new HashMap<>();
@@ -24,7 +25,7 @@ public class OctavePredictionMapper {
                 double stake = Double.parseDouble(prediction.get(5));
                 double odds = Double.parseDouble(prediction.get(6));
                 if (resultToBetOn != -1) {
-                    BookieBetInfo bet = new BookieBetInfo(OddsCheckerBookies.BET365, Result.getResultFromInt(resultToBetOn), stake, odds);
+                    BookieBetInfo bet = new BookieBetInfo(BETFAIR_EXCHANGE, Result.getResultFromInt(resultToBetOn), stake, odds);
                     match.addGoodBet(bet);
                 }
             }

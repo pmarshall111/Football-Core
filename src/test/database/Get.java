@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import static com.footballbettingcore.betfair.OddsRetriever.BETFAIR_EXCHANGE;
 import static com.footballbettingcore.database.datasource.DS_Main.connection;
 import static com.footballbettingcore.machineLearning.createData.CalcPastStats.NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA;
 import static database.GenerateData.*;
@@ -372,7 +373,7 @@ public class Get {
                     s.getSeasonKey(), l.getName(), sqlMatchDateFutureWithOdds, dbIdFutureWithOdds, -1);
             mtpFutureWithOdds.setOurPredictions(new double[]{0.5,0.4,0.1}, false);
             LinkedHashMap<String, double[]> bookiesOdds = new LinkedHashMap<>();
-            bookiesOdds.put(OddsCheckerBookies.BET365.getName(), new double[]{1.25,1.7,20});
+            bookiesOdds.put(BETFAIR_EXCHANGE, new double[]{1.25,1.7,20});
             mtpFutureWithOdds.setBookiesOdds(bookiesOdds);
             MatchToPredict mtpFutureWithLineups = new MatchToPredict(futureWithPredictionAndLineups.getHomeTeam().getTeamName(), futureWithPredictionAndLineups.getAwayTeam().getTeamName(),
                     s.getSeasonKey(), l.getName(), sqlMatchDateFutureWithLineups, dbIdFutureWithLineups, -1);

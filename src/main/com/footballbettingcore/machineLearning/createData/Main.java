@@ -16,11 +16,11 @@ public class Main {
         // Generate files for a test and training set.
 //        Date removeBefore = DateHelper.createDateyyyyMMdd("2019", "08", "01");
 //        Date removeAfter = DateHelper.createDateyyyyMMdd("2020", "08", "01");
-//        createFileWithSimulatedMatchesByScore(null, removeBefore, "train.csv");
+//        createOneBigFile(null, removeBefore, "train.csv");
 //        createOneBigFile(removeBefore, null, "test.csv");
 
         // Generate file with all data for feature analysis or final model training
-//        createOneBigFile(null, null, "train_final_model.csv");
+        createOneBigFile(null, null, "train_final_model.csv");
 //        createOneBigFileWithFiveThirtyEightData(null, null, "calc_r_score.csv");
 //        createFileWithSimulatedMatchesByScore(null, null, "train_final_model_score.csv");
 

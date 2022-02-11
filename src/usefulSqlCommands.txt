@@ -7,7 +7,7 @@ SELECT * FROM game INNER JOIN team as HOMETEAM on HOMETEAM._id = hometeam_id INN
 SELECT * FROM game INNER JOIN team AS HOMETEAM on HOMETEAM._id = game.homeTeam_id INNER JOIN team AS AWAYTEAM on AWAYTEAM._id = game.awayTeam_id INNER JOIN league on HOMETEAM.league_id = league._id WHERE season_year_start = 21 AND isPostponed = 1 AND league.name = "LIGUE_1" ;
 ^ Get postponed games for league
 
-SELECT *, (homePred-1/homeOdds) AS amountOverOdds FROM prediction ORDER BY amountOverOdds DESC;
+SELECT HOMETEAM.name, AWAYTEAM.name, prediction.*, (homePred-1/prediction.homeOdds) AS amountOverOdds FROM prediction INNER JOIN game ON prediction.match_id = game._id INNER JOIN team AS HOMETEAM ON game.homeTeam_id = HOMETEAM._id INNER JOIN team AS AWAYTEAM ON game.awayTeam_id = AWAYTEAM._id ORDER BY amountOverOdds DESC;
 ^ Look at how our home predictions compared to the bookies odds
 
 SELECT * FROM game INNER JOIN team AS HOMETEAM on HOMETEAM._id = game.homeTeam_id INNER JOIN team AS AWAYTEAM on AWAYTEAM._id = game.awayTeam_id INNER JOIN league on HOMETEAM.league_id = league._id WHERE game._id = 12799
