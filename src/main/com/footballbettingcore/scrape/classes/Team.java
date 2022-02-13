@@ -514,12 +514,16 @@ public class Team {
                 return "Borussia Dortmund";
             case "Greuther Furth":
                 return "Greuther Fuerth";
+            case "FC Koln":
+                return "FC Cologne";
             case "Leverkusen":
                 return "Bayer Leverkusen";
             case "Mainz":
                 return "Mainz 05";
             case "Mgladbach":
                 return "Borussia M.Gladbach";
+            case "RB Leipzig":
+                return "RasenBallsport Leipzig";
             case "Stuttgart":
                 return "VfB Stuttgart";
 

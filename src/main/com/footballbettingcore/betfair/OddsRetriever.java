@@ -45,11 +45,7 @@ public class OddsRetriever {
                     HashMap<String, MatchToPredict> homeTeamMatches = teamToMatch.get(homeTeam);
                     if (homeTeamMatches.containsKey(awayTeam)) {
                         eventIdToMatch.put(event.getEvent().getId(), homeTeamMatches.get(awayTeam));
-                    } else {
-                        logger.warn("Could not find a Betfair Exchange match for the away team of " + eventName);
                     }
-                } else {
-                    logger.warn("Could not find a Betfair Exchange match for the home team of " + eventName);
                 }
             }
         }
