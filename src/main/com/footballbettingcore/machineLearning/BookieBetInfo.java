@@ -7,12 +7,14 @@ public class BookieBetInfo implements Comparable {
     private double stake;
     private double minOdds;
     private Result betOn;
+    private boolean isLayBet;
 
-    public BookieBetInfo(String bookie, Result betOn, double stake, double minOdds) {
+    public BookieBetInfo(String bookie, Result betOn, double stake, double minOdds, boolean isLayBet) {
         this.bookie = bookie;
         this.betOn = betOn;
         this.stake = getStakeToNearest50p(stake);
         this.minOdds = minOdds;
+        this.isLayBet = isLayBet;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class BookieBetInfo implements Comparable {
         return betOn;
     }
 
-    public void setBetOn(Result betOn) {
-        this.betOn = betOn;
+    public boolean isLayBet() {
+        return isLayBet;
     }
 }

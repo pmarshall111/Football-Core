@@ -25,8 +25,15 @@ public class OctavePredictionMapper {
                 double stake = Double.parseDouble(prediction.get(5));
                 double odds = Double.parseDouble(prediction.get(6));
                 if (resultToBetOn != -1) {
-                    BookieBetInfo bet = new BookieBetInfo(BETFAIR_EXCHANGE, Result.getResultFromInt(resultToBetOn), stake, odds);
+                    BookieBetInfo bet = new BookieBetInfo(BETFAIR_EXCHANGE, Result.getResultFromInt(resultToBetOn), stake, odds, false);
                     match.addGoodBet(bet);
+                }
+                int resultToLayBetOn = Integer.parseInt(prediction.get(7));
+                double layStake = Double.parseDouble(prediction.get(8));
+                double layOdds = Double.parseDouble(prediction.get(9));
+                if (resultToLayBetOn != -1) {
+                    BookieBetInfo layBet = new BookieBetInfo(BETFAIR_EXCHANGE, Result.getResultFromInt(resultToLayBetOn), layStake, layOdds, true);
+                    match.addGoodBet(layBet);
                 }
             }
         });

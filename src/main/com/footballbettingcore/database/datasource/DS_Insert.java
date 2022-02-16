@@ -179,9 +179,9 @@ public class DS_Insert {
         try (Statement statement = DS_Main.connection.createStatement()) {
             statement.execute("INSERT INTO " + BetTable.getTableName() +
                     " (" + BetTable.getColResultBetOn() + ", " + BetTable.getColOdds() + ", " + BetTable.getColStake() + ", " +
-                    BetTable.getColMatchId() + ", " + BetTable.getColBetPlacedWith() + ") " +
+                    BetTable.getColMatchId() + ", " + BetTable.getColBetPlacedWith() + ", " + BetTable.getColIsLayBet() + ") " +
                     "VALUES (" + betLog.getResultBetOn().getSqlIntCode() + ", " + betLog.getOddsBetOn() + ", " +
-                    betLog.getStake() + ", " + betLog.getMatch().getDatabase_id() + ", '" + betLog.getBookieUsed() + "')");
+                    betLog.getStake() + ", " + betLog.getMatch().getDatabase_id() + ", '" + betLog.getBookieUsed() + "', " + betLog.isLayBet() + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }

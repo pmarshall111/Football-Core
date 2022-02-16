@@ -17,7 +17,7 @@ public class PlaceBet {
 
     public static void main(String[] args) {
         MatchToPredict mtp = new MatchToPredict("Inter", "AC Milan", "21-22", "SERIE_A", "2022-02-05", -1, -1);
-        mtp.addGoodBet(new BookieBetInfo(BETFAIR_EXCHANGE, Result.HOME_WIN, 0.25, 2));
+        mtp.addGoodBet(new BookieBetInfo(BETFAIR_EXCHANGE, Result.HOME_WIN, 0.25, 2, false));
         ArrayList<MatchToPredict> mtps = new ArrayList<>(){{add(mtp);}};
         betOnMatches(mtps);
     }
@@ -63,9 +63,14 @@ public class PlaceBet {
 //                            totalBets++;
 //                        } else {
                             // neither bookie had odds that were better than the Bet365 odds scraped from Oddschecker
-                            DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), "NOT_YET_PLACED", betInfo.getMinOdds(), betInfo.getStake()));
-                            sb.append("- (NOT YET PLACED) " + homeTeam + " vs " + awayTeam + ": Recommend to bet £" + betInfo.getStake() + " on " + betInfo.getBetOn() + " at odds of " +
-                                    betInfo.getMinOdds() + ". Potential return: " + (5*betInfo.getStake()*betInfo.getMinOdds()) + "\n");
+                            DS_Insert.logBetPlaced(new BetLog(mtp, betInfo.getBetOn(), "NOT_YET_PLACED", betInfo.getMinOdds(), betInfo.getStake(), betInfo.isLayBet()));
+                            if (betInfo.isLayBet()) {
+                                sb.append("- (NOT YET PLACED) " + homeTeam + " vs " + awayTeam + ": Recommend to bet £" + betInfo.getStake() + " on " + betInfo.getBetOn() + " at odds of " +
+                                        betInfo.getMinOdds() + ". Potential return: " + (betInfo.getStake()*betInfo.getMinOdds()) + "\n");
+                            } else {
+                                sb.append("- (NOT YET PLACED) " + homeTeam + " vs " + awayTeam + ": Recommend to LAY BET £" + betInfo.getStake() + " on " + betInfo.getBetOn() + " at odds of " +
+                                        betInfo.getMinOdds() + ". Potential return: " + betInfo.getStake() + ". Potential liability: " + (betInfo.getStake()*betInfo.getMinOdds()) + "\n");
+                            }
                             totalBets++;
 //                        }
 //                    }

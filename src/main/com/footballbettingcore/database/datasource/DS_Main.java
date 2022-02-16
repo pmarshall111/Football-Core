@@ -128,6 +128,7 @@ public class DS_Main {
                     BetTable.getColResultBetOn() + " int NOT NULL, " +
                     BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
                     BetTable.getColMatchId() + " int NOT NULL UNIQUE, " + BetTable.getColBetPlacedWith() + " text, " +
+                    BetTable.getColIsLayBet() + " boolean DEFAULT false " +
                     " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
                     " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
                     "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= " + Result.HOME_WIN.getSqlIntCode() +
@@ -144,8 +145,6 @@ public class DS_Main {
                     " CONSTRAINT predict_with_without_lineups_once UNIQUE (" + PredictionTable.getColWithLineups()  +"," + PredictionTable.getColMatchId() + "), " +
                     " CONSTRAINT match_id_f_key FOREIGN KEY (" + PredictionTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id))");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS " + LogTable.getTableName() + " (" +
-                    LogTable.getColDatetime() + " text, " + LogTable.getColInfo() + " text)");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

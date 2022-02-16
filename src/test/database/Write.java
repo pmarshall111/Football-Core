@@ -303,7 +303,7 @@ public class Write {
             String bookieUsed = "BettingIsForFools";
             double odds = 1.22;
             int stake = 5;
-            DS_Insert.logBetPlaced(new BetLog(mtp, rbOn, bookieUsed, odds, stake));
+            DS_Insert.logBetPlaced(new BetLog(mtp, rbOn, bookieUsed, odds, stake, false));
 
             ResultSet rsBet = stmt.executeQuery("SELECT COUNT(*) FROM " + BetTable.getTableName());
             while (rsBet.next()) {
