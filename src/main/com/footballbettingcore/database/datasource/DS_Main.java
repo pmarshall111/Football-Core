@@ -128,8 +128,8 @@ public class DS_Main {
                     BetTable.getColResultBetOn() + " int NOT NULL, " +
                     BetTable.getColOdds() + " double NOT NULL, " + BetTable.getColStake() + " double NOT NULL, " +
                     BetTable.getColMatchId() + " int NOT NULL UNIQUE, " + BetTable.getColBetPlacedWith() + " text, " +
-                    BetTable.getColIsLayBet() + " boolean DEFAULT false " +
-                    " KEY match_id_idx (" + BetTable.getColMatchId() + "), " +
+                    BetTable.getColIsLayBet() + " boolean DEFAULT false, " +
+                    " UNIQUE KEY one_type_of_bet_for_each_game (" + BetTable.getColMatchId() + "," + BetTable.getColIsLayBet() + "), " +
                     " CONSTRAINT match_id FOREIGN KEY (" + BetTable.getColMatchId() + ") REFERENCES " + MatchTable.getTableName() + "(_id), " +
                     "CONSTRAINT result_in_range CHECK (((" + BetTable.getColResultBetOn() + " >= " + Result.HOME_WIN.getSqlIntCode() +
                         ") and (" + BetTable.getColResultBetOn() + " <= " + Result.AWAY_WIN.getSqlIntCode() + ")))" +

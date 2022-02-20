@@ -360,6 +360,7 @@ public class DS_Get {
                     " AND " + MatchTable.getColAwayteamId() + " NOT IN (SELECT " + MatchTable.getColAwayteamId() + " FROM " + idsTable + ")" +
                     " AND " + homeTeamGameCount + "." + totalGamesPlayed + " >= " + NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA +
                     " AND " + awayTeamGameCount + "." + totalGamesPlayed + " >= " + NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA +
+                    " AND " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " != " + "'RUSSIA'" +
                     " ORDER BY " + MatchTable.getColDate());
 
             //filtering out responses so that teams are only included once - we want to only predict a teams next match

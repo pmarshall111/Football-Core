@@ -531,6 +531,17 @@ public class TrainingTeamsSeason {
         return calcHomeAwayAvg(lastXPoints,gamesSelector.getSetting(), AVG_PPG);
     }
 
+    public double getWeightedAvgPoints(GamesSelector gamesSelector) {
+        double weightedAvg = AVG_PPG;
+        for (HomeAwayWrapper points: this.points) {
+            if (gamesSelector.equals(GamesSelector.ALL_GAMES) ||
+                    (gamesSelector == GamesSelector.ONLY_HOME_GAMES && points.isHome()) ||
+                    (gamesSelector == GamesSelector.ONLY_AWAY_GAMES && !points.isHome()))
+            weightedAvg = calcExponWeightedAvg(weightedAvg, points.getNumb());
+        }
+        return weightedAvg;
+    }
+
     public double getAvgPointsWhenScoredFirst(GamesSelector gamesSelector) {
         return calcHomeAwayAvg(this.pointsScoredFirst, gamesSelector.getSetting(), AVG_PPG);
     }
@@ -759,7 +770,7 @@ public class TrainingTeamsSeason {
     }
 
     public static double calcExponWeightedAvg(double currAvg, double newEntry) {
-        double ALPHA = 0.75;
+        double ALPHA = 0.9;
         return ALPHA * currAvg + (1-ALPHA)*newEntry;
     }
 
@@ -809,5 +820,30 @@ public class TrainingTeamsSeason {
     public double getAwayXgDefenseStrength() {
         double awayXGA = getAvgXGA(GamesSelector.ONLY_AWAY_GAMES);
         return awayXGA / leagueStatsForSeason.getAvgHomeXgPerGame();
+    }
+
+    public double getXgVsOppDifficulty() {
+        double diff = 0;
+        int records = 0;
+        for (int i = 0; i<this.xGF.size(); i++) {
+            HomeAwayWrapper xg = this.xGF.get(i);
+            HomeAwayWrapper oppPpg = this.totalPointsPerGameOfOpponentsWholeSeason.get(i);
+            diff += xg.getNumb() * oppPpg.getNumb();
+            records++;
+        }
+
+        if (records == 0) return diff;
+        return diff/records;
+    }
+
+    public double getXgVsOppDifficultyWeighted() {
+        double diff = 1.189916051509057; //avg XG
+        for (int i = 0; i<this.xGF.size(); i++) {
+            HomeAwayWrapper xg = this.xGF.get(i);
+            HomeAwayWrapper oppPpg = this.totalPointsPerGameOfOpponentsWholeSeason.get(i);
+            diff = calcExponWeightedAvg(diff, xg.getNumb() * oppPpg.getNumb());
+        }
+
+        return diff;
     }
 }
