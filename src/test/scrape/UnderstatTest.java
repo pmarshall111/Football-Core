@@ -2,100 +2,91 @@ package scrape;
 
 import com.footballbettingcore.scrape.Understat;
 import com.footballbettingcore.scrape.classes.*;
-import org.junit.Assert;
+import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.GregorianCalendar;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UnderstatTest {
-    private static League epl;
+    private static String xml;
 
     @BeforeClass
-    public static void scrapeGames() {
-        UnderstatTest.epl = new League(LeagueIdsAndData.EPL);
-        Understat.addLeaguesGames(epl);
+    public static void setup() throws IOException {
+        FileInputStream fis = new FileInputStream("src/test/scrape/Understat.xml");
+        xml = IOUtils.toString(fis, StandardCharsets.UTF_8);
     }
 
     @Test
-    public void canCreateMatchesWithinSeasons() {
-        ArrayList<Season> seasons = epl.getAllSeasons();
-        seasons.forEach(season -> {
-            Assert.assertTrue(season.hasMatches());
-        });
+    public void canGetDataFromUnderstatXml() throws IOException {
+        UnderstatData understatData = Understat.getSeasonsData(xml, 15);
+        assertNotNull(understatData.getDatesData());
+        assertNotNull(understatData.getTeamsData());
+        assertEquals(20, understatData.getTeamsData().size());
+        assertEquals(380, understatData.getDatesData().size());
     }
 
     @Test
-    public void canFindAllMatchesInSeasons() {
-        ArrayList<Season> seasons = epl.getAllSeasons();
-        seasons.forEach(season -> {
-            int teams = season.getAllTeams().size();
-            int actualMatches = season.getAllMatches().size();
-            int expectedMatches = teams*(teams-1);
-            Assert.assertEquals(expectedMatches, actualMatches);
-        });
+    public void canAddMatchesToLeague() {
+        //given
+        UnderstatData understatData = Understat.getSeasonsData(xml, 15);
+        JSONObject firstMatch = (JSONObject) understatData.getDatesData().get(0);
+        JSONArray justOneMatch = new JSONArray();
+        justOneMatch.add(firstMatch);
+        League l = new League(LeagueIdsAndData.EPL);
+        Season s = l.getSeason(21);
+
+        //when
+        Understat.addMatchesToSeason(s, justOneMatch);
+        Match m = s.getAllMatches().get(0);
+
+        //then
+        assertNotNull(s.getAllMatches());
+        assertEquals(1, s.getAllMatches().size());
+        assertNotNull(s.getAllTeams());
+        assertEquals(2, s.getAllTeams().size());
+        assertEquals(m.getHomeTeam().getTeamName(), ((JSONObject)firstMatch.get("h")).get("title"));
+        assertEquals(m.getAwayTeam().getTeamName(), ((JSONObject)firstMatch.get("a")).get("title"));
+        assertEquals(m.getHomeScore(), Integer.parseInt((String) ((JSONObject)firstMatch.get("goals")).get("h")));
+        assertEquals(m.getAwayScore(), Integer.parseInt((String) ((JSONObject)firstMatch.get("goals")).get("a")));
+        assertEquals(-1, m.getHomeXGF());
+        assertEquals(-1, m.getAwayXGF());
     }
 
     @Test
-    public void matchHasTeamNames() {
-        ArrayList<Season> seasons = epl.getAllSeasons();
-        seasons.forEach(season -> {
-            HashMap<String, Team> allTeams = season.getAllTeams();
-            ArrayList<Match> matches = season.getAllMatches();
-            matches.forEach(match -> {
-                String homeTeam = match.getHomeTeam().getTeamName();
-                String awayTeam = match.getAwayTeam().getTeamName();
-                Assert.assertNotEquals(homeTeam, awayTeam);
-                Assert.assertTrue(allTeams.containsKey(homeTeam));
-                Assert.assertTrue(allTeams.containsKey(awayTeam));
-            });
-        });
-    }
+    public void canAddXgToMatches() {
+        // given
+        League l = new League(LeagueIdsAndData.EPL);
+        Season s = l.getSeason(15);
+        UnderstatData understatData = Understat.getSeasonsData(xml, 15);
 
-    @Test
-    public void matchInPastHasXGAndScore() {
-        //currently fails due to the coronavirus with matches not being rearranged.
-        //also will fail if Understat haven't updated their data.
-        ArrayList<Season> seasons = epl.getAllSeasons();
-        for (Season s: seasons) {
-            ArrayList<Match> matches = s.getAllMatches();
-            for (Match match : matches) {
-                if (match.getKickoffTime().after(new Date())) {
-                    break;
-                }
-                try {
-                    Assert.assertTrue(match.getHomeScore() >= 0);
-                    Assert.assertTrue(match.getAwayScore() >= 0);
-                    Assert.assertTrue(match.getHomeXGF() >= 0);
-                    Assert.assertTrue(match.getAwayXGF() >= 0);
-                } catch (AssertionError e) {
-                    System.out.println(match.getHomeTeam().getTeamName() + " vs " + match.getAwayTeam().getTeamName() + ". " + match.getKickoffTime());
-                    fail();
-                }
-            }
-        }
-    }
+        // when
+        Understat.addMatchesToSeason(s, understatData.getDatesData());
+        Understat.addXgToMatches(s, understatData.getTeamsData());
+        Match m = s.getTeam("Manchester City").getAllMatches().get(
+                new GregorianCalendar(2022, Calendar.FEBRUARY, 19).getTime()
+        );
 
-    @Test
-    public void matchInFutureNoXGOrScore() {
-        ArrayList<Season> seasons = epl.getAllSeasons();
-        seasons.forEach(season -> {
-            HashMap<String, Team> allTeams = season.getAllTeams();
-            ArrayList<Match> matches = season.getAllMatches();
-            for (int i = matches.size()-1; i >= 0; i--) {
-                Match m = matches.get(i);
-                if (m.getKickoffTime().before(new Date())) {
-                    break;
-                }
-                Assert.assertEquals(-1, m.getHomeScore());
-                Assert.assertEquals(-1, m.getAwayScore());
-                Assert.assertEquals(-1, m.getHomeXGF(), 0.9);
-                Assert.assertEquals(-1, m.getAwayXGF(), 0.9);
-            }
-        });
+        // then
+        assertNotNull(s.getAllMatches());
+        assertEquals(380, s.getAllMatches().size());
+        assertNotNull(s.getAllTeams());
+        assertEquals(20, s.getAllTeams().size());
+        assertEquals("Manchester City", m.getHomeTeam().getTeamName());
+        assertEquals("Tottenham", m.getAwayTeam().getTeamName());
+        assertEquals(2, m.getHomeScore());
+        assertEquals(3, m.getAwayScore());
+        assertEquals(1.55656, m.getHomeXGF());
+        assertEquals(2.00235, m.getAwayXGF());
     }
 }

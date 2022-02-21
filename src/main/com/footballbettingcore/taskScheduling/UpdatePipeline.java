@@ -41,7 +41,7 @@ public class UpdatePipeline {
             Date earliestMatchDate = DateHelper.createDateFromSQL(sqlDateOfEarliestGameToUpdate);
             Date earliestMatchWithBuffer = DateHelper.subtractXDaysFromDate(earliestMatchDate,1); // buffer to account for TV rescheduling
             Date fourHoursAgo = DateHelper.subtractXminsFromDate(new Date(),240);
-            Understat.addSeasonsGames(l, currSeasonKey, null, null);
+            Understat.addSeasonsGames(l, currSeasonKey);
             Set<Integer> allGameIds = SofaScore.getSofascoreIdsAndAddBaseDataToMatches(l.getIdsAndData().getSofaScoreLeagueName(), l.getIdsAndData().getLeagueId(),
                     l.getIdsAndData().getLeaguesSeasonId(currSeason.getSeasonKey()), earliestMatchWithBuffer, fourHoursAgo, currSeason);
             logger.info("For " + currSeason.getSeasonKey() + " in " + l.getName() +", we have " + allGameIds.size() + "new ids");

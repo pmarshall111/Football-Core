@@ -53,9 +53,6 @@ public class SofaScore {
     private static String getIncidentsUrl(int gameId) {
         return API_URL + EVENT_ADD_ON + gameId + INCIDENTS_ADD_ON;
     }
-    private static String getTodaysGamesUrl(String yyyymmdd) { //yyyymmdd must have a - between parts of the date e.g. 2021-08-26
-        return API_URL + "/sport/football/scheduled-events/" + yyyymmdd;
-    }
     private static String getStatisticsUrl(int gameId) { return API_URL + EVENT_ADD_ON + gameId + STATISTICS_ADD_ON; }
 
 
@@ -76,7 +73,10 @@ public class SofaScore {
         while (pastHasMorePages) {
             String url = getSeasonStatsForPrevGamesUrl(leagueId, seasonId, pastPageNumb);
             try {
-                addDataToMatches(url, season, earliestDate, latestDate, gameIds, false);
+                String jsonString = GetJsonHelper.jsonGetRequest(url);
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(jsonString);
+                addDataToMatches(json, season, earliestDate, latestDate, gameIds, false);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
                 pastHasMorePages = false;
             }
@@ -88,7 +88,10 @@ public class SofaScore {
         while (futureHasMorePages) {
             String url = getSeasonStatsForFutureGamesUrl(leagueId, seasonId, futurePageNumb);
             try {
-                addDataToMatches(url, season, earliestDate, latestDate, gameIds, true);
+                String jsonString = GetJsonHelper.jsonGetRequest(url);
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(jsonString);
+                addDataToMatches(json, season, earliestDate, latestDate, gameIds, true);
             } catch (Exception e) { //JSONParser throws FileNotFoundException if 404.
                 futureHasMorePages = false;
             }
@@ -98,11 +101,7 @@ public class SofaScore {
         return gameIds;
     }
 
-    private static void addDataToMatches(String url, Season season, Date earliestDate, Date latestDate, Set<Integer> gameIds, boolean shouldOverwrite) throws Exception {
-        String jsonString = GetJsonHelper.jsonGetRequest(url);
-        JSONParser parser = new JSONParser();
-        JSONObject json = (JSONObject) parser.parse(jsonString);
-
+    public static void addDataToMatches(JSONObject json, Season season, Date earliestDate, Date latestDate, Set<Integer> gameIds, boolean shouldOverwrite) throws Exception {
         JSONArray events = (JSONArray) json.get("events");
 
         for (Object aJsonObject : events) {
@@ -211,13 +210,13 @@ public class SofaScore {
                 }
             }
             match.setSofaScoreGameId(gameId);
-            match.setHomeDrawAwayOdds(getOdds(gameId));
+            match.setHomeDrawAwayOdds(getOdds(GetJsonHelper.jsonGetRequest(getBetsUrl(gameId))));
             JSONObject status = (JSONObject) event.get("status");
             String statusDesc = status.get("description").toString();
             if (statusDesc.equals("Ended")) { // This method shouldn't update the postponed flag as Sofascore has inaccurate data for that from this URL
-                addPlayerRatingsToGame(match, gameId);
-                addFirstGoalScorer(match, gameId);
-                addMatchStatistics(match, gameId);
+                addPlayerRatingsToGame(match, GetJsonHelper.jsonGetRequest(getPlayerRatingsUrl(gameId)));
+                addFirstGoalScorer(match, GetJsonHelper.jsonGetRequest(getIncidentsUrl(gameId)));
+                addMatchStatistics(match, GetJsonHelper.jsonGetRequest(getStatisticsUrl(gameId)));
             }
             return match;
         } catch(Exception e) {
@@ -227,9 +226,7 @@ public class SofaScore {
         }
     }
 
-    private static ArrayList<Double> getOdds(int gameId) {
-        String url = getBetsUrl(gameId);
-        String jsonString = GetJsonHelper.jsonGetRequest(url);
+    public static ArrayList<Double> getOdds(String jsonString) {
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
@@ -277,15 +274,13 @@ public class SofaScore {
      * Method will be called by SofaScore.addInfoToGame. Will add the player name, his rating and minutes played
      * for the game.
      */
-    public static void addPlayerRatingsToGame(Match match, int gameId) {
-        String url = getPlayerRatingsUrl(gameId);
+    public static void addPlayerRatingsToGame(Match match, String jsonString) {
         try {
-            String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
             boolean isConfirmed = (boolean) json.get("confirmed");
             if (!isConfirmed) {
-                System.out.println("Match doesn't have confirmed lineups yet. Not adding lineups/ratings. " + match.getHomeTeam().getTeamName() + " vs " + match.getAwayTeam().getTeamName() + " on " + match.getKickoffTime());
+                logger.info("Match doesn't have confirmed lineups yet. Not adding lineups/ratings. " + match.getMatchString());
                 return;
             }
 
@@ -298,11 +293,9 @@ public class SofaScore {
                 match.setAwayPlayerRatings(awayRatings);
             }
         } catch(ParseException e) {
-            e.printStackTrace();
-            System.out.println("Parse exception for " + url);
+            logger.error("Parse exception for " + match.getMatchString(), e);
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            System.out.println("Null pointer exception for " + url);
+            logger.error("Null pointer exception for " + match.getMatchString(), e);
         }
     }
 
@@ -341,11 +334,8 @@ public class SofaScore {
         return players;
     }
 
-    public static void addFirstGoalScorer(Match match, int gameId) {
-        String url = getIncidentsUrl(gameId);
-
+    public static void addFirstGoalScorer(Match match, String jsonString) {
         try {
-            String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
 
@@ -368,9 +358,7 @@ public class SofaScore {
                             isGoalFromVar = true;
                         }
                     } catch (NullPointerException e) {
-                        System.out.println("Could not get confirmed field on VAR decision for URL: " + url);
-                        Logger logger = LogManager.getLogger(SofaScore.class);
-                        logger.warn("Could not get confirmed field on VAR decision for URL: " + url);
+                        logger.warn("Could not get confirmed field on VAR decision for: " + match.getMatchString());
                     }
                 }
                 if (isGoal || isGoalFromVar) {
@@ -385,15 +373,12 @@ public class SofaScore {
             match.setFirstScorer(firstScorer);
 
         } catch (Exception e) {
-            System.out.println("Exception for URL: " + url);
-            e.printStackTrace();
+            logger.error("Exception for: " + match.getMatchString(), e);
         }
     }
 
-    public static void addMatchStatistics(Match match, int gameId) {
-        String url = getStatisticsUrl(gameId);
+    public static void addMatchStatistics(Match match, String jsonString) {
         try {
-            String jsonString = GetJsonHelper.jsonGetRequest(url);
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonString);
 
@@ -446,8 +431,7 @@ public class SofaScore {
             }
 
         } catch (Exception e) {
-            System.out.println("Exception for URL: " + url);
-            e.printStackTrace();
+            logger.error("Exception for: " + match.getMatchString(), e);
         }
     }
 

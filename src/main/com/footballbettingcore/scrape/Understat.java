@@ -3,6 +3,8 @@ package com.footballbettingcore.scrape;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.footballbettingcore.scrape.classes.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
@@ -16,6 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Understat {
+    private static final Logger logger = LogManager.getLogger(Understat.class);
+
     private static final String UNDERSTAT_SITE = "https://understat.com/";
 
     public static void addLeaguesGames(League league) {
@@ -24,19 +28,29 @@ public class Understat {
 
         for (int i = 0; i<numbSeasons; i++) {
             int seasonToGet = currentSeason+i;
-            addSeasonsGames(league, seasonToGet, null, null);
+            addSeasonsGames(league, seasonToGet);
         }
+    }
+
+    public static void main(String[] args) {
+        addSeasonsGames(new League(LeagueIdsAndData.EPL), 21);
     }
 
     /*
      * Method will get teams expected goals for and against for each matchday.
      * Has parameters to only add games between 2 dates to scrape the most recent games.
      */
-    public static void addSeasonsGames (League league, int seasonStartYear, Date earliestDate, Date latestDate) {
+    public static void addSeasonsGames (League league, int seasonStartYear) {
         Season season = league.getSeason(seasonStartYear);
-        UnderstatData data = getSeasonsData(league, seasonStartYear);
+        String xml = getUnderstatXmlString(league, seasonStartYear);
+        UnderstatData data = getSeasonsData(xml, seasonStartYear);
         JSONArray datesData = data.getDatesData();
         JSONObject teamsData = data.getTeamsData();
+        addMatchesToSeason(season, datesData);
+        addXgToMatches(season, teamsData);
+    }
+
+    public static void addMatchesToSeason(Season season, JSONArray datesData) {
         Iterator datesIterator = datesData.iterator();
         while (datesIterator.hasNext()) {
             JSONObject nextMatch = (JSONObject) datesIterator.next();
@@ -62,11 +76,6 @@ public class Understat {
             } catch (java.text.ParseException e) {
                 throw new RuntimeException("Bad dateTime from team " + homeTeamName + " vs " + awayTeamName + ". The date given is " + dateString);
             }
-            //test to only add in games that are only new games, or games given between 2 dates.
-            if (earliestDate != null && latestDate != null && (!date.before(latestDate) || !date.after(earliestDate))) {
-                //go to next game
-                continue;
-            }
 
             JSONObject goals = (JSONObject) nextMatch.get("goals");
             String homeGoals = (String) goals.get("h");
@@ -80,7 +89,9 @@ public class Understat {
             }
             season.addNewMatch(match); //method will also add match to both teams' hashmap for faster lookups.
         }
+    }
 
+    public static void addXgToMatches(Season season, JSONObject teamsData) {
         Iterator teamsIterator = teamsData.values().iterator();
         while (teamsIterator.hasNext()) {
             JSONObject teamObj = (JSONObject) teamsIterator.next();
@@ -106,12 +117,6 @@ public class Understat {
                     throw new RuntimeException("Bad dateTime from team " + teamName + ". The date given is " + dateTime);
                 }
 
-                //test to only add in games that are only new games, or games given between 2 dates.
-                if (earliestDate != null && latestDate != null && (!date.before(latestDate) || !date.after(earliestDate))) {
-                    //go to next game
-                    continue;
-                }
-
                 Match currMatch = currTeam.getMatchFromDate(date);
                 if (currMatch == null) {
                     throw new RuntimeException("Could not find match on " + date + " for team " + teamName);
@@ -125,29 +130,33 @@ public class Understat {
         }
     }
 
-    private static UnderstatData getSeasonsData(League league, int seasonStartYear) {
+    private static String getUnderstatXmlString(League league, int seasonStartYear) {
         try (final WebClient webClient = new WebClient()) {
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
 
             final HtmlPage page = webClient.getPage(UNDERSTAT_SITE + "league/" + league.getIdsAndData().getUnderstatUrl() + "/20" + seasonStartYear);
-
-            //dates will give us all basic information about the game.
-            //teams will give us an array of 38 matches for each team, with the non-penalty expected goals. no info about which team they played though.
-            Matcher dates = Pattern.compile("var datesData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
-            Matcher teams = Pattern.compile("var teamsData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(page.asXml());
-
-            JSONArray datesData;
-            JSONObject teamsData;
-            if (dates.find() && teams.find()) {
-                datesData = (JSONArray) decodeAscii(dates.group(1));
-                teamsData = (JSONObject) decodeAscii(teams.group(1));
-                return new UnderstatData(datesData, teamsData);
-            }
+            return page.asXml();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("Couldn't get Understat page", e);
+            return null;
         }
+    }
+
+    public static UnderstatData getSeasonsData(String understatXml, int seasonStartYear) {
+        //dates will give us all basic information about the game.
+        //teams will give us an array of 38 matches for each team, with the non-penalty expected goals. no info about which team they played though.
+        Matcher dates = Pattern.compile("var datesData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(understatXml);
+        Matcher teams = Pattern.compile("var teamsData\\s+= JSON.parse\\('([^)]+)'\\)").matcher(understatXml);
+
+        JSONArray datesData;
+        JSONObject teamsData;
+        if (dates.find() && teams.find()) {
+            datesData = (JSONArray) decodeAscii(dates.group(1));
+            teamsData = (JSONObject) decodeAscii(teams.group(1));
+            return new UnderstatData(datesData, teamsData);
+        }
+
         throw new RuntimeException("could not find data from Underscored page in season " + seasonStartYear);
     }
 

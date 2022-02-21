@@ -67,7 +67,7 @@ public class League {
      * To be called when we go over to a new season to add all the seasons games to the database.
      */
     public void scrapeOneSeason(int seasonStart) {
-        Understat.addSeasonsGames(this, seasonStart, null, null);
+        Understat.addSeasonsGames(this, seasonStart);
         scrapeSeason(this.getSeason(seasonStart));
     }
 

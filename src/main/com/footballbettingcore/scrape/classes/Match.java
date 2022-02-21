@@ -254,4 +254,8 @@ public class Match {
     public String getAwayTeamName() {
         return this.awayTeam.getTeamName();
     }
+
+    public String getMatchString() {
+        return getHomeTeamName() + " vs " + getAwayTeamName() + " on " + getKickoffTime();
+    }
 }

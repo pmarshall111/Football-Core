@@ -1,106 +1,137 @@
 package scrape;
 
+import com.footballbettingcore.scrape.GetJsonHelper;
+import com.footballbettingcore.scrape.Understat;
+import com.footballbettingcore.scrape.classes.*;
 import com.footballbettingcore.utils.ConvertOdds;
 import com.footballbettingcore.utils.DateHelper;
 import com.footballbettingcore.database.FirstScorer;
 import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.SofaScore;
-import com.footballbettingcore.scrape.classes.League;
-import com.footballbettingcore.scrape.classes.Match;
-import com.footballbettingcore.scrape.classes.Season;
+
 import static com.footballbettingcore.scrape.classes.LeagueIdsAndData.EPL;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.footballbettingcore.scrape.classes.Team;
+import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 
 public class SofascoreTest {
-    private static int seasonId;
-    private static int leagueId;
-    private static String leagueName;
-    private static League epl;
-    private static Season season;
-    private static Set<Integer> ids;
-    private static Match lfcHome;
-    private static final int LFC_BURNLEY_MATCH_ID = 8692257;
+    private static Season s;
 
-    @BeforeClass
-    public static void scrapeGames() {
-        String seasonYear = "19-20";
-        seasonId = EPL.getLeaguesSeasonId(seasonYear);
-        leagueId = EPL.getLeagueId();
-        leagueName = EPL.getSofaScoreLeagueName();
-        epl = new League(EPL);
-        season = epl.getSeason(seasonYear);
-
-        //add a known game from the season
-        Team burnley = new Team("Burnley");
-        Team liverpool = new Team("Liverpool");
-        Date kickOff = DateHelper.createDateyyyyMMdd("2020", "07", "11");
-        lfcHome = new Match(liverpool, burnley, kickOff, 1, 1);
-        season.addNewMatch(lfcHome);
-
-        //get the IDs for the games (required to run before other tests)
-        ids = SofaScore.getSofascoreIdsAndAddBaseDataToMatches(leagueName, leagueId, seasonId, null, null, season);
-    }
-
-    //possibly will need a test to look at what it does with postponed matches.
-    @Test
-    public void canGetIdsForLeagueSeason() {
-        //scrape from sofascore
-        Assert.assertNotNull(ids);
-        Assert.assertEquals(380, ids.size()); //expect an id for every game of the season
-
-        //check id is added to known game
-        Assert.assertTrue(lfcHome.getSofaScoreGameId() > 0);
-        Assert.assertEquals(LFC_BURNLEY_MATCH_ID, lfcHome.getSofaScoreGameId());
-        Assert.assertTrue(ids.contains(lfcHome.getSofaScoreGameId()));
-    }
-
-    //adds odds, players ratings, first goalscorer.
-    //executing as 1 integration test to save time.
-    @Test
-    public void canAddInfoToGame() {
-        int gameId = lfcHome.getSofaScoreGameId();
-        Assert.assertTrue(gameId > 0);
-
-        SofaScore.addInfoToGame(season, gameId);
-        //odds
-        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("1/5"), lfcHome.getHomeOdds(), 0.0001);
-        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("6/1"), lfcHome.getDrawOdds(), 0.0001);
-        Assert.assertEquals(ConvertOdds.fromFractionToDecimal("12/1"), lfcHome.getAwayOdds(), 0.0001);
-        //home player ratings
-        Assert.assertNotNull(lfcHome.getHomePlayerRatings());
-        Assert.assertTrue(lfcHome.getHomePlayerRatings().size() > 0);
-        Assert.assertEquals(7.0, lfcHome.getHomePlayerRatings().get("Mohamed Salah").getRating(), 0.0001);
-        Assert.assertEquals(90, lfcHome.getHomePlayerRatings().get("Roberto Firmino").getMinutesPlayed(), 0.0001);
-        //away player ratings
-        Assert.assertNotNull(lfcHome.getAwayPlayerRatings());
-        Assert.assertTrue(lfcHome.getAwayPlayerRatings().size() > 0);
-        Assert.assertEquals(6.4, lfcHome.getAwayPlayerRatings().get("Chris Wood").getRating(), 0.0001);
-        Assert.assertEquals(65, lfcHome.getAwayPlayerRatings().get("Chris Wood").getMinutesPlayed(), 0.0001);
-        //first goalscorer
-        Assert.assertEquals(FirstScorer.HOME_FIRST.getSqlIntCode(), lfcHome.getFirstScorer().getSqlIntCode());
+    @BeforeEach
+    public void setup() throws IOException {
+        // Sofascore scraper requires games already to be set up in the season. Understat does this.
+        FileInputStream fis = new FileInputStream("src/test/scrape/Understat.xml");
+        String xml = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        UnderstatData understatData = Understat.getSeasonsData(xml, 21);
+        League l = new League(LeagueIdsAndData.EPL);
+        s = l.getSeason(21);
+        Understat.addMatchesToSeason(s, understatData.getDatesData());
+        Understat.addXgToMatches(s, understatData.getTeamsData());
     }
 
     @Test
-    public void canGetLineupsForAMatchToPredict() {
-        MatchToPredict mtp = new MatchToPredict(lfcHome.getHomeTeam().getTeamName(), lfcHome.getAwayTeam().getTeamName(), "19-20",
-                EPL.getSofaScoreLeagueName(), DateHelper.getSqlDate(lfcHome.getKickoffTime()),-1, LFC_BURNLEY_MATCH_ID);
-        ArrayList<MatchToPredict> matches = new ArrayList<>();
-        matches.add(mtp);
-        SofaScore.addLineupsToGamesAboutToStart(matches);
-        Assert.assertNotNull(mtp.getHomeTeamPlayers());
-        Assert.assertNotNull(mtp.getAwayTeamPlayers());
-        Assert.assertEquals(11, mtp.getHomeTeamPlayers().size());
-        Assert.assertEquals(11, mtp.getAwayTeamPlayers().size());
-        Assert.assertTrue(mtp.getHomeTeamPlayers().contains("Mohamed Salah"));
-        Assert.assertTrue(mtp.getAwayTeamPlayers().contains("Chris Wood"));
+    public void canAddDataToMatches() throws Exception {
+        // given
+        FileInputStream fis = new FileInputStream("src/test/scrape/SofascoreEvents.json");
+        String sofascoreEvents = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(sofascoreEvents);
+        HashSet<Integer> gameIds = new HashSet<>();
+
+        // when
+        Date earliestDate = new GregorianCalendar(2022, Calendar.JANUARY, 16, 14,0).getTime(); // southampton brentford
+        Date latestDate = new GregorianCalendar(2022, Calendar.JANUARY, 16, 15,0).getTime(); //lfc brentford
+        SofaScore.addDataToMatches(json, s, earliestDate, latestDate, gameIds, true);
+        Match postponedMatch = s.getTeam("Tottenham").getMatchFromAwayTeamName("Arsenal");
+        Match normalMatch = s.getTeam("Liverpool").getMatchFromAwayTeamName("Brentford");
+
+        // then
+        assertTrue(postponedMatch.isPostponed());
+        assertEquals(9576450, postponedMatch.getSofaScoreGameId());
+        assertEquals(new GregorianCalendar(2022, Calendar.JANUARY, 16, 16, 30).getTime(), postponedMatch.getKickoffTime());
+        assertFalse(normalMatch.isPostponed());
+        assertEquals(9576342, normalMatch.getSofaScoreGameId());
+        assertEquals(new GregorianCalendar(2022, Calendar.JANUARY, 16, 14, 0).getTime(), normalMatch.getKickoffTime());
+        assertEquals(2, gameIds.size()); // only matches between the earliest & latest dates should be added to gameIds
+    }
+
+    @Test
+    public void canGetOddsForMatch() throws Exception {
+        FileInputStream fis = new FileInputStream("src/test/scrape/SofascoreOdds.json");
+        String sofascoreEvents = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        ArrayList<Double> odds = SofaScore.getOdds(sofascoreEvents);
+
+        assertEquals(3, odds.size());
+        assertEquals(1.4, odds.get(0));
+        assertEquals(4.75, odds.get(1));
+        assertEquals(8, odds.get(2));
+    }
+
+    @Test
+    public void canAddPlayerRatingsToMatch() throws Exception {
+        // given
+        FileInputStream fis = new FileInputStream("src/test/scrape/SofascoreRatings.json");
+        String sofascoreRatings = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        Match m = s.getTeam("Manchester City").getMatchFromAwayTeamName("Tottenham");
+        assertEquals(0, m.getHomePlayerRatings().size());
+        assertEquals(0, m.getAwayPlayerRatings().size());
+
+        // when
+        SofaScore.addPlayerRatingsToGame(m, sofascoreRatings);
+        PlayerRating deBruyne = m.getHomePlayerRatings().get("Kevin De Bruyne");
+        PlayerRating kane = m.getAwayPlayerRatings().get("Harry Kane");
+
+        // then
+        assertEquals(12, m.getHomePlayerRatings().size());
+        assertEquals(90, deBruyne.getMinutesPlayed());
+        assertEquals("M", deBruyne.getPosition());
+        assertEquals(7, deBruyne.getRating());
+
+        assertEquals(13, m.getAwayPlayerRatings().size());
+        assertEquals(90, kane.getMinutesPlayed());
+        assertEquals("F", kane.getPosition());
+        assertEquals(8.5, kane.getRating());
+    }
+
+    @Test
+    public void canAddFirstGoalScorerToGame() throws Exception {
+        // given
+        FileInputStream fis = new FileInputStream("src/test/scrape/SofascoreIncidents.json");
+        String sofascoreIncidents = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        Match m = s.getTeam("Manchester City").getMatchFromAwayTeamName("Tottenham");
+
+        // when
+        SofaScore.addFirstGoalScorer(m, sofascoreIncidents);
+
+        // then
+        assertEquals(FirstScorer.AWAY_FIRST, m.getFirstScorer());
+    }
+
+    @Test
+    public void canAddMatchStatistics() throws Exception {
+        FileInputStream fis = new FileInputStream("src/test/scrape/SofascoreStatistics.json");
+        String sofascoreStatistics = IOUtils.toString(fis, StandardCharsets.UTF_8);
+        Match m = s.getTeam("Manchester City").getMatchFromAwayTeamName("Tottenham");
+
+        SofaScore.addMatchStatistics(m, sofascoreStatistics);
+
+        assertEquals(71, m.getHomePossession());
+        assertEquals(29, m.getAwayPossession());
+        assertEquals(21, m.getHomeShots());
+        assertEquals(4, m.getHomeShotsOnTarget());
+        assertEquals(6, m.getAwayShots());
+        assertEquals(5, m.getAwayShotsOnTarget());
     }
 }
