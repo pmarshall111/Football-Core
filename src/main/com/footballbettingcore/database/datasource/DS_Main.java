@@ -15,7 +15,6 @@ public class DS_Main {
     static final String PLAYERS_TEAM = "playersteam";
 
     private static final String CONNECTION_NAME = "jdbc:mariadb://" + Secrets.DB_URL + ":3306/" + Secrets.DB_NAME + "?serverTimezone=UTC";
-    public static final String TEST_CONNECTION_NAME = "jdbc:mariadb://localhost:3306/" + Secrets.DB_NAME + "_TEST?serverTimezone=UTC";
     public static Connection connection;
 
     public static boolean isOpen() {
@@ -43,9 +42,9 @@ public class DS_Main {
         }
     }
 
-    public static boolean openTestConnection() {
+    public static boolean openTestConnection(String jdbcUrl, String username, String password) {
         try {
-            connection = DriverManager.getConnection(TEST_CONNECTION_NAME, Secrets.DB_USER, Secrets.DB_PASS);
+            connection = DriverManager.getConnection(jdbcUrl, username, password);
             return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());

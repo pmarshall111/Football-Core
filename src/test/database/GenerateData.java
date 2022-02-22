@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.footballbettingcore.database.datasource.DS_Main.TEST_CONNECTION_NAME;
 import static com.footballbettingcore.database.datasource.DS_Main.connection;
 
 //for 1 league: 2 seasons, 8 teams per season, 4 matches per season,  22 players per match
@@ -43,17 +42,8 @@ public class GenerateData {
     }
 
     private static void writeData(ArrayList<League> leagues) {
-        try {
-            if (connection.getMetaData().getURL().equals(TEST_CONNECTION_NAME)) {
-                leagues.forEach(DS_Insert::writeLeagueToDb);
-            } else {
-                throw new RuntimeException("Data not added!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        leagues.forEach(DS_Insert::writeLeagueToDb);
     }
-
 
     public GenerateData(boolean addStatsToMatch) {
         this.leagues = new ArrayList<>();
@@ -63,6 +53,13 @@ public class GenerateData {
 
         generateLeagues();
         addDataToLeagues(addStatsToMatch);
+    }
+
+    private void generateLeagues() {
+        League epl = new League(LeagueIdsAndData.EPL);
+        League la_liga = new League(LeagueIdsAndData.LA_LIGA);
+        leagues.add(epl);
+        leagues.add(la_liga);
     }
 
     private void addDataToLeagues(boolean addStatsToMatch) {
@@ -119,13 +116,6 @@ public class GenerateData {
         }
         m.setHomePlayerRatings(homeRatings);
         m.setAwayPlayerRatings(awayRatings);
-    }
-
-    private void generateLeagues() {
-        League epl = new League(LeagueIdsAndData.EPL);
-        League la_liga = new League(LeagueIdsAndData.LA_LIGA);
-        leagues.add(epl);
-        leagues.add(la_liga);
     }
 
     public ArrayList<League> getLeagues() {

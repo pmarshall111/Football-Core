@@ -5,14 +5,13 @@ import com.footballbettingcore.scrape.classes.*;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UnderstatTest {
     private static String xml;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
         FileInputStream fis = new FileInputStream("src/test/scrape/Understat.xml");
         xml = IOUtils.toString(fis, StandardCharsets.UTF_8);

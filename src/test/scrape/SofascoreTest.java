@@ -1,26 +1,19 @@
 package scrape;
 
-import com.footballbettingcore.scrape.GetJsonHelper;
 import com.footballbettingcore.scrape.Understat;
 import com.footballbettingcore.scrape.classes.*;
-import com.footballbettingcore.utils.ConvertOdds;
-import com.footballbettingcore.utils.DateHelper;
 import com.footballbettingcore.database.FirstScorer;
-import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.SofaScore;
 
-import static com.footballbettingcore.scrape.classes.LeagueIdsAndData.EPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

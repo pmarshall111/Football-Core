@@ -98,6 +98,9 @@ public class DS_Insert {
      * Located in DS_Insert rather than DS_Get because method will cause unknown teams to be inserted into db
      */
     static HashMap<String, Integer> getTeamIds(HashMap<String, Team> teams, int leagueId) {
+        if (TEAM_ID == -1) {
+            getNextIds();
+        }
         HashMap<String, Integer> ids = new HashMap<>();
         teams.keySet().forEach(key -> {
             int id = getTeamId(key, leagueId);
@@ -162,6 +165,9 @@ public class DS_Insert {
     }
 
     public static void addPlayerRatingsToBatch(Statement batchStmt, HashMap<String, PlayerRating> pRatings, int matchId, int teamId) {
+        if (MATCH_ID == -1) {
+            getNextIds();
+        }
         pRatings.forEach((name, rating) -> {
             try {
                 batchStmt.addBatch("INSERT IGNORE INTO " + PlayerRatingTable.getTableName() +
