@@ -2,8 +2,6 @@ package com.footballbettingcore.database.datasource;
 
 import com.footballbettingcore.utils.DateHelper;
 import com.footballbettingcore.database.datasource.dbTables.MatchTable;
-import com.footballbettingcore.database.datasource.dbTables.PredictionTable;
-import com.footballbettingcore.machineLearning.createData.classes.MatchToPredict;
 import com.footballbettingcore.scrape.classes.*;
 
 import java.sql.SQLException;
@@ -31,56 +29,6 @@ public class DS_Update {
                     addUpdateKickoffTimeToBatch(batchStatement, teamIds, match, season.getSeasonYearStart())
             );
 
-            batchStatement.executeBatch();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /*
-     * Needed because understat (who we created our dates from) sometimes have incorrect start dates and times.
-     * Will also be used to change postponed matches in the database.
-     */
-    public static void updateKickoffTime(int seasonYearStart, String homeTeamName, String awayTeamName, String startDate, int leagueId) {
-        try (Statement statement = DS_Main.connection.createStatement()) {
-            int homeTeamId = DS_Get.getTeamId(homeTeamName, leagueId);
-            int awayTeamId = DS_Get.getTeamId(awayTeamName, leagueId);
-            statement.execute("UPDATE " + MatchTable.getTableName() +
-                    " SET " + MatchTable.getColDate() + " = '" + startDate +
-                    "' WHERE " + MatchTable.getColHometeamId() + " = " + homeTeamId +
-                    " AND " + MatchTable.getColAwayteamId() + " = " + awayTeamId +
-                    " AND " + MatchTable.getColSeasonYearStart() + " = " + seasonYearStart);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void updatePredictionToIncludeOdds(ArrayList<MatchToPredict> matches) {
-        try (Statement batchStatement = DS_Main.connection.createStatement()) {
-            for (MatchToPredict mtp : matches) {
-                boolean hasBookieOdds = mtp.getBookiesOdds() != null && mtp.getBookiesOdds().keySet().size() > 0;
-                if (hasBookieOdds) {
-                    String bookie = mtp.getBookiesOdds().keySet().iterator().next();
-                    double[] bookieOdds = mtp.getBookiesOdds().get(bookie);
-                    batchStatement.addBatch("UPDATE " + PredictionTable.getTableName() +
-                            " SET " + PredictionTable.getColHOdds() + " = " + bookieOdds[0] + ", " +
-                            PredictionTable.getColDOdds() + " = " + bookieOdds[1] + ", " +
-                            PredictionTable.getColAOdds() + " = " + bookieOdds[2] + ", " +
-                            PredictionTable.getColBookieName() + " = '" + bookie + "' " +
-                            " WHERE " + PredictionTable.getColMatchId() + " = " + mtp.getDatabase_id());
-                }
-            }
-            batchStatement.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void updatePostponedMatches(League league, Season season, ArrayList<Match> postponedMatches) {
-        try (Statement batchStatement = DS_Main.connection.createStatement()) {
-            addMatchesToBatch(batchStatement, league, season, postponedMatches);
             batchStatement.executeBatch();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

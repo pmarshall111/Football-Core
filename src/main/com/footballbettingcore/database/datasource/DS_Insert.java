@@ -56,9 +56,6 @@ public class DS_Insert {
      * To be called after first scrape. Puts all data from a league into db. Can also be used when adding new seasons.
      */
     public static void writeLeagueToDb(League league) {
-        if (DS_Main.connection == null) {
-            DS_Main.openProductionConnection();
-        }
         if (LEAGUE_ID == -1) {
             getNextIds();
         }

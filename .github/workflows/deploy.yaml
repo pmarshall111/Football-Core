@@ -23,8 +23,11 @@ jobs:
       - name: Deploy jar with rsync
         run: rsync -avP ./target/Football-1.0-SNAPSHOT-jar-with-dependencies.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_${GITHUB_SHA::8}.jar
 
-      - name: Generate new crontab. First the crontab loads the environment variables from .environment, then runs the Core project, appending the output of the command to a log file.
+      - name: Generate new Prediction & Update cron. Loads the environment variables from .environment, then runs the PredictionPipeline, appending the output of the command to a log file.
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar com.footballbettingcore.taskScheduling.PredictPipeline >> ~/logs/predict.log 2>&1' > ~/crontab.txt"
+
+      - name: Generate new DB Integrity cron. Loads the environment variables from .environment, then runs the DbIntegrityCheck, appending the output of the command to a log file.
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '00 5 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar com.footballbettingcore.taskScheduling.DbIntegrityCheck >> ~/logs/dbIntegrity.log 2>&1' >> ~/crontab.txt"
 
       - name: Set new crontab
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "crontab ~/crontab.txt"

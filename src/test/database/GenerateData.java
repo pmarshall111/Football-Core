@@ -31,6 +31,7 @@ public class GenerateData {
     //player vals
     static final int MINUTES = 90;
     static final double RATING = 8.7;
+    static final String POSITION = "D";
 
     static final int NUMB_PLAYERS_PER_MATCH = 11;
 
@@ -104,13 +105,13 @@ public class GenerateData {
         HashMap<String, PlayerRating> awayRatings = new HashMap<>();
         for (int j = 0; j<NUMB_PLAYERS_PER_MATCH; j++) {
             String playerName = "home"+j+"match"+matchNumb+leagueName+seasonYear;
-            PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName, "D");
+            PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName, POSITION);
             this.playerRatings.add(pr);
             homeRatings.put(playerName, pr);
         }
         for (int j = 0; j<NUMB_PLAYERS_PER_MATCH; j++) {
             String playerName = "away"+j+"match"+matchNumb+leagueName+seasonYear;
-            PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName, "D");
+            PlayerRating pr = new PlayerRating(MINUTES, RATING, playerName, POSITION);
             this.playerRatings.add(pr);
             awayRatings.put(playerName, pr);
         }
