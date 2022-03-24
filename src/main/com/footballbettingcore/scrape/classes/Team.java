@@ -222,6 +222,8 @@ public class Team {
                 return "Lens";
             case "Clermont Foot 63":
                 return "Clermont Foot";
+            case "RC Strasbourg":
+                return "Strasbourg";
 
             //RFPL (Russia)
             case "FK Krasnodar":
