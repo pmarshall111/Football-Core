@@ -6,6 +6,7 @@ import com.footballbettingcore.database.datasource.dbTables.MatchTable;
 import com.footballbettingcore.database.datasource.dbTables.PlayerRatingTable;
 import com.footballbettingcore.database.datasource.dbTables.TeamTable;
 import com.footballbettingcore.mail.SendEmail;
+import com.footballbettingcore.scrape.classes.LeagueIdsAndData;
 import com.footballbettingcore.utils.DateHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -207,9 +208,9 @@ public class DbIntegrityCheck {
             ResultSet rs = s.executeQuery(query);
             while (rs.next()) {
                 int count = rs.getInt(1);
-                if (count == 0) logger.info("noPartiallyCompletedGames PASS");
+                if (count == 0) logger.info("teamsAreGivenTheRightLeagueId PASS");
                 else {
-                    logger.error("noPartiallyCompletedGames FAIL: " + count);
+                    logger.error("teamsAreGivenTheRightLeagueId FAIL: " + count);
                     ERROR_COUNT++;
                 }
             }
@@ -239,16 +240,17 @@ public class DbIntegrityCheck {
                     " OR " + MatchTable.getColHomeWinOdds() + " = -1" +
                     " OR " + MatchTable.getColDrawOdds() + " = -1" +
                     " OR " + MatchTable.getColAwayWinOdds() + " = -1" +
-                    " OR (" + MatchTable.getColFirstScorer() + " = -1 AND (" + MatchTable.getColHomeScore() + " > 0 OR " + MatchTable.getColAwayScore() + " >0)))";
+                    " OR (" + MatchTable.getColFirstScorer() + " = -1 AND (" + MatchTable.getColHomeScore() + " > 0 OR " + MatchTable.getColAwayScore() + " >0)))" +
+                    " AND " + LeagueTable.getTableName() + "." + LeagueTable.getColName() + " != '" + LeagueIdsAndData.RUSSIA.name() + "'";
 
             logger.info(query);
             ResultSet rs = s.executeQuery(query);
 
             while (rs.next()) {
                 int count = rs.getInt(1);
-                if (count == 0) logger.info("noPartiallyCompletedGames PASS");
+                if (count == 0) logger.info("noGameMoreThan3DaysAgoWithoutStats PASS");
                 else {
-                    logger.error("noPartiallyCompletedGames FAIL: " + count);
+                    logger.error("noGameMoreThan3DaysAgoWithoutStats FAIL: " + count);
                     ERROR_COUNT++;
                 }
             }
