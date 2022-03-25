@@ -286,9 +286,11 @@ public class DS_Get {
 
     public static void main(String[] args) {
         DS_Main.openProductionConnection();
+        var leagues = getLeaguesToUpdate();
+        System.out.println(leagues.size());
 //        getMatchesToPredict();
-        ArrayList<ArrayList<String>> matchData = getRawGameData();
-        System.out.println(matchData.size());
+//        ArrayList<ArrayList<String>> matchData = getRawGameData();
+//        System.out.println(matchData.size());
     }
 
     //method will get out matches from the database where it is both teams next match and has not already been predicted on
@@ -372,7 +374,10 @@ public class DS_Get {
                     " MIN(" + MatchTable.getColDate() + ") FROM " + MatchTable.getTableName() +
                     " INNER JOIN " + TeamTable.getTableName() + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + TeamTable.getTableName() + "._id" +
                     " INNER JOIN " + LeagueTable.getTableName() + " ON " + TeamTable.getTableName() + "." + TeamTable.getColLeagueId() + " = " + LeagueTable.getTableName() + "._id " +
-                    " WHERE " + MatchTable.getColHomeScore() + " = -1" +
+                    " WHERE (" + MatchTable.getColHomeScore() + " = -1" +
+                        " OR " + MatchTable.getColHomeXg() + " = -1" +
+                        " OR " + MatchTable.getColHomeWinOdds() + " = -1" +
+                    ") " +
                     " AND " + MatchTable.getColDate() + " < '" + DateHelper.getSqlDate(DateHelper.subtractXminsFromDate(new Date(), 200)) + "'" +
                     " AND " + MatchTable.getColSeasonYearStart() + " = " + DateHelper.getStartYearForCurrentSeason() +
                     " AND " + MatchTable.getColIsPostponed() + " = 0" +

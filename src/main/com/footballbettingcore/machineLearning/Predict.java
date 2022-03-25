@@ -20,7 +20,7 @@ public class Predict {
             String predictionsCsvPath = "/tmp/predictions.csv";
             WriteTrainingData.writeMatchesToPredictOutToCsvFile(matches, featuresCsvPath, noLineupsFeaturesCsvPath);
             // call the Octave function
-            String command = "octave " + OCTAVE_PREDICT_FILE + " " + OCTAVE_THETA_PATH + " " + noLineupsFeaturesCsvPath + " " + predictionsCsvPath;
+            String command = "octave --no-gui " + OCTAVE_PREDICT_FILE + " " + OCTAVE_THETA_PATH + " " + noLineupsFeaturesCsvPath + " " + predictionsCsvPath;
             CommandLineExecutor.runCommand(command);
             // read the resulting file
             ArrayList<ArrayList<String>> predictions = CsvReader.readCsv(predictionsCsvPath);

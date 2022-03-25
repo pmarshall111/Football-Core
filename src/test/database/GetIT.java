@@ -19,10 +19,8 @@ import org.testcontainers.utility.DockerImageName;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.footballbettingcore.database.datasource.DS_Main.connection;
 import static com.footballbettingcore.machineLearning.createData.CalcPastStats.NUMB_MATCHES_BEFORE_VALID_TRAINING_DATA;
@@ -322,28 +320,64 @@ public class GetIT {
     @Test
     public void canGetLeaguesThatNeedUpdating() {
         League pastWithoutScore = new League(LeagueIdsAndData.EPL);
-        League pastWithScore = new League(LeagueIdsAndData.LA_LIGA);
-
-        Season s1 = pastWithoutScore.getSeason(DateHelper.getStartYearForCurrentSeason());
-        Team s1t1 = s1.addNewTeam(new Team("s1t1"));
-        Team s1t2 = s1.addNewTeam(new Team("s1t2"));
+        Season epl = pastWithoutScore.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team eplt1 = epl.addNewTeam(new Team("s1t1"));
+        Team eplt2 = epl.addNewTeam(new Team("s1t2"));
         Date dateOfEarliestGame = DateHelper.subtractXDaysFromDate(new Date(), 4);
-        s1.addNewMatch(new Match(s1t1, s1t2, dateOfEarliestGame));
-        s1.addNewMatch(new Match(s1t2, s1t1, DateHelper.subtractXDaysFromDate(new Date(), 2))); //2 games with no score, but should only return league one time
-
-        Season s2 = pastWithScore.getSeason(DateHelper.getStartYearForCurrentSeason());
-        Team s2t1 = s2.addNewTeam(new Team("s2t1"));
-        Team s2t2 = s2.addNewTeam(new Team("s2t2"));
-        s2.addNewMatch(new Match(s2t1, s2t2, DateHelper.subtractXDaysFromDate(new Date(), 2), 2,1));
-        s2.addNewMatch(new Match(s2t2, s2t1, DateHelper.addXDaysToDate(new Date(), 3))); //game with score in past, game no score in future.
-
+        epl.addNewMatch(new Match(eplt1, eplt2, dateOfEarliestGame));
+        epl.addNewMatch(new Match(eplt2, eplt1, DateHelper.subtractXDaysFromDate(new Date(), 2))); //2 games with no score, but should only return league one time
         DS_Insert.writeLeagueToDb(pastWithoutScore);
-        DS_Insert.writeLeagueToDb(pastWithScore);
+
+        League pastWithoutXg = new League(LeagueIdsAndData.BUNDESLIGA);
+        Season bundes = pastWithoutXg.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team bundest1 = bundes.addNewTeam(new Team("s2t1"));
+        Team bundest2 = bundes.addNewTeam(new Team("s2t2"));
+        Match bundesPastMatch = new Match(bundest1, bundest2, DateHelper.subtractXDaysFromDate(new Date(), 2), 2,1);
+        Match bundesFutureMatch = new Match(bundest2, bundest1, DateHelper.addXDaysToDate(new Date(), 3));
+        bundes.addNewMatch(bundesPastMatch);
+        bundes.addNewMatch(bundesFutureMatch); //game with score in past, game no score in future.
+        DS_Insert.writeLeagueToDb(pastWithoutXg);
+
+        League pastWithoutOdds = new League(LeagueIdsAndData.SERIE_A);
+        Season seriea = pastWithoutOdds.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team serieat1 = seriea.addNewTeam(new Team("s2t1"));
+        Team serieat2 = seriea.addNewTeam(new Team("s2t2"));
+        Match seriaPastMatch = new Match(serieat1, serieat2, DateHelper.subtractXDaysFromDate(new Date(), 5), 2,1);
+        seriaPastMatch.setHomeXGF(2.1);
+        seriaPastMatch.setAwayXGF(2.3);
+        Match serieaFutureMatch = new Match(serieat2, serieat1, DateHelper.addXDaysToDate(new Date(), 3));
+        seriea.addNewMatch(seriaPastMatch);
+        seriea.addNewMatch(serieaFutureMatch); //game with score in past, game no score in future.
+        DS_Insert.writeLeagueToDb(pastWithoutOdds);
+
+        League pastWithScoreXgAndOdds = new League(LeagueIdsAndData.LA_LIGA);
+        Season laliga = pastWithScoreXgAndOdds.getSeason(DateHelper.getStartYearForCurrentSeason());
+        Team laligat1 = laliga.addNewTeam(new Team("s2t1"));
+        Team laligat2 = laliga.addNewTeam(new Team("s2t2"));
+        Match laligaPastMatch = new Match(laligat1, laligat2, DateHelper.subtractXDaysFromDate(new Date(), 6), 2,1);
+        laligaPastMatch.setHomeXGF(3.3);
+        laligaPastMatch.setHomeXGF(1.1);
+        laligaPastMatch.setHomeDrawAwayOdds(new ArrayList<>(List.of(1.43,5.43,11.2)));
+        Match laligaFutureMatch = new Match(laligat2, laligat1, DateHelper.addXDaysToDate(new Date(), 3));
+        laliga.addNewMatch(laligaPastMatch);
+        laliga.addNewMatch(laligaFutureMatch); //game with score in past, game no score in future.
+        DS_Insert.writeLeagueToDb(pastWithScoreXgAndOdds);
 
         HashMap<League, String> leaguesToUpdate = DS_Get.getLeaguesToUpdate();
-        assertEquals(1, leaguesToUpdate.keySet().size());
-        League firstLeague = leaguesToUpdate.keySet().iterator().next();
-        assertEquals(pastWithoutScore.getName(), firstLeague.getName());
-        assertEquals(DateHelper.getSqlDate(dateOfEarliestGame), leaguesToUpdate.get(firstLeague));
+        assertEquals(3, leaguesToUpdate.keySet().size());
+        ArrayList<String> leagueNamesToUpdate = leaguesToUpdate.keySet().stream().map(League::getName).collect(Collectors.toCollection(ArrayList::new));
+        assertFalse(leagueNamesToUpdate.contains(pastWithScoreXgAndOdds.getName()));
+
+        leaguesToUpdate.forEach((l,d) -> {
+            if (l.getName().equals(pastWithoutScore.getName())) {
+                assertEquals(DateHelper.getSqlDate(dateOfEarliestGame), d);
+            } else if (l.getName().equals(pastWithoutXg.getName())) {
+                assertEquals(DateHelper.getSqlDate(bundesPastMatch.getKickoffTime()), d);
+            } else if (l.getName().equals(pastWithoutOdds.getName())) {
+                assertEquals(DateHelper.getSqlDate(seriaPastMatch.getKickoffTime()), d);
+            } else {
+                fail();
+            }
+        });
     }
 }
