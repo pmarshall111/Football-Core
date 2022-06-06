@@ -213,7 +213,7 @@ public class SofaScore {
             match.setHomeDrawAwayOdds(getOdds(GetJsonHelper.jsonGetRequest(getBetsUrl(gameId))));
             JSONObject status = (JSONObject) event.get("status");
             String statusDesc = status.get("description").toString();
-            if (statusDesc.equals("Ended")) { // This method shouldn't update the postponed flag as Sofascore has inaccurate data for that from this URL
+            if (statusDesc.equals("Ended") || statusDesc.equals("Abandoned")) { // This method shouldn't update the postponed flag as Sofascore has inaccurate data for that from this URL
                 addPlayerRatingsToGame(match, GetJsonHelper.jsonGetRequest(getPlayerRatingsUrl(gameId)));
                 addFirstGoalScorer(match, GetJsonHelper.jsonGetRequest(getIncidentsUrl(gameId)));
                 addMatchStatistics(match, GetJsonHelper.jsonGetRequest(getStatisticsUrl(gameId)));
