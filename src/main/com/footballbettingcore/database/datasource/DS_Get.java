@@ -397,8 +397,8 @@ public class DS_Get {
                     leaguesAndEarliestDate.put(new League(LeagueIdsAndData.SERIE_A), earliestGameWithNoScore);
                 } else if (leagueName.equals(LeagueIdsAndData.LIGUE_1.name())) {
                     leaguesAndEarliestDate.put(new League(LeagueIdsAndData.LIGUE_1), earliestGameWithNoScore);
-                } else if (leagueName.equals(LeagueIdsAndData.RUSSIA.name())) {
-                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.RUSSIA), earliestGameWithNoScore);
+//                } else if (leagueName.equals(LeagueIdsAndData.RUSSIA.name())) {
+//                    leaguesAndEarliestDate.put(new League(LeagueIdsAndData.RUSSIA), earliestGameWithNoScore);
                 }
             }
             return leaguesAndEarliestDate;

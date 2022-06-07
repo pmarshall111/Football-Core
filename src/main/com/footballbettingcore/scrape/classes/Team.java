@@ -106,6 +106,8 @@ public class Team {
                 return "Norwich";
             case "Leeds United":
                 return "Leeds";
+            case "Tottenham Hotspur":
+                return "Tottenham";
 
             //LA LIGA
             case "Atlético Madrid":

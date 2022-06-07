@@ -107,8 +107,11 @@ public class DbIntegrityCheck {
         try (Statement s = DS_Main.connection.createStatement()) {
             //need to include the date in query as the database will also have future games that have not yet been played.
             String threeDaysAgo = DateHelper.getSqlDate(DateHelper.subtractXDaysFromDate(new Date(), 3));
+            String home = "HOME", away = "AWAY";
             String query = "SELECT COUNT(*) FROM " + MatchTable.getTableName() +
-                    " WHERE _id NOT IN " +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + home + " ON " + MatchTable.getTableName() + "." + MatchTable.getColHometeamId() + " = " + home + "._id" +
+                    " INNER JOIN " + TeamTable.getTableName() + " AS " + away + " ON " + MatchTable.getTableName() + "." + MatchTable.getColAwayteamId() + " = " + away + "._id" +
+                    " WHERE " + MatchTable.getTableName() + "._id NOT IN " +
                     "( SELECT " + PlayerRatingTable.getColMatchId() + " FROM " + PlayerRatingTable.getTableName() + ")" +
                     " AND " + MatchTable.getColDate() + " < '" + threeDaysAgo + "'" +
                     " AND " + MatchTable.getColSeasonYearStart() + " != 19" +
