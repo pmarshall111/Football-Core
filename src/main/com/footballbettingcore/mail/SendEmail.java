@@ -51,7 +51,7 @@ public class SendEmail {
             System.out.println("Message id: " + message.getId());
             System.out.println(message.toPrettyString());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Exception sending mail:", e);
         }
     }
 

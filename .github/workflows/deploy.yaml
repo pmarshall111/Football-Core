@@ -15,12 +15,6 @@ jobs:
         env:
           GMAIL_CREDENTIAL_JSON: ${{ secrets.GMAIL_CREDENTIAL_JSON }}
 
-      - name: Add gmail token
-        run: mkdir tokens; echo -n $GMAIL_STORED_CREDENTIAL | base64 --decode > tokens/StoredCredential
-        shell: bash
-        env:
-          GMAIL_STORED_CREDENTIAL: ${{ secrets.GMAIL_STORED_CREDENTIAL }}
-
       - run: mvn clean verify test
 
       - name: Install SSH Key
@@ -35,10 +29,10 @@ jobs:
       - name: Deploy jar with rsync
         run: rsync -avP ./target/Football-1.0-SNAPSHOT-jar-with-dependencies.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/football-core_${GITHUB_SHA::8}.jar
 
-      - name: Generate new Prediction & Update cron. Loads the environment variables from .environment, then runs the PredictionPipeline, appending the output of the command to a log file.
+      - name: CREATE CRON -> Generate new Prediction & Update cron. Loads the environment variables from .environment, then runs the PredictionPipeline, appending the output of the command to a log file.
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '12 2 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar com.footballbettingcore.taskScheduling.PredictPipeline >> ~/logs/predict.log 2>&1' > ~/crontab.txt"
 
-      - name: Generate new DB Integrity cron. Loads the environment variables from .environment, then runs the DbIntegrityCheck, appending the output of the command to a log file.
+      - name: CREATE CRON -> Generate new DB Integrity cron. Loads the environment variables from .environment, then runs the DbIntegrityCheck, appending the output of the command to a log file.
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "echo '00 5 * * * . ~/.environment; java -cp ~/football-core_${GITHUB_SHA::8}.jar com.footballbettingcore.taskScheduling.DbIntegrityCheck >> ~/logs/dbIntegrity.log 2>&1' >> ~/crontab.txt"
 
       - name: Set new crontab
@@ -46,3 +40,12 @@ jobs:
 
       - name: Remove old jars, but keep the most recent in case there are any commands running. (The latest jar on the system is kept in the awk command and the jar from this deployment is ignored via the mmin arg)
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -q "find . -name 'football-core*' -mmin +5 -printf '%T@ %p\n' | sort -nr | cut -f 2 -d ' ' | awk 'NR>1' | xargs rm -f"
+
+      - name: Decode gmail token
+        run: mkdir tokens; echo -n $GMAIL_STORED_CREDENTIAL | base64 --decode > tokens/StoredCredential
+        shell: bash
+        env:
+          GMAIL_STORED_CREDENTIAL: ${{ secrets.GMAIL_STORED_CREDENTIAL }}
+
+      - name: Transfer gmail token to VM
+        run: rsync -avP ./tokens ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~
