@@ -1,47 +1,57 @@
 package com.footballbettingcore.mail;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.mail.*;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+import java.io.ByteArrayOutputStream;
 import java.util.Properties;
 
+import static com.footballbettingcore.mail.GetToken.*;
+
 public class SendEmail {
-    private final static String SENDING_EMAIL_ACC = System.getenv("SENDING_EMAIL_ACC");
-    private final static String SENDING_EMAIL_PASS = System.getenv("SENDING_EMAIL_PASS");
     public final static String ADMIN_EMAIL = System.getenv("ADMIN_EMAIL");
+    private final static String SENDING_EMAIL_ACC = System.getenv("SENDING_EMAIL_ACC");
 
-    private static Session session;
+    private static final Logger logger = LogManager.getLogger(SendEmail.class);
 
-    static {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", true);
-        props.put("mail.smtp.starttls.enable", true);
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(SENDING_EMAIL_ACC, SENDING_EMAIL_PASS);
-                    }
-                });
-    }
-
-
-    public static boolean sendOutEmail(String subject, String body, String to) {
+    public static void sendOutEmail(String subject, String body, String to) {
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(SENDING_EMAIL_ACC));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
-            message.setText(body);
-            Transport.send(message);
-            return true;
+            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
 
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            // Encode as MIME message
+            Properties props = new Properties();
+            Session session = Session.getDefaultInstance(props, null);
+            MimeMessage email = new MimeMessage(session);
+            email.setFrom(new InternetAddress(SENDING_EMAIL_ACC));
+            email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
+            email.setSubject(subject);
+            email.setText(body);
+
+            // Encode and wrap the MIME message into a gmail message
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            email.writeTo(buffer);
+            byte[] rawMessageBytes = buffer.toByteArray();
+            String encodedEmail = Base64.encodeBase64URLSafeString(rawMessageBytes);
+            Message message = new Message();
+            message.setRaw(encodedEmail);
+
+            // Create send message
+            message = service.users().messages().send("me", message).execute();
+            System.out.println("Message id: " + message.getId());
+            System.out.println(message.toPrettyString());
+        } catch (Exception e) {
+            logger.error(e);
         }
     }
 

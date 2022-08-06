@@ -3,3 +3,6 @@ out/
 /target
 .idea
 *.iml
+
+*credentials.json
+/tokens
