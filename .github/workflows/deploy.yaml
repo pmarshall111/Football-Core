@@ -9,6 +9,18 @@ jobs:
         with:
           java-version: 11
 
+      - name: Add gmail credentials
+        run: echo $GMAIL_CREDENTIAL_JSON > src/main/resources/credentials.json
+        shell: bash
+        env:
+          GMAIL_CREDENTIAL_JSON: ${{ secrets.GMAIL_CREDENTIAL_JSON }}
+
+      - name: Add gmail token
+        run: mkdir tokens; echo -n $GMAIL_STORED_CREDENTIAL | base64 --decode > tokens/StoredCredential
+        shell: bash
+        env:
+          GMAIL_STORED_CREDENTIAL: ${{ secrets.GMAIL_STORED_CREDENTIAL }}
+
       - run: mvn clean verify test
 
       - name: Install SSH Key
