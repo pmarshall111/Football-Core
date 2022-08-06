@@ -12,12 +12,12 @@ import java.util.Iterator;
  * NOTE: once added new season Ids here, the seasons must be scraped to the database by creating a call to Scrape.scrapeOneSeason();
  */
 public enum LeagueIdsAndData {
-    EPL("EPL", "Premier League", "England", 17, new int[]{10356, 11733, 13380, 17359, 23776, 29415, 37036}, 2411),
-    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{10495, 11906, 13662, 18020, 24127, 32501, 37223}, 1869),
-    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, 11818, 13477, 17597, 23538, 28210, 37166}, 1845),
-    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{10596, 11966, 13768, 17932, 24644, 32523, 37475}, 1854),
-    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{10373, 11648, 13384, 17279, 23872, 28222, 37167}, 1843),
-    RUSSIA("RFPL", "Premier League", "Russia", 203, new int[]{-1, 11868, 13387, 17753, 23682, 29200, 37038}, 1866);
+    EPL("EPL", "Premier League", "England", 17, new int[]{10356, 11733, 13380, 17359, 23776, 29415, 37036, 41886}, 2411),
+    LA_LIGA( "La_liga", "LaLiga", "Spain", 8, new int[]{10495, 11906, 13662, 18020, 24127, 32501, 37223, 42409}, 1869),
+    BUNDESLIGA("Bundesliga", "Bundesliga", "Germany", 35, new int[]{-1, 11818, 13477, 17597, 23538, 28210, 37166, 42268}, 1845),
+    SERIE_A("Serie_A", "Serie A", "Italy", 23, new int[]{10596, 11966, 13768, 17932, 24644, 32523, 37475, 42415}, 1854),
+    LIGUE_1("Ligue_1", "Ligue 1", "France", 34, new int[]{10373, 11648, 13384, 17279, 23872, 28222, 37167, 42273}, 1843),
+    RUSSIA("RFPL", "Premier League", "Russia", 203, new int[]{-1, 11868, 13387, 17753, 23682, 29200, 37038, 42388}, 1866);
 
     private static final int FIRST_SEASON_START = 15;
     private final int leagueId;
